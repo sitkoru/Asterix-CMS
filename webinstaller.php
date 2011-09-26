@@ -1,6 +1,6 @@
 <?php
 
-$root_host = 'http://src.opendev.ru';
+$root_host = 'https://raw.github.com/dekmabot/Asterix-CMS/master';
 
 header("HTTP/1.0 200 Ok");
 header('Content-Type: text/html; charset=utf-8');
@@ -43,7 +43,7 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 	}
 
 	//Проверка прав на назначение прав на файлы
-	if( file_get_contents($root_host.'/versions.txt') ){
+	if( file_get_contents($root_host.'/core.txt') ){
 		$check_web_access = true;
 	}else{
 		$check_web_access = false;
@@ -87,7 +87,7 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 	}
 	print('Все необходимые доступы имеются, вы можете продолжить установку Asterix CMS<br />');
 
-	$versions = file($root_host.'/versions.txt');
+	$versions = file($root_host.'/core.txt');
 	$versions_int = file('/home/www/tools/core.txt');
 	print('<form action="" method="get"><input type="hidden" name="step" value="2" />');
 	print('<h3>Выберите версию ядра для установки</h3><form action="" method="get"><input type="hidden" name="step" value="2" /><ol>');
