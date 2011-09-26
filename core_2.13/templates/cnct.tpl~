@@ -1,0 +1,58 @@
+<script type="text/javascript" src="http://stat.clientogenerator.ru/a.js"></script>
+<script type="text/javascript" src="http://beta.clientogenerator.ru/cg.js"></script>
+
+{if $user.admin}{include file="`$paths.admin_templates`/admin_bar.tpl"}
+{else}
+	<div id="acms_lb-background" class="acms_lb-background"></div>
+	<div id="acms_lb-contentWrap" class="acms_lb-contentWrap">
+		<div class="acms_lb-content">
+			<div class="acms_lb-content-header">Панель управления сайтом</div>
+			<form id="admin_auth_form" method="post" action="/users.html" class="acms_lb-content-form interface ajax">
+				<input type="hidden" name="interface" value="login" />
+				<input type="hidden" id="acms_current_version" value="{$config.version}" />
+				<table cellspacing="0" cellpadding="0" class="acms_lb-content-formTable">
+					<tbody>
+						<tr>
+							<td class="acms_lb-content-formCell acms_lb-content-formCell_first acms_lb-content-leftCol"><span class="acms_lb-content-formLabel">Компания</span></td>
+							<td class="acms_lb-content-formCell acms_lb-content-formCell_first acms_lb-content-rightCol"><span id="amcs_js_companySelector-chosen" class="acms_companySelector-chosen">{$domain.title}</span><span class="acms_companySelector-link" id="amcs_js_companySelector-link">...</span></td>
+						</tr>
+						<tr>
+							<td class="acms_lb-content-formCell acms_lb-content-leftCol"><label for="acms_form-inputLogin" class="acms_lb-content-formLabel">Логин</label></td>
+							<td class="acms_lb-content-formCell acms_lb-content-rightCol"><input type="text" name="login" id="acms_form-inputLogin" class="acms_lb-content-formInput" /></td>
+						</tr>
+						<tr>
+							<td class="acms_lb-content-formCell acms_lb-content-leftCol"><label for="acms_form-inputPassword" class="acms_lb-content-formLabel">Пароль</label></td>
+							<td class="acms_lb-content-formCell acms_lb-content-rightCol"><input type="password" name="password" id="acms_form-inputPassword" class="acms_lb-content-formInput" /></td>
+						</tr>
+						<tr>
+							<td class="acms_lb-content-formCell acms_lb-content-leftCol"></td>
+							<td class="acms_lb-content-formCell acms_lb-content-rightCol"><label for="acms_form-inputCheckbox" class="acms_lb-content-formLabel acms_lb-content-formLabel_otherPC"><input id="acms_form-inputCheckbox" type="checkbox" class="acms_lb-content-formCheckbox" />чужой компьютер</label></td>
+						</tr>
+						<tr>
+							<td class="acms_lb-content-formCell acms_lb-content-leftCol"></td>
+							<td class="acms_lb-content-formCell acms_lb-content-rightCol"><input type="submit" value="Войти" class="acms_form-inputButton" /></td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+			<ul class="acms_listLinks">
+				<li class="acms_listLinks-item">
+					<a href="http://help.sitko.ru/Рубрикатор/Сайты/СУ.html">Помощь по системе управления</a>
+				</li>
+				<li class="acms_listLinks-item">
+					<a href="http://sitko.ru" class="acms_listLinks-linkSitko"><img src="http://src.sitko.ru/a/i/sitko.png" alt="Sitko.ru" class="acms_listLinks-imgSitko" />Официальный сайт разработчика</a>
+				</li>
+				<li class="acms_listLinks-item acms_listLinks-item_last">
+					<a href="http://asterix.opendev.ru" class="acms_listLinks-linkAsterix"><img src="http://src.sitko.ru/a/i/asterix.png" alt="Asterix CMS" class="acms_listLinks-imgAsterix" />Сайт системы управления</a>, <a href="http://asterix.opendev.ru/новости.html">Версия 2.12</a>
+<!--
+					<a href="http://asterix.opendev.ru/help/update.html" class="acms_listLinks-linkVersion" title="Проверьте обновление вашей Asterix CMS">
+						<span class="acms_listLinks-imgVersion"></span>
+					</a>
+-->
+				</li>
+			</ul>
+			<span id="acms_lb-close" class="acms_lb-close"></span>
+		</div>
+	</div>
+	
+{/if}

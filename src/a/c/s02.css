@@ -1,0 +1,128 @@
+#admin_hide{display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:url(http://src.sitko.ru/a/i/b.png);z-index:3000}
+#admin_auth{position:absolute;left:50%;top:150px;width:800px;height:300px;margin-left:-400px;background:#fff;z-index:3001}
+#admin_auth{font-family:arial;font-size:14px;border-radius: 30px;border: 3px solid #666;color:#333}
+	#admin_auth h1,#admin_auth h2,#admin_auth h3,#admin_auth h4,#admin_auth h5,#admin_auth h6
+		{font-family:arial;font-style:italic;font-weight:normal;color:#333;margin:0;line-height:30px}
+	#admin_auth h1{font-size:1.8em;padding:0 0 10px 8px}
+	#admin_auth h2{font-size:1.1em;padding:0 0 10px 8px}
+	#admin_auth form{position:relative;float:left;margin:60px 40px 40px 40px;padding:0;width:170px;font-family:arial;font-size:1.2em}
+		#admin_auth form input{font-size:1.2em;width:150px;padding:0;margin:0}
+	#admin_auth .twtr-widget{position:relative;float:left}
+		#admin_auth .twtr-widget .twtr-hd{display:none}
+	#admin_auth .twtr-widget .twtr-ft{display:none}
+	#admin_auth #admin_news{position:relative;float:left;margin-top:57px}
+
+#admin_bar{position:fixed;top:0;left:0;width:auto;padding:0px 10px;height:30px;border:1px solid #ccc;display:none}
+#admin_bar,#admin_bar ul.a_sub{border-bottom-left-radius:10px;border-bottom-right-radius:10px;-moz-border-radius-bottomleft:10px;-moz-border-radius-bottomright:10px}
+#admin_bar li{background-image:none !important;list-style:none}
+#admin_bar{background-color:#fff;font-size:14px;font-family:Segoe UI;text-align:center;z-index:2001; margin:0;}
+	#admin_bar li{display:block;white-space:nowrap;float:left;height:30px;margin:0;padding:0 10px;text-align:left;list-style:none}
+	#admin_bar li.a_wide{padding:0 20px}
+		#admin_bar li.a_wide a{display:inline;padding:0;margin:0;line-height:27px;font-size:1em;color:#1B8DC6}
+	#admin_bar li{line-height:27px;font-size:1em;color:#333}
+	#admin_bar li.a_narrow{padding:0 5px}
+		#admin_bar li.a_narrow a{display:inline;padding:0;margin:0;line-height:27px;font-size:0.9em;color:#999}
+	#admin_bar li:hover{background-color:#1B8DC6}
+		#admin_bar li ul.a_sub{display:none;margin:2px 0 0 -20px;padding:2px 10px 10px;position:absolute;top:28px;width:auto;background-color:#1B8DC6;z-index:2000}
+			#admin_bar li ul.a_sub li{display:list-item;float:none;line-height:27px;color:#fff}
+		#admin_bar li:hover ul.a_sub{display:block}
+		#admin_bar li:hover a{background:none;color:#fff}
+	#admin_bar li.a_logo:hover{background-color:#fff}
+	#admin_bar abbr{border-bottom:1px dashed}
+
+.int-wrap{display:none;position:absolute;top:100px;z-index:1850;background:#fff;border:solid 1px #ccc;padding:2em 4em 0}
+.int-wrap input{font-size:1.5em}
+
+#bar h1,#bar h2,#bar h3,#bar h4,#bar h5,#bar h6,#bar label,#bar form,#bar fieldset,#bar button,#bar input,
+#bar textarea,#bar a,#bar p
+{margin:0;position:static;line-height:1.5em}
+#bar h1,#bar h2,#bar h3,#bar h4,#bar h5,#bar h6,#bar label,#bar form,#bar fieldset{border:0;background:none}
+
+#bar input,#bar textarea{padding:2px;height:auto}
+#bar{display:none;position:fixed;top:5%;left:5%;width:90%;height:85%;border:1px solid #ccc}
+#bar,.int-wrap{font-size:14px;font-family:Segoe UI;color:#333}
+#bar{text-align:left;z-index:1800;padding:10px;padding-left:0;background-color:#fff}
+#bar,.int-wrap{-moz-border-radius:10px;border-radius:10px;-moz-box-shadow:0 4px 12px 0 #777;box-shadow:0 4px 12px 0 #777}
+	#bar a{color:#1b8dc6}
+	#bar a:hover{color:#fc0082}
+	#bar a.cancel,#bar a.save,.int-wrap a.cancel{display:block;position:absolute;left:15px;width:16px;height:16px;z-index:20000}
+	#bar a.cancel,.int-wrap a.cancel{top:15px;background:url(http://src.sitko.ru/a/i/close.png) left top}
+	#bar a.save{top:75px;background:url(http://src.sitko.ru/a/i/save.png) left top}
+	#bar a.save:hover,#bar a.cancel:hover,.int-wrap a.cancel:hover{background-position:right top}
+	#bar button,.int-wrap button{cursor:pointer}
+	#bar_container{width:95%;height:96%;overflow:auto;padding:2% 0 0 5%}
+		#bar_content{float:left;width:70%;padding-bottom:40px}
+			#bar_load{position:absolute;top:15px;left:75px}
+			#bar_content ol ol{border-left:1px dotted #CCCCCC;margin:10px;padding-left:15px;}
+			#bar_content ol li{background:#fff}
+			#bar_content .settings-groups a.active{text-decoration:none;color:#fc0082}
+			#bar_content h1,#bar_content h2,#bar_content h3,#bar_content h4,#bar_content h5,#bar_content h6
+				{font-family:Segoe UI;width:auto;color:#000;font-style:normal; font-weight:normal;background:none;border:0}
+			#bar_content h1{font-size:2em}
+			#bar_content h2{font-size:1.8em}
+			#bar_cnotent h3{font-size:1.6em}
+			#bar_content h4{font-size:1.4em}
+			#bar_content h5{font-size:1.2em;font-weight:bold}
+			#bar_content h6{font-size:1em;font-weight:bold}
+			#bar_content .toggle span{background:url(http://src.sitko.ru/a/i/up-down.png) left top no-repeat;display:block;float:right;width:11px;height:11px;cursor:pointer}
+			#bar_content .toggle.up span{background-position:right top}
+			#bar_content .toggle a{border-bottom:1px dashed #000;color:#000;cursor:pointer;font-weight:bold}
+			#bar_content .a_fields_other{margin:0 0 5px;padding:1% 20px;background:#e4e9eb;width:98%}
+			#bar_content .a_yes,#bar_content .a_no{margin-top:3px;padding:3px 10px; color:#333; font-size:1.1em}
+			#bar_content .a_yes{border:1px solid #green;-moz-border-radius-topleft:10px;-moz-border-radius-bottomleft:10px;border-top-left-radius:10px;border-bottom-left-radius:10px}
+			#bar_content .a_no{border:1px solid #red;-moz-border-radius-topright:10px;-moz-border-radius-bottomright:10px;border-top-right-radius:10px;border-bottom-right-radius:10px}
+			#bar_content .a_yes.a_checked{color:#fff;background:#green}
+			#bar_content .a_no.a_checked{color:#fff;background:#red}
+			#bar_content .a_text input,#bar_content .a_text textarea{width:98%}
+			#bar_content .a_field,#bar_content .tree li{padding:0;margin-top:10px; list-style:none;}
+				#bar_content .a_field label,.int-wrap label,#bar_content .tree label{display:block;font-style:normal;font-size:12px;color:#555;font-family:verdana,tahoma,serif;margin-left:5px;padding:0}
+
+				#bar_content .a_field,#bar_content .tree li a.open{color:#1B8DC6;margin-left:-1em;text-decoration:none;}
+
+				#bar_content .a_field input{display:inline}
+				#bar_content fieldset.a_field input[type=text],#bar_content fieldset.a_field textarea,#bar_content button,.int-wrap button,#bar_content .settings-form input[type=text],#bar_content .settings-form textarea
+					{border:1px solid #ccc;padding:2px 7px;-moz-border-radius:7px;border-radius:7px}
+				#bar_content fieldset.a_field input[type=text]{font-size:1.6em}
+				#bar_content .a_field input.id,#bar_content .a_field input.sid{font-size:1.2em}
+				#bar_content .a_field textarea{height:110px;font-size:1.2em}
+				#bar_content .a_field select,#bar_content .submit input{font-size:1.2em}
+			#bar_content .a_field.check{margin:5px 0 0;padding-left:5px}
+				#bar_content .a_field.check label{display:inline;margin:0;width:auto;white-space:nowrap}
+				#bar_content .a_field.check input{margin-left:10px}
+			#bar_content .a_field .image{float:left;margin-bottom:10px;width:160px;height:127px;overflow:hidden;position:relative}
+			#bar_content .a_field .expand-image{width:460px}
+				#bar_content .a_field .image .img{width:150px;float:left;margin-right:10px;height:125px;border:1px solid #ccc;background:#fff}
+				#bar_content .a_field .plus-image .img{width:95px;height:95px;background:#fff url(http://src.sitko.ru/a/i/plus.png) center no-repeat}
+				#bar_content .a_field .image.active{overflow:visible}
+				#bar_content .a_field .image.active div{position:absolute;top:-15px;left:-15px;width:460px;padding:14px;background:#e4e9eb;border:1px solid #B7C2C7;border-radius:5px;-moz-border-radius:5px;z-index:1010}
+				#bar_content .a_field .image input[type=text]{font-size:1em;width:275px;border-radius:2px;-moz-border-radius:2px}
+				#bar_content .a_field .grey{color:#999}
+			#bar_content fieldset p.a_field input[type=text]{border-radius:2px;-moz-border-radius:2px}
+			#bar_content fieldset{background:none;padding:0}
+			#bar_content fieldset.a_field{margin-top:30px}
+			#bar_content fieldset legend{width:80%;font-size:14px; font-weight:bold;background:#ddd;padding:5px}
+			#bar_content button,.int-wrap button{font-size:14px;background:none;margin:1em 1em 0 0;padding:7px 10px;display:inline;border:#999 1px solid}
+			#bar_content button:hover,.int-wrap button:hover{background:#1b8dc6;border-color:#246788}
+			#bar_content button.cancel:hover,.int-wrap button.cancel:hover{background:#fc0082;border-color:#ae1363;display:inline}
+			#bar_content .submit,.int-wrap .submit{margin:2em 0;text-align:center}
+			#bar_content .settings-form{margin-top:2em}
+				#bar_content .settings-form input[type=text],#bar_content .settings-form input[type=file],#bar_content .settings-form textarea{width:100%;font-size:1.5em}
+				#bar_content .settings-form textarea{font-size:1.2em}
+				#bar_content .settings-form li{list-style:none}
+			#bar_content .settings-groups{}
+				#bar_content .settings-groups span{color:#dedede;margin:0 5px}
+				#bar_content .settings-groups a.active{text-decoration:none}
+
+		#bar_tools{float:left;width:30%;height:96%;padding-bottom:2%}
+		#bar .clear{display:block;width:100%;height:1px;clear:both}
+.nowrap{white-space:nowrap}
+		#bar ul, #bar ol{width:auto;height:auto}
+		
+		
+.acms_adminpanel_button{
+	display: block;
+	float: left;
+	margin: 7px;
+	opacity:0.2;
+}
+.acms_adminpanel_button:hover{opacity:1;}
