@@ -1,6 +1,6 @@
 <?php
 
-$root_host = 'https://raw.github.com/dekmabot/Asterix-CMS/master';
+$root_host = 'https://github.com/dekmabot';
 
 header("HTTP/1.0 200 Ok");
 header('Content-Type: text/html; charset=utf-8');
@@ -43,7 +43,7 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 	}
 
 	//Проверка прав на назначение прав на файлы
-	if( file_get_contents($root_host.'/core.txt') ){
+	if( file_get_contents('https://raw.github.com/dekmabot/Asterix-CMS/master/core.txt') ){
 		$check_web_access = true;
 	}else{
 		$check_web_access = false;
@@ -87,24 +87,18 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 	}
 	print('Все необходимые доступы имеются, вы можете продолжить установку Asterix CMS<br />');
 
-	$versions = file($root_host.'/core.txt');
+	$versions = file('https://raw.github.com/dekmabot/Asterix-CMS/master/core.txt');
 	$versions_int = file('/home/www/tools/core.txt');
 	print('<form action="" method="get"><input type="hidden" name="step" value="2" />');
 	print('<h3>Выберите версию ядра для установки</h3><form action="" method="get"><input type="hidden" name="step" value="2" /><ol>');
 	$versions_int = array_reverse($versions_int);
 	foreach($versions_int as $i=>$ver)
-		print('<li><input type="radio" id="ver'.$i.'" name="version" value="int_'.$ver.'"'.(!$i?' checked="checked"':'').' /><label for="ver'.$i.'"'.(!$i?' style="font-weight:bold"':'').'>Использовать имеющуюся версию '.$ver.'</label></li>');
+		print('<li><input type="radio" id="ver'.$i.'_int" name="version" value="int_'.$ver.'"'.(!$i?' checked="checked"':'').' /><label for="ver'.$i.'_int"'.(!$i?' style="font-weight:bold"':'').'>Обнаружена установленная версия '.$ver.', использовать её '.(!$i?'(рекомендуется)':'').'</label></li>');
 	$versions = array_reverse($versions);
 	foreach($versions as $i=>$ver)
 		print('<li><input type="radio" id="ver'.$i.'" name="version" value="'.$ver.'" /><label for="ver'.$i.'">Скачать версию '.$ver.'</label></li>');
 	print('</ol>');
 	$packs = file($root_host.'/packs.txt');
-	print('<h3>Выберите пакет Asterix CMS</h3><ol>');
-	foreach($packs as $i=>$pack){
-		list($sid, $title) = explode('=', $pack);
-		print('<li><input type="radio" id="pack'.$i.'"'.(substr_count($sid,'#')?' disabled="disabled"':'').' name="pack" value="'.$sid.'" /><label for="pack'.$i.'"'.(substr_count($sid,'#')?' style="color:grey"':'').'>Asterix CMS '.str_replace('#','',$title).''.(substr_count($sid,'#')?' <sup>(пока недоступен)</sup>':'').'</label></li>');
-	}
-	print('</ol>');
 	print('<input type="submit" value="Начать установку" /></form>');
 
 }elseif($_GET['step'] == 2){
@@ -116,7 +110,9 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 	if( substr_count($_GET['version'], 'int_') ){
 		
 		//Закачиваем и распаковываем дистрибутив
-		$f = file_get_contents($root_host.'/distr/asterix_'.trim($_GET['pack']).'.zip');
+		
+		$f = file_get_contents($root_host.'/ACMS-Demo_Start/zipball/master');
+		print('Pack: '.strlen($f).' ('.$root_host.'/ACMS-Demo_Start/zipball/master)<br />');
 		file_put_contents($_SERVER['DOCUMENT_ROOT'].'/../asterix.zip', $f);
 		if(!file_exists($_SERVER['DOCUMENT_ROOT'].'/../asterix.zip')){
 			$errors[] = 'Ошибка: не удалось закачать пакет "'.$root_host.'/distr/asterix_'.trim($_GET['pack']).'.zip"';
@@ -124,7 +120,7 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 		}
 		
 		//Распаковываем
-		unzip( 
+		$files = unzip( 
 			$_SERVER['DOCUMENT_ROOT'].'/../asterix.zip', 
 			$_SERVER['DOCUMENT_ROOT'].'/..'
 		);
@@ -138,7 +134,8 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 	}else{
 	
 		//Закачиваем и распаковываем ядро
-		$f = file_get_contents($root_host.'/distr/core_'.trim($_GET['version']).'.zip');
+		$f = file_get_contents($root_host.'/Asterix-CMS/zipball/master');
+		print('Distr: '.strlen($f).' ('.$root_host.'/Asterix-CMS/zipball/master)<br />');
 		file_put_contents($_SERVER['DOCUMENT_ROOT'].'/../core.zip', $f);
 		if(!file_exists($_SERVER['DOCUMENT_ROOT'].'/../core.zip')){
 			$errors[] = 'Ошибка: не удалось закачать ядро "'.$root_host.'/distr/core_'.trim($_GET['version']).'.zip"';
@@ -146,38 +143,27 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 		}
 		
 		//Закачиваем и распаковываем дистрибутив
-		$f = file_get_contents($root_host.'/distr/asterix_'.trim($_GET['pack']).'.zip');
+		$f = file_get_contents($root_host.'/ACMS-Demo_Start/zipball/master');
+		print('Pack: '.strlen($f).' ('.$root_host.'/ACMS-Demo_Start/zipball/master)<br />');
 		file_put_contents($_SERVER['DOCUMENT_ROOT'].'/../asterix.zip', $f);
 		if(!file_exists($_SERVER['DOCUMENT_ROOT'].'/../asterix.zip')){
 			$errors[] = 'Ошибка: не удалось закачать пакет "'.$root_host.'/distr/asterix_'.trim($_GET['pack']).'.zip"';
 			$failed = true;
 		}
 		
-		//Закачиваем и распаковываем библиотеки
-		$f = file_get_contents($root_host.'/distr/libs.zip');
-		file_put_contents($_SERVER['DOCUMENT_ROOT'].'/../libs.zip', $f);
-		if(!file_exists($_SERVER['DOCUMENT_ROOT'].'/../libs.zip')){
-			$errors[] = 'Ошибка: не удалось закачать библиотеки "'.$root_host.'/distr/libs.zip"';
-			$failed = true;
-		}
-
 		//Создаём папку для ядра
 		@mkdir($_SERVER['DOCUMENT_ROOT'].'/../tools', 0775);
 		chmod($_SERVER['DOCUMENT_ROOT'].'/../tools', 0775);
 		
 		//Распаковываем
-		unzip( 
+		$files = unzip( 
 			$_SERVER['DOCUMENT_ROOT'].'/../asterix.zip', 
 			$_SERVER['DOCUMENT_ROOT'].'/..'
 		);
+		
 		//Распаковываем
 		unzip( 
 			$_SERVER['DOCUMENT_ROOT'].'/../core.zip', 
-			$_SERVER['DOCUMENT_ROOT'].'/../tools'
-		);
-		//Распаковываем
-		unzip( 
-			$_SERVER['DOCUMENT_ROOT'].'/../libs.zip', 
 			$_SERVER['DOCUMENT_ROOT'].'/../tools'
 		);
 		
@@ -186,7 +172,6 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 		//Чистим мусор
 		unlink($_SERVER['DOCUMENT_ROOT'].'/../asterix.zip');
 		unlink($_SERVER['DOCUMENT_ROOT'].'/../core.zip');
-		unlink($_SERVER['DOCUMENT_ROOT'].'/../libs.zip');
 	}
 	
 	//Создаём папку для ядра
@@ -392,6 +377,8 @@ ini_set('include_path',implode(';',\$config['path']));
 		mysql_query($s);
 	}
 	
+	unlink('webinstaller.php');
+
 	print('База данных готова.<br />');
 	print('Теперь вам нужно настроить host на сервере, чтобы он вёл на указанную папку. Как только сделаете - сайт откроется по указанной ссылке.<br /><br />');
 	print('Перейти на сайт <a href="/">'.$_POST['domain_title'].'(<a href="'.$_POST['host'].'">'.$_POST['host'].'</a>, <a href="http://'.$_POST['host2'].'">'.$_POST['host2'].'</a>)</a>');
@@ -409,20 +396,22 @@ function unzip(
 	$zip = zip_open($archive_path);
 	while($entry = zip_read($zip)){
 		$filename = zip_entry_name($entry);
+		$filename = substr($filename, strpos($filename, '/')+1 );
 		
-		if( $filename[strlen($filename)-1] != '/' ){
-			$file_path = $to_folder . '/' . $filename;
-			touch($file_path);
-			$f = fopen($file_path, 'w+');
-			fwrite($f, zip_entry_read($entry,1024*1024*128));
-			fclose($f); 
-			@chmod($file_path, 0775);
-		
-		}else{
-			@mkdir($to_folder . '/' . $filename);
-			@chmod($to_folder . '/' . $filename, 0775);
+		if( strlen($filename) ){
+			if( $filename[strlen($filename)-1] != '/' ){
+				$file_path = $to_folder . '/' . $filename;
+				touch($file_path);
+				$f = fopen($file_path, 'w+');
+				fwrite($f, zip_entry_read($entry,1024*1024*128));
+				fclose($f); 
+				@chmod($file_path, 0775);
+			
+			}else{
+				@mkdir($to_folder . '/' . $filename);
+				@chmod($to_folder . '/' . $filename, 0775);
+			}
 		}
-
 	}
 }
 
