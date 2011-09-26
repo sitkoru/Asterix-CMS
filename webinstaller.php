@@ -297,6 +297,10 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 		'graph'=>'graph.php',
 	),
 
+	'openid'=>array(
+		'sitko.ru'=>'admin',
+	),
+	
 );
 
 \$config['settings']['version'] = \$version;
