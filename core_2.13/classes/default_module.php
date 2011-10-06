@@ -1579,11 +1579,11 @@ class default_module{
 	//Проверка корректности индексов таблиц деревьев
 	public function checkTree(){
 
-		$message=false;
-
 		if($this->structure)
 		foreach($this->structure as $structure_sid=>$structure){
 			if($structure['type']=='tree'){
+
+				$message=false;
 
 				//Забираем все записи дерева
 				$recs=$this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` order by `left_key`','getall');
@@ -1604,91 +1604,89 @@ class default_module{
 						$message.=$rec['left_key'].'+1+'.($subrecs?count($subrecs)*2:0).' != '.$rec['right_key']."\n\n";
 					}
 				}
-			}
-		}
+				
+				//Если были ошибки - высылаем сообщение
+				if($message){
+//					print('<h1 style="color:#f00">Редактировать что-либо временно не рекомендуется.</h1>');
+//					mail('dekmabot@gmail.com',$this->model->extensions['domains']->domain['host'].' tree checksum error',$message);
+//					pr_r($message);
 
-		//Если были ошибки - высылаем сообщение
-		if($message){
-			print('<h1 style="color:#f00">Редактировать что-либо временно не рекомендуется.</h1>');
-			mail('dekmabot@gmail.com',$this->model->extensions['domains']->domain['host'].' tree checksum error',$message);
-			pr_r($message);
-
-			error_reporting(E_ERROR | E_WARNING | E_PARSE);	
-			
-			if( $this->structure['rec']['type'] == 'tree' ){
-				//Строим нормальное дерево
-				$counter = 0;
-				$recs = $this->model->execSql('select * from `'.$this->getCurrentTable('rec').'` where `sid`="index"','getall');
-				foreach($recs as $i=>$rec){
-					$counter ++;
-					$rec['left_key'] = $counter;
-					$recs2 = $this->model->execSql('select * from `'.$this->getCurrentTable('rec').'` where `dep_path_parent`="'.$rec['sid'].'" order by `left_key`','getall');
-					foreach($recs2 as $i2=>$rec2){
+					error_reporting(E_ERROR | E_WARNING | E_PARSE);	
+					
+					//Строим нормальное дерево
+					$counter = 0;
+					$recs = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `sid`="index"','getall');
+					foreach($recs as $i=>$rec){
 						$counter ++;
-						$rec2['left_key'] = $counter;
-						$recs3 = $this->model->execSql('select * from `'.$this->getCurrentTable('rec').'` where `dep_path_parent`="'.$rec2['sid'].'" order by `left_key`','getall');
-						foreach($recs3 as $i3=>$rec3){
+						$rec['left_key'] = $counter;
+						$recs2 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec['sid'].'" order by `left_key`, `id`','getall');
+						foreach($recs2 as $i2=>$rec2){
 							$counter ++;
-							$rec3['left_key'] = $counter;
-							$recs4 = $this->model->execSql('select * from `'.$this->getCurrentTable('rec').'` where `dep_path_parent`="'.$rec3['sid'].'" order by `left_key`','getall');
-							foreach($recs4 as $i4=>$rec4){
+							$rec2['left_key'] = $counter;
+							$recs3 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec2['sid'].'" order by `left_key`, `id`','getall');
+							foreach($recs3 as $i3=>$rec3){
 								$counter ++;
-								$rec4['left_key'] = $counter;
-								$recs5 = $this->model->execSql('select * from `'.$this->getCurrentTable('rec').'` where `dep_path_parent`="'.$rec4['sid'].'" order by `left_key`','getall');
-								foreach($recs5 as $i5=>$rec5){
+								$rec3['left_key'] = $counter;
+								$recs4 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec3['sid'].'" order by `left_key`, `id`','getall');
+								foreach($recs4 as $i4=>$rec4){
 									$counter ++;
-									$rec5['left_key'] = $counter;
-									$recs6 = $this->model->execSql('select * from `'.$this->getCurrentTable('rec').'` where `dep_path_parent`="'.$rec5['sid'].'" order by `left_key`','getall');
-									foreach($recs6 as $i6=>$rec6){
+									$rec4['left_key'] = $counter;
+									$recs5 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec4['sid'].'" order by `left_key`, `id`','getall');
+									foreach($recs5 as $i5=>$rec5){
 										$counter ++;
-										$rec6['left_key'] = $counter;
-										$recs7 = $this->model->execSql('select * from `'.$this->getCurrentTable('rec').'` where `dep_path_parent`="'.$rec6['sid'].'" order by `left_key`','getall');
-										foreach($recs7 as $i7=>$rec7){
+										$rec5['left_key'] = $counter;
+										$recs6 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec5['sid'].'" order by `left_key`, `id`','getall');
+										foreach($recs6 as $i6=>$rec6){
 											$counter ++;
-											$rec7['left_key'] = $counter;
-											$recs8 = $this->model->execSql('select * from `'.$this->getCurrentTable('rec').'` where `dep_path_parent`="'.$rec7['sid'].'" order by `left_key`','getall');
-											foreach($recs8 as $i8=>$rec8){
+											$rec6['left_key'] = $counter;
+											$recs7 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec6['sid'].'" order by `left_key`, `id`','getall');
+											foreach($recs7 as $i7=>$rec7){
 												$counter ++;
-												$rec8['left_key'] = $counter;
+												$rec7['left_key'] = $counter;
+												$recs8 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec7['sid'].'" order by `left_key`, `id`','getall');
+												foreach($recs8 as $i8=>$rec8){
+													$counter ++;
+													$rec8['left_key'] = $counter;
+													$counter ++;
+													$rec8['right_key'] = $counter;
+													$tree_level=8;
+													$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec8['left_key'] ).', `right_key`='.intval( $rec8['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'/'.$rec7['sid'].'/'.$rec8['sid'].'" where `id`='.intval($rec8['id']).'','update');
+												}
 												$counter ++;
-												$rec8['right_key'] = $counter;
-												$tree_level=8;
-												$this->model->execSql('update `'.$this->getCurrentTable('rec').'` set `left_key`='.intval( $rec8['left_key'] ).', `right_key`='.intval( $rec8['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'/'.$rec7['sid'].'/'.$rec8['sid'].'" where `id`='.intval($rec8['id']).'','update');
+												$rec7['right_key'] = $counter;
+												$tree_level=7;
+												$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec7['left_key'] ).', `right_key`='.intval( $rec7['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'/'.$rec7['sid'].'" where `id`='.intval($rec7['id']).'','update');
 											}
 											$counter ++;
-											$rec7['right_key'] = $counter;
-											$tree_level=7;
-											$this->model->execSql('update `'.$this->getCurrentTable('rec').'` set `left_key`='.intval( $rec7['left_key'] ).', `right_key`='.intval( $rec7['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'/'.$rec7['sid'].'" where `id`='.intval($rec7['id']).'','update');
+											$rec6['right_key'] = $counter;
+											$tree_level=6;
+											$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec6['left_key'] ).', `right_key`='.intval( $rec6['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'" where `id`='.intval($rec6['id']).'','update');
 										}
 										$counter ++;
-										$rec6['right_key'] = $counter;
-										$tree_level=6;
-										$this->model->execSql('update `'.$this->getCurrentTable('rec').'` set `left_key`='.intval( $rec6['left_key'] ).', `right_key`='.intval( $rec6['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'" where `id`='.intval($rec6['id']).'','update');
+										$rec5['right_key'] = $counter;
+										$tree_level=5;
+										$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec5['left_key'] ).', `right_key`='.intval( $rec5['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'" where `id`='.intval($rec5['id']).'','update');
 									}
 									$counter ++;
-									$rec5['right_key'] = $counter;
-									$tree_level=5;
-									$this->model->execSql('update `'.$this->getCurrentTable('rec').'` set `left_key`='.intval( $rec5['left_key'] ).', `right_key`='.intval( $rec5['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'" where `id`='.intval($rec5['id']).'','update');
+									$rec4['right_key'] = $counter;
+									$tree_level=4;
+									$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec4['left_key'] ).', `right_key`='.intval( $rec4['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'" where `id`='.intval($rec4['id']).'','update');
 								}
 								$counter ++;
-								$rec4['right_key'] = $counter;
-								$tree_level=4;
-								$this->model->execSql('update `'.$this->getCurrentTable('rec').'` set `left_key`='.intval( $rec4['left_key'] ).', `right_key`='.intval( $rec4['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'" where `id`='.intval($rec4['id']).'','update');
+								$rec3['right_key'] = $counter;
+								$tree_level=3;
+								$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec3['left_key'] ).', `right_key`='.intval( $rec3['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'" where `id`='.intval($rec3['id']).'','update');
 							}
 							$counter ++;
-							$rec3['right_key'] = $counter;
-							$tree_level=3;
-							$this->model->execSql('update `'.$this->getCurrentTable('rec').'` set `left_key`='.intval( $rec3['left_key'] ).', `right_key`='.intval( $rec3['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="/'.$rec2['sid'].'/'.$rec3['sid'].'" where `id`='.intval($rec3['id']).'','update');
+							$rec2['right_key'] = $counter;
+							$tree_level=2;
+							$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec2['left_key'] ).', `right_key`='.intval( $rec2['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'" where `id`='.intval($rec2['id']).'','update');
 						}
 						$counter ++;
-						$rec2['right_key'] = $counter;
-						$tree_level=2;
-						$this->model->execSql('update `'.$this->getCurrentTable('rec').'` set `left_key`='.intval( $rec2['left_key'] ).', `right_key`='.intval( $rec2['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="/'.$rec2['sid'].'" where `id`='.intval($rec2['id']).'','update');
+						$rec['right_key'] = $counter;
+						$tree_level=1;
+						$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec['left_key'] ).', `right_key`='.intval( $rec['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'" where `id`='.intval($rec['id']).'','update');
 					}
-					$counter ++;
-					$rec['right_key'] = $counter;
-					$tree_level=1;
-					$this->model->execSql('update `'.$this->getCurrentTable('rec').'` set `left_key`='.intval( $rec['left_key'] ).', `right_key`='.intval( $rec['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="" where `id`='.intval($rec['id']).'','update');
 				}
 			}
 		}
