@@ -87,7 +87,7 @@ class default_module{
 		//Устанавливаем внутренние интерфейсы
 		$this->initInterfaces();
 
-		//Устанавливае выводы
+		//Устанавливаем выводы
 		$this->initPrepares();
 
 		//Проверка корректности деревьев
@@ -121,29 +121,27 @@ class default_module{
 			$this->structure['rec']['fields']['is_link_to_module']=array('sid'=>'is_link_to_module','type'=>'module','group'=>'system','title'=>'Раздел является ссылкой на модуль','variants'=>$all_modules);
 	}
 
+
 	//Выводы
 	public function initPrepares(){
 
+		//Установка компонентов по новой схеме
+		if( is_callable( array($this, 'setComponents') ) )
+			call_user_func( array($this, 'setComponents') );
+
 		//Стандартные
 		$system_prepares=array(
-			'anons'=>array('function'=>'prepareAnons','title'=>'Анонс одной записи'),
-			'anonslist'=>array('function'=>'prepareAnonsList','title'=>'Анонс нескольких записей'),
-			'recs'=>array('function'=>'prepareRecs','title'=>'Список всех записей'),
-			'random'=>array('function'=>'prepareRandom','title'=>'Меню случайной записи'),
-			'randomlist'=>array('function'=>'prepareRandomList','title'=>'Меню списка случайных записей'),
-			'parent'=>array('function'=>'prepareParent','title'=>'Родительская запись'),
-			'pages'=>array('function'=>'preparePages','title'=>'Страницы записей'),
-			'tags'=>array('function'=>'prepareTags','title'=>'Теги'),
-			'map'=>array('function'=>'prepareMap','title'=>'Дерево сайта'),
-			'count'=>array('function'=>'prepareCount','title'=>'Подсчитать количество записей'),
-//			'comments'=>array('function'=>'prepareComments','title'=>'Дерево комментариев'),
+			'recs'=>array('function'=>'prepareRecs','title'=>'Список всех записей', 'hidden'=>true),
+			'parent'=>array('function'=>'prepareParent','title'=>'Родительская запись', 'hidden'=>true),
+			'tags'=>array('function'=>'prepareTags','title'=>'Облако тегов раздела'),
+			'map'=>array('function'=>'prepareMap','title'=>'Дерево раздела'),
 
-			'modulepath' => array( 'function' => 'preparePath' , 'title' => 'Путь до корня модуля'),
-			'login'=>array('function'=>'prepareLogin','title'=>'Вход на сайт'),
-			'register'=>array('function'=>'prepareRegister','title'=>'Регистрация на сайте'),
-
-			'interface'=>array('function'=>'prepareInterface','title'=>'Регистрация на сайте'),
-			'feedback'=>array('function'=>'prepareFeedback','title'=>'Регистрация на сайте'),
+		//Устаревщие
+			'anons'=>array('function'=>'prepareAnons','title'=>'Анонс одной записи', 'hidden'=>true),
+			'anonslist'=>array('function'=>'prepareAnonsList','title'=>'Анонс нескольких записей', 'hidden'=>true),
+			'random'=>array('function'=>'prepareRandom','title'=>'Меню случайной записи', 'hidden'=>true),
+			'randomlist'=>array('function'=>'prepareRandomList','title'=>'Меню списка случайных записей', 'hidden'=>true),
+			'pages'=>array('function'=>'preparePages','title'=>'Страницы записей', 'hidden'=>true),
 		);
 
 		//Предобъявленные в модуле
@@ -827,26 +825,6 @@ class default_module{
 		return $tags;
 	}
 
-	//Вход на сайт
-	public function prepareLogin($params){
-		//Здесь будем хранить данные для авторизации
-		$login=array(
-			'captcha'=>false,
-			'types'=>$this->model->modules['users']->auth_types,
-		);
-		return $login;
-	}
-
-	//Регистрация на сайте
-	public function prepareRegister($params){
-
-	}
-
-	//Путь до корня модуля
-	public function preparePath($params){
-		return $this->info['url'].'.html';
-	}
-	
 /*
 	//	Возвращает форму обратной связи для записи
 	//	{preload data=feedback result=feedback}
@@ -1538,17 +1516,22 @@ class default_module{
 		require_once($this->model->config['path']['core'].'/classes/table_manage.php');
 		$table=new table_manage($this->model->db[$this->db_sid],$this->getCurrentTable($part_sid),$this->structure[$part_sid],$this->model->config['path']['core']);
 		$table->create();
+		
+		//Вставляем первую корневую запись в дерево
+		if( $this->structure[$part_sid]['type'] == 'tree' )
+			$this->model->execSql('insert into `' . $this->getCurrentTable($part_sid) . '` set `sid`="index", `title`="'.$this->info['title'].'", `left_key`=1, `right_key`=2, `tree_level`=1, `url`="/'.$this->info['sid'].'", `domain`="all", `shw`=1, `ln`=1','insert');
 	}
 
 	//Переустановка модуля
 	public function reinstall($part_sid){
-
-		pr('Переустановка модуля ['.$this->info['prototype'].'] структуры ['.$part_sid.']');
-
 		require_once($this->model->config['path']['core'].'/classes/table_manage.php');
 		$table=new table_manage($this->model->db[$this->db_sid],$this->getCurrentTable($part_sid),$this->structure[$part_sid],$this->model->config['path']['core']);
 		$table->delete();
 		$table->create();
+		
+		//Вставляем первую корневую запись в дерево
+		if( $this->structure[$part_sid]['type'] == 'tree' )
+			$this->model->execSql('insert into `' . $this->getCurrentTable($part_sid) . '` set `sid`="index", `title`="'.$this->info['title'].'", `left_key`=1, `right_key`=2, `tree_level`=1, `url`="/'.$this->info['sid'].'", `domain`="all", `shw`=1, `ln`=1','insert');
 	}
 
 	//Удаление модуля
@@ -1784,7 +1767,6 @@ class default_module{
 		//Что записывать будем
 		$what['url']='`url`="'.mysql_real_escape_string( $url ).'"';
 
-		
 		//Вставляем в дерево
 		if( $parent_field_type == 'tree' ){
 			//Если не установлен обработчик таблицы
@@ -2226,7 +2208,7 @@ class default_module{
 //////////////////////////////////////////////////
 
 	//Вернуть массив основных полей структуры
-	public function getMainFields($structure_sid){
+	public function getMainFields($structure_sid = 'rec'){
 		$fields = array('id','sid','title','url');
 		$main=array('id','sid','date_public','title','url','shw','dep_path_darent','dep_path_dir','left_key','right_key','is_link_to_module','seo_title','seo_keywords','seo_description','seo_changefreq','seo_priority');
 
@@ -2239,7 +2221,7 @@ class default_module{
 	}
 
 	//Возвращаем название таблицы текущей структуры
-	public function getCurrentTable($part){
+	public function getCurrentTable($part = 'rec'){
 		return $this->database_table_preface.$this->info['prototype'].'_'.$part;
 	}
 
@@ -2460,6 +2442,21 @@ class default_module{
 	//Представить запись в виде вершины социального графа
 	public function getGraphTop($record_id, $structure_sid='rec'){
 		return array( 'module' => $this->info['sid'], 'structure_sid' => $structure_sid, 'id' => $record_id );
+	}
+
+	//Проверка наличия доступа к записи
+	public function checkAccess($record, $interface_sid){
+		
+		//Авторы
+		if( $record['author'] == $this->model->user->info['id'] )
+			return true;
+/*		
+		//Модераторы и Администраторы
+		if( ($this->model->user->info['admin']) or ($this->model->user->info['moder']) )
+			return true;
+*/	
+		//Ответ
+		return false;
 	}
 
 }

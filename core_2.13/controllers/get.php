@@ -72,7 +72,6 @@ class controller_get extends default_controller
 		$tmpl = new templater($this->model);
 
 		//Пишем данные в шаблонизатор
-		$tmpl->assign('content', $main_record);
 		$tmpl->assign('mainmenu', $mainmenu);
 		$tmpl->assign('original_url', $this->model->ask->original_url);
 		$tmpl->assign('ask', $this->model->ask);
@@ -140,12 +139,90 @@ class controller_get extends default_controller
 				header("HTTP/1.0 200 Ok");
 		}
 
+		//Файл основного шаблона
 		$template_file_path = $this->model->config['path']['templates'] . '/' . $current_template_file;
 		if (!file_exists($template_file_path)) {
 			pr($template_file_path);
 			print('<p>Шаблон "' . $current_template_file . '" не установлен на домене.</p>');
 			exit();
 		}
+/*		
+		//Настройки текущего шаблона
+		$cfg = $this->model->config['path']['templates'].'/'.$current_template_file.'.cfg';
+		//Настройки работают для всех страниц кроме главной
+		if( file_exists($cfg) && ($main_record['url']!='/') ){
+			$settings = unserialize( file_get_contents($cfg) );
+			
+			//Адрес текущей записи
+			$url = str_replace('.html','',$main_record['url']);
+			
+			//Компоненты
+			$menu_components = array();
+			foreach($settings['components'] as $comp){
+				list($curr_module, $curr_component) = explode('|', $comp);
+				$comp = str_replace('|','_',$comp);
+				if( IsSet($this->model->modules[ $curr_module ]->prepares[ $curr_component ]) ){
+					$prepare = $this->model->modules[ $curr_module ]->prepares[ $curr_component ];
+					
+					//Только свободные компоненты, или для авторизованных пользователей
+					if( !$prepare['auth'] or $this->model->user->info['id'] ){
+						$menu_components[$comp] = array(
+							'sid' => $comp, 
+							'title' => $prepare['title'],
+							'url' => $url.'.'.$comp.'.html',
+						);
+						//Компонент на текущей странице
+						if( in_array($comp, $this->model->ask->mode) )
+							if( is_callable( array($this->model->modules[ $curr_module ], $prepare['function']) ) ){
+								//Подгружаем компонент
+								$result = call_user_func(
+									array(
+										$this->model->modules[ $curr_module ], 
+										$prepare['function']
+									), $main_record);
+								//Обновляем главную запись
+								$main_record['component'] = array_merge(
+									$prepare,
+									array('result'=>$result)
+								);
+							}
+					}
+				}
+			}
+			$tmpl->assign('menu_components', $menu_components);
+			
+			//Все интерфейсы только для авторизованных пользователей
+			if($this->model->user->info['id']){
+				//Интерфейсы
+				$menu_interfaces = array();
+				foreach($settings['interfaces'] as $comp){
+					list($curr_module, $curr_interface) = explode('|', $comp);
+					$comp = str_replace('|','_',$comp);
+					if( IsSet($this->model->modules[ $curr_module ]->interfaces[ $curr_interface ]) ){
+						$menu_interfaces[$comp] = array(
+							'sid' => $comp, 
+							'title' => $this->model->modules[ $curr_module ]->interfaces[ $curr_interface ]['title'],
+							'url' => $url.'.'.$comp.'.html',
+						);
+						if( in_array($comp, $this->model->ask->mode) )
+							if( IsSet($this->model->modules[ $curr_module ]->interfaces[ $curr_interface ]) ){
+								//Подгружаем интерфейс
+								$result = $this->model->modules[ $curr_module ]->prepareInterface($curr_interface, $main_record);
+								//Обновляем главную запись
+								$main_record['interface'] = array_merge(
+									$this->model->modules[ $curr_module ]->interfaces[ $curr_interface ],
+									array('result'=>$result)
+								);
+							}
+					}
+				}
+				$tmpl->assign('menu_interfaces', $menu_interfaces);
+			}
+			
+		}
+*/		
+		//Дописываем саму запись
+		$tmpl->assign('content', $main_record);
 
 		//Файл шаблона существует
 		$ready_html = $tmpl->fetch($current_template_file);

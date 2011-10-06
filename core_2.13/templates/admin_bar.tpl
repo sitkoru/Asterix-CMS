@@ -10,7 +10,7 @@
 {/foreach}
 			<li><br /></li>
 {foreach from=$add.subs item=rec}
-			<li><a href="/add/{$rec.module}/{$rec.structure_sid}.html" class="call_admin_interface" rel="add">{$rec.structure}</a></li>
+			<li><a href="/add/{$rec.module}/{$rec.structure_sid}.html" class="call_admin_interface" rel="add">{$rec.structure}{if $rec.structure_sid != 'rec'} в {$rec.title}{/if}</a></li>
 {/foreach}
 		</ul>
 	</li>

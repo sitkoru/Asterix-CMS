@@ -79,6 +79,7 @@ class controller_admin extends default_controller
 		}
 
 		if (!$this->model->user->info['admin']) {
+			pr_r($this->model->user->info);
 			pr('У вас нет доступа на это действие.');
 			exit();
 		}
@@ -566,8 +567,10 @@ class controller_admin extends default_controller
 			return $this->showTemplates_all();
 	}
 	private function showTemplates_one(){
-		$module        = $this->model->ask->module;
-		$structure_sid = $this->model->ask->structure_sid;
+		
+		list($module, $structure_sid) = explode( '_', substr( basename($this->vars['tmpl']), 0, strpos(basename($this->vars['tmpl']), '.') ) );
+//		$module        = $this->model->ask->module;
+//		$structure_sid = $this->model->ask->structure_sid;
 		$record        = $this->model->ask->rec;
 
 		$res['title']                 = 'Настройка шаблона '.$this->vars['tmpl'];
@@ -578,10 +581,7 @@ class controller_admin extends default_controller
 
 		$res['groups'] = array();
 		
-		$title = 'Код шаблона';
-		$groups[ 'main' ] = array(
-			'title' => $title,
-			'help' => 'Шаблон создаётся на основе HTML и языка Smarty. Перед сохранением шаблон будет проверен, и если он содержит синтаксические ошибки - он не будет сохранён.
+		$help_main = 'Шаблон создаётся на основе HTML и языка Smarty. Перед сохранением шаблон будет проверен, и если он содержит синтаксические ошибки - он не будет сохранён.
 			<br /><br />
 			<a href="#" OnClick="$j(\'#acms_help_vars\').toggle(\'fast\'); return false;">Переменные, доступные в шаблоне</a>
 			<ol id="acms_help_vars" style="display:none;">
@@ -613,22 +613,117 @@ class controller_admin extends default_controller
 				<li>Переменные доступны в виде {$variable} для строки или {$content.title} для элементов массива</li>
 				<li>Обращение к компонентам происходит так: {preload module=news data=recs result=recs}, при этом результат выдаётся в массив {$recs}</li>
 			</ul>
-			',
-			'fields' => array(
-				'title' => array(
-					'sid' => 'title',
-					'group' => $title,
-					'type' => 'hidden',
-					'value' => basename( $this->vars['tmpl'] ),
+			';
+/*		
+		//Настройки для главной страницы не доступны
+		if( $this->vars['tmpl'] != 'start_index.tpl'){
+			$help_components='
+				Компонент позволяет отображать некоторые выборки записей на странице.<br /><br />
+				Вы можете включить на этой странице компоненты, которые будут обслуживать текущую запись.<br /><br />
+				Компоненты будут доступны в качестве меню <strong>$menu_components</strong>, каждый компонент можно будет увидеть по адресу <strong>[record.url].[component_sid].html</strong><br /><br />
+				Содержимое компонента будет доступно в <strong>{$content.component}</strong>
+			';
+			$help_interfaces='
+				Интерфейс позволяет управлять одной или несколькими записями на странице.<br /><br />
+				Вы можете включить на этой странице интерфейсы, которые будут обслуживать текущую запись<br /><br />
+				Интерфейсы будут доступны в качестве меню <strong>$menu_interfaces</strong>, каждый интерфейс можно будет увидеть по адресу <strong>[record.url].[interface_sid].html</strong><br /><br />
+				Чтобы интерфейс отобразился, после вывода {$content.text} должен быть подключен шаблон <strong>interface.tpl</strong><br /><br />
+				Содержимое компонента будет доступно в <strong>{$content.interface}</strong>
+			';
+
+			//Загружаем настройки
+			$settings = unserialize( file_get_contents( $this->model->config['path']['templates'].'/'.basename( $this->vars['tmpl'] ).'.cfg' ) );
+			
+			//Внутренние компоненты
+			$components = array(
+				'components_int' => array(
+					'sid' => 'components_int',
+					'title' => 'Внутренние компоненты',
+					'type' => 'menum',
 				),
-				'html' => array(
-					'title' => 'Исходный код',
-					'sid' => 'html',
-					'group' => $title,
-					'type' => 'html',
-					'value' => @file_get_contents($this->model->config['path']['templates'].'/'.basename( $this->vars['tmpl'] )),
+				'components_ext' => array(
+					'sid' => 'components_ext',
+					'title' => 'Внешние компоненты',
+					'type' => 'menum',
 				),
-			)
+			);
+
+			//Внутренние интерфейсы
+			$interfaces = array(
+				'interfaces_int' => array(
+					'sid' => 'interfaces_int',
+					'title' => 'Внутренние интерфейсы',
+					'type' => 'menum',
+				),
+				'interfaces_ext' => array(
+					'sid' => 'interfaces_ext',
+					'title' => 'Внешние интерфейсы',
+					'type' => 'menum',
+				),
+			);
+
+			//Внутренние компоненты и интерфейсы
+			foreach($this->model->modules[ $module ]->prepares as $sid=>$component)if(!IsSet($component['hidden']))
+				$components['components_int']['value'][] = array(
+					'value' => $this->model->modules[ $module ]->info['prototype'].'|'.$sid,
+					'title' => $this->model->modules[ $module ]->info['title'].' -> '.$component['title'],
+					'selected' => @in_array( $this->model->modules[ $module ]->info['prototype'].'|'.$sid, $settings['components'] ),
+				);
+			foreach($this->model->modules[ $module ]->interfaces as $sid=>$interface)if(!IsSet($interface['hidden']))
+				$interfaces['interfaces_int']['value'][] = array(
+					'value' => $this->model->modules[ $module ]->info['prototype'].'|'.$sid,
+					'title' => $this->model->modules[ $module ]->info['title'].' -> '.$interface['title'],
+					'selected' => @in_array( $this->model->modules[ $module ]->info['prototype'].'|'.$sid, $settings['interfaces'] ),
+				);
+		
+			//Внешние компоненты и интерфейсы
+			foreach($this->model->modules as $module_sid => $mod)
+				if($module != $module_sid){
+					foreach($mod->prepares as $sid=>$component)if(!IsSet($component['hidden']))
+						$components['components_ext']['value'][] = array(
+							'value' => $mod->info['prototype'].'|'.$sid,
+							'title' => $mod->info['title'].' -> '.$component['title'],
+							'selected' => @in_array( $mod->info['prototype'].'|'.$sid, $settings['components'] ),
+						);
+					foreach($mod->interfaces as $sid=>$interface)if(!IsSet($interface['hidden']))
+						$interfaces['interfaces_ext']['value'][] = array(
+							'value' => $mod->info['prototype'].'|'.$sid,
+							'title' => $mod->info['title'].' -> '.$interface['title'],
+							'selected' => @in_array( $mod->info['prototype'].'|'.$sid, $settings['interfaces'] ),
+						);
+				}
+		}
+*/		
+		$groups = array(
+			'main'=> array(
+				'title' => 'Код шаблона',
+				'help' => $help_main,
+				'fields' => array(
+					'title' => array(
+						'sid' => 'title',
+						'type' => 'hidden',
+						'value' => basename( $this->vars['tmpl'] ),
+					),
+					'html' => array(
+						'title' => 'Исходный код',
+						'sid' => 'html',
+						'type' => 'html',
+						'value' => @file_get_contents($this->model->config['path']['templates'].'/'.basename( $this->vars['tmpl'] )),
+					),
+				)
+			),
+
+			'components'=> array(
+				'title' => 'Компоненты',
+				'help' => $help_components,
+				'fields' => $components,
+			),
+
+			'interfaces'=> array(
+				'title' => 'Интерфейсы',
+				'help' => $help_interfaces,
+				'fields' => $interfaces,
+			),
 		);
 		
 		$res['groups'] = $groups;
@@ -727,6 +822,15 @@ class controller_admin extends default_controller
 		$res = file_put_contents($path, stripslashes( $this->vars['html'] ), LOCK_EX);
 		chmod($path, 0775);
 
+		//Настройки компонентов и интерфейсов
+		$settings = array(
+			'components' => array_merge( (array)$this->vars['components_int'], (array)$this->vars['components_ext']),
+			'interfaces' => array_merge( (array)$this->vars['interfaces_int'], (array)$this->vars['interfaces_ext']),
+		);
+		$path = $this->model->config['path']['templates'].'/'.basename($this->vars['title'].'.cfg');
+		$res = file_put_contents($path, serialize($settings), LOCK_EX);
+		chmod($path, 0775);
+		
 		header('Location: /');
 		exit();
 	}
@@ -1206,7 +1310,7 @@ class controller_admin extends default_controller
 			';
 		}
 		
-
+/*
 		//Смотрим уже имеющиеся настройки
 		$acms_settings = false;
 		if($this->model->ask->rec['acms_settings'])
@@ -1269,7 +1373,7 @@ class controller_admin extends default_controller
 				);		
 			}
 		}
-
+*/
 		return $groups;
 	}
 

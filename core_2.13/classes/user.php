@@ -274,16 +274,16 @@ class user
 								$this->model->execSql($sql, 'insert');
 								$this->authUser_localhost();
 							}
-								}
-					
+							header('Location: /');
+						}
 					}
 				}
 				
 			} catch(ErrorException $e) {
 				echo $e->getMessage();
 			}
-			}
-}
+		}
+	}
 	
 	//Установка Cookie
 	private function setCookie($name, $value)
