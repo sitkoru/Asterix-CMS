@@ -740,11 +740,18 @@ class controller_admin extends default_controller
 		//Должно быть шаблонов
 		$templates = array();
 		foreach($this->model->modules as $module_sid=>$module){
-			$recs[ $module->info['prototype'].'_index.tpl' ] = array(
-				'id' => count($recs),
-				'title' => $module->info['title'].' - главная страница',
-				'file' => $module->info['prototype'].'_index.tpl',
-			);
+			if($module->info['sid'])
+				$recs[ $module->info['prototype'].'_index.tpl' ] = array(
+					'id' => count($recs),
+					'title' => $module->info['title'].' - главная страница',
+					'file' => $module->info['prototype'].'_index.tpl',
+				);
+			else	
+				$recs[ $module->info['prototype'].'_index.tpl' ] = array(
+					'id' => count($recs),
+					'title' => 'Главная страница сайта',
+					'file' => 'start_index.tpl',
+				);
 			$recs[ $module->info['prototype'].'_content.tpl' ] = array(
 				'id' => count($recs),
 				'title' => $module->info['title'].' - страница записи',
