@@ -66,16 +66,9 @@ class field_type_user extends field_type_default
 			), 'getrow');
 			
 			if($value){
-				$value['url'].='.html';
+				$value=$this->model->modules[false]->insertRecordUrlType($value);
 			}
 			
-/*			
-			//Если подключен модуль профилей
-			if (IsSet($this->model->modules['пользователи'])) {
-				//Запрашиваем профиль пользователя
-				$value['profile'] = $this->model->modules['пользователи']->loadProfile($user_id);
-			}
-*/
 		} else {
 			$value = array(
 				'sid' => 'гость',

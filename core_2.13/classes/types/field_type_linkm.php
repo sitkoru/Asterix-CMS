@@ -51,6 +51,7 @@ class field_type_linkm extends field_type_default
 	{
 		$arr  = explode('|', $value);
 		$res  = array();
+		
 		//Варианты значений
 		$recs = $this->model->makeSql(array(
 			'tables' => array(
@@ -58,16 +59,20 @@ class field_type_linkm extends field_type_default
 			),
 			'fields' => array(
 				$this->link_field,
-				'title'
+				'title',
+				'url'
 			),
 			'where' => array(
 				'and' => array(
-					'``'.$this->link_field.'` in ("' . implode('", "', $arr) . '")',
-					(IsSet($settings['sql']) ? $settings['sql'] : '1')
+					'`'.$this->link_field.'` in ("' . implode('", "', $arr) . '")',
+					(IsSet($settings['where']) ? $settings['where'] : '1')
 				)
 			),
 			'order' => 'order by `title`'
 		), 'getall');
+		
+		foreach($recs as$i=>$rec)
+			$recs[$i]=$this->model->modules[false]->insertRecordUrlType($rec);
 		
 		//Готово
 		return $recs;
@@ -78,14 +83,23 @@ class field_type_linkm extends field_type_default
 	{
 		$res = array();
 		
+		if(isset($settings['where'])){
+			if( substr_count($settings['where'], 'echo')){
+				ob_start();
+				@eval($settings['where']);
+				$s = ob_get_contents();
+				ob_end_clean();
+			}else{
+				$s = $settings['where'];
+			}
+		}
+				
 		//Варианты значений
 		$variants = $this->model->makeSql(array(
 			'tables' => array(
 				$this->model->modules[$settings['module']]->getCurrentTable($settings['structure_sid'])
 			),
-			'where' => (IsSet($settings['where']) ? array(
-				'and' => $settings['where']
-			) : false),
+			'where' => (IsSet($settings['where']) ? array('and' => array($s)) : false),
 			'fields' => array(
 				$this->link_field,
 				'title'

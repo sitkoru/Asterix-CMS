@@ -318,12 +318,10 @@ class controller_admin extends default_controller
 	}
 
 
-	private function showList()
-	{
+	private function showList(){
 	}
 
-	private function showAdd()
-	{
+	private function showAdd(){
 		$res['title']                 = 'Добавление записи';
 		$res['content_template_file'] = 'add.tpl';
 		//Все возможные модули
@@ -335,8 +333,7 @@ class controller_admin extends default_controller
 		return $res;
 	}
 
-	private function showAdd2()
-	{
+	private function showAdd2(){
 		$this->model->ask->module        = $this->model->ask->full_url[1];
 		$this->model->ask->structure_sid = $this->model->ask->full_url[2];
 
@@ -369,8 +366,7 @@ class controller_admin extends default_controller
 		return $res;
 	}
 
-	private function saveAdd()
-	{
+	private function saveAdd(){
 		//Обознаём модуль
 		$module = $this->vars['module'];
 
@@ -389,8 +385,7 @@ class controller_admin extends default_controller
 		exit();
 	}
 
-	private function showEdit()
-	{
+	private function showEdit(){
 		$res = array();
 
 		$module        = $this->model->ask->module;
@@ -418,8 +413,7 @@ class controller_admin extends default_controller
 		return $res;
 	}
 
-	private function saveEdit()
-	{
+	private function saveEdit(){
 		//Обознаём модуль
 		$module = $this->vars['module'];
 
@@ -438,8 +432,7 @@ class controller_admin extends default_controller
 		exit();
 	}
 
-	private function showDelete()
-	{
+	private function showDelete(){
 		$res = array();
 
 		$module        = $this->model->ask->module;
@@ -454,8 +447,7 @@ class controller_admin extends default_controller
 		return $res;
 	}
 
-	private function saveDelete()
-	{
+	private function saveDelete(){
 		$module        = $this->model->ask->module;
 		$structure_sid = $this->model->ask->structure_sid;
 		$record        = $this->model->ask->rec;
@@ -468,8 +460,7 @@ class controller_admin extends default_controller
 	}
 
 	//Показать настройки
-	private function showSettings()
-	{
+	private function showSettings(){
 		$res                          = array();
 		$res['title']                 = 'Настройки сайта';
 		$res['form_action']           = 'settings';
@@ -507,8 +498,7 @@ class controller_admin extends default_controller
 	}
 	//Сохранить настройки
 
-	private function saveSettings()
-	{
+	private function saveSettings(){
 		$sets = $this->model->execSql('select * from `settings` where ' . $this->model->extensions['domains']->getWhere() . '', 'getall');
 		
 		foreach ($sets as $set) {
@@ -523,8 +513,7 @@ class controller_admin extends default_controller
 		exit();
 	}
 
-	private function showAdmins()
-	{
+	private function showAdmins(){
 		$res                          = array();
 		$res['title']                 = 'Пользователи сайта';
 		$res['content_template_file'] = 'admins.tpl';
@@ -542,8 +531,7 @@ class controller_admin extends default_controller
 			$res['recs'] = $recs;
 		return $res;
 	}
-	private function showEmail()
-	{
+	private function showEmail(){
 		$res                          = array();
 		$res['title']                 = 'Почтовые аккаунты';
 		$res['content_template_file'] = 'email.tpl';
@@ -559,8 +547,7 @@ class controller_admin extends default_controller
 		return $res;
 	}
 
-	private function showTemplates()
-	{
+	private function showTemplates(){
 		if(IsSet( $this->vars['tmpl'] ))
 			return $this->showTemplates_one();
 		else
@@ -843,8 +830,7 @@ class controller_admin extends default_controller
 	}
 
 
-	private function showCSS()
-	{
+	private function showCSS(){
 		$res                          = array();
 		$res['title']                 = 'Стили сайта';
 		$res['form_action']           = 'css';
@@ -869,8 +855,7 @@ class controller_admin extends default_controller
 			
 		return $res;
 	}
-	private function saveCSS()
-	{
+	private function saveCSS(){
 		if( strlen($this->vars['new_file']) and strlen($this->vars['new_content']) ){
 			$path = $this->model->config['path']['styles'].'/'.basename($this->vars['new_file']);
 			file_put_contents($path, stripslashes($this->vars['new_content']) );
@@ -886,8 +871,7 @@ class controller_admin extends default_controller
 	}
 
 
-	private function showJS()
-	{
+	private function showJS(){
 		$res                          = array();
 		$res['title']                 = 'JavaScript сайта';
 		$res['form_action']           = 'js';
@@ -912,8 +896,7 @@ class controller_admin extends default_controller
 			
 		return $res;
 	}
-	private function saveJS()
-	{
+	private function saveJS(){
 		if( strlen($this->vars['new_file']) and strlen($this->vars['new_content']) ){
 			$path = $this->model->config['path']['javascript'].'/'.basename($this->vars['new_file']);
 			file_put_contents($path, $this->vars['new_content']);
@@ -929,8 +912,7 @@ class controller_admin extends default_controller
 	}
 
 
-	private function showModules()
-	{
+	private function showModules(){
 		$res                          = array();
 		$res['title']                 = 'Модули сайта';
 		$res['content_template_file'] = 'bar_modules.tpl';
@@ -968,8 +950,7 @@ class controller_admin extends default_controller
 		return $res;
 	}
 	
-	private function installModule()
-	{
+	private function installModule(){
 		$this->vars['module_id'] = basename($this->vars['module_id']);
 
 		//Импортируем файл модуля
@@ -1061,8 +1042,7 @@ class controller_admin extends default_controller
 		exit();
 	}
 
-	private function deleteModule()
-	{
+	private function deleteModule(){
 		$this->vars['module_id'] = basename($this->vars['module_id']);
 
 		//Удаляем из раздела-ссылки
@@ -1124,8 +1104,7 @@ class controller_admin extends default_controller
 	}
 	
 	
-	private function showThemes()
-	{
+	private function showThemes(){
 		$res                          = array();
 		$res['title']                 = 'Оформление сайта';
 		$res['content_template_file'] = 'bar_themes.tpl';
@@ -1161,16 +1140,14 @@ class controller_admin extends default_controller
 		
 		return $res;
 	}
-	private function saveThemes()
-	{
+	private function saveThemes(){
 		pr_r($this->vars);
 		header('Location: /');
 		exit();
 	}
 	
 	
-	private function showUpdate()
-	{
+	private function showUpdate(){
 		$res                          = array();
 		$res['title']                 = 'Обновление ядра сайта';
 		$res['content_template_file'] = 'bar_update.tpl';
@@ -1182,8 +1159,7 @@ class controller_admin extends default_controller
 		
 		return $res;
 	}
-	private function saveUpdate()
-	{
+	private function saveUpdate(){
 		include_once($this->model->config['path']['libraries'].'/core_update.php');
 		$acms_core_update = new acms_core_update( $this->model );
 		
@@ -1194,8 +1170,7 @@ class controller_admin extends default_controller
 	}
 	
 	//Укажите модуль, в который будет добавлена запись
-	private function listModule($modules)
-	{
+	private function listModule($modules){
 		$recs = array();
 		$subs = array();
 		foreach ($modules as $module_sid => $module)
@@ -1553,23 +1528,62 @@ class controller_admin extends default_controller
 	{
 		$res                          = array();
 		$res['title']                 = 'Дерево сайта';
-		$res['content_template_file'] = 'tree.tpl';
+		
+		if( $this->model->ask->rec['sid']!='index' )
+			$res['content_template_file'] = 'tree.tpl';
+		else
+			$res['content_template_file'] = 'tree_bar.tpl';
 		
 		$levels=2;
 		
-		if($this->model->ask->rec['is_link_to_module'])$this->model->ask->rec['id']=false;
+		if($this->model->ask->rec['is_link_to_module']){
+			$remember_id = $this->model->ask->rec['id'];
+			$this->model->ask->rec['id']=false;
+		}
 		
 		//Получаем дерево
 		$recs = $this->model->prepareShirtTree( $this->model->ask->module, $this->model->ask->structure_sid, $this->model->ask->rec['id'], $levels, array());
+
+		//Также ищем обычные разделы, если стоим на ссылке
+		if($this->model->ask->rec['is_link_to_module']){
+			$recs_plus = $this->model->prepareShirtTree( false, 'rec', $remember_id, $levels, array());
+			if($recs_plus){
+				if($recs)
+					$recs = array_merge($recs, $recs_plus);
+				else
+					$recs = $recs_plus;
+			}
+		}
 		
 		//Если считаем поддерево - нужен префикс для ID дочерних элементов
 		$res['prefix']=$this->model->ask->rec['id'];
 		
 		$recs = $this->addManage($recs);
-		
 		if ($recs)
 			$res['recs'] = $recs;
+		
+		
+		$res['groups']['global']=array(
+			'title' => 'Дерево сайта',
+			'group' => 'global',
+			'fields' => $recs
+		);
+		foreach($this->model->modules as $module_sid => $module)if( !in_array($module_sid, array(false, 'users', 'search')) )if(is_array($module->structure)){
+			//Достам дерево модуля
+			$keys = array_keys($module->structure);
+
+			$recs = $module -> getModuleShirtTree(false, $keys[ count($keys)-1], 3);
 			
+			if($recs){
+				//Добавляем
+				$res['groups'][ $module_sid ]=array(
+					'title' => $module->info['title'],
+					'group' => $module_sid,
+					'fields' => array_reverse( $recs ),
+				);
+			}
+		}
+		
 		return $res;
 	}
 	

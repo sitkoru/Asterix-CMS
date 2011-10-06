@@ -142,9 +142,15 @@ class controller_get extends default_controller
 		//Файл основного шаблона
 		$template_file_path = $this->model->config['path']['templates'] . '/' . $current_template_file;
 		if (!file_exists($template_file_path)) {
-			pr($template_file_path);
-			print('<p>Шаблон "' . $current_template_file . '" не установлен на домене.</p>');
-			exit();
+			
+			//Пытаемся склонировать шаблон материала
+			copy($this->model->config['path']['templates'].'/start_content.tpl', $template_file_path);
+			//Интересно, сработало?
+			if (!file_exists($template_file_path)) {
+				pr($template_file_path);
+				print('<p>Шаблон "' . $current_template_file . '" не установлен на домене.</p>');
+				exit();
+			}
 		}
 /*		
 		//Настройки текущего шаблона

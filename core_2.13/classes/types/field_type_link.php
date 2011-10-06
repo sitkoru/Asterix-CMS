@@ -81,12 +81,21 @@ class field_type_link extends field_type_default
 	{
 		$res = array();
 
+		if(isset($settings['where'])){
+			if( substr_count($settings['where'], 'echo')){
+				ob_start();
+				@eval($settings['where']);
+				$s = ob_get_contents();
+				ob_end_clean();
+			}else{
+				$s = $settings['where'];
+			}
+		}
+		
 		//Варианты значений
 		$variants = $this->model->makeSql(array(
 			'tables' => array($this->model->modules[$settings['module']]->getCurrentTable($settings['structure_sid'])),
-			'where' => (IsSet($settings['where']) ? array(
-				'and' => $settings['where']
-			) : false),
+			'where' => (IsSet($settings['where']) ? array('and' => array($s)) : false),
 			'fields' => array(
 				$this->link_field,
 				'title'
@@ -94,7 +103,8 @@ class field_type_link extends field_type_default
 			'order' => 'order by `title`'
 		), 'getall');
 //		pr($this->model->last_sql);
-
+		
+		
 		//Отмечаем в массиве выбранные элементы
 		foreach ($variants as $i => $variant)
 			if (strlen($variant['title']))

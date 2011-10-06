@@ -64,25 +64,38 @@ class field_type_menum extends field_type_default
 		$variants = $settings['variants'];
 		
 		//Если значение ещё не развёрнуто - разворачиваем
-		$arr      = explode('|', $value);
+		$value      = explode('|', $value);
 		//Отмечаем в массиве выбранные элементы
 		if(is_array($variants)){
-			foreach ($variants as $i => $title)
-				if (strlen($title))
+			foreach ($variants as $sid => $title){
+				if( is_int($sid) )
 					$res[] = array(
 						'value' => $title,
 						'title' => $title,
-						'selected' => in_array($title, $arr)
+						'selected' => in_array($title, $value)
 					);
+				else
+					$res[] = array(
+						'value' => $sid,
+						'title' => $title,
+						'selected' => in_array($sid, $value)
+					);
+			}
 		
 		//Если почему-то нет variants - сохраняем текущие значения
 		}else{
-			foreach($arr as $title){
-				if (strlen($title))
+			foreach($value as $sid => $title){
+				if( is_int($sid) )
 					$res[] = array(
 						'value' => $title,
 						'title' => $title,
-						'selected' => true,
+						'selected' => in_array($title, $value)
+					);
+				else
+					$res[] = array(
+						'value' => $sid,
+						'title' => $title,
+						'selected' => in_array($sid, $value)
 					);
 			}
 		}

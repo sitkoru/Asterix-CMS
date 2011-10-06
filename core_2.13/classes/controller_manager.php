@@ -37,32 +37,17 @@ class controller_manager
 		$this->log    = $log;
 		$this->cache  = $cache;
 
-		/*Системное сообщение*/
-		$log->step('запуск менеджера контроллеров');
-		
 		//Подгружаем все переданные параметры
 		$this->loadData();
-		
-		/*Системное сообщение*/
-		$log->step('считывание переданных данных');
 		
 		//Загружаем модель
 		$this->loadModel();
 		
-		/*Системное сообщение*/
-		$log->step('загружена модель данных');
-		
 		//Если сайт работает в режиме тестирования - проверяем можно ли показывать
 		$this->checkTestMode();
 		
-		/*Системное сообщение*/
-		$log->step('проверка режима тестирования');
-		
 		//Определение контроллера
 		$controller = $this->defineController();
-		
-		/*Системное сообщение*/
-		$log->step('определён контроллер');
 		
 		//Записываем контроллер
 		$this->model->ask->method = $controller;
@@ -106,58 +91,6 @@ class controller_manager
 	//Определение контроллера
 	private function defineController()
 	{
-/*
-		//Возврат аутентификации по OpenID
-		if (IsSet($this->vars['openid_assoc_handle']) and IsSet($this->vars['openid_identity']) and IsSet($this->vars['openid_mode']) and IsSet($this->vars['openid_return_to']) and IsSet($this->vars['openid_sig']) and IsSet($this->vars['openid_signed'])) {
-			//Чистим логин
-			$login = $this->vars['openid_identity'];
-			$login = str_replace('http://', '', $login);
-			$login = str_replace('https://', '', $login);
-			$login = str_replace('/', '', $login);
-			
-			//Мыльница
-			$email = (IsSet($this->vars['openid_sreg_email']) ? $this->vars['openid_sreg_email'] : false);
-			
-			$salt     = substr(md5(session_id()), 3, 8);
-			$password = md5($login);
-			
-			//Ищем пользователя в базе
-			$user = $this->model->modules['users']->getUserByLogin($login, $password);
-			
-			//Нашли
-			if ($user) {
-				//Авторизуемся
-				$_SESSION['auth'] = $user['session_id'];
-				$this->model->user->authUser();
-				
-				//Посылаем его редактировать свой профиль
-				header('Location: /');
-				exit();
-				
-				
-				//Не нашли
-			} else {
-				//Готовим данные
-				$userData = array(
-					'title' => $login,
-					'login' => $login,
-					'password' => $password,
-					'email' => $email,
-					'session_id' => session_id(),
-					'salt' => $salt,
-					'active' => true,
-					'openid' => true,
-					'shw' => false
-				);
-				//Заносим
-				$url      = $this->model->modules['users']->addUser($userData, true);
-				
-				//Посылаем его редактировать свой профиль
-				header('Location: ' . $url);
-				exit();
-			}
-		}
-*/		
 		//спец.контроллеры
 		if (IsSet($this->vars['action'])) {
 			if (IsSet($this->controllers[$this->vars['action']])) {
@@ -191,15 +124,11 @@ class controller_manager
 		//Если допустимый метод
 			if (in_array($_SERVER['REQUEST_METHOD'], $controller['methods']))
 				if (in_array($this->model->ask->output, $controller['format']))
-				//			if($this->checkProtectionOfController($controller))
-					{
 					return $sid;
-				}
 		
 		//Если существует указание
-		if (IsSet($this->controllers[$_SERVER['REQUEST_METHOD']])) {
+		if (IsSet($this->controllers[$_SERVER['REQUEST_METHOD']]))
 			return $_SERVER['REQUEST_METHOD'];
-		}
 		
 		//Контроллер по умолчанию
 		return 'get';
@@ -305,13 +234,7 @@ class controller_manager
 				'email' => $data->email,
 				'www' => $data->web->default,
 			);
-/*
-			//Незаполненные поля из профиля
-			$fill_in = array();
-			foreach($this->model->modules['users']->structure['rec']['fields'] as $sid => $field)
-				if(!$user[$sid])
-					$fill_in[$sid] = $field;
-*/			
+
 			//Авторизация (если пользователь существует)
 			$_POST['login'] = $user['login'];
 			$_POST['password'] = $user['password'];
