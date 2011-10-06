@@ -2,24 +2,24 @@
 
 /************************************************************/
 /*															*/
-/*	ßäðî ñèñòåìû óïðàâëåíèÿ Asterix	CMS						*/
-/*		Ìåíåäæåð áèáëèîòåê ÑÓÁÄ								*/
+/*	à ¤ð® ±é²²æ­» ó¯° ã¬¥î©¿ Asterix	CMS						*/
+/*		Í¥î¦¤ç¦° â©¡ì©®ò¥ª Ò“Â„								*/
 /*															*/
-/*	Âåðñèÿ ÿäðà 2.0											*/
-/*	Âåðñèÿ ñêðèïòà 1.00										*/
+/*	Ã¥ð±¨¿ ó¤°  2.0											*/
+/*	Ã¥ð±¨¿ ñª°¨à³  1.00										*/
 /*															*/
-/*	Copyright (c) 2009  Ìèøèí Îëåã							*/
-/*	Ðàçðàáîò÷èê: Ìèøèí Îëåã									*/
+/*	Copyright (c) 2009  Í¨ð¨­ Ï«æ£‰						*/
+/*	Ñ è± â¯²ó¨ªº Í¨ð¨­ Ï«æ£‰								*/
 /*	Email: dekmabot@gmail.com								*/
 /*	WWW: http://mishinoleg.ru								*/
-/*	Ñîçäàí: 10 ôåâðàëÿ 2009	ãîäà							*/
-/*	Ìîäèôèöèðîâàí: 25 ñåíòÿáðÿ 2009 ãîäà					*/
+/*	Ò®è¥ ò¸€±0 ð¥¢°á¬¿ 2009	ä¯¤É‰					*/
+/*	Í®å©´é·¨ð®¢ ò¸€²5 ñ¥­²ó¡°¿ 2009 ä¯¤É‰			*/
 /*															*/
 /************************************************************/
 
 global $config;
 
-//Ïîääåðæèâàåìûå ôîðìàòû áàç äàííûõ
+//Ð®å¥¥ð¦¨¢á¦¬ó¥ ´ï±¬á³» â¡§ å¡­î¼µ
 $supported_databases = array(
 	false => array(
 		'mysql' => 'mysql.php'
@@ -29,7 +29,7 @@ $supported_databases = array(
 	)
 );
 
-//Êëàññ óïðàâëåíèÿ áàçàìè äàííûõ
+//Ë«á²± ó¯° ã¬¥î©¿ â¡§á­¨ å¡­î¼µ
 class database
 {
 	public function __construct($model)
@@ -47,7 +47,7 @@ class database
 	
 }
 
-//Èíèöèàëèçàöèÿ áàç äàííûõ
+//É­é·¨á¬¨è¡¶é¿ â¡§ å¡­î¼µ
 $db = array();
 foreach ($config['db'] as $name => $one) {
 	if (IsSet($supported_databases[$one['lib_pack']][$one['type']])) {
@@ -63,12 +63,17 @@ foreach ($config['db'] as $name => $one) {
 			$db[$name]->SetFetchMode(ADODB_FETCH_ASSOC);
 			$db[$name]->debug = false;
 			
-		//íå ADO
+		//Ð±ÐµÐ· ADO
 		} else {
 			$db[$name] = new $n($model);
 		}
 		
 		$db[$name]->PConnect($one['host'], $one['user'], $one['password'], $one['name']);
+		if( !$db[$name]->_connectionID ){
+			header('Content-Type: text/html; charset=utf-8');
+			print('<br />ÐžÑˆÐ¸Ð±ÐºÐ° ÑÐ¾ÐµÐ´Ð¸Ð½ÐµÐ½Ð¸Ñ Ñ Ð±Ð°Ð·Ð¾Ð¹ Ð´Ð°Ð½Ð½Ñ‹Ñ….');
+			exit();
+		}	
 		
 		$db[$name]->Execute('set character_set_client="utf8", character_set_results="utf8", collation_connection="utf8_general_ci"');
 		
