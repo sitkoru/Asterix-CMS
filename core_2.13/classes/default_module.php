@@ -37,7 +37,7 @@ class default_module{
 		'title'=>				array('sid'=>'title',			'group'=>'main',			'type'=>'text', 		'title'=>'Заголовок', 							'file'=>'table_text.php'),
 		'shw'=>					array('sid'=>'shw',				'group'=>'show',			'type'=>'check', 		'title'=>'Показывать на сайте', 				'file'=>'table_check.php', 'default'=>true),
 		'access'=>				array('sid'=>'access',			'group'=>'system',		'type'=>'hidden', 		'title'=>'Доступ к записи', 					'default' => '|admin=rwd|moder=rw-|all=r--|'),
-		'acms_settings'=>		array('sid'=>'acms_settings',	'group'=>'system',		'type'=>'hidden', 		'title'=>'Настройки отображения записи'),
+//		'acms_settings'=>		array('sid'=>'acms_settings',	'group'=>'system',		'type'=>'hidden', 		'title'=>'Настройки отображения записи'),
 	);
 
 	//Шаблоны в модуле по умолчанию
