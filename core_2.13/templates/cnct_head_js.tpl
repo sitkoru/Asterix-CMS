@@ -13,4 +13,3 @@
 	</script>
 	<![endif]-->
 {/if}
-	<script type="text/javascript" src="http://stat.clientogenerator.ru/w/m.js"></script>

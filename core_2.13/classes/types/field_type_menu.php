@@ -53,10 +53,26 @@ class field_type_menu extends field_type_default
 	{
 
 		$res      = array();
-	
+
 		//Варианты значений
 		$variants = $settings['variants'];
 		
+		//Тип menu, используемый в dep_path
+		if(!$variants)
+			if( IsSet( $settings['module'] ) && IsSet( $settings['structure_sid'] ) ){
+				$recs=$this->model->makeSql(
+					array(
+						'tables'=>array( $this->model->modules[ $settings['module'] ]->getCurrentTable( $settings['structure_sid'] ) ),
+						'fields'=>array( $this->link_field ),
+						'order'=>'order by `'.$this->link_field.'`'
+					),
+					'getall'
+				);
+				foreach($recs as $rec){
+					$variants[] = $rec[ $this->link_field ];
+				}
+			}
+			
 		//Отмечаем в массиве выбранные элементы
 		if (is_array($variants))
 			foreach ($variants as $sid => $title)

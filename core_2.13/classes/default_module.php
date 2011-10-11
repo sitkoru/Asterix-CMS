@@ -37,7 +37,6 @@ class default_module{
 		'title'=>				array('sid'=>'title',			'group'=>'main',			'type'=>'text', 		'title'=>'Заголовок', 							'file'=>'table_text.php'),
 		'shw'=>					array('sid'=>'shw',				'group'=>'show',			'type'=>'check', 		'title'=>'Показывать на сайте', 				'file'=>'table_check.php', 'default'=>true),
 		'access'=>				array('sid'=>'access',			'group'=>'system',		'type'=>'hidden', 		'title'=>'Доступ к записи', 					'default' => '|admin=rwd|moder=rw-|all=r--|'),
-//		'acms_settings'=>		array('sid'=>'acms_settings',	'group'=>'system',		'type'=>'hidden', 		'title'=>'Настройки отображения записи'),
 	);
 
 	//Шаблоны в модуле по умолчанию
@@ -100,6 +99,10 @@ class default_module{
 		//Подгружаем заданную структуру модуля
 		$this->setStructure();
 
+		//Если в конфиге разрешена привязка интерфейсов к записям - нужно такое поле
+		if( $this->model->config['settings']['dock_interfaces_to_records'] )
+			$thid->system_fields['acms_settings'] = array('sid'=>'acms_settings',	'group'=>'system',		'type'=>'text', 		'title'=>'Настройки отображения записи');
+		
 		//Дозаносим системные поля
 		if($this->structure)
 		foreach($this->structure as $structure_sid=>$part){
@@ -191,6 +194,7 @@ class default_module{
 			$fields=array();
 
 			//Перебираем поля
+			if( is_array($this->interfaces[$prepare]['fields']) )
 			foreach($this->interfaces[$prepare]['fields'] as $sid=>$field){
 				if(!IsSet($field['sid']))
 					$field['sid'] = $sid;
@@ -860,7 +864,7 @@ class default_module{
 
 		//Формируем условия
 		$where=array();
-		foreach($params as $var=>$val){
+		foreach( (array)$params as $var=>$val){
 
 			$flag=false;
 
@@ -1765,6 +1769,9 @@ class default_module{
 		//Что записывать будем
 		$what['url']='`url`="'.mysql_real_escape_string( $url ).'"';
 
+		//Настройки автоматом не перезаписывать
+		UnSet($what['acms_settings']);
+
 		//Вставляем в дерево
 		if( $parent_field_type == 'tree' ){
 			//Если не установлен обработчик таблицы
@@ -1790,7 +1797,8 @@ class default_module{
 		}
 
 		//Сохраняем дополнительные настройки записи
-		$this->saveRecordSettings($structure_sid, $values);
+		if( $this->model->config['settings']['dock_interfaces_to_records'] )
+			$this->saveRecordSettings($structure_sid, $values);
 
 		//Возвращаем URL, на который будет переброшен пользователь
 		return $url.'.html';
@@ -1813,8 +1821,10 @@ class default_module{
 		$what['date_modify']='`date_modify`=NOW()';
 
 		//Не стоит скрывать главную страницу =)
-		if( $values['sid'] == 'index' )
+		if( $values['sid'] == 'index' ){
 			$values['shw'] = 1;
+			UnSet($values['dep_path_parent']);
+		}
 		
 		//Обработка присланных значений
 		$fields=$this->structure[$structure_sid]['fields'];
@@ -1827,6 +1837,9 @@ class default_module{
 					$what[ $field_sid ]=$value;
 			}
 	
+		//Настройки автоматом не перезаписывать
+		UnSet($what['acms_settings']);
+
 		//Зависимые структуры
 		if( $this->structure[ $structure_sid ]['dep_path']['structure'] ){
 			//Родитель
@@ -1869,6 +1882,9 @@ class default_module{
 
 		//Условия обновления
 		$where['id'] = '`id`="'.mysql_real_escape_string( $values['id'] ).'"';
+		
+		//Настройки автоматом не перезаписывать
+		UnSet($what['settings']);
 
 		//Вносим изменения
 		$this->model->makeSql(
@@ -1883,8 +1899,8 @@ class default_module{
 		);
 		
 		//Обновляем элемент дерева вместе с переносом
-		if( ($parent_field_type == 'tree') and (@$values['dep_path_parent'] != @$data_before['dep_path_parent']) ){
-		
+		if( ($parent_field_type == 'tree') and (@$values['dep_path_parent'] != @$data_before['dep_path_parent']) and ($values['sid'] != 'index') ){
+
 			//Если не установлен обработчик таблицы
 			if( !IsSet( $this->structure[ $structure_sid ]['db_manager'] ) ){
 				require_once($this->model->config['path']['core'].'/classes/nestedsets.php');
@@ -1901,7 +1917,8 @@ class default_module{
 		$this->do_updateChildren($structure_sid,$data_before,$values,$url);
 
 		//Сохраняем дополнительные настройки записи
-		$this->saveRecordSettings($structure_sid, $values);
+		if( $this->model->config['settings']['dock_interfaces_to_records'] )
+			$this->saveRecordSettings($structure_sid, $values);
 
 		//Приписываем окончание для результирующего URL`а
 		if(strlen($url))$url.='.html';
@@ -1946,17 +1963,15 @@ class default_module{
 	
 	//Сохранение дополнительных настроек записи
 	public function saveRecordSettings($structure_sid, $values){
-		$settings = false;
+		$settings = array(
+			'interfaces_int' => (array)$values['interfaces_int'],
+			'interfaces_ext' => (array)$values['interfaces_ext'],
+			'components_int' => (array)$values['components_int'],
+			'components_ext' => (array)$values['components_ext'],
+		);
 		
-		//Данные об интерфейсах
-		if( $values['interface'] ){
-			$settings['interface'] = $values['interface'];
-		}
-		
-		if($settings){
-			//Вносим изменения
-			$this->model->execSql('update `'.$this->getCurrentTable( $structure_sid ).'` set `acms_settings`="'.mysql_real_escape_string( serialize($settings) ).'" where `sid`="'.mysql_real_escape_string( $values['sid'] ).'" limit 1','update');
-		}		
+		//Вносим изменения
+		$this->model->execSql('update `'.$this->getCurrentTable( $structure_sid ).'` set `acms_settings`="'.mysql_real_escape_string( serialize($settings) ).'" where `id`="'.mysql_real_escape_string( $values['id'] ).'" limit 1','update');
 	}
 
 	//Переместить на одну позицию выше

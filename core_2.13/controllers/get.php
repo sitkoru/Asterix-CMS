@@ -23,14 +23,8 @@ class controller_get extends default_controller
 {
 	public function start()
 	{
-		/*Системное сообщение*/
-		$this->model->log->step('запуск контроллера');
-
 		//Подготавливаем запись
 		$main_record = $this->model->prepareMainRecord();
-
-		/*Системное сообщение*/
-		$this->model->log->step('найдена главная запись');
 
 		//Сколько уровней главного меню выводить
 		if(IsSet($this->model->config['settings']['mainmenu_levels']))
@@ -40,14 +34,9 @@ class controller_get extends default_controller
 
 		//Готовим другие специальные блоки
 		$mainmenu = $this->model->prepareMainMenu($levels);
-		/*Системное сообщение*/
-		$this->model->log->step('сформировано главное меню');
 
 		//Готовим "Хлебные крошки"
 		$path = $this->model->prepareModelPath(0);
-
-		/*Системное сообщение*/
-		$this->model->log->step('готовы Хлебные Крошки');
 
 		//Текущий шаблон
 		$current_template_file = $this->model->modules[$this->model->ask->module]->info['prototype'] . '_' . $this->model->ask->output_type;
@@ -65,7 +54,6 @@ class controller_get extends default_controller
 
 		//Расширение файла для шаблоона - добавляем после выбора модификации шаблона
 		$current_template_file .= '.tpl';
-
 
 		//Подключаем шаблонизатор
 		require_once($this->model->config['path']['core'] . '/classes/templates.php');
@@ -97,9 +85,6 @@ class controller_get extends default_controller
 		} else {
 			$tmpl->assign('messages', false);
 		}
-
-		/*Системное сообщение*/
-		$this->model->log->step('данные записаны в шаблон');
 
 		//Задаём кодировку ответа
 		if (!headers_sent())
@@ -152,89 +137,35 @@ class controller_get extends default_controller
 				exit();
 			}
 		}
-/*		
-		//Настройки текущего шаблона
-		$cfg = $this->model->config['path']['templates'].'/'.$current_template_file.'.cfg';
-		//Настройки работают для всех страниц кроме главной
-		if( file_exists($cfg) && ($main_record['url']!='/') ){
-			$settings = unserialize( file_get_contents($cfg) );
-			
-			//Адрес текущей записи
-			$url = str_replace('.html','',$main_record['url']);
-			
-			//Компоненты
-			$menu_components = array();
-			foreach($settings['components'] as $comp){
-				list($curr_module, $curr_component) = explode('|', $comp);
-				$comp = str_replace('|','_',$comp);
-				if( IsSet($this->model->modules[ $curr_module ]->prepares[ $curr_component ]) ){
-					$prepare = $this->model->modules[ $curr_module ]->prepares[ $curr_component ];
-					
-					//Только свободные компоненты, или для авторизованных пользователей
-					if( !$prepare['auth'] or $this->model->user->info['id'] ){
-						$menu_components[$comp] = array(
-							'sid' => $comp, 
-							'title' => $prepare['title'],
-							'url' => $url.'.'.$comp.'.html',
-						);
-						//Компонент на текущей странице
-						if( in_array($comp, $this->model->ask->mode) )
-							if( is_callable( array($this->model->modules[ $curr_module ], $prepare['function']) ) ){
-								//Подгружаем компонент
-								$result = call_user_func(
-									array(
-										$this->model->modules[ $curr_module ], 
-										$prepare['function']
-									), $main_record);
-								//Обновляем главную запись
-								$main_record['component'] = array_merge(
-									$prepare,
-									array('result'=>$result)
-								);
-							}
-					}
-				}
+
+		//Компоненты и интерфейсы
+		if( $this->model->config['settings']['dock_interfaces_to_records'] ){
+			$cfg = $this->model->config['path']['templates'].'/'.$current_template_file.'.cfg';
+			if( file_exists($cfg) && ($main_record['url']!='/') ){
+
+				//Компоненты и интерфейсы для записи
+				$settings = unserialize( file_get_contents($cfg) );
+				$t = $this->getComponents($main_record, $settings);
+				if( IsSet($t['components']) )		$tmpl->assign('components', $t['components']);
+				if( IsSet($t['components_menu']) )	$tmpl->assign('components_menu', $t['components_menu']);
+				
+				$t = $this->getInterfaces($main_record, $settings);
+				if( IsSet($t['interfaces']) )		$tmpl->assign('interfaces', $t['interfaces']);
+				if( IsSet($t['interfaces_menu']) )	$tmpl->assign('interfaces_menu', $t['interfaces_menu']);
 			}
-			$tmpl->assign('menu_components', $menu_components);
-			
-			//Все интерфейсы только для авторизованных пользователей
-			if($this->model->user->info['id']){
-				//Интерфейсы
-				$menu_interfaces = array();
-				foreach($settings['interfaces'] as $comp){
-					list($curr_module, $curr_interface) = explode('|', $comp);
-					$comp = str_replace('|','_',$comp);
-					if( IsSet($this->model->modules[ $curr_module ]->interfaces[ $curr_interface ]) ){
-						$menu_interfaces[$comp] = array(
-							'sid' => $comp, 
-							'title' => $this->model->modules[ $curr_module ]->interfaces[ $curr_interface ]['title'],
-							'url' => $url.'.'.$comp.'.html',
-						);
-						if( in_array($comp, $this->model->ask->mode) )
-							if( IsSet($this->model->modules[ $curr_module ]->interfaces[ $curr_interface ]) ){
-								//Подгружаем интерфейс
-								$result = $this->model->modules[ $curr_module ]->prepareInterface($curr_interface, $main_record);
-								//Обновляем главную запись
-								$main_record['interface'] = array_merge(
-									$this->model->modules[ $curr_module ]->interfaces[ $curr_interface ],
-									array('result'=>$result)
-								);
-							}
-					}
-				}
-				$tmpl->assign('menu_interfaces', $menu_interfaces);
-			}
-			
+
+			//Компоненты и интерфейсы для записи
+			$settings = unserialize( stripslashes( $main_record['acms_settings'] ) );
+			$main_record = $this->getComponents($main_record, $settings);
+			$main_record = $this->getInterfaces($main_record, $settings);
+
 		}
-*/		
+
 		//Дописываем саму запись
 		$tmpl->assign('content', $main_record);
 
 		//Файл шаблона существует
 		$ready_html = $tmpl->fetch($current_template_file);
-
-		/*Системное сообщение*/
-		$this->model->log->step('шаблон готов к выводу');
 
 		//Файл шаблона отсутствует или ещё какая ошибка
 		if (!$ready_html) {
@@ -244,17 +175,8 @@ class controller_get extends default_controller
 		//Всё в норме
 		print($ready_html);
 
-		/*Системное сообщение*/
-		$this->model->log->step('данные отправлены пользователю');
-
-		/*Системное сообщение*/
-		$this->model->log->step('кеш создан');
-
 		//Учёт посещений поисковиков
 		$this->model->extensions['seo']->crawlerCount();
-
-		/*Системное сообщение*/
-		$this->model->log->step('учёт поисковиков');
 
 		//Показать статистику
 		$this->model->log->showStat();
@@ -265,8 +187,7 @@ class controller_get extends default_controller
 
 
 	//Укажите модуль, в который будет добавлена запись
-	private function listModule($modules)
-	{
+	private function listModule($modules){
 		$recs = array();
 		$subs = array();
 		foreach ($modules as $module_sid => $module)
@@ -296,6 +217,132 @@ class controller_get extends default_controller
 		);
 	}
 
+	//Возвращает компоненты для текущей страницы
+	private function getComponents($main_record, $settings){
+
+		//Если выбран модификатор, для которого есть внешний интерфейс
+		if( IsSet($this->model->ask->mode[0]) and in_array( str_replace('_','|',$this->model->ask->mode[0]), (array)$settings['components_ext'] ) ){
+			//Вызываем компонент
+			$component_sid = str_replace('_', '|', $this->model->ask->mode[0]);
+			$url_mode = $this->model->ask->mode[0];
+			$main_record['components'][ $url_mode ] = $this->getComponentOne( $component_sid );
+		
+		//Показываем внутренние интерфейсы записи
+		}elseif( $settings['components_int'] and !IsSet($this->model->ask->mode[0]) ){
+			foreach($settings['components_int'] as $component_sid){
+				$url_mode = str_replace('|', '_', $component_sid);
+				$main_record['components'][ $url_mode ] = $this->getComponentOne( $component_sid );
+			}
+		}
+
+		//Осталось построить меню внешних компонентов, если они есть
+		if( $settings['components_ext'] ){
+			$main_record['components_menu'] = $this->getComponentExtMenu($settings);
+		}
+		
+		//Готово
+		return $main_record;
+	}
+	//Показывает один компонент
+	private function getComponentOne($value){
+
+		//SID модуля и компонента
+		list($module_prototype, $component_sid) = explode('|', $value);
+		$module_sid = $this->model->getModuleSidByPrototype($module_prototype);
+		
+		//Если компонент доступен в модуле
+		if( IsSet($this->model->modules[ $module_sid ]->prepares[ $component_sid ]) ){
+			$component = $this->model->modules[ $module_sid ]->prepares[ $component_sid ];
+
+			if( is_callable( array($this->model->modules[ $module_sid ], $component['function']) ) )
+				//Подгружаем компонент
+				return call_user_func( array($this->model->modules[ $module_sid ], $component['function']), $main_record);
+		}
+
+		//Не нашли доступного компонента
+		return false;
+	}
+	//Возвращает меню внешних компонентов записи
+	private function getComponentExtMenu($settings){
+		$menu = false;
+		foreach($settings['components_ext'] as $value){
+			//SID модуля и компонента
+			list($module_prototype, $component_sid) = explode('|', $value);
+			$module_sid = $this->model->getModuleSidByPrototype($module_prototype);
+			$url_mode = str_replace('|', '_', $value);
+			if( IsSet($this->model->modules[ $module_sid ]->prepares[ $component_sid ]) ){
+				$component = $this->model->modules[ $module_sid ]->prepares[ $component_sid ];
+				$menu[] = array(
+					'sid' => $url_mode,
+					'title' => $component['title'],
+					'url' => $this->model->ask->rec['url'].'.'.$url_mode.'.html',
+					'selected' => ($url_mode == $this->model->ask->mode[0]),
+				);
+			}
+		}
+		return $menu;	
+	}
+	
+	private function getInterfaces($main_record, $settings){
+
+		//Если выбран модификатор, для которого есть внешний интерфейс
+		if( IsSet($this->model->ask->mode[0]) and in_array( str_replace('_','|',$this->model->ask->mode[0]), (array)$settings['interfaces_ext'] ) ){
+			//Вызываем компонент
+			$interface_sid = str_replace('_', '|', $this->model->ask->mode[0]);
+			$url_mode = $this->model->ask->mode[0];
+			$main_record['interfaces'][ $url_mode ] = $this->getInterfaceOne( $interface_sid, $main_record );
+		
+		//Показываем внутренние интерфейсы записи
+		}elseif( $settings['interfaces_int'] and !IsSet($this->model->ask->mode[0]) ){
+			foreach($settings['interfaces_int'] as $interface_sid){
+				$url_mode = str_replace('|', '_', $interface_sid);
+				$main_record['interfaces'][ $url_mode ] = $this->getInterfaceOne( $interface_sid, $main_record );
+			}
+		}
+
+		//Осталось построить меню внешних компонентов, если они есть
+		if( $settings['interfaces_ext'] ){
+			$main_record['interfaces_menu'] = $this->getInterfaceExtMenu($settings);
+		}
+		
+		//Готово
+		return $main_record;
+	}
+	//Показывает один компонент
+	private function getInterfaceOne($value, $main_record){
+
+		//SID модуля и компонента
+		list($module_prototype, $interface_sid) = explode('|', $value);
+		$module_sid = $this->model->getModuleSidByPrototype($module_prototype);
+		
+		//Если компонент доступен в модуле
+		if( IsSet($this->model->modules[ $module_sid ]->interfaces[ $interface_sid ]) )
+			return $this->model->modules[ $module_sid ]->prepareInterface( $interface_sid, $main_record );
+
+		//Не нашли доступного компонента
+		return false;
+	}
+	//Возвращает меню внешних компонентов записи
+	private function getInterfaceExtMenu($settings){
+		$menu = false;
+		foreach($settings['interfaces_ext'] as $value){
+			//SID модуля и компонента
+			list($module_prototype, $interface_sid) = explode('|', $value);
+			$module_sid = $this->model->getModuleSidByPrototype($module_prototype);
+			$url_mode = str_replace('|', '_', $value);
+			if( IsSet($this->model->modules[ $module_sid ]->interfaces[ $interface_sid ]) ){
+				$interface = $this->model->modules[ $module_sid ]->interfaces[ $interface_sid ];
+				$menu[] = array(
+					'sid' => $url_mode,
+					'title' => $interface['title'],
+					'url' => $this->model->ask->rec['url'].'.'.$url_mode.'.html',
+					'selected' => ($url_mode == $this->model->ask->mode[0]),
+				);
+			}
+		}
+		return $menu;	
+	}
+	
 
 }
 ?>

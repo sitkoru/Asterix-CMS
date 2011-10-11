@@ -21,6 +21,9 @@ require('default_controller.php');
 
 class controller_admin extends default_controller
 {
+
+	private $allow_interfaces = true; //Разрешить приклеивать интерфейсы и компоненты к записям
+
 	public $groups = array(
 		'main' => array(
 			'title' => 'Основные',
@@ -601,86 +604,7 @@ class controller_admin extends default_controller
 				<li>Обращение к компонентам происходит так: {preload module=news data=recs result=recs}, при этом результат выдаётся в массив {$recs}</li>
 			</ul>
 			';
-/*		
-		//Настройки для главной страницы не доступны
-		if( $this->vars['tmpl'] != 'start_index.tpl'){
-			$help_components='
-				Компонент позволяет отображать некоторые выборки записей на странице.<br /><br />
-				Вы можете включить на этой странице компоненты, которые будут обслуживать текущую запись.<br /><br />
-				Компоненты будут доступны в качестве меню <strong>$menu_components</strong>, каждый компонент можно будет увидеть по адресу <strong>[record.url].[component_sid].html</strong><br /><br />
-				Содержимое компонента будет доступно в <strong>{$content.component}</strong>
-			';
-			$help_interfaces='
-				Интерфейс позволяет управлять одной или несколькими записями на странице.<br /><br />
-				Вы можете включить на этой странице интерфейсы, которые будут обслуживать текущую запись<br /><br />
-				Интерфейсы будут доступны в качестве меню <strong>$menu_interfaces</strong>, каждый интерфейс можно будет увидеть по адресу <strong>[record.url].[interface_sid].html</strong><br /><br />
-				Чтобы интерфейс отобразился, после вывода {$content.text} должен быть подключен шаблон <strong>interface.tpl</strong><br /><br />
-				Содержимое компонента будет доступно в <strong>{$content.interface}</strong>
-			';
-
-			//Загружаем настройки
-			$settings = unserialize( file_get_contents( $this->model->config['path']['templates'].'/'.basename( $this->vars['tmpl'] ).'.cfg' ) );
-			
-			//Внутренние компоненты
-			$components = array(
-				'components_int' => array(
-					'sid' => 'components_int',
-					'title' => 'Внутренние компоненты',
-					'type' => 'menum',
-				),
-				'components_ext' => array(
-					'sid' => 'components_ext',
-					'title' => 'Внешние компоненты',
-					'type' => 'menum',
-				),
-			);
-
-			//Внутренние интерфейсы
-			$interfaces = array(
-				'interfaces_int' => array(
-					'sid' => 'interfaces_int',
-					'title' => 'Внутренние интерфейсы',
-					'type' => 'menum',
-				),
-				'interfaces_ext' => array(
-					'sid' => 'interfaces_ext',
-					'title' => 'Внешние интерфейсы',
-					'type' => 'menum',
-				),
-			);
-
-			//Внутренние компоненты и интерфейсы
-			foreach($this->model->modules[ $module ]->prepares as $sid=>$component)if(!IsSet($component['hidden']))
-				$components['components_int']['value'][] = array(
-					'value' => $this->model->modules[ $module ]->info['prototype'].'|'.$sid,
-					'title' => $this->model->modules[ $module ]->info['title'].' -> '.$component['title'],
-					'selected' => @in_array( $this->model->modules[ $module ]->info['prototype'].'|'.$sid, $settings['components'] ),
-				);
-			foreach($this->model->modules[ $module ]->interfaces as $sid=>$interface)if(!IsSet($interface['hidden']))
-				$interfaces['interfaces_int']['value'][] = array(
-					'value' => $this->model->modules[ $module ]->info['prototype'].'|'.$sid,
-					'title' => $this->model->modules[ $module ]->info['title'].' -> '.$interface['title'],
-					'selected' => @in_array( $this->model->modules[ $module ]->info['prototype'].'|'.$sid, $settings['interfaces'] ),
-				);
-		
-			//Внешние компоненты и интерфейсы
-			foreach($this->model->modules as $module_sid => $mod)
-				if($module != $module_sid){
-					foreach($mod->prepares as $sid=>$component)if(!IsSet($component['hidden']))
-						$components['components_ext']['value'][] = array(
-							'value' => $mod->info['prototype'].'|'.$sid,
-							'title' => $mod->info['title'].' -> '.$component['title'],
-							'selected' => @in_array( $mod->info['prototype'].'|'.$sid, $settings['components'] ),
-						);
-					foreach($mod->interfaces as $sid=>$interface)if(!IsSet($interface['hidden']))
-						$interfaces['interfaces_ext']['value'][] = array(
-							'value' => $mod->info['prototype'].'|'.$sid,
-							'title' => $mod->info['title'].' -> '.$interface['title'],
-							'selected' => @in_array( $mod->info['prototype'].'|'.$sid, $settings['interfaces'] ),
-						);
-				}
-		}
-*/		
+	
 		$groups = array(
 			'main'=> array(
 				'title' => 'Код шаблона',
@@ -699,20 +623,28 @@ class controller_admin extends default_controller
 					),
 				)
 			),
-
-			'components'=> array(
-				'title' => 'Компоненты',
-				'help' => $help_components,
-				'fields' => $components,
-			),
-
-			'interfaces'=> array(
-				'title' => 'Интерфейсы',
-				'help' => $help_interfaces,
-				'fields' => $interfaces,
-			),
 		);
 		
+		//Компоненты и интерфейсы
+		if( $this->vars['tmpl'] != 'start_index.tpl'){
+			//Настройки
+			$cfg = $this->model->config['path']['templates'].'/'.basename( $this->vars['tmpl'] ).'.cfg';
+			if( file_exists($cfg) )
+				$settings = unserialize( @file_get_contents( $cfg ) );
+			else
+				$settings = false;
+
+			//Добавляем компоненты
+			$components = $this->tabComponents($module, $settings);
+			if($components)
+				$groups['components'] = $components;
+			
+			//Добавляем интерфейсы
+			$interfaces = $this->tabInterfaces($module, $settings);
+			if($interfaces)
+				$groups['interfaces'] = $interfaces;
+		}
+			
 		$res['groups'] = $groups;
 		return $res;
 	}
@@ -818,8 +750,10 @@ class controller_admin extends default_controller
 
 		//Настройки компонентов и интерфейсов
 		$settings = array(
-			'components' => array_merge( (array)$this->vars['components_int'], (array)$this->vars['components_ext']),
-			'interfaces' => array_merge( (array)$this->vars['interfaces_int'], (array)$this->vars['interfaces_ext']),
+			'interfaces_int' => (array)$this->vars['interfaces_int'],
+			'interfaces_ext' => (array)$this->vars['interfaces_ext'],
+			'components_int' => (array)$this->vars['components_int'],
+			'components_ext' => (array)$this->vars['components_ext'],
 		);
 		$path = $this->model->config['path']['templates'].'/'.basename($this->vars['title'].'.cfg');
 		$res = file_put_contents($path, serialize($settings), LOCK_EX);
@@ -1203,8 +1137,7 @@ class controller_admin extends default_controller
 
 
 	//Получение подготовленного списка полей, по группам
-	public function getRecordFields($module, $structure_sid, $record, $with_admin_fields)
-	{
+	public function getRecordFields($module, $structure_sid, $record, $with_admin_fields){
 		$groups = $this->groups;
 
 		//Перебераем поля данной структуры, рассовываем по группам
@@ -1227,7 +1160,6 @@ class controller_admin extends default_controller
 
 		//Если структура записи предполагает зависимости, выводим поле вывода расположения новой записи
 		if ( ($module->structure[$structure_sid]['dep_path']['structure']) || ($module->structure[$structure_sid]['type']=='tree') ) {
-
 			//Если есть явно прописанная родительская структура
 			if ( IsSet($module->structure[$structure_sid]['dep_path']['structure']) ){
 
@@ -1291,77 +1223,94 @@ class controller_admin extends default_controller
 				Сайт <a href="http://www.google.ru/search?q=site:'.$this->model->extensions['domains']->domain['host'].'" target="_blank">в Google</a><br />
 			';
 		}
+/*		
+		//Разрешено управление интерфейсами
+		if( $this->model->config['settings']['dock_interfaces_to_records'] ){
 		
-/*
-		//Смотрим уже имеющиеся настройки
-		$acms_settings = false;
-		if($this->model->ask->rec['acms_settings'])
-			$acms_settings = @unserialize( $this->model->ask->rec['acms_settings'] );
-		
-		$group_title = 'Интерфейсы';
-		//Интерфейсы на текущей странице
-		if( $module->interfaces ){
-			
-			$groups[ $group_title ]['title'] = $group_title;
-			$groups[ $group_title ]['comment'] = 'Компоненты и интерфейсы, добавленные через это меню, будут отображаться сразу после полного текста записи.';
-			
-			//Проверка возможности использования интерфейсов
-			$is_tmpl = file_exists( $this->model->config['path']['templates'].'/interface.tpl' );
-			if( !$is_tmpl )
-				$groups[ $group_title ]['warning'] = 'На сайте не найден шаблон interface.tpl, вместо него будет использован стандартный шаблон из ядра.';
-			
 			//Смотрим уже имеющиеся настройки
-			//Перечисляем интерфейсы
-			foreach( $module->interfaces as $interface_sid => $interface ){
+			$acms_settings = false;
+			if($this->model->ask->rec['acms_settings'])
+				$acms_settings = @unserialize( $this->model->ask->rec['acms_settings'] );
 			
-				if( is_array($acms_settings['interface']) ){
-					$value = $acms_settings['interface'][ $module->info['sid'].'|'.$interface_sid ]['shw'];
-				}else{
-					$value = false;
+			$group_title = 'Интерфейсы';
+			//Интерфейсы на текущей странице
+			if( $module->interfaces ){
+				
+				$groups[ $group_title ]['title'] = $group_title;
+				$groups[ $group_title ]['comment'] = 'Компоненты и интерфейсы, добавленные через это меню, будут отображаться сразу после полного текста записи.';
+				
+				//Проверка возможности использования интерфейсов
+				$is_tmpl = file_exists( $this->model->config['path']['templates'].'/interface.tpl' );
+				if( !$is_tmpl )
+					$groups[ $group_title ]['warning'] = 'На сайте не найден шаблон interface.tpl, вместо него будет использован стандартный шаблон из ядра.';
+				
+				//Смотрим уже имеющиеся настройки
+				//Перечисляем интерфейсы
+				foreach( $module->interfaces as $interface_sid => $interface ){
+				
+					if( is_array($acms_settings['interface']) ){
+						$value = $acms_settings['interface'][ $module->info['sid'].'|'.$interface_sid ]['shw'];
+					}else{
+						$value = false;
+					}
+
+					$groups[ $group_title ]['fields'][] = array(
+						'type'	=>	'check',
+						'sid'	=>	'interface['.$module->info['sid'].'|'.$interface_sid.'][shw]',
+						'title'	=>	''.$interface['title'].' (интерфейс)',
+						'value'	=>	$value,
+						'default_value'	=>false,
+					);		
+
 				}
-
-				$groups[ $group_title ]['fields'][] = array(
-					'type'	=>	'check',
-					'sid'	=>	'interface['.$module->info['sid'].'|'.$interface_sid.'][shw]',
-					'title'	=>	''.$interface['title'].' (интерфейс)',
-					'value'	=>	$value,
-					'default_value'	=>false,
-				);		
-
 			}
-		}
 
-		//Интерфейсы на текущей странице
-		if( $this->model->ask->rec['is_link_to_module'] )
-		if( $this->model->modules[ $this->model->ask->rec['is_link_to_module'] ]->interfaces){
-			$module = $this->model->modules[ $this->model->ask->rec['is_link_to_module'] ];
-			
-			$groups[ $group_title ]['title'] = $group_title;
-			$groups[ $group_title ]['comment'] = 'Компоненты и интерфейсы, добавленные через это меню, будут отображаться сразу после полного текста записи.';
-			
-			//Проверка возможности использования интерфейсов
-			$is_tmpl = file_exists( $this->model->config['path']['templates'].'/interface.tpl' );
-			if( !$is_tmpl )
-				$groups[ $group_title ]['warning'] = 'На сайте не найден шаблон interface.tpl, вместо него будет использован стандартный шаблон из ядра.';
-			
-			//Перечисляем интерфейсы
-			foreach( $module->interfaces as $interface_sid => $interface ){
-				$groups[ $group_title ]['fields'][] = array(
-					'type'	=>	'check',
-					'sid'	=>	'interface['.$module->info['sid'].'|'.$interface_sid.'][shw]',
-					'title'	=>	''.$interface['title'].' (интерфейс из зависимого модуля '.$module->info['title'].')',
-					'value'	=>	@$acms_settings['interface'][ $module->info['sid'].'|'.$interface_sid ]['shw'],
-					'default_value'	=>	false,
-				);		
+			//Интерфейсы на текущей странице
+			if( $this->model->ask->rec['is_link_to_module'] )
+			if( $this->model->modules[ $this->model->ask->rec['is_link_to_module'] ]->interfaces){
+				$module = $this->model->modules[ $this->model->ask->rec['is_link_to_module'] ];
+				
+				$groups[ $group_title ]['title'] = $group_title;
+				$groups[ $group_title ]['comment'] = 'Компоненты и интерфейсы, добавленные через это меню, будут отображаться сразу после полного текста записи.';
+				
+				//Проверка возможности использования интерфейсов
+				$is_tmpl = file_exists( $this->model->config['path']['templates'].'/interface.tpl' );
+				if( !$is_tmpl )
+					$groups[ $group_title ]['warning'] = 'На сайте не найден шаблон interface.tpl, вместо него будет использован стандартный шаблон из ядра.';
+				
+				//Перечисляем интерфейсы
+				foreach( $module->interfaces as $interface_sid => $interface ){
+					$groups[ $group_title ]['fields'][] = array(
+						'type'	=>	'check',
+						'sid'	=>	'interface['.$module->info['sid'].'|'.$interface_sid.'][shw]',
+						'title'	=>	''.$interface['title'].' (интерфейс из зависимого модуля '.$module->info['title'].')',
+						'value'	=>	@$acms_settings['interface'][ $module->info['sid'].'|'.$interface_sid ]['shw'],
+						'default_value'	=>	false,
+					);		
+				}
 			}
 		}
 */
+
+		//Настройки
+		$settings = @unserialize( $this->model->ask->rec['acms_settings'] );
+
+		//Добавляем компоненты
+		$components = $this->tabComponents( $module->info['sid'], $settings );
+		if($components)
+			$groups['components'] = $components;
+		
+		//Добавляем интерфейсы
+		$interfaces = $this->tabInterfaces( $module->info['sid'], $settings );
+		if($interfaces)
+			$groups['interfaces'] = $interfaces;
+			
+		
 		return $groups;
 	}
 
 	//Дерево, с отметкой где располагается текущая запись
-	private function getRecordPositionOnTree($module, $structure_sid, $record)
-	{
+	private function getRecordPositionOnTree($module, $structure_sid, $record){
 		$recs = false;
 
 		//Значения для древовидных структур
@@ -1524,8 +1473,7 @@ class controller_admin extends default_controller
 	}
 
 	//Показать настройки
-	private function showTree()
-	{
+	private function showTree(){
 		$res                          = array();
 		$res['title']                 = 'Дерево сайта';
 		
@@ -1588,8 +1536,7 @@ class controller_admin extends default_controller
 	}
 	
 	//Добавляем управление к записям
-	private function addManage($recs)
-	{
+	private function addManage($recs){
 		if ($recs)
 			foreach ($recs as $i => $rec) {
 				$recs[$i]['manage']['edit'] = array(
@@ -1649,6 +1596,117 @@ class controller_admin extends default_controller
 		
 		}
 	
+	}
+
+	function tabComponents($module_sid = false, $settings = false){
+	
+		//Настройки для главной страницы не доступны
+		if( $this->model->config['settings']['dock_interfaces_to_records'] ){
+			$help_components='
+				Компонент позволяет отображать некоторые выборки записей на странице.<br /><br />
+				Вы можете включить на этой странице компоненты, которые будут обслуживать текущую запись.<br /><br />
+				Компоненты будут доступны в качестве меню <strong>$menu_components</strong>, каждый компонент можно будет увидеть по адресу <strong>[record.url].[component_sid].html</strong><br /><br />
+				Содержимое компонента будет доступно в <strong>{$content.component}</strong>
+			';
+
+			//Внешние компоненты и интерфейсы
+			foreach($this->model->modules as $sid => $mod)
+				foreach($mod->prepares as $sid=>$component)
+					if(!IsSet($component['hidden'])){
+						$components_int[] = array(
+							'value' => $mod->info['prototype'].'|'.$sid,
+							'title' => $mod->info['title'].' -> '.$component['title'],
+							'selected' => @in_array( $mod->info['prototype'].'|'.$sid, $settings['components_int'] ),
+						);
+						$components_ext[] = array(
+							'value' => $mod->info['prototype'].'|'.$sid,
+							'title' => $mod->info['title'].' -> '.$component['title'],
+							'selected' => @in_array( $mod->info['prototype'].'|'.$sid, $settings['components_ext'] ),
+						);
+					}
+
+			
+			//Внутренние компоненты
+			$fields = array(
+				'components_int' => array(
+					'sid' => 'components_int',
+					'title' => 'Компоненты внутри контента записи (<strong>выбрано: '.count($settings['components_int']).'</strong>)',
+					'type' => 'menum',
+					'value' => $components_int,
+				),
+				'components_ext' => array(
+					'sid' => 'components_ext',
+					'title' => 'Компоненты на отдельных страницах (<strong>выбрано: '.count($settings['components_ext']).'</strong>)',
+					'type' => 'menum',
+					'value' => $components_ext,
+				),
+			);
+
+			//Готово
+			if( $components_int )
+				return array(
+					'title' => 'Компоненты',
+					'help' => $help_components,
+					'fields' => $fields,
+				);
+			else
+				return false;
+		}
+	}
+	function tabInterfaces($module_sid = false, $settings = false){
+	
+		//Настройки для главной страницы не доступны
+		if( $this->model->config['settings']['dock_interfaces_to_records'] ){
+			$help_interfaces='
+				Интерфейс позволяет управлять одной или несколькими записями на странице.<br /><br />
+				Вы можете включить на этой странице интерфейсы, которые будут обслуживать текущую запись<br /><br />
+				Интерфейсы будут доступны в качестве меню <strong>$menu_interfaces</strong>, каждый интерфейс можно будет увидеть по адресу <strong>[record.url].[interface_sid].html</strong><br /><br />
+				Чтобы интерфейс отобразился, после вывода {$content.text} должен быть подключен шаблон <strong>interface.tpl</strong><br /><br />
+				Содержимое компонента будет доступно в <strong>{$content.interface}</strong>
+			';
+
+			//Внешние компоненты и интерфейсы
+			foreach($this->model->modules as $sid => $mod)
+				foreach($mod->interfaces as $sid=>$interface)
+					if(!IsSet($interface['hidden'])){
+						$interfaces_int[] = array(
+							'value' => $mod->info['prototype'].'|'.$sid,
+							'title' => $mod->info['title'].' -> '.$interface['title'],
+							'selected' => @in_array( $mod->info['prototype'].'|'.$sid, $settings['interfaces_int'] ),
+						);
+						$interfaces_ext[] = array(
+							'value' => $mod->info['prototype'].'|'.$sid,
+							'title' => $mod->info['title'].' -> '.$interface['title'],
+							'selected' => @in_array( $mod->info['prototype'].'|'.$sid, $settings['interfaces_ext'] ),
+						);
+					}
+			
+			//Внутренние интерфейсы
+			$fields = array(
+				'interfaces_int' => array(
+					'sid' => 'interfaces_int',
+					'title' => 'Интерфейсы внутри контента записи (<strong>выбрано: '.count($settings['interfaces_int']).'</strong>)',
+					'type' => 'menum',
+					'value' => $interfaces_int,
+				),
+				'interfaces_ext' => array(
+					'sid' => 'interfaces_ext',
+					'title' => 'Интерфейсы на отдельных страницах (<strong>выбрано: '.count($settings['interfaces_ext']).'</strong>)',
+					'type' => 'menum',
+					'value' => $interfaces_ext,
+				),
+			);
+
+			//Готово
+			if( $interfaces_int )
+				return array(
+					'title' => 'Интерфейсы',
+					'help' => $help_interfaces,
+					'fields' => $fields,
+				);
+			else
+				return false;
+		}
 	}
 	
 }
