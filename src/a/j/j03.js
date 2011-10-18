@@ -13,6 +13,8 @@ function listenInterface(){
 						$j('#'+form_id+' #id_'+key).parent().addClass('err');
 						alert( data['errors'][key]);
 					}
+				}else if(data['result']=='action'){
+					eval(data['action']);
 				}else if(data['result']=='message'){
 					alert(data['message']);
 				}else if(data['result']=='redirect'){
