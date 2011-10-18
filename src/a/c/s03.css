@@ -1,196 +1,271 @@
 .acms_clear {
-	clear: both;
+    clear: both;
 }
 .acms_lb-background {
-	width: 100%;
-	height: 100%;
-	position: fixed;
-	top: 0;
-	left: 0;
-	background: url('http://src.sitko.ru/a/i/lb-background.png') repeat 0 0;
-	display:none;
-	z-index:99;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: url('http://src.sitko.ru/a/i/lb-background.png') repeat 0 0;
+    display: none;
+    z-index: 9999;
 }
 .acms_lb-contentWrap {
-	width: 100%;
-	position: fixed;
-	top: 50%;
-	left: 0;
-	margin-top: -175px;
-	display:none;
-	z-index:99;
+    width: 100%;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    margin-top: -175px;
+    display: none;
+    z-index: 9999;
+    font-family: 'Arial', Sans-Serif;
+    line-height: 1.25 !important;
+    text-align: left;
+}
+.acms_lb-contentWrap * {
+    font-style: normal;
 }
 .acms_lb-content {
-	width: 500px;
-	position: relative;
-	margin: 0 auto;
-	background: #fff;
-	-moz-border-radius: 20px;
-	-webkit-border-radius: 20px;
-	-o-border-radius: 20px;
-	border-radius: 20px;
+    width: 500px;
+    position: relative;
+    margin: 0 auto;
+    background: #fff;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -o-border-radius: 20px;
+    border-radius: 20px;
 }
 .acms_lb-content a:link,
 .acms_lb-content a:active,
 .acms_lb-content a:visited {
-	color: #1089c4;
+    color: #1089c4;
+    text-decoration: underline;
 }
 .acms_lb-content a:hover {
-	color: #ff7d00;
+    color: #ff7d00 !important;
 }
 .acms_lb-content-header {
-	color: #ff9900;
-	font-size: 2.125em;
-	line-height: 1.2;
-	text-align: center;
-	padding: 16px 0 14px;
+    color: #ff9900;
+    font-size: 34px;
+    line-height: 1.2;
+    text-align: center;
+    padding: 16px 0 14px;
+    background: transparent;
 }
 .acms_lb-content-form {
-	background: #ff7d00;
-	padding: 13px 0 10px;
-	margin: 0;
+    background: #ff7d00;
+    padding: 13px 0 10px;
+    margin: 0;
+    position: relative;
+    display: block;
+    width: auto;
 }
 .acms_lb-content-formTable {
-	padding: 0;
-	margin: 0;
-	width: 100%;
-	border-collapse: collapse;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
 }
 .acms_lb-content-formCell {
-	vertical-align: middle;
-	padding-bottom: 3px;
+    vertical-align: middle !important;
+    padding: 0 0 3px !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: transparent;
 }
 .acms_lb-content-formCell_first {
-	padding-bottom: 8px;
+    padding-bottom: 8px !important;
 }
 .acms_lb-content-leftCol {
-	width: 35%;
-	color: #ffd8b3;
-	font-family: 'Segoe UI', 'Arial', sans-serif;
-	font-size: 1em;
-	text-align: right;
+    width: 35%;
+    color: #ffd8b3;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-size: 16px;
+    text-align: right;
 }
 .acms_lb-content-rightCol {
-	width: 65%;
-	color: #fff;
+    width: 65%;
+    color: #fff;
+    text-align: left;
 }
 .acms_lb-content-formLabel {
-	margin: 0;
-	padding: 0 13px 0 0;
+    margin: 0;
+    padding: 0 13px 0 0;
+    color: #ffd8b3;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-size: 16px;
+    text-align: right;
+    display: inline;
 }
 .acms_lb-content-formInput {
-	height: 31px;
-	line-height: 31px;
-	font-family: 'Arial', sans-serif;
-	color: #111;
-	font-size: 0.875em;
-	background: #fff;
-	border: 0;
-	padding: 0 3px;
-	margin: 0;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	-o-border-radius: 3px;
-	border-radius: 3px;
+    height: 31px !important;
+    line-height: 31px !important;
+    font-family: 'Arial', sans-serif !important;
+    color: #111 !important;
+    font-size: 14px !important;
+    background: #fff !important;
+    border: 0 !important;
+    padding: 0 6px !important;
+    margin: 0 !important;
+    width: 140px !important;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
 }
 .acms_lb-content-formLabel_otherPC {
-	color: #ffd8b3;
-	font-family: 'Segoe UI', 'Arial', sans-serif;
-	font-size: 1em;
-	line-height: 1.2;
-	position: relative;
-	padding: 0 0 0 20px;
+    color: #ffd8b3;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-size: 16px;
+    line-height: 1.2;
+    position: relative;
+    padding: 0 0 0 20px;
 }
 .acms_lb-content-formCheckbox {
-	position: absolute;
-	left: 0;
-	top: 3px;
+    position: absolute;
+    left: 3px;
+    top: 5px;
+    margin: 0;
+    padding: 0;
+    width: 13px;
+    height: 13px;
 }
 .acms_form-inputButton {
-	font-family: 'Arial', sans-serif;
-	font-size: 1em;
-	color: #000;
-	padding: 3px 30px;
-	margin-top: 5px;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    color: #000;
+    padding: 3px 30px;
+    margin-top: 5px;
 }
 .acms_listLinks {
-	margin: 0;
-	padding: 14px 0;
+    margin: 0;
+    padding: 14px 0;
+    list-style-type: none;
+    border: 0;
+    text-align: left;
 }
 .acms_listLinks-item {
-	list-style-type: none;
-	padding: 0 0 3px 35%;
-	margin: 0;
-	font-size: 0.813em;
+    list-style-type: none;
+    background: transparent;
+    padding: 0 0 3px 35%;
+    margin: 0;
+    font-size: 13px !important;
+}
+.acms_listLinks-item a {
+    font-size: 13px !important;
 }
 .acms_listLinks-item_last {
-	padding-top: 10px;
-	color: #999;
-	position: relative;
-	zoom: 1;
+    padding-top: 10px;
+    color: #999;
+    position: relative;
+    zoom: 1;
 }
 .acms_listLinks-item_last a:link,
 .acms_listLinks-item_last a:active,
 .acms_listLinks-item_last a:visited {
-	color: #999;
+    color: #999;
+    text-decoration: underline;
 }
 .acms_listLinks-item_last a:hover {
-	color: #ff7d00;
+    color: #ff7d00 !important;
 }
 .acms_listLinks-linkSitko,
 .acms_listLinks-linkAsterix {
-	position: relative;
-	zoom: 1;
+    position: relative;
+    zoom: 1;
 }
 .acms_listLinks-imgSitko {
-	position: absolute;
-	top: -16px;
-	left: -107px;
-	border: 0;
+    position: absolute;
+    top: -16px;
+    left: -107px;
+    border: 0;
 }
 .acms_listLinks-imgAsterix {
-	position: absolute;
-	top: 1px;
-	left: -107px;
-	border: 0;
+    position: absolute;
+    top: 1px;
+    left: -107px;
+    border: 0;
 }
 .acms_listLinks-linkVersion {
-	display: block;
-	width: 15px;
-	height: 15px;
-	font-size: 0;
-	position: absolute;
-	right: 63px;
-	top: 11px;
+    display: block;
+    width: 15px;
+    height: 15px;
+    font-size: 0;
+    position: absolute;
+    right: 63px;
+    top: 11px;
 }
 .acms_listLinks-imgVersion {
-	display: block;
-	width: 15px;
-	height: 15px;
-	cursor: pointer;
-	background-image: url('http://src.sitko.ru/a/i/update.png');
-	background-repeat: no-repeat;
+    display: block;
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    background-image: url('http://src.sitko.ru/a/i/update.png');
+    background-repeat: no-repeat;
 }
 a.acms_listLinks-linkVersion:link .acms_listLinks-imgVersion,
 a.acms_listLinks-linkVersion:active .acms_listLinks-imgVersion,
 a.acms_listLinks-linkVersion:visited .acms_listLinks-imgVersion {
-	background-position: 0 0;
+    background-position: 0 0;
+    text-decoration: underline;
 }
 a.acms_listLinks-linkVersion:hover .acms_listLinks-imgVersion {
-	background-position: 0 -15px;
+    background-position: 0 -15px;
 }
 .acms_lb-close {
-	position: absolute;
-	top: -19px;
-	right: -19px;
-	cursor: pointer;
-	display: block;
-	width: 38px;
-	height: 38px;
-	background-image: url('http://src.sitko.ru/a/i/lb-close.png');
-	background-repeat: no-repeat;
-	background-position: 0 0;
+    position: absolute;
+    top: -19px;
+    right: -19px;
+    cursor: pointer;
+    display: block;
+    width: 38px;
+    height: 38px;
+    background-image: url('http://src.sitko.ru/a/i/lb-close.png');
+    background-repeat: no-repeat;
+    background-position: 0 0;
 }
 .acms_lb-close:hover {
-	background-position: 0 -38px;
+    background-position: 0 -38px;
+}
+
+.acms_companySelector-chosen {
+    font-size: 16px;
+    padding-right: 35px;
+}
+.acms_companySelector-link {
+    cursor: pointer;
+    position: relative;
+    left: -15px;
+}
+.acms_companySelector-list {
+    position: absolute;
+    top: 6px;
+    left: 35%;
+    margin: 0 0 0 -11px;
+    padding: 0;
+    list-style-type: none;
+    z-index: 999;
+    background: #fff;
+    color: #000;
+    overflow: hidden;
+    border: 1px solid #9a9a9a;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+}
+.acms_companySelector-list-item {
+    list-style-type: none;
+    background: transparent;
+    border: 0;
+    margin: 0;
+    padding: 6px 10px;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+}
+.acms_companySelector-list-item:hover {
+    background: #fdd8b3 !important;
 }
