@@ -37,7 +37,7 @@ class field_type_image extends field_type_default
 	
 	public function creatingString($name)
 	{
-		return '`' . $name . '` varchar(255) not null';
+		return '`' . $name . '` text not null';
 	}
 	
 	//Подготавливаем значение для SQL-запроса
@@ -112,9 +112,11 @@ class field_type_image extends field_type_default
 			//Создаём картинку
 			$image_data = $this->makeImage($values[$value_sid]['tmp_name'], $values[$value_sid]['type'], $name);
 			
-			//Данные о картинке
-			$image_id = $image_data['path'] . '|' . $values[$value_sid]['type'] . '|' . $values[$value_sid]['size'] . '|' . $image_data['size']['w'] . '|' . $image_data['size']['h'] . '|' . $values[$value_sid . '_title'] . '|' . $values[$value_sid]['name'];
+			//Определяем превалирующие цвета
+			$colors = $this->getMainColors($this->model->config['path']['www'] . $image_data['path']);
 			
+			//Данные о картинке
+			$image_id = $image_data['path'] . '|' . $values[$value_sid]['type'] . '|' . $values[$value_sid]['size'] . '|' . $image_data['size']['w'] . '|' . $image_data['size']['h'] . '|' . $values[$value_sid . '_title'] . '|' . $values[$value_sid]['name'] . '|' . implode(',', $colors);
 			
 		//Файл не передан, просто обновление Alt
 		} elseif (strlen($values[$value_sid . '_old_id'])) {
@@ -122,12 +124,12 @@ class field_type_image extends field_type_default
 			$old_id = $values[$value_sid . '_old_id'];
 			
 			//Старые данные
-			list($old_path, $old_type, $old_size, $old_width, $old_height, $old_alt, $old_realname) = explode('|', $old_id);
+			list($old_path, $old_type, $old_size, $old_width, $old_height, $old_alt, $old_realname, $old_colors) = explode('|', $old_id);
 			
 			//Если указанный файл всёже существует
 			if (file_exists($this->model->config['path']['www'] . $old_path)) {
 				//Данные о картинке
-				$image_id = $old_path . '|' . $old_type . '|' . $old_size . '|' . $old_width . '|' . $old_height . '|' . $values[$value_sid . '_title'] . '|' . $old_realname;
+				$image_id = $old_path . '|' . $old_type . '|' . $old_size . '|' . $old_width . '|' . $old_height . '|' . $values[$value_sid . '_title'] . '|' . $old_realname . '|' . $old_colors;
 			}
 			
 			//Картинки нет и небыло
@@ -147,8 +149,10 @@ class field_type_image extends field_type_default
 			$rec = array();
 			
 			//Данные
-			if(!is_array($value))
-				list($rec['path'], $rec['type'], $rec['size'], $rec['width'], $rec['height'], $rec['title'], $rec['realname']) = explode('|', $value);
+			if(!is_array($value)){
+				list($rec['path'], $rec['type'], $rec['size'], $rec['width'], $rec['height'], $rec['title'], $rec['realname'], $rec['colors']) = explode('|', $value);
+				$rec['colors'] = explode(',', $rec['colors']);
+			}
 			
 			//ID
 			$rec['id'] = $value;
@@ -403,6 +407,26 @@ imagesavealpha($dst, true);
 		//Готово
 		return $res;
 	}
+
+	//Получить список превалирующих в фотографии цветов
+	private function getMainColors($path, $num_or_colors = 5, $step = 5){
+		
+		require_once($this->model->config['path']['libraries'].'/getImageColor.php');
+		$img = new GeneratorImageColorPalette();
+		
+		//Библиотека поддерживает только JPG
+		$filename = basename( $path );
+		$ext = strtolower( substr( $filename, strrpos($filename, '.')+1 ) );
+		if( in_array($ext, array('jpg') ) ){
+		
+			//Получаем цвета
+			$colors = $img->getImageColor( $path, $num_or_colors, $step );
+			return array_keys( $colors );
+		}
+		return false;
+
+	}
+	
 }
 
 ?>
