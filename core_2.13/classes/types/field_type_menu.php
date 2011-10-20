@@ -80,13 +80,13 @@ class field_type_menu extends field_type_default
 					$res[] = array(
 						'value' => $title,
 						'title' => $title,
-						'selected' => @in_array($title, $value)
+						'selected' => $title == $value,
 					);
 				else
 					$res[] = array(
 						'value' => $sid,
 						'title' => $title,
-						'selected' => @in_array($sid, $value)
+						'selected' => $sid == $value,
 					);
 
 		//Готово
