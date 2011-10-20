@@ -508,7 +508,7 @@ class default_module{
 			$current_page = $this->model->ask->rec['page'];
 
 			//Всего записей по запросу
-			$num_of_records = $this->model->execSql('select count(`id`) as `counter` from `'.$this->getCurrentTable($structure_sid).'` where '.implode(' and ', $where['and']).' and '.$this->model->extensions['domains']->getWhere().'','getrow');
+			$num_of_records = $this->model->execSql('select count(`id`) as `counter` from `'.$this->getCurrentTable($structure_sid).'` where '.implode(' and ', $where['and']) . ' and (' . implode(' or ', $where['or']) .')'.' and '.$this->model->extensions['domains']->getWhere().'','getrow');
 			$num_of_records = $num_of_records['counter'];
 
 			//Записей на страницу
