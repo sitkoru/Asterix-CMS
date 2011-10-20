@@ -165,7 +165,16 @@ class controller_get extends default_controller
 		$tmpl->assign('content', $main_record);
 
 		//Файл шаблона существует
-		$ready_html = $tmpl->fetch($current_template_file);
+		//Проверяем корректность шаблона
+		try {
+			$ready_html = $tmpl->fetch($current_template_file);
+		} catch (Exception $e) {
+			print('Шаблон ['.$current_template_file.'] содержит синтаксические ошибки.<br />');
+			print('<textarea style="width:500px; height:400px;">'.stripslashes( $this->vars['html'] ).'</textarea>');
+			pr($e);
+			exit();
+		}
+		
 
 		//Файл шаблона отсутствует или ещё какая ошибка
 		if (!$ready_html) {

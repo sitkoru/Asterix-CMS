@@ -68,6 +68,7 @@ class user
 
 		//Помним дато последней авторизации
 		if( $this->info['id'] ){
+			
 			//Учёт последнего входа в систему
 			$this->updateMyLoginDate($this->info['id']);
 		}

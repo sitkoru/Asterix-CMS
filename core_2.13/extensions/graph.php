@@ -79,7 +79,6 @@ class extention_graph extends extention_default
 
 		//Тип связи
 		if($params['type'])$where['type']='`type`="'.mysql_real_escape_string($params['type']).'"';
-		$where['access']=false;
 		
 		//Проверка
 		$links=$this->model->makeSql(
@@ -115,7 +114,10 @@ class extention_graph extends extention_default
 				
 				if($rec){
 					$rec=$this->model->modules[$module]->explodeRecord($rec, $structure_sid);
+					$rec['graph_top']['type'] = $link['type'];
 					
+					$rec['module']=$module;
+					$rec['module_title'] = @$this->model->modules[$module]->title_one;
 					$rec['structure']=$this->model->modules[$module]->info['title'];
 					
 					//Кроме текущей записи
@@ -124,6 +126,17 @@ class extention_graph extends extention_default
 						//Рассортировать по модулям
 						if($params['by_module']){
 							$recs[ $rec['structure'] ][]=$rec;
+
+						//Рассортировать по типам связей
+						}elseif($params['by_type']){
+							$title = $this->model->modules[$module]->graph_types[ $link['type'] ]['title'];
+							$recs[ $title ][]=$rec;
+
+						//Рассортировать по типам связей
+						}elseif($params['by_type_back']){
+							list($p_module, $p_structure_sid, $p_record_id) = explode('|', $link['top2']);
+							$title = $this->model->modules[ $p_module ]->graph_types[ $link['type'] ]['back'];
+							$recs[ $title ][]=$rec;
 
 						//Обычная выдача
 						}else{
@@ -158,7 +171,6 @@ class extention_graph extends extention_default
 			),
 			'getrow'
 		);
-//		pr($this->model->last_sql);
 		
 		return $link;
 	}
@@ -168,9 +180,10 @@ class extention_graph extends extention_default
 	{
 		if( !IsSet($params['type']) )
 			$params['type'] = 'link';
-		
+
 		//Проверяем, вдруг уже есть триггер
 		$check=$this->check($params);
+		
 		if($check){
 			$result=$this->model->makeSql(
 				array(

@@ -26,7 +26,7 @@ class field_type_float extends field_type_default
 	
 	public function creatingString($name)
 	{
-		return '`' . $name . '` FLOAT(5,2) NOT NULL';
+		return '`' . $name . '` FLOAT(9,2) NOT NULL';
 	}
 	
 }

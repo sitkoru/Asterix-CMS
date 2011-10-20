@@ -161,7 +161,7 @@ class field_type_image extends field_type_default
 				
 				//Создаём данные о превьюшках
 				foreach ($settings['pre'] as $sid => $pre) {
-					$rec[$sid] = $name . '_' . $pre['sid'] . '.' . $ext;
+					$rec[$sid] = $name . '_' . $sid . '.' . $ext;
 				}
 			}
 		} else {
@@ -221,7 +221,7 @@ class field_type_image extends field_type_default
 			foreach ($this->pre as $sid => $pre) {
 				//Меняем размеры основного изображения
 				list($pre_new_width, $pre_new_height) = $this->getNewSize($new_width, $new_height, @$pre['resize_type'], @$pre['resize_width'], @$pre['resize_height']);
-				$to = str_replace('.' . $this->allowed_extensions[$type], '_' . $pre['sid'] . '.' . $this->allowed_extensions[$type], $path);
+				$to = str_replace('.' . $this->allowed_extensions[$type], '_' . $sid . '.' . $this->allowed_extensions[$type], $path);
 				$this->saveImage($path, $to, $type, $pre_new_width, $pre_new_height, $new_width, $new_height);
 			}
 		
