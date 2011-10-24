@@ -48,6 +48,8 @@
 #acms_content p{
 	font-size:14px;
 }
+#acms_content .grey{color:grey;}
+#acms_content .marked{color:red;}
 
 .acms_tabs{
 	margin:0 0 20px;
@@ -111,7 +113,7 @@
 	display:block;
 }
 .acms_field_check .check label{display:inline;}
-.acms_panel_groups input[type=text], .acms_panel_groups textarea, .acms_panel_groups select{
+.acms_panel_groups input[type=text],  input[type=password], .acms_panel_groups textarea, .acms_panel_groups select{
 	border:1px solid #ccc;
 	width:600px;
 	padding:5px;
@@ -150,6 +152,23 @@
 	border:1px solid red !important;
 	border-radius:10px;
 }
+
+.acms_sub_tabs{
+	margin-left:120px;
+}
+.acms_sub_tabs a{
+	color:grey;
+	font-size:11px;
+}
+.acms_field_tabs{
+	display:none;
+	border: 1px dashed grey;
+	background-color: #FFC;
+	border-radius: 10px;
+	padding: 10px;
+	margin: 0 0 5px -10px;
+}
+
 
 .acms_tree{
 	margin:5px 0;
@@ -213,6 +232,13 @@
 	float: left;
 	margin: 10px;
 }
+.acms_field_image input[type=text]{
+	width:400px;
+	font-size:14px;
+}
+.acms_field_image .{
+
+
 .acms_field_feedback input, .acms_field_feedback select{
 	width:200px;
 	font-size:14px !important;
