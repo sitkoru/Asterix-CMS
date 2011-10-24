@@ -411,19 +411,12 @@ imagesavealpha($dst, true);
 	//Получить список превалирующих в фотографии цветов
 	private function getMainColors($path, $num_or_colors = 5, $step = 5){
 		
-		require_once($this->model->config['path']['libraries'].'/getImageColor.php');
+		require_once($this->model->config['path']['libraries'].'/getImageColor_tmp.php');
 		$img = new GeneratorImageColorPalette();
 		
-		//Библиотека поддерживает только JPG
-		$filename = basename( $path );
-		$ext = strtolower( substr( $filename, strrpos($filename, '.')+1 ) );
-		if( in_array($ext, array('jpg') ) ){
-		
-			//Получаем цвета
-			$colors = $img->getImageColor( $path, $num_or_colors, $step );
-			return array_keys( $colors );
-		}
-		return false;
+		//Получаем цвета
+		$colors = $img->getImageColor( $path, $num_or_colors, $step );
+		return array_keys( $colors );
 
 	}
 	
