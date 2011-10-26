@@ -113,7 +113,7 @@
 	display:block;
 }
 .acms_field_check .check label{display:inline;}
-.acms_panel_groups input[type=text],  input[type=password], .acms_panel_groups textarea, .acms_panel_groups select{
+.acms_panel_groups input[type=text], .acms_panel_groups input[type=password], .acms_panel_groups textarea, .acms_panel_groups select{
 	border:1px solid #ccc;
 	width:600px;
 	padding:5px;

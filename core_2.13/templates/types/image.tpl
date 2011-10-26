@@ -43,37 +43,36 @@
 			{/foreach}
 		</div>
 		<div class="acms_field_tabs" id="field_{$field.sid}_filters">
-			<label for="field_{$field.sid}_filter[bw]">Сделать картинки чёрно-белыми:</label>
+			<label>Сделать картинки чёрно-белыми:</label>
 			{foreach from=$field.pre item=pre key=key}
 				<br />
-				<input type="checkbox" name="field_{$field.sid}_filter[bw][]" id="field_{$field.sid}_filter_bw_{$key}" value="{$key}" /> - 
+				<input type="checkbox" name="{$field.sid}_filter[bw][]" id="field_{$field.sid}_filter_bw_{$key}" value="{$key}" /> - 
 				<label for="field_{$field.sid}_filter_bw_{$key}" style="display:inline-block;">
 					копия <a href="{$field.value.$key}" target="_blank">{$key}</a> - 
-					{if $pre.resize_type == 'inner'}вписан в область {$pre.resize_width|intval} x {$pre.resize_height|intval} пикселей
-					{elseif $pre.resize_type == 'outer'}описан вокруг области {$pre.resize_width|intval} x {$pre.resize_height|intval} пикселей
-					{elseif $pre.resize_type == 'width'}подогнан по ширине {$pre.resize_width|intval} пикселей
-					{elseif $pre.resize_type == 'height'}подогнан по высоте {$pre.resize_height|intval} пикселей
-					{elseif $pre.resize_type == 'exec'}уменьшен до размеров {$pre.resize_width|intval} x {$pre.resize_height|intval} пикселей
+					{if $pre.resize_type == 'inner'}вписан в область {$pre.resize_width|intval} x {$pre.resize_height|intval} {numeric value=$pre.resize_height|intval form1='пиксель' form2='пикселя' form5='пикселей'}
+					{elseif $pre.resize_type == 'outer'}описан вокруг области {$pre.resize_width|intval} x {$pre.resize_height|intval} {numeric value=$pre.resize_height|intval form1='пиксель' form2='пикселя' form5='пикселей'}
+					{elseif $pre.resize_type == 'width'}подогнан по ширине {$pre.resize_width|intval} {numeric value=$pre.resize_width|intval form1='пиксель' form2='пикселя' form5='пикселей'}
+					{elseif $pre.resize_type == 'height'}подогнан по высоте {$pre.resize_height|intval} {numeric value=$pre.resize_height|intval form1='пиксель' form2='пикселя' form5='пикселей'}
+					{elseif $pre.resize_type == 'exec'}уменьшен до размеров {$pre.resize_width|intval} x {$pre.resize_height|intval} {numeric value=$pre.resize_height|intval form1='пиксель' form2='пикселя' form5='пикселей'}
 					{/if}
 				</label>
 			{/foreach}
 		</div>
 		<div class="acms_field_tabs" id="field_{$field.sid}_watermark">
-			<label for="field_{$field.sid}_watermark_where">Где отображать воднй знак:</label>
-			<select id="field_{$field.sid}_watermark_where" name="field_{$field.sid}_watermark_where">
-				<option>В верхнем левом углу</option>
-				<option>В верхнем правом углу</option>
-				<option>В нижнем левом углу</option>
-				<option selected="selected">В нижнем правом углу</option>
-				<option>Внизу по центру</option>
-				<option>В центре изображения</option>
+			<label for="field_{$field.sid}_watermark_side">Где отображать водный знак:</label>
+			<select id="field_{$field.sid}_watermark_side" name="{$field.sid}_watermark_side">
+				<option value="lt">В левом верхнем углу</option>
+				<option value="lb">В левом нижнем углу</option>
+				<option value="rl">В правом верхнем углу</option>
+				<option value="rb" selected="selected">В правом нижнем углу</option>
+				<option value="cc">В центре изображения</option>
 			</select>
-			<label for="field_{$field.sid}_watermark">Файл:</label>
-			<input type="file" name="field_{$field.sid}_watermark" id="field_{$field.sid}_watermark" />
+			<label for="field_{$field.sid}_watermark">Файл (PNG):</label>
+			<input type="file" name="{$field.sid}_watermark" id="field_{$field.sid}_watermark" />
 		</div>
 		<div class="acms_field_tabs" id="field_{$field.sid}_cut">
-			<label for="field_{$field.sid}_cut">Маска для обрезки файла (PNG с прозрачностью):</label>
-			<input type="file" name="{$field.sid}_cut" id="field_{$field.sid}_filter" />
+			<label for="field_{$field.sid}_cut_mask">Маска для обрезки файла (PNG с прозрачностью):</label>
+			<input type="file" name="{$field.sid}_cut_mask" id="field_{$field.sid}_cut_mask" />
 		</div>
 	
 	</div>

@@ -1723,7 +1723,7 @@ class default_module{
 		foreach( $fields as $field_sid => $field )
 			if( !IsSet( $what[ $field_sid ] ) and IsSet( $values[ $field_sid ] ) ){
 				//Значение
-				$value = $this->model -> types[ $field['type'] ]->toSQL($field_sid, $values, array(), $field);
+				$value = $this->model -> types[ $field['type'] ]->toSQL($field_sid, $values, array(), $field, false, $this->info['sid'], $structure_sid);
 				//Запоминаем
 				if($value)
 					$what[ $field_sid ]=$value;
@@ -1831,7 +1831,7 @@ class default_module{
 		foreach( $fields as $field_sid => $field )
 			if( !IsSet( $what[ $field_sid ] ) and IsSet( $values[ $field_sid ] ) ){
 				//Значение
-				$value = $this->model -> types[ $field['type'] ]->toSQL($field_sid, $values, array(), $field);
+				$value = $this->model -> types[ $field['type'] ]->toSQL($field_sid, $values, array(), $field, false, $this->info['sid'], $structure_sid);
 				//Запоминаем
 				if($value)
 					$what[ $field_sid ]=$value;

@@ -46,10 +46,10 @@ class field_type_default
 	
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toSQL($value_sid, $values, $old_values = array(), $settings = false, $return_just_value = false)
+	public function toSQL($value_sid, $values, $old_values = array(), $settings = false, $return_just_value = false, $module_sid = false, $structure_sid = false)
 	{
 		//Готовим значение
-		$value = $this->toValue($value_sid, $values, $old_values, $settings);
+		$value = $this->toValue($value_sid, $values, $old_values, $settings, $module_sid, $structure_sid);
 		
 		//Возвращаем false
 		if ($value === false) {
