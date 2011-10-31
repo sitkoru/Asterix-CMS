@@ -11,22 +11,17 @@
         <input type="hidden" name="interface" value="login" />
         <input type="hidden" id="acms_current_version" value="{$config.version}" />
         <input type="hidden" name="host" id="acms_login_host" value="localhost" />
-        <input type="hidden" name="openid" id="acms_login_openid" value="localhost" />
         <table cellspacing="0" cellpadding="0" class="acms_lb-content-formTable">
           <tbody>
             <tr>
               <td class="acms_lb-content-formCell acms_lb-content-formCell_first acms_lb-content-leftCol"><span class="acms_lb-content-formLabel">Компания</span></td>
-				<td class="acms_lb-content-formCell acms_lb-content-formCell_first acms_lb-content-rightCol">
-					<span id="amcs_js_companySelector-chosen" class="acms_companySelector-chosen">{$domain.title|cut:35}</span><span class="acms_companySelector-link" id="amcs_js_companySelector-link">...</span>
-               
-					<ul class="acms_companySelector-list" style="display:none;">
-						<li class="acms_companySelector-list-item" rel="localhost" alt="localhost">{$domain.title|cut:35}</li>
-					{foreach from=$openid item=access key=domain}
-						<li class="acms_companySelector-list-item" rel="openid" alt="{$domain}">Аккаунт «{$domain}»</li>
-					{/foreach}
-					</ul>
-				
-				</td>
+              <td class="acms_lb-content-formCell acms_lb-content-formCell_first acms_lb-content-rightCol">
+                <span id="amcs_js_companySelector-chosen" class="acms_companySelector-chosen">{$domain.title|cut:35}</span><span class="acms_companySelector-link" id="amcs_js_companySelector-link">...</span>
+                <ul class="acms_companySelector-list" style="display:none;">
+                  <li class="acms_companySelector-list-item" rel="localhost">{$domain.title|cut:35}</li>
+                  <li class="acms_companySelector-list-item" rel="openid">Сотрудник «Ситко.ру»</li>
+                </ul>
+              </td>
             </tr>
             <tr class="acms_lb-content-form_local">
               <td class="acms_lb-content-formCell acms_lb-content-leftCol"><label for="acms_form-inputLogin" class="acms_lb-content-formLabel">Логин</label></td>
@@ -46,7 +41,7 @@
             </tr>
             <tr class="acms_lb-content-form_openid" style="display:none;">
               <td class="acms_lb-content-formCell acms_lb-content-leftCol"></td>
-              <td class="acms_lb-content-formCell acms_lb-content-rightCol"><input type="button" value="Войти" class="acms_form-inputButton" OnClick="
+              <td class="acms_lb-content-formCell acms_lb-content-rightCol"><input type="button" value="Войти как сотрудник Sitko.ru" class="acms_form-inputButton" OnClick="
 				document.location.href='\
 					https://www.google.com/accounts/o8/ud\
 						?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0\
