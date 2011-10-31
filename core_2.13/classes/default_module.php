@@ -101,7 +101,7 @@ class default_module{
 
 		//Если в конфиге разрешена привязка интерфейсов к записям - нужно такое поле
 		if( $this->model->config['settings']['dock_interfaces_to_records'] )
-			$thid->system_fields['acms_settings'] = array('sid'=>'acms_settings',	'group'=>'system',		'type'=>'text', 		'title'=>'Настройки отображения записи');
+			$this->system_fields['acms_settings'] = array('sid'=>'acms_settings',	'group'=>'system',		'type'=>'text', 		'title'=>'Настройки отображения записи');
 		
 		//Дозаносим системные поля
 		if($this->structure)
@@ -508,7 +508,7 @@ class default_module{
 			$current_page = $this->model->ask->rec['page'];
 
 			//Всего записей по запросу
-			$num_of_records = $this->model->execSql('select count(`id`) as `counter` from `'.$this->getCurrentTable($structure_sid).'` where '.implode(' and ', $where['and']) . ' and (' . implode(' or ', $where['or']) .')'.' and '.$this->model->extensions['domains']->getWhere().'','getrow');
+			$num_of_records = $this->model->execSql('select count(`id`) as `counter` from `'.$this->getCurrentTable($structure_sid).'` where '.implode(' and ', $where['and']) . ' and (' . ($where['or']?implode(' or ', $where['or']):'1') .')'.' and '.$this->model->extensions['domains']->getWhere().'','getrow');
 			$num_of_records = $num_of_records['counter'];
 
 			//Записей на страницу
@@ -578,6 +578,12 @@ class default_module{
 				}
 			}
 
+			//Заказанные наименования
+			if( IsSet($this->model->modules['basket']) )
+				if( method_exists( $this->model->modules['basket'], 'insertOrdered' ) ){
+					$recs = $this->model->modules['basket']->insertOrdered($recs);
+				}
+
 			//Результат
 			$result=array(
 				'current'	=>	$current_page,									//Номер текущей страницы
@@ -613,6 +619,12 @@ class default_module{
 				$rec=$this->insertRecordUrlType($rec, 'html', $params['insert_host']);
 				$recs[$i]=$rec;
 			}
+			
+			//Заказанные наименования
+			if( IsSet($this->model->modules['basket']) )
+				if( method_exists( $this->model->modules['basket'], 'insertOrdered' ) ){
+					$recs = $this->model->modules['basket']->insertOrdered($recs);
+				}
 
 			//Готово
 			return $recs;
@@ -660,7 +672,7 @@ class default_module{
 				'order'=>'order by RAND()'
 			),
 			'getrow'
-		);
+		);//pr($this->model->last_sql);
 
 		//Раскрываем сложные поля
 		$rec=$this->explodeRecord($rec,'rec');
@@ -878,7 +890,7 @@ class default_module{
 					$where['and']['id']='(not(`id`="'.mysql_real_escape_string($val).'"))';
 
 				//dir - ограничить записи указанным родительским разделом, чей ID указан
-				}elseif($var=='dir'){
+				}elseif( ($var=='dir') and ($val !== false) ){
 					//Простые структуры
 					if($this->structure['rec']['type']=='simple')
 						$field_name='dep_path_'.$this->structure['rec']['dep_path']['structure'];
@@ -2282,7 +2294,7 @@ class default_module{
 				if(IsSet($this->model->types[ $field_settings['type'] ]))
 
 				//Разворачиваем ненулевые значения
-//				if($value){
+				if($value){
 
 					$rec[$sid]=$this->model->types[ $field_settings['type'] ]->getValueExplode($value, $this->structure[$structure_sid]['fields'][$sid], $rec);
 
@@ -2327,7 +2339,7 @@ class default_module{
 							}
 
 					}
-//				}
+				}
 			}
 		}
 

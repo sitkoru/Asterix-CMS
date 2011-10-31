@@ -100,7 +100,7 @@ class field_type_sid extends field_type_default
 	}
 
 	//Проверим значение, уберём лишнее
-	private function correctValue($value)
+	public function correctValue($value)
 	{
 
 		//Только латинские URL

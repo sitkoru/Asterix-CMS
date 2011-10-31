@@ -75,6 +75,7 @@ $j().ready(function(){
 	$j('.acms_companySelector-list-item').click(function(){
 		$j('#amcs_js_companySelector-chosen').text( $j(this).text() );
 		$j('#acms_login_host').val( $j(this).attr('rel') );
+		$j('#acms_login_openid').val( $j(this).attr('alt') );
 		$j('.acms_companySelector-list').fadeOut('fast');
 		if( $j('#acms_login_host').val() == 'localhost' ){
 			$j('.acms_lb-content-form_openid').hide();

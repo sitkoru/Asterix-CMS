@@ -65,6 +65,7 @@ class controller_get extends default_controller
 		$tmpl->assign('ask', $this->model->ask);
 		$tmpl->assign('paths', $this->model->config['path']);
 		$tmpl->assign('config', $this->model->config['settings']);
+		$tmpl->assign('openid', $this->model->config['openid']);
 		$tmpl->assign('path', $path);
 		$tmpl->assign('domain', $this->model->extensions['domains']->domain);
 		$tmpl->assign('settings', $this->model->settings);
@@ -325,8 +326,17 @@ class controller_get extends default_controller
 		$module_sid = $this->model->getModuleSidByPrototype($module_prototype);
 		
 		//Если компонент доступен в модуле
-		if( IsSet($this->model->modules[ $module_sid ]->interfaces[ $interface_sid ]) )
-			return $this->model->modules[ $module_sid ]->prepareInterface( $interface_sid, $main_record );
+		if( IsSet($this->model->modules[ $module_sid ]->interfaces[ $interface_sid ]) ){
+			$int = $this->model->modules[ $module_sid ]->interfaces[ $interface_sid ];
+		
+			//Проверка доступа к интерфейсу
+			if( 
+				( !$int['auth'] ) or //Авторизация не требуется
+				( ($int['auth'] === true) and $this->model->user->info['id'] ) or //Пользователь должен быть просто авторизован
+				( ($int['auth'] === 'admin') and $this->model->user->info['admin'] )
+			)
+				return $this->model->modules[ $module_sid ]->prepareInterface( $interface_sid, $main_record );
+		}
 
 		//Не нашли доступного компонента
 		return false;
@@ -340,13 +350,21 @@ class controller_get extends default_controller
 			$module_sid = $this->model->getModuleSidByPrototype($module_prototype);
 			$url_mode = str_replace('|', '_', $value);
 			if( IsSet($this->model->modules[ $module_sid ]->interfaces[ $interface_sid ]) ){
-				$interface = $this->model->modules[ $module_sid ]->interfaces[ $interface_sid ];
-				$menu[] = array(
-					'sid' => $url_mode,
-					'title' => $interface['title'],
-					'url' => $this->model->ask->rec['url'].'.'.$url_mode.'.html',
-					'selected' => ($url_mode == $this->model->ask->mode[0]),
-				);
+
+				$int = $this->model->modules[ $module_sid ]->interfaces[ $interface_sid ];
+
+				//Проверка доступа к интерфейсу
+				if( 
+					( !$int['auth'] ) or //Авторизация не требуется
+					( ($int['auth'] === true) and $this->model->user->info['id'] ) or //Пользователь должен быть просто авторизован
+					( ($int['auth'] === 'admin') and $this->model->user->info['admin'] )
+				)
+					$menu[] = array(
+						'sid' => $url_mode,
+						'title' => $int['title'],
+						'url' => $this->model->ask->rec['url'].'.'.$url_mode.'.html',
+						'selected' => ($url_mode == $this->model->ask->mode[0]),
+					);
 			}
 		}
 		return $menu;	

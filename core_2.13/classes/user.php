@@ -252,11 +252,12 @@ class user
 							
 							//Авторизуем
 							$this->authUser_localhost();
+							$login = $this->model->types['sid']->correctValue( $this->info['login'] );
 							
 							//Регистрируем
 							if( !$this->info['id'] ){
 								$sql = 'insert into `users` set 
-									`sid`="'.$this->info['login'].'",
+									`sid`="'.$login.'",
 									`date_public`=NOW(),
 									`date_added`=NOW(),
 									`date_modify`=NOW(),
@@ -265,6 +266,7 @@ class user
 									`login`="'.$this->info['login'].'",
 									`password`="'.$this->model->types['password']->encrypt( $this->info['password'] ).'",
 									`email`="'.$this->info['email'].'",
+									`url`="/users/'.$login.'",
 									`access`="|admin=rwd|moder=rw-|all=r--|",
 									`admin`='.intval($openid_user_admin).',
 									`active`=1,

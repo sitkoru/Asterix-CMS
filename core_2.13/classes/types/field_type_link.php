@@ -66,10 +66,13 @@ class field_type_link extends field_type_default
 					),
 					'order' => 'order by `title`'
 				), 'getrow');
-			if ($rec)
+			if ($rec){
 				$value = $rec;
-				
-			$value=$this->model->modules[$settings['module']]->insertRecordUrlType($value);
+				$value = $this->model->modules[$settings['module']]->insertRecordUrlType($value);
+			}else
+				$value = false;
+		}else{
+			$value = false;
 		}
 		
 		//Готово
