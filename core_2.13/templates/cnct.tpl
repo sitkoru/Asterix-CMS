@@ -21,8 +21,8 @@
                
 					<ul class="acms_companySelector-list" style="display:none;">
 						<li class="acms_companySelector-list-item" rel="localhost" alt="localhost">{$domain.title|cut:35}</li>
-					{foreach from=$openid item=access key=domain}
-						<li class="acms_companySelector-list-item" rel="openid" alt="{$domain}">Аккаунт «{$domain}»</li>
+					{foreach from=$openid item=access key=dom}
+						<li class="acms_companySelector-list-item" rel="openid" alt="{$dom}">Аккаунт «{$dom}»</li>
 					{/foreach}
 					</ul>
 				
@@ -51,7 +51,7 @@
 					https://www.google.com/accounts/o8/ud\
 						?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0\
 						&openid.mode=checkid_setup\
-						&openid.return_to=http%3A%2F%2F{$domain.current_host}%2F%3Flogin\
+						&openid.return_to=http://{$domain.current_host}/?login\
 						&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select\
 						&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select\
 						&openid.realm=http://{$domain.current_host}/\

@@ -26,10 +26,12 @@ class ask
 	public function __construct($model)
 	{
 		//Запос
+		if( $_SERVER['REDIRECT_URL'][0] == '/' )
+			$_SERVER['REDIRECT_URL'] = $_SERVER['REQUEST_URI'];
 		$this->original_url = urldecode($_SERVER['REDIRECT_URL']);
-		
+			
 		//Разбираем URL по частям
-		$this->readParts($model, urldecode($_SERVER['REDIRECT_URL']));
+		$this->readParts($model, $this->original_url);
 		
 	}
 	
