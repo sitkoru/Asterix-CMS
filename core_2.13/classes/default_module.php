@@ -1575,7 +1575,7 @@ class default_module{
 
 				//Все имеющиеся поля
 				$table_fields=$this->model->execSql('show columns from `'.$this->getCurrentTable($structure_sid).'`','getall');
-
+				
 				//Все поля
 				foreach($structure['fields'] as $sid=>$field){
 					$flag=false;

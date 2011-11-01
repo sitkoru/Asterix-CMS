@@ -100,6 +100,7 @@ class mysql extends database{
 	}
 	
 	public function error($sql){
+		pr( $sql.'<br />'.mysql_errno() . ": " . mysql_error() );
 	}
 	
 }
