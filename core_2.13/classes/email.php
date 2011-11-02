@@ -81,7 +81,8 @@ class email{
 		}elseif($type=='html'){
 			
 			//Прикрепляем файлы
-			foreach($files as $file)$attachment .= $this->addAttachment($file);
+			if(is_array($files))
+				foreach($files as $file)$attachment .= $this->addAttachment($file);
 		
 			$message=iconv('utf-8', 'koi8-r//IGNORE', $message);
 			$message='--'.md5(1).'
