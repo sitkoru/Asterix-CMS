@@ -95,15 +95,19 @@ class field_type_link extends field_type_default
 			}
 		}
 		
+		$fields = array($this->link_field, 'title');
+		$order = 'order by `title`';
+		if( $this->model->modules[ $settings['module'] ]->structure[ $settings['structure_sid'] ]['type'] == 'tree' ){
+			$fields[] = 'tree_level';
+			$order = 'order by `left_key`';
+		}
+		
 		//Варианты значений
 		$variants = $this->model->makeSql(array(
 			'tables' => array($this->model->modules[$settings['module']]->getCurrentTable($settings['structure_sid'])),
 			'where' => (IsSet($settings['where']) ? array('and' => array($s)) : false),
-			'fields' => array(
-				$this->link_field,
-				'title'
-			),
-			'order' => 'order by `title`'
+			'fields' => $fields,
+			'order' => $order
 		), 'getall');
 //		pr($this->model->last_sql);
 		
@@ -114,6 +118,7 @@ class field_type_link extends field_type_default
 				$res[] = array(
 					'value' => $variant[$this->link_field],
 					'title' => $variant['title'],
+					'tree_level' => $variant['tree_level'],
 					'selected' => ($variant[$this->link_field] === $value)
 				);
 		

@@ -129,7 +129,7 @@ class field_type_image extends field_type_default
 		if( $data )
 			return serialize( $data );
 		else
-			return false;
+			return 0;
 	}
 	
 	

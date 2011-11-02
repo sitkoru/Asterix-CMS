@@ -1321,18 +1321,16 @@ class controller_admin extends default_controller
 		//Значения для древовидных структур
 		if ($module->structure[$structure_sid]['type'] == 'tree') {
 			$dep_path = 'dep_path_parent';
-//			$recs     = $module->getModuleShirtTree(false, $structure_sid, 0, false, $this->model);
 			$recs     = $module->getStructureShirtTree(false, $structure_sid, 0, false, $this->model);//
 		} elseif ($module->structure[$structure_sid]['type'] == 'simple') {
 			if (IsSet($module->structure[$structure_sid]['dep_path']['structure'])) {
 				$dep_path = 'dep_path_' . $module->structure[$structure_sid]['dep_path']['structure'];
 				$recs     = $module->getShirtRecordsByWhere($module->structure[$structure_sid]['dep_path']['structure'], false);
 			} else {
-				//				$dep_path='dep_path_'.$module->structure[$structure_sid]['dep_path']['structure'];
-				$recs = false; //=$module->getShirtRecordsByWhere('',false);
+				$recs = false;
 			}
 		}
-
+		
 		//Если указана определённая запись - указываем это
 		if ($record) {
 			if ($recs)
