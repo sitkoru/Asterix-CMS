@@ -141,24 +141,25 @@ class controller_get extends default_controller
 
 		//Компоненты и интерфейсы
 		if( $this->model->config['settings']['dock_interfaces_to_records'] ){
+			
+			//Компоненты и интерфейсы для шаблона
 			$cfg = $this->model->config['path']['templates'].'/'.$current_template_file.'.cfg';
 			if( file_exists($cfg) && ($main_record['url']!='/') ){
-
-				//Компоненты и интерфейсы для записи
 				$settings = unserialize( file_get_contents($cfg) );
-				$t = $this->getComponents($main_record, $settings);
+				
+				$t = $this->getComponents($settings, $main_record);
 				if( IsSet($t['components']) )		$tmpl->assign('components', $t['components']);
 				if( IsSet($t['components_menu']) )	$tmpl->assign('components_menu', $t['components_menu']);
 				
-				$t = $this->getInterfaces($main_record, $settings);
+				$t = $this->getInterfaces($settings, $main_record);
 				if( IsSet($t['interfaces']) )		$tmpl->assign('interfaces', $t['interfaces']);
 				if( IsSet($t['interfaces_menu']) )	$tmpl->assign('interfaces_menu', $t['interfaces_menu']);
 			}
 
 			//Компоненты и интерфейсы для записи
 			$settings = unserialize( stripslashes( $main_record['acms_settings'] ) );
-			$main_record = $this->getComponents($main_record, $settings);
-			$main_record = $this->getInterfaces($main_record, $settings);
+			$main_record = $this->getComponents($settings, $main_record);
+			$main_record = $this->getInterfaces($settings, $main_record);
 
 		}
 
@@ -228,16 +229,17 @@ class controller_get extends default_controller
 	}
 
 	//Возвращает компоненты для текущей страницы
-	private function getComponents($main_record, $settings){
+	private function getComponents($settings, $main_record = false){
 
-		//Если выбран модификатор, для которого есть внешний интерфейс
+		//Если выбран модификатор, для которого есть внешний компонент
 		if( IsSet($this->model->ask->mode[0]) and in_array( str_replace('_','|',$this->model->ask->mode[0]), (array)$settings['components_ext'] ) ){
 			//Вызываем компонент
 			$component_sid = str_replace('_', '|', $this->model->ask->mode[0]);
 			$url_mode = $this->model->ask->mode[0];
+			
 			$main_record['components'][ $url_mode ] = $this->getComponentOne( $component_sid );
 		
-		//Показываем внутренние интерфейсы записи
+		//Показываем внутренние компоненты записи
 		}elseif( $settings['components_int'] and !IsSet($this->model->ask->mode[0]) ){
 			foreach($settings['components_int'] as $component_sid){
 				$url_mode = str_replace('|', '_', $component_sid);
@@ -293,7 +295,7 @@ class controller_get extends default_controller
 		return $menu;	
 	}
 	
-	private function getInterfaces($main_record, $settings){
+	private function getInterfaces($settings, $main_record = false){
 
 		//Если выбран модификатор, для которого есть внешний интерфейс
 		if( IsSet($this->model->ask->mode[0]) and in_array( str_replace('_','|',$this->model->ask->mode[0]), (array)$settings['interfaces_ext'] ) ){
@@ -315,7 +317,6 @@ class controller_get extends default_controller
 			$main_record['interfaces_menu'] = $this->getInterfaceExtMenu($settings);
 		}
 		
-		//Готово
 		return $main_record;
 	}
 	//Показывает один компонент

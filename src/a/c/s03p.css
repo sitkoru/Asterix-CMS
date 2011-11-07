@@ -91,8 +91,7 @@
 .acms_panel_groups li{
 	list-style:decimal outside;
 	padding:10px 0;
-	margin:0;
-	
+	margin:0;	
 	color:#000 !important;
 	font-weight:normal !important;
 	font-style:normal !important;
@@ -113,12 +112,12 @@
 	display:block;
 }
 .acms_field_check .check label{display:inline;}
-.acms_panel_groups input[type=text], .acms_panel_groups input[type=password], .acms_panel_groups textarea, .acms_panel_groups select{
+.acms_panel_groups input[type=text], .acms_panel_groups input[type=file], .acms_panel_groups input[type=password], .acms_panel_groups textarea, .acms_panel_groups select{
 	border:1px solid #ccc;
 	width:600px;
 	padding:5px;
 	border-radius:10px;
-	
+	background-color:white;
 	color:#000;
 	font-weight:normal;
 	font-style:normal;
@@ -202,17 +201,10 @@
 	text-decoration:none;
 	color:#1B8DC6 !important;
 }
-.acms_panel_delete{
-	padding-left: 40%;
-	padding-top: 10%;
-}
-.acms_panel_delete a{
-	padding:10px 30px;
-	background-color: red;
-	color: white;
-	display: inline-block;
-	font-size:16px;
-}
+
+/* всплывающая форма Удалить? */
+.acms_panel_delete{padding-left: 40%;padding-top: 10%;}
+.acms_panel_delete a{padding:10px 30px;background-color: red;color: white;display: inline-block;font-size:16px;}
 
 .acms_submit_out{
 	position:fixed;
@@ -225,54 +217,77 @@
 	margin-bottom:10px;
 }
 
-.acms_field_image a.img{
+/* поля картинки */
+.acms_field_image a.img{display: block;height: 100px;width: 100px;float: left;margin: 10px;}
+.acms_field_image input[type=text]{width:400px;font-size:14px;}
+.acms_field_image .img{background-image:url(http://src.sitko.ru/i/no-avatar.jpg);}
+
+/* поле Формы обратной связи */
+.acms_field_feedback input, .acms_field_feedback select{width:200px;font-size:14px !important;}
+.acms_field_feedback  td{margin:0; padding:5px;vertical-align:top;}
+
+/* поля галки */
+.acms_field_feedback .check input{width:auto;}
+.acms_field_feedback .check label{display:inline-block;}
+
+/* поля фотогалерей */
+.acms_field_gallery li{
 	display: block;
-	height: 100px;
-	width: 100px;
-	float: left;
-	margin: 10px;
+	float:left;
+	width: 130px;
+	height:80px;
+	margin:3px;
+	overflow: hidden;
+	padding:10px !important;
+	background-color: #eee;
+	border-radius:10px;
+	cursor:move;
 }
-.acms_field_image input[type=text]{
-	width:400px;
-	font-size:14px;
+.acms_field_gallery li .delete{
+	display: none;
+	background-color: white;
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	border:1px solid grey;
+	text-align: center;
+	font-family: Arial;
+	cursor: pointer;
+	float: right;
+	font-size: 12px;
 }
-.acms_field_image .{
-
-
-.acms_field_feedback input, .acms_field_feedback select{
-	width:200px;
-	font-size:14px !important;
+.acms_field_gallery li:hover .delete{display:block;}
+.acms_field_gallery ol{padding:0; margin:0;}
+.acms_field_gallery li.new{
+	width:100%;
+	height:auto;
+	background-color: white;
+	cursor:default;
 }
-.acms_field_feedback  td{
-	margin:0; 
+.acms_field_gallery .images li label{
+	background-color:white;
+	border-radius:10px;
 	padding:5px;
-	vertical-align:top;
 }
-.acms_field_feedback .check input{
-	width:auto;
-}
-.acms_field_feedback .check label{
-	display:inline-block;
-}
-
-.acms_field_image .img{
-	background-image:url(http://src.sitko.ru/i/no-avatar.jpg);
-}
+.acms_field_gallery .images li input, .acms_field_gallery .images li label{display:none;} 
+.acms_field_gallery .images li.new input, .acms_field_gallery .images li.new label{display:inline-block;} 
 
 #jquery-lightbox{
 	z-index:3000;
 }
 
-.acms_companySelector-list-item{
-	cursor:pointer;
-}
-.acms_companySelector-list-item:hover{
-	background-color:#eee;
-}
+/* выбор компании под которой автооризоваться */
+.acms_companySelector-list-item{cursor:pointer;}
+.acms_companySelector-list-item:hover{background-color:#eee;}
 
+/* панель помощи */
 .acms_panel_groups_help{line-height:22px;}
 .acms_panel_groups_help ol, .acms_panel_groups_help ul{padding:10px 0 10px 40px;}
 .acms_panel_groups_help ol li{list-style-type:decimal !important;}
 .acms_panel_groups_help ul li{list-style-type:circle !important;}
 .acms_panel_groups_help ol li, .acms_panel_groups_help ul li{list-style-position:outset !important;}
-.acms_panel_groups_help a{color:#1B8DC6;}
+.acms_panel_groups_help a{color:#1B8DC6 !important;}
+
+.hidden{
+	display:none !important;
+}

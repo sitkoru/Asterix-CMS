@@ -1670,6 +1670,7 @@ class controller_admin extends default_controller
 
 			//Внешние компоненты и интерфейсы
 			foreach($this->model->modules as $sid => $mod)
+				if(IsSet($mod->interfaces))
 				foreach($mod->interfaces as $sid=>$interface)
 					if(!IsSet($interface['hidden'])){
 						$interfaces_int[] = array(

@@ -54,7 +54,6 @@ class field_type_image extends field_type_default
 		require_once $this->model->config['path']['libraries'].'/acmsFiles.php';
 		require_once $this->model->config['path']['libraries'].'/acmsImages.php';
 		
-		
 		//Удаление фотки
 		if ($values[$value_sid . '_delete']) {
 			$old_path = substr( $values[ $value_sid.'_old_id' ], 0, strpos( $values[ $value_sid.'_old_id' ], '|' ) );
@@ -121,7 +120,7 @@ class field_type_image extends field_type_default
 		
 		//Файл не передан, просто обновление Alt
 		} elseif (strlen($values[$value_sid . '_old_id'])) {
-			$data = unserialize( $values[$value_sid . '_old_id'] );
+			$data = unserialize( $old_values[$value_sid] );
 			$data['title'] = strip_tags( $values[$value_sid . '_title'] );
 		}
 

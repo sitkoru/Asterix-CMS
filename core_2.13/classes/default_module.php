@@ -528,7 +528,7 @@ class default_module{
 					'limit'=>'limit '.($current_page*$items_per_page).', '.$items_per_page,
 				),
 				'getall'
-			);//pr($this->model->last_sql);
+			);
 
 			//Раскрываем сложные поля
 			if($recs)
@@ -594,7 +594,12 @@ class default_module{
 				'recs'		=>	$recs,											//Все записи на странице
 				'pages'		=>	$pages,											//Страницы
 			);
-
+			
+			if(!count($recs)){
+				$result['recs'] = false;
+				$result['pages'] = false;
+			}
+			
 			//Готово
 			return $result;
 
@@ -1843,7 +1848,7 @@ class default_module{
 		foreach( $fields as $field_sid => $field )
 			if( !IsSet( $what[ $field_sid ] ) and IsSet( $values[ $field_sid ] ) ){
 				//Значение
-				$value = $this->model -> types[ $field['type'] ]->toSQL($field_sid, $values, array(), $field, false, $this->info['sid'], $structure_sid);
+				$value = $this->model -> types[ $field['type'] ]->toSQL($field_sid, $values, $data_before, $field, false, $this->info['sid'], $structure_sid);
 				//Запоминаем
 				if($value)
 					$what[ $field_sid ]=$value;

@@ -151,10 +151,10 @@ function hookAdminActions(){
 		//Группы полей
 		if( id == 'acms_tab_all' ){
 			$j('div.acms_panel_groups').fadeIn('fast');
-			$j('.acms_panel_groups li:not(.acms_sub)').fadeIn('fast');
+			$j('.acms_panel_groups > li:not(.acms_sub)').fadeIn('fast');
 		}else{
 			$j('div.acms_panel_groups:not(.'+group+')').fadeOut('fast');
-			$j('.acms_panel_groups li:not(.'+group+', .acms_sub)').fadeOut('fast',function(){
+			$j('.acms_panel_groups > li:not(.'+group+', .acms_sub)').fadeOut('fast',function(){
 				$j('.'+group).fadeIn('fast');
 			});
 		}
@@ -162,11 +162,35 @@ function hookAdminActions(){
 	});
 	
 	$j('.acms_panel_form input').change(function(){
-		$j(this).addClass('changed');
+		$j(this).parent('li').addClass('changed');
 	});	
 	$j('.acms_panel_form textarea').change(function(){
-		$j(this).addClass('changed');
+		$j(this).parent('li').addClass('changed');
 	});	
+	$j('.acms_field_gallery input[type=file]').change( function(){
+				$j(this).parent('li').parent('ol').children('li:first').clone().insertAfter( $j(this).parent('li') );
+				
+				var img_old = parseInt( $j(this).parent('li').parent('ol').children('li:not(.new)').length ); 
+				var img_new = parseInt( $j(this).parent('li').parent('ol').children('li.new').length ); 
+				var id = parseInt( img_old + img_new );
+				
+				var html = $j(this).parent('li').next().html();
+				html = html.replace('[-1]','['+ id +']');
+				html = html.replace('[-1]','['+ id +']');
+				html = html.replace('__','_'+ id +'_');
+				html = html.replace('__','_'+ id +'_');
+				html = html.replace('__','_'+ id +'_');
+				html = html.replace('__','_'+ id +'_');
+				$j(this).parent('li').next().html( html );
+				
+				$j(this).parent('li').next().removeClass('changed');
+				hookAdminActions();
+	});
+	$j('.acms_field_gallery .images li').click(function(){ $j(this).addClass('new'); });
+
+	//Sorting with Drag&Dock
+	$j('.sortable').sortable();
+	$j('.sortable').disableSelection();
 	
 // Events
 	$j('#bar_content form').submit( function() {
@@ -185,6 +209,8 @@ function hookAdminActions(){
 
 		return true;
 	});
+
+	
 
 	var image_plus = function() {
 
@@ -242,7 +268,7 @@ function hookAdminActions(){
 			f = $j(this).find('input[type=checkbox]');
 			var i = $j(this).find('.img');
 	});
-
+	
 	$j('.lightbox').lightBox({
 			imageLoading:'http://src.sitko.ru/a/i/lightbox-loading.gif',
 			imageBtnPrev:'http://src.sitko.ru/a/i/lightbox-btn-prev.gif',

@@ -1,7 +1,7 @@
 	<label for="field_{$field.sid}">{$field.title}:</label>
 	<div class="image expand-image{if ! $field.value.path} plus-image{/if}">
 		
-		<input type="hidden" name="{$field.sid}_old_id" value="{$field.value.id}" />
+		<input type="hidden" name="{$field.sid}_old_id" value="{$field.value.path}" />
 	{if $field.value.path}
 		<a href="{$field.value.path}" class="lightbox out img"
 			style="background:url({if $field.value.pre}{$field.value.pre}{elseif $field.value.190}{$field.value.190}{elseif $field.value.75}{$field.value.75}{else}{$field.value.path}{/if}) center no-repeat">
