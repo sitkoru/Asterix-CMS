@@ -189,8 +189,10 @@ function hookAdminActions(){
 	$j('.acms_field_gallery .images li').click(function(){ $j(this).addClass('new'); });
 
 	//Sorting with Drag&Dock
-	$j('.sortable').sortable();
-	$j('.sortable').disableSelection();
+	if( typeof( $j('.sortable').sortable ) == 'function' ){
+		$j('.sortable').sortable();
+		$j('.sortable').disableSelection();
+	}
 	
 // Events
 	$j('#bar_content form').submit( function() {
