@@ -190,17 +190,8 @@ class model
 	{
 		$this->modules = array();
 
-		//Если установлено расширение доменов
-		//в нём прописаны необходимые для домена модули
-		if (IsSet($this->extensions['domains'])) {
-			//Подгружаем ля них данные из базы
-			$modules = $this->execSql('select * from `modules` where `sid` IN ("' . implode('", "', $this->extensions['domains']->domain['modules']) . '") and `active`=1 order by `pos`');
-
-		//Если расширение не установлено - берём все модули из базы
-		} else {
-			//Загружаем из базы
-			$modules = $this->execSql('select * from `modules` where `active`=1 order by `id`');
-		}
+		//Подгружаем модули
+		$modules = $this->execSql('select * from `modules` where `active`=1 order by `pos`','getall');
 
 		//Встроенный модуль разделов
 		$default_module[] = array(
@@ -247,7 +238,8 @@ class model
 				$n = $module['prototype'] . '_module';
 
 				//Инициализируем модуль
-				$this->modules[$module['sid']] = new $n($this, $module);
+				if( $n )
+					$this->modules[$module['sid']] = new $n($this, $module);
 			}
 			
 			//Так как инициализация пользователя произошла раньше чем подгружены расширения и модули
@@ -1108,6 +1100,14 @@ class model
 		return new rss($this->config['path']);
 	}
 
+	//инициализируем библиотеку для определения местоположения посетителя
+	public function initGeoip()
+	{
+		//Загружаем класс
+		include_once($this->config['path']['libraries'] . '/geoip.php');
+		//Инициализируем
+		return new geoip($this->config['path']);
+	}
 }
 
 ?>

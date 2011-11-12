@@ -28,6 +28,22 @@ class default_controller
 		$this->cache = $cache;
 	}
 	
+	//Добавить необходимую JS-библиотеку
+	public function addJS($path, $params = false){
+		$this->add['js'][] = array(
+			'path' => $path,
+			'params' => $params,
+		);
+	}
+
+	//Добавить необходимую JS-библиотеку
+	public function addCSS($path, $params = false){
+		$this->add['css'][] = array(
+			'path' => $path,
+			'params' => $params,
+		);
+	}
+
 	
 }
 

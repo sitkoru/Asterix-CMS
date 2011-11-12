@@ -5,14 +5,10 @@
 
 <ol>
 {foreach from=$action.recs item=module key=key}
+	{if $module.sid and ($module.prototype!='users') }
 	<li>
 		{$module.title} [{$module.prototype}] 
-		<a href="#" OnClick="$j('#{$module.id}_structure').toggle('fast'); return false;">структура</a>
-		<a href="#" OnClick="$j('#{$module.id}_data').toggle('fast'); return false;">данные</a>
-	{if $module.sid and ($module.prototype!='users') }
 		<a href="#" OnClick="$j('#{$module.id}_delete').toggle('fast'); return false;">удалить</a>
-	{/if}
-		
 		<div id="{$module.id}_structure" style="display:none;">
 		{foreach from=$module.structure item=structure}
 			<strong>{$structure.title}</strong>
@@ -63,7 +59,7 @@
 			<br />
 		</div>
 		
-		<div id="{$module.id}_delete" style="display:none; border:2px solid red; margin:10px; padding:10px; font-size:1.4em;">
+		<div id="{$module.id}_delete" style="display:none; border:2px solid red; margin:10px; padding:10px; font-size:1.4em; border-radius:10px;">
 			<form id="{$module.id}_delete_form" class="interface ajax" method="post" enctype="multipart/form-data">
 				<input type="hidden" name="action" value="module_delete" />
 				<input type="hidden" name="module_id" value="{$module.prototype}" />
@@ -79,6 +75,7 @@
 		</div>
 		
 	</li>
+	{/if}
 {/foreach}
 </ol>
 

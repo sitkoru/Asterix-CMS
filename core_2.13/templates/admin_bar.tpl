@@ -27,9 +27,9 @@
 		<ul class="a_sub">
 			<li><a rel="css" href="" class="call_admin_interface">Стили</a></li>
 			<li><a rel="js" href="" class="call_admin_interface">JavaScript</a></li>
-<!--
+
 			<li><a rel="modules" href="" class="call_admin_interface">Модули</a></li>
--->
+
 			<li><a rel="templates" href="" class="call_admin_interface">Шаблоны</a></li>
 <!--
 			<li><a rel="preloads" href="" class="call_admin_interface">Компоненты</a></li>

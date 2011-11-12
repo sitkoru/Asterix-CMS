@@ -168,23 +168,23 @@ function hookAdminActions(){
 		$j(this).parent('li').addClass('changed');
 	});	
 	$j('.acms_field_gallery input[type=file]').change( function(){
-				$j(this).parent('li').parent('ol').children('li:first').clone().insertAfter( $j(this).parent('li') );
-				
-				var img_old = parseInt( $j(this).parent('li').parent('ol').children('li:not(.new)').length ); 
-				var img_new = parseInt( $j(this).parent('li').parent('ol').children('li.new').length ); 
-				var id = parseInt( img_old + img_new );
-				
-				var html = $j(this).parent('li').next().html();
-				html = html.replace('[-1]','['+ id +']');
-				html = html.replace('[-1]','['+ id +']');
-				html = html.replace('__','_'+ id +'_');
-				html = html.replace('__','_'+ id +'_');
-				html = html.replace('__','_'+ id +'_');
-				html = html.replace('__','_'+ id +'_');
-				$j(this).parent('li').next().html( html );
-				
-				$j(this).parent('li').next().removeClass('changed');
-				hookAdminActions();
+		$j(this).parent('li').parent('ol').children('li:first').clone().insertAfter( $j(this).parent('li') );
+		
+		var img_old = parseInt( $j(this).parent('li').parent('ol').children('li:not(.new)').length ); 
+		var img_new = parseInt( $j(this).parent('li').parent('ol').children('li.new').length ); 
+		var id = parseInt( img_old + img_new );
+		
+		var html = $j(this).parent('li').next().html();
+		html = html.replace('[-1]','['+ id +']');
+		html = html.replace('[-1]','['+ id +']');
+		html = html.replace('__','_'+ id +'_');
+		html = html.replace('__','_'+ id +'_');
+		html = html.replace('__','_'+ id +'_');
+		html = html.replace('__','_'+ id +'_');
+		$j(this).parent('li').next().html( html );
+		
+		$j(this).parent('li').next().removeClass('changed');
+		hookAdminActions();
 	});
 	$j('.acms_field_gallery .images li').click(function(){ $j(this).addClass('new'); });
 
@@ -193,7 +193,48 @@ function hookAdminActions(){
 		$j('.sortable').sortable();
 		$j('.sortable').disableSelection();
 	}
-	
+
+	//Params field type
+	$j('.acms_field_params .add').unbind('click');
+	$j('.acms_field_params .add').click(function(){
+		var sid = $j(this).attr('sid');
+		var c = $j('#field_' + sid + '_params').children('li').length;
+		var html = '<li id=\'field_' + sid + '_' + c + '\'><input type=\'text\' name=\'' + sid + '[' + c + '][title]\' value=\'Новая характеристика\' style=\'width:45%;\' /><input type=hidden name=\'' + sid + '[' + c + '][delete]\' id=\'field_' + sid + '_' + c + '_delete\' value=\'0\' /><input type=\'hidden\' name=\'' + sid + '[' + c + '][header]\' id=\'field_' + sid + '_' + c + '_header\' value=\'0\' /><input type=\'text\' name=\'' + sid + '[' + c + '][value]\' value=\'Значение\' style=\'width:35%; margin: 4px;\' /><img src=\'http://src.sitko.ru/a/i/delete.png\' alt=\'\' title=\'Удалить\' class=\'delete\' /><img src=\'http://src.sitko.ru/a/i/header.png\' alt=\'\' title=\'Сделать заголовком\' class=\'header\' style=\'margin-left:4px\' /></li>';
+		$j(html).appendTo('#field_' + sid + '_params');
+		hookAdminActions();
+		return false;	
+	});
+	$j('.acms_field_params .delete').unbind('click');
+	$j('.acms_field_params .delete').click(function(){
+		var id = $j(this).parent('li').attr('id');
+		$j(this).parent('li').children('input').toggleClass('markDelete');
+		$j(this).parent('li').children('img.delete').toggleClass('glowRed');
+		if( $j(this).parent('li').children('input').hasClass('markDelete') )
+			$j('#'+id+'_delete').val( 1 );
+		else
+			$j('#'+id+'_delete').val( 0 );
+		return false;	
+	});
+	$j('.acms_field_params .header').unbind('click');
+	$j('.acms_field_params .header').click(function(){
+		var id = $j(this).parent('li').attr('id');
+		if( $j(this).hasClass('glowRed') ){
+			$j(this).parent('li').children('input:first').css('width', '45%');
+			$j(this).parent('li').children('input:first').css('font-weight', 'normal');
+			$j(this).parent('li').children('input:first').css('border', '1px solid #ccc');
+			$j(this).parent('li').children('input:last').show();
+			$j('#'+id+'_header').val(0);
+		}else{
+			$j(this).parent('li').children('input:first').css('width', '60%');
+			$j(this).parent('li').children('input:first').css('font-weight', 'bold');
+			$j(this).parent('li').children('input:first').css('border', '1px solid #eee');
+			$j(this).parent('li').children('input:last').hide();
+			$j('#'+id+'_header').val(1);
+		}
+		$j(this).parent('li').children('img.header').toggleClass('glowRed');
+		return false;	
+	});
+
 // Events
 	$j('#bar_content form').submit( function() {
 

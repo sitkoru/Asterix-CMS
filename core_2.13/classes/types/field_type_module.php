@@ -51,17 +51,22 @@ class field_type_module extends field_type_default
 		$res      = array();
 
 		//Варианты значений
-		$variants[]='';
-		$variants = $this->model->extensions['domains']->domain['modules'];
-		$variants[0]='';
+		$variants = $this->model->modules;
 		
 		//Отмечаем в массиве выбранные элементы
-		foreach ($variants as $i => $variant)
+		foreach ($this->model->modules as $sid => $module)
 			$res[] = array(
-				'value' => $variant,
-				'title' => $variant,
-				'selected' => ($variant == $value)
+				'value' => $sid,
+				'title' => $module->info['title'],
+				'selected' => ($sid == $value)
 			);
+	
+		$res[] = array(
+			'value' => '',
+			'title' => '- ссылка на модуль отсутствует -',
+			'selected' => (!$value)
+		);
+		
 		//Готово
 		return $res;
 	}

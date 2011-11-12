@@ -17,9 +17,6 @@
 /*                              */
 /************************************************************/
 
-global $active_mysql_connection;
-$active_mysql_database=false;
-
 class mysql extends database{
   public $title = 'ACMS Класс работы с базой данных MySQL';
   public $version = '1.0';
@@ -42,60 +39,36 @@ class mysql extends database{
   }
   
   public function GetAll($sql){
-    global $active_mysql_database;
-    
-    if(func_num_args()>1){
-      $t=func_num_args();
-      pr($sql);
-    }
-    
-    if($active_mysql_database!=$this->name)$this->activate();
+	$this->activate();
+		
     $items=array();
-    if($result=mysql_query($sql)){
-      while($row = mysql_fetch_array($result,MYSQL_ASSOC))$items[]=$row;
-      mysql_free_result($result);
-    }
-    else $this->error($sql);
+    if($result=mysql_query($sql, $this->connection)){
+		while($row = mysql_fetch_array($result,MYSQL_ASSOC))
+			$items[]=$row;
+		mysql_free_result($result);
+    }else $this->error($sql);
     
-    $this->query_counter++;
-    $this->query_log[]=$sql;
     return $items;
   }
   
   public function GetRow($sql){
-    global $active_mysql_database;
-    
-    if(func_num_args()>1){
-      $t=func_num_args();
-      pr($sql);
-    }
-    
-    if($active_mysql_database!=$this->name)$this->activate();
+	$this->activate();
+		
     $row=array();
-    if($result=mysql_query($sql)){
-      $row = mysql_fetch_array($result,MYSQL_ASSOC);
-      mysql_free_result($result);
-    }
-    else $this->error($sql);
-    
-    $this->query_counter++;
-    $this->query_log[]=$sql;
+    if($result=mysql_query($sql, $this->connection)){
+		$row = mysql_fetch_array($result,MYSQL_ASSOC);
+		mysql_free_result($result);
+    }else $this->error($sql);
     
     return $row;
   }
   
   public function Execute($sql){
-    
-    if(func_num_args()>1){
-      $t=func_num_args();
-      pr($sql);
-    }
-    
-    $result=mysql_query($sql);
+	$this->activate();
+		
+    $result=mysql_query($sql, $this->connection);
     if(!$result)$this->error($sql);
 
-    $this->query_counter++;
-    $this->query_log[]=$sql;
     return $result;
   }
   

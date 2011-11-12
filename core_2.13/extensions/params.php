@@ -3,23 +3,23 @@
 /************************************************************/
 /*															*/
 /*	Ядро системы управления Asterix	CMS						*/
-/*		Расширение для ведения социального графа сайта		*/
+/*		Расширение для создания характеристик записи		*/
 /*															*/
-/*	Версия ядра 2.0.5										*/
+/*	Версия ядра 2.13										*/
 /*	Версия скрипта 1.00										*/
 /*															*/
 /*	Copyright (c) 2009  Мишин Олег							*/
 /*	Разработчик: Мишин Олег									*/
 /*	Email: dekmabot@gmail.com								*/
 /*	WWW: http://mishinoleg.ru								*/
-/*	Создан: 27 апреля 2010 года								*/
-/*	Модифицирован: 27 апреля 2010 года						*/
+/*	Создан: 8 ноября 2011 года								*/
+/*	Модифицирован: 8 ноября 2011 года						*/
 /*															*/
 /************************************************************/
 
 require_once 'default.php';
 
-class extention_graph extends extention_default
+class extention_params extends extention_default
 {
 	var $title = 'Граф';
 	var $sid = 'graph';
@@ -106,6 +106,8 @@ class extention_graph extends extention_default
 				else
 					list($module, $structure_sid, $record_id)=explode('|',$link['top1']);
 			}
+			
+//			pr($link['top1'].' = '.$any_top.', 1='.$link['top1'].' & 2='.$link['top2'].', module='.$module.'');
 			
 			if(IsSet($this->model->modules[$module])){
 				$rec=$this->model->modules[$module]->getRecordById($structure_sid, $record_id);

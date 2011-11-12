@@ -90,8 +90,8 @@
 }
 .acms_panel_groups li{
 	list-style:decimal outside;
-	padding:10px 0;
-	margin:0;	
+	padding:8px 0;
+	margin:1px 0;	
 	color:#000 !important;
 	font-weight:normal !important;
 	font-style:normal !important;
@@ -272,6 +272,12 @@
 .acms_field_gallery .images li input, .acms_field_gallery .images li label{display:none;} 
 .acms_field_gallery .images li.new input, .acms_field_gallery .images li.new label{display:inline-block;} 
 
+.acms_field_params li{
+	background:url(http://src.sitko.ru/a/i/sort.png) left center no-repeat;
+	list-style:none;
+	padding:0 30px;
+}
+
 #jquery-lightbox{
 	z-index:3000;
 }
@@ -290,4 +296,13 @@
 
 .hidden{
 	display:none !important;
+}
+.markHeader{
+	opacity:0.1;
+}
+.markDelete{
+	opacity:0.1;
+}
+.glowRed{
+	box-shadow: 0 0 1px 1px red;
 }

@@ -59,6 +59,7 @@ return array(
 	'menu' => 'field_type_menu.php',
 	'menum' => 'field_type_menum.php',
 	'module' => 'field_type_module.php',
+	'params' => 'field_type_params.php',
 	
 	'link' => 'field_type_link.php',
 	'linkm' => 'field_type_linkm.php',

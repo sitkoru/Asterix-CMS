@@ -555,217 +555,17 @@ class controller_admin extends default_controller
 		return $res;
 	}
 
-	private function showTemplates(){
-		if(IsSet( $this->vars['tmpl'] ))
-			return $this->showTemplates_one();
-		else
-			return $this->showTemplates_all();
+	public function showTemplates(){
+		return template_manage::showTemplates();
 	}
-	private function showTemplates_one(){
-		
-		list($module, $structure_sid) = explode( '_', substr( basename($this->vars['tmpl']), 0, strpos(basename($this->vars['tmpl']), '.') ) );
-//		$module        = $this->model->ask->module;
-//		$structure_sid = $this->model->ask->structure_sid;
-		$record        = $this->model->ask->rec;
-
-		$res['title']                 = 'Настройка шаблона '.$this->vars['tmpl'];
-		$res['module']                = $module;
-		$res['structure_sid']         = $structure_sid;
-		$res['form_action']           = 'templates';
-		$res['content_template_file'] = 'edit_form.tpl';
-
-		$res['groups'] = array();
-		
-		$help_main = 'Шаблон создаётся на основе HTML и языка Smarty. Перед сохранением шаблон будет проверен, и если он содержит синтаксические ошибки - он не будет сохранён.
-			<br /><br />
-			<a href="#" OnClick="$j(\'#acms_help_vars\').toggle(\'fast\'); return false;">Переменные, доступные в шаблоне</a>
-			<ol id="acms_help_vars" style="display:none;">
-				<li>$content - текущая запись, на которой находится пользователь, массив</li>
-				<li>$mainmenu - главное меню сайта, массив</li>
-				<li>$original_url - полный url, запрашиваемый пользователем, строка</li>
-				<li>$settings - настройки сайта, массив</li>
-				<li>$paths - пути из файла конфигурации, массив</li>
-				<li>$config - settings из файла конфигурации, массив</li>
-				<li>$path - "Хлебные крошки", массив</li>
-				<li>$domain - характеристики текущего домена, массив</li>
-				<li>$user - данные текущего пользователя, массив</li>
-				<li>$get_vars - переданные через $_GET параметры, массив</li>
-			</ol>
-			<br />
-			<a href="#" OnClick="$j(\'#acms_help_preloads\').toggle(\'fast\'); return false;">Компоненты, доступные в шаблоне</a>
-			<ol id="acms_help_preloads" style="display:none;">
-				<li>recs - вывод записей из структуры, возможна разбивка на страницы</li>
-				<li>anons - вывод последней записи из структуры</li>
-				<li>anonslist - вывод последних записей из структуры</li>
-				<li>random - вывод случайной записи из структуры</li>
-				<li>randomlist - вывод случайных записей из структуры</li>
-				<li>parent - родительский раздел для указанного</li>
-			</ol>
-			<br />
-			<a href="#" OnClick="$j(\'#acms_help_smarty\').toggle(\'fast\'); return false;">Как писать шаблоны</a>
-			<ul id="acms_help_smarty" style="display:none;">
-				<li>Шаблоны делаются при помощи языка <a href="http://www.smarty.net/docsv2/ru/" target="_blank">Smarty</a></li>
-				<li>Переменные доступны в виде {$variable} для строки или {$content.title} для элементов массива</li>
-				<li>Обращение к компонентам происходит так: {preload module=news data=recs result=recs}, при этом результат выдаётся в массив {$recs}</li>
-			</ul>
-			';
-	
-		$groups = array(
-			'main'=> array(
-				'title' => 'Код шаблона',
-				'help' => $help_main,
-				'fields' => array(
-					'title' => array(
-						'sid' => 'title',
-						'type' => 'hidden',
-						'value' => basename( $this->vars['tmpl'] ),
-					),
-					'html' => array(
-						'title' => 'Исходный код',
-						'sid' => 'html',
-						'type' => 'html',
-						'value' => @file_get_contents($this->model->config['path']['templates'].'/'.basename( $this->vars['tmpl'] )),
-					),
-				)
-			),
-		);
-		
-		//Компоненты и интерфейсы
-		if( $this->vars['tmpl'] != 'start_index.tpl'){
-			//Настройки
-			$cfg = $this->model->config['path']['templates'].'/'.basename( $this->vars['tmpl'] ).'.cfg';
-			if( file_exists($cfg) )
-				$settings = unserialize( @file_get_contents( $cfg ) );
-			else
-				$settings = false;
-
-			//Добавляем компоненты
-			$components = $this->tabComponents($module, $settings);
-			if($components)
-				$groups['components'] = $components;
-			
-			//Добавляем интерфейсы
-			$interfaces = $this->tabInterfaces($module, $settings);
-			if($interfaces)
-				$groups['interfaces'] = $interfaces;
-		}
-			
-		$res['groups'] = $groups;
-		return $res;
+	public function showTemplates_one(){
+		return template_manage::showTemplates_one();
 	}
-	private function showTemplates_all(){
-		$res                          = array();
-		$res['title']                 = 'Шаблоны сайта';
-		$res['form_action']           = 'templates';
-		$res['content_template_file'] = 'bar_templates.tpl';
-
-		$recs = array();
-		
-		//Должно быть шаблонов
-		$templates = array();
-		foreach($this->model->modules as $module_sid=>$module){
-			if($module->info['sid'])
-				$recs[ $module->info['prototype'].'_index.tpl' ] = array(
-					'id' => count($recs),
-					'title' => $module->info['title'].' - главная страница',
-					'file' => $module->info['prototype'].'_index.tpl',
-				);
-			else	
-				$recs[ $module->info['prototype'].'_index.tpl' ] = array(
-					'id' => count($recs),
-					'title' => 'Главная страница сайта',
-					'file' => 'start_index.tpl',
-				);
-			$recs[ $module->info['prototype'].'_content.tpl' ] = array(
-				'id' => count($recs),
-				'title' => $module->info['title'].' - страница записи',
-				'file' => $module->info['prototype'].'_content.tpl',
-			);
-			//Много структур - добавляется ещё один шаблон
-			if(count($module->structure)>1){
-				$recs[ $module->info['prototype'].'_list.tpl' ] = array(
-				'id' => count($recs),
-					'title' => $module->info['title'].' - страница списка записей',
-					'file' => $module->info['prototype'].'_list.tpl',
-				);
-			}
-		}
-
-		$root = $this->model->config['path']['templates'].'/';
-		$files = get_files($root, false, 0, 100000, false, 'tpl' );
-		
-		foreach($files as $i=>$file)
-			if( !IsSet($recs[ $file['file'] ]) ){
-				$recs[ $file['file'] ] = array(
-					'id' => count($recs),
-					'title' => 'Дополнительный шаблон '.$file['file'],
-					'file' => $file['file'],
-				);
-		}
-
-		foreach($recs as $i=>$rec){
-			if( file_exists($this->model->config['path']['templates'].'/'.$rec['file']) ){
-				$content = @file_get_contents($this->model->config['path']['templates'].'/'.$rec['file']);
-			}else{
-				$content = '
-{include file=\'head.tpl\'}
-<body>
-	<p>Пустой шаблон</p>
-</body>
-{include file=\'footer.tpl\'}
-				';
-			}
-			$recs[$i]['content'] = $content;
-		}
-		
-		if ($recs)
-			$res['recs'] = $recs;
-			
-		return $res;
+	public function showTemplates_all(){
+		return template_manage::showTemplates_all();
 	}
-	private function saveTemplates(){
-		$path = $this->model->config['path']['tmp'].'/temp.tpl';
-		file_put_contents($path, stripslashes( $this->vars['html'] ), LOCK_EX );
-
-		//Подключаем шаблонизатор
-		require_once($this->model->config['path']['core'] . '/classes/templates.php');
-		$tmpl = new templater($this->model);
-		$tmpl->assign('paths', $this->model->config['path']);
-
-		//Создаём папку, если нет
-		if( !file_exists( $this->model->config['path']['tmp'] ) ){
-			mkdir( $this->model->config['path']['tmp'] );
-			chmod( $this->model->config['path']['tmp'], '0775' );
-		}
-		
-		//Проверяем корректность шаблона
-		try {
-			$ready_html = @$tmpl->fetch($path);
-		} catch (Exception $e) {
-			print('Шаблон содержит синтаксические ошибки.<br />');
-			print('<textarea style="width:500px; height:400px;">'.stripslashes( $this->vars['html'] ).'</textarea>');
-			pr($e);
-			exit();
-		}
-		
-		//Всё гуд - записываем
-		$path = $this->model->config['path']['templates'].'/'.basename($this->vars['title']);
-		$res = file_put_contents($path, stripslashes( $this->vars['html'] ), LOCK_EX);
-		chmod($path, 0775);
-
-		//Настройки компонентов и интерфейсов
-		$settings = array(
-			'interfaces_int' => (array)$this->vars['interfaces_int'],
-			'interfaces_ext' => (array)$this->vars['interfaces_ext'],
-			'components_int' => (array)$this->vars['components_int'],
-			'components_ext' => (array)$this->vars['components_ext'],
-		);
-		$path = $this->model->config['path']['templates'].'/'.basename($this->vars['title'].'.cfg');
-		$res = file_put_contents($path, serialize($settings), LOCK_EX);
-		chmod($path, 0775);
-		
-		header('Location: /');
-		exit();
+	public function saveTemplates(){
+		return template_manage::saveTemplates();
 	}
 
 
@@ -851,261 +651,15 @@ class controller_admin extends default_controller
 	}
 
 
-	private function showModules(){
-		$res                          = array();
-		$res['title']                 = 'Модули сайта';
-		$res['content_template_file'] = 'bar_modules.tpl';
-
-		$recs = array();
-		foreach($this->model->modules as $sid=>$module){
-			
-			$str = $module->info;
-			
-			foreach($module->structure as $structure_sid=>$structure){
-				$rows = $this->model->execSql('select * from `'.$module->getCurrentTable($structure_sid).'` order by `id` desc','getall');
-				$str['structure'][$structure_sid] = array(
-														'fields'=>$structure['fields'], 
-														'recs' => $rows,
-													);
-			}
-			
-			$recs[ $module->info['prototype'] ] = $str;
-		}
-		
-		if ($recs)
-			$res['recs'] = $recs;
-		
-		$all = file('http://src.opendev.ru/modules.txt');
-		foreach($all as $a){
-			$t = explode('|', trim($a));
-			if( !IsSet( $recs[$t[1]] ) )
-				$res['recs_all'][] = array('title'=>$t[0], 'prototype'=>$t[1]);
-		}
-		
-		$res['types'] = $this->model->types;
-		
-		$res['root_recs'] = $this->model->execSql('select * from `start_rec` where `dep_path_parent`="index" and `is_link_to_module`="" order by `left_key`','getall');
-		
-		return $res;
-	}
-	
-	private function installModule(){
-		$this->vars['module_id'] = basename($this->vars['module_id']);
-
-		//Импортируем файл модуля
-		$filename = $this->model->config['path']['modules'].'/'.$this->vars['module_id'].'.php';
-		if( !file_exists($filename) ){
-			$module_file = file_get_contents('http://src.opendev.ru/modules/get.php?m='.$this->vars['module_id'].'');
-			file_put_contents($filename, $module_file);
-			chmod($filename, 0775);
-		}
-				
-		//Добавляем его в базу
-		if( !in_array($this->vars['module_id'], $this->model->extensions['domains']->domain['modules']) ){
-			//->modules
-			$this->model->execSql('insert into `modules` set `sid`="'.$this->vars['module_id'].'", `prototype`="'.$this->vars['module_id'].'", `title`="'.mysql_real_escape_string($this->vars['module_title']).'", `ln`="1", `active`="1"','insert');
-			//->tarifs
-			$t = $this->model->execSql('select * from `tarifs` where `id`="'.$this->model->extensions['domains']->domain['tarif'].'"','getrow');
-			$t = explode('|', $t['modules']);
-			foreach($t as $i=>$ti)
-				if(!$ti)
-					UnSet($t[$i]);
-			$t[] = $this->vars['module_id'];
-			$this->model->execSql('update `tarifs` set `modules`="|0|'.implode('|',$t).'|" where `id`="'.$this->model->extensions['domains']->domain['tarif'].'" limit 1','update');
-		}
-
-		//Делаем стандартный шаблон
-		if( !file_exists($this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_index.tpl') ){
-			$filename = $this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_index.tpl';
-			file_put_contents(
-				$filename,
-				file_get_contents($this->model->config['path']['templates'].'/start_content.tpl')
-			);
-			chmod($filename, 0775);
-		}
-		
-		//Приклеиваем к разделу
-		if($this->vars['to']){
-			$record = $this->model->modules[0]->getRecordById('rec',$this->vars['to']);
-
-			if( $record['is_link_to_module']!=$this->vars['module_id'] ){
-				$record['is_link_to_module'] = $this->vars['module_id'];
-				$record['sid'] = $this->vars['module_id'];
-				UnSet($record['access']);//Педаль для Бага
-				$url = $this->model->modules[0]->updateRecord('rec', $record);
-			}
-			
-		//Создаём новый раздел
-		}else{
-			$record = array(
-				'sid' => $this->vars['module_id'],
-				'title' => $this->vars['module_title'],
-				'url' => $this->vars['module_id'],
-				'is_link_to_module' => $this->vars['module_id'],
-				'dep_path_parent' => 'index',
-				'date_public' => date("Y-m-d H:i:s"),
-				'date_added' => date("Y-m-d H:i:s"),
-				'date_modify' => date("Y-m-d H:i:s"),
-
-				'ln' => 1,
-				'domain' => $this->model->extensions['domains']->domain['id'],
-				'shw' => 1,
-				'show_in_menu' => 1,
-			);
-			$url = $this->model->modules[0]->addRecord('rec', $record);
-		}
-		
-		//Инсталляция базы данных модуля
-		$f = @file_get_contents('http://src.opendev.ru/modules/'.$this->vars['module_id'].'/install.sql.txt');
-		if($f){
-			$this->model->__construct($this->model->config, $this->model->log);
-			$this->model->modules['catalog']->check();
-			$sql = explode("\n", $f);
-			foreach($sql as $q)
-				$this->model->execSql($q, 'update');
-		}
-
-		//Первоначальное наполнение
-		if( $this->vars['test_vals'] ){
-			$f = @file_get_contents('http://src.opendev.ru/modules/'.$this->vars['module_id'].'/start.sql.txt');
-			if($f){
-				$this->model->__construct($this->model->config, $this->model->log);
-				$this->model->modules['catalog']->check();
-				$sql = explode("\n", $f);
-				foreach($sql as $q)
-					$this->model->execSql($q, 'insert');
-			}
-		}
-		
-		header('Location: '.$url);
-		exit();
-	}
-
-	private function deleteModule(){
-		$this->vars['module_id'] = basename($this->vars['module_id']);
-
-		//Удаляем из раздела-ссылки
-		$record = $this->model->execSql('select * from `start_rec` where `is_link_to_module`="'.$this->vars['module_id'].'" limit 1','getrow');
-		if($record){
-			//Удаляем раздел
-			if($this->vars['delete_rec']){
-				$this->model->modules[0]->deleteRecord('rec', $record);
-				$url = '/';
-			
-			//Снимаем ссылку
-			}else{
-				$record['is_link_to_module'] = '';
-				UnSet($record['access']);//Педаль для Бага
-				$url = $this->model->modules[0]->updateRecord('rec', $record);
-			}
-		}
-	
-		//Удаляем из тарифа и модулей
-		if( in_array($this->vars['module_id'], $this->model->extensions['domains']->domain['modules']) ){
-			//->tarifs
-			$t = $this->model->execSql('select * from `tarifs` where `id`="'.$this->model->extensions['domains']->domain['tarif'].'"','getrow');
-			$t = explode('|', $t['modules']);
-			foreach($t as $i=>$ti){
-				if(!$ti)
-					UnSet($t[$i]);
-				if($ti == $this->vars['module_id'])
-					UnSet($t[$i]);
-			}
-			$this->model->execSql('update `tarifs` set `modules`="|0|'.implode('|',$t).'|" where `id`="'.$this->model->extensions['domains']->domain['tarif'].'" limit 1','update');
-			//->modules
-			$this->model->execSql('delete from `modules` where `sid`="'.$this->vars['module_id'].'" and `prototype`="'.$this->vars['module_id'].'" limit 1','insert');
-		}
-		
-		//Удаляем данных из базы данных
-		if($this->vars['delete_data']){
-			foreach($this->model->modules[ $this->vars['module_id'] ]->structure as $structure_sid=>$structure){
-				$this->model->execSql('drop table `' . $this->vars['module_id'] . '_' . $structure_sid . '`','delete');
-				pr($this->model->last_sql);
-			}
-		}
-		
-		//Удаляем файлы шаблонов
-		if($this->vars['delete_templates'])
-		if( file_exists($this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_index.tpl') ){
-			unlink($this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_index.tpl');
-			@unlink($this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_list.tpl');
-			@unlink($this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_content.tpl');
-		}
-		
-		//Удаляем файл модуля
-		if($this->vars['delete_module'])
-		if( file_exists($this->model->config['path']['modules'].'/'.$this->vars['module_id'].'.php') ){
-			unlink($this->model->config['path']['modules'].'/'.$this->vars['module_id'].'.php');
-		}
-
-		header('Location: /'.$url);
-		exit();
-	}
-	
-	
 	private function showThemes(){
-		$res                          = array();
-		$res['title']                 = 'Оформление сайта';
-		$res['content_template_file'] = 'bar_themes.tpl';
-
-		//Все темы
-		$recs = array();
-		$themes = file_get_contents('http://src.opendev.ru/themes.txt');
-		$themes = explode("\n", $themes);
-		foreach($themes as $theme)if(strlen($theme)){
-			list($rec['id'], $rec['title'], $rec['date'], $rec['img'], $rec['preview']) = explode('|', $theme);
-			
-			if($id[0] != '#'){
-				$recs[] = $rec;
-			}
-		}
-		$res['recs_all'] = $recs;
-		
-		//Услановленные темы
-		$recs = array();
-		$path = $this->model->config['path']['templates'].'/../';
-		
-		if (is_dir($path)) {
-			if ($dh = opendir($path)) {
-				while (($file = readdir($dh)) !== false)
-				if($file != '.')
-				if($file != '..'){
-					$recs[] = array('id'=>$file, 'title'=>$file); 
-				}
-				closedir($dh);
-			}
-		}
-		$res['recs'] = $recs;
-		
-		return $res;
 	}
 	private function saveThemes(){
-		pr_r($this->vars);
-		header('Location: /');
-		exit();
 	}
 	
 	
 	private function showUpdate(){
-		$res                          = array();
-		$res['title']                 = 'Обновление ядра сайта';
-		$res['content_template_file'] = 'bar_update.tpl';
-
-		include_once($this->model->config['path']['libraries'].'/core_update.php');
-		$acms_core_update = new acms_core_update( $this->model );
-		
-		$res['update'] = $acms_core_update->checkUpdate();
-		
-		return $res;
 	}
 	private function saveUpdate(){
-		include_once($this->model->config['path']['libraries'].'/core_update.php');
-		$acms_core_update = new acms_core_update( $this->model );
-		
-		$result = $acms_core_update -> doUpdate($this->vars);
-		
-		print($result);
-		exit();
 	}
 	
 	//Укажите модуль, в который будет добавлена запись
@@ -1138,7 +692,17 @@ class controller_admin extends default_controller
 	}
 
 
+	private function showModules(){
+		return module_manage::showModules();
+	}
+	
+	private function installModule(){
+		return module_manage::installModule();
+	}
 
+	private function deleteModule(){
+		return module_manage::deleteModule();
+	}
 
 
 	//Получение подготовленного списка полей, по группам
@@ -1713,6 +1277,409 @@ class controller_admin extends default_controller
 		}
 	}
 	
+}
+
+
+class module_manage{
+	public function showModules(){
+		$res                          = array();
+		$res['title']                 = 'Модули сайта';
+		$res['content_template_file'] = 'bar_modules.tpl';
+
+		$recs = array();
+		if( is_array( $this->model->modules ) )
+		foreach($this->model->modules as $sid=>$module){
+			
+			$str = $module->info;
+			
+			if( is_array( $module->structure ) )
+				foreach($module->structure as $structure_sid=>$structure){
+					$rows = $this->model->execSql('select * from `'.$module->getCurrentTable($structure_sid).'` order by `id` desc','getall');
+					$str['structure'][$structure_sid] = array(
+														'fields'=>$structure['fields'], 
+														'recs' => $rows,
+													);
+			}
+			
+			$recs[ $module->info['prototype'] ] = $str;
+		}
+		
+		if ($recs)
+			$res['recs'] = $recs;
+		
+		$all = file('http://src.opendev.ru/modules.txt');
+		if( is_array( $all ) )
+		foreach($all as $a){
+			$t = explode('|', trim($a));
+			if( !IsSet( $recs[$t[1]] ) )
+				$res['recs_all'][] = array('title'=>$t[0], 'prototype'=>$t[1]);
+		}
+		
+		$res['types'] = $this->model->types;
+		
+		$res['root_recs'] = $this->model->execSql('select * from `start_rec` where `dep_path_parent`="index" and `is_link_to_module`="" order by `left_key`','getall');
+		
+		return $res;
+	}
+	
+	public function installModule(){
+		$this->vars['module_id'] = basename($this->vars['module_id']);
+
+		//Импортируем файл модуля
+		$filename = $this->model->config['path']['modules'].'/'.$this->vars['module_id'].'.php';
+		if( !file_exists($filename) ){
+			$module_file = file_get_contents('http://src.opendev.ru/modules/get.php?m='.$this->vars['module_id'].'');
+			file_put_contents($filename, $module_file);
+			chmod($filename, 0775);
+		}
+				
+		//Добавляем его в базу
+		if( !IsSet( $this->model->modules[ $this->vars['module_id'] ] ) ){
+			//->modules
+			$this->model->execSql('insert into `modules` set `sid`="'.$this->vars['module_id'].'", `prototype`="'.$this->vars['module_id'].'", `title`="'.mysql_real_escape_string($this->vars['module_title']).'", `ln`="1", `active`="1"','insert');
+			//->tarifs
+			$t = $this->model->execSql('select * from `tarifs` where `id`="'.$this->model->extensions['domains']->domain['tarif'].'"','getrow');
+			$t = explode('|', $t['modules']);
+			foreach($t as $i=>$ti)
+				if(!$ti)
+					UnSet($t[$i]);
+			$t[] = $this->vars['module_id'];
+			$this->model->execSql('update `tarifs` set `modules`="|0|'.implode('|',$t).'|" where `id`="'.$this->model->extensions['domains']->domain['tarif'].'" limit 1','update');
+		}
+
+		//Делаем стандартный шаблон
+		if( !file_exists($this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_index.tpl') ){
+			$filename = $this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_index.tpl';
+			file_put_contents(
+				$filename,
+				file_get_contents($this->model->config['path']['templates'].'/start_content.tpl')
+			);
+			chmod($filename, 0775);
+		}
+		
+		//Приклеиваем к разделу
+		if($this->vars['to']){
+			$record = $this->model->modules[0]->getRecordById('rec',$this->vars['to']);
+
+			if( $record['is_link_to_module']!=$this->vars['module_id'] ){
+				$record['is_link_to_module'] = $this->vars['module_id'];
+				$record['sid'] = $this->vars['module_id'];
+				UnSet($record['access']);//Педаль для Бага
+				$url = $this->model->modules[0]->updateRecord('rec', $record);
+			}
+			
+		//Создаём новый раздел
+		}else{
+			$record = array(
+				'sid' => $this->vars['module_id'],
+				'title' => $this->vars['module_title'],
+				'url' => $this->vars['module_id'],
+				'is_link_to_module' => $this->vars['module_id'],
+				'dep_path_parent' => 'index',
+				'date_public' => date("Y-m-d H:i:s"),
+				'date_added' => date("Y-m-d H:i:s"),
+				'date_modify' => date("Y-m-d H:i:s"),
+
+				'ln' => 1,
+				'domain' => $this->model->extensions['domains']->domain['id'],
+				'shw' => 1,
+				'show_in_menu' => 1,
+			);
+			$url = $this->model->modules[0]->addRecord('rec', $record);
+		}
+		
+		//Инсталляция базы данных модуля
+		$f = @file_get_contents('http://src.opendev.ru/modules/'.$this->vars['module_id'].'/install.sql.txt');
+		if($f){
+			$this->model->__construct($this->model->config, $this->model->log);
+			$this->model->modules['catalog']->check();
+			$sql = explode("\n", $f);
+			foreach($sql as $q)
+				$this->model->execSql($q, 'update');
+		}
+
+		//Первоначальное наполнение
+		if( $this->vars['test_vals'] ){
+			$f = @file_get_contents('http://src.opendev.ru/modules/'.$this->vars['module_id'].'/start.sql.txt');
+			if($f){
+				$this->model->__construct($this->model->config, $this->model->log);
+				$this->model->modules['catalog']->check();
+				$sql = explode("\n", $f);
+				foreach($sql as $q)
+					$this->model->execSql($q, 'insert');
+			}
+		}
+		
+		header('Location: '.$url);
+		exit();
+	}
+
+	public function deleteModule(){
+		$this->vars['module_id'] = basename($this->vars['module_id']);
+
+		//Удаляем из раздела-ссылки
+		$record = $this->model->execSql('select * from `start_rec` where `is_link_to_module`="'.$this->vars['module_id'].'" limit 1','getrow');
+		if($record){
+			//Удаляем раздел
+			if($this->vars['delete_rec']){
+				$this->model->modules[0]->deleteRecord('rec', $record);
+				$url = '/';
+			
+			//Снимаем ссылку
+			}else{
+				$record['is_link_to_module'] = '';
+				UnSet($record['access']);//Педаль для Бага
+				$url = $this->model->modules[0]->updateRecord('rec', $record);
+			}
+		}
+	
+		//Удаляем из тарифа и модулей
+		if($this->vars['delete_module']){
+			//->modules
+			$this->model->execSql('delete from `modules` where `prototype`="'.$this->vars['module_id'].'" limit 1','delete');
+		}
+		
+		//Удаляем данных из базы данных
+		if($this->vars['delete_data']){
+			foreach($this->model->modules[ $this->vars['module_id'] ]->structure as $structure_sid=>$structure){
+				$this->model->execSql('drop table `' . $this->vars['module_id'] . '_' . $structure_sid . '`','delete');
+				pr($this->model->last_sql);
+			}
+		}
+		
+		//Удаляем файлы шаблонов
+		if($this->vars['delete_templates'])
+		if( file_exists($this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_index.tpl') ){
+			unlink($this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_index.tpl');
+			@unlink($this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_list.tpl');
+			@unlink($this->model->config['path']['templates'].'/'.$this->vars['module_id'].'_content.tpl');
+		}
+		
+		//Удаляем файл модуля
+		if($this->vars['delete_module'])
+		if( file_exists($this->model->config['path']['modules'].'/'.$this->vars['module_id'].'.php') ){
+			unlink($this->model->config['path']['modules'].'/'.$this->vars['module_id'].'.php');
+		}
+
+		header('Location: /');
+		exit();
+	}
+
+}
+
+class template_manage{
+	public function showTemplates(){
+		if(IsSet( $this->vars['tmpl'] ))
+			return $this->showTemplates_one();
+		else
+			return $this->showTemplates_all();
+	}
+	public function showTemplates_one(){
+		
+		list($module, $structure_sid) = explode( '_', substr( basename($this->vars['tmpl']), 0, strpos(basename($this->vars['tmpl']), '.') ) );
+//		$module        = $this->model->ask->module;
+//		$structure_sid = $this->model->ask->structure_sid;
+		$record        = $this->model->ask->rec;
+
+		$res['title']                 = 'Настройка шаблона '.$this->vars['tmpl'];
+		$res['module']                = $module;
+		$res['structure_sid']         = $structure_sid;
+		$res['form_action']           = 'templates';
+		$res['content_template_file'] = 'edit_form.tpl';
+
+		$res['groups'] = array();
+		
+		$help_main = 'Шаблон создаётся на основе HTML и языка Smarty. Перед сохранением шаблон будет проверен, и если он содержит синтаксические ошибки - он не будет сохранён.
+			<br /><br />
+			<a href="#" OnClick="$j(\'#acms_help_vars\').toggle(\'fast\'); return false;">Переменные, доступные в шаблоне</a>
+			<ol id="acms_help_vars" style="display:none;">
+				<li>$content - текущая запись, на которой находится пользователь, массив</li>
+				<li>$mainmenu - главное меню сайта, массив</li>
+				<li>$original_url - полный url, запрашиваемый пользователем, строка</li>
+				<li>$settings - настройки сайта, массив</li>
+				<li>$paths - пути из файла конфигурации, массив</li>
+				<li>$config - settings из файла конфигурации, массив</li>
+				<li>$path - "Хлебные крошки", массив</li>
+				<li>$domain - характеристики текущего домена, массив</li>
+				<li>$user - данные текущего пользователя, массив</li>
+				<li>$get_vars - переданные через $_GET параметры, массив</li>
+			</ol>
+			<br />
+			<a href="#" OnClick="$j(\'#acms_help_preloads\').toggle(\'fast\'); return false;">Компоненты, доступные в шаблоне</a>
+			<ol id="acms_help_preloads" style="display:none;">
+				<li>recs - вывод записей из структуры, возможна разбивка на страницы</li>
+				<li>anons - вывод последней записи из структуры</li>
+				<li>anonslist - вывод последних записей из структуры</li>
+				<li>random - вывод случайной записи из структуры</li>
+				<li>randomlist - вывод случайных записей из структуры</li>
+				<li>parent - родительский раздел для указанного</li>
+			</ol>
+			<br />
+			<a href="#" OnClick="$j(\'#acms_help_smarty\').toggle(\'fast\'); return false;">Как писать шаблоны</a>
+			<ul id="acms_help_smarty" style="display:none;">
+				<li>Шаблоны делаются при помощи языка <a href="http://www.smarty.net/docsv2/ru/" target="_blank">Smarty</a></li>
+				<li>Переменные доступны в виде {$variable} для строки или {$content.title} для элементов массива</li>
+				<li>Обращение к компонентам происходит так: {preload module=news data=recs result=recs}, при этом результат выдаётся в массив {$recs}</li>
+			</ul>
+			';
+	
+		$groups = array(
+			'main'=> array(
+				'title' => 'Код шаблона',
+				'help' => $help_main,
+				'fields' => array(
+					'title' => array(
+						'sid' => 'title',
+						'type' => 'hidden',
+						'value' => basename( $this->vars['tmpl'] ),
+					),
+					'html' => array(
+						'title' => 'Исходный код',
+						'sid' => 'html',
+						'type' => 'html',
+						'value' => @file_get_contents($this->model->config['path']['templates'].'/'.basename( $this->vars['tmpl'] )),
+					),
+				)
+			),
+		);
+		
+		//Компоненты и интерфейсы
+		if( $this->vars['tmpl'] != 'start_index.tpl'){
+			//Настройки
+			$cfg = $this->model->config['path']['templates'].'/'.basename( $this->vars['tmpl'] ).'.cfg';
+			if( file_exists($cfg) )
+				$settings = unserialize( @file_get_contents( $cfg ) );
+			else
+				$settings = false;
+
+			//Добавляем компоненты
+			$components = $this->tabComponents($module, $settings);
+			if($components)
+				$groups['components'] = $components;
+			
+			//Добавляем интерфейсы
+			$interfaces = $this->tabInterfaces($module, $settings);
+			if($interfaces)
+				$groups['interfaces'] = $interfaces;
+		}
+			
+		$res['groups'] = $groups;
+		return $res;
+	}
+	public function showTemplates_all(){
+		$res                          = array();
+		$res['title']                 = 'Шаблоны сайта';
+		$res['form_action']           = 'templates';
+		$res['content_template_file'] = 'bar_templates.tpl';
+
+		$recs = array();
+		
+		//Должно быть шаблонов
+		$templates = array();
+		foreach($this->model->modules as $module_sid=>$module){
+			if($module->info['sid'])
+				$recs[ $module->info['prototype'].'_index.tpl' ] = array(
+					'id' => count($recs),
+					'title' => $module->info['title'].' - главная страница',
+					'file' => $module->info['prototype'].'_index.tpl',
+				);
+			else	
+				$recs[ $module->info['prototype'].'_index.tpl' ] = array(
+					'id' => count($recs),
+					'title' => 'Главная страница сайта',
+					'file' => 'start_index.tpl',
+				);
+			$recs[ $module->info['prototype'].'_content.tpl' ] = array(
+				'id' => count($recs),
+				'title' => $module->info['title'].' - страница записи',
+				'file' => $module->info['prototype'].'_content.tpl',
+			);
+			//Много структур - добавляется ещё один шаблон
+			if(count($module->structure)>1){
+				$recs[ $module->info['prototype'].'_list.tpl' ] = array(
+				'id' => count($recs),
+					'title' => $module->info['title'].' - страница списка записей',
+					'file' => $module->info['prototype'].'_list.tpl',
+				);
+			}
+		}
+
+		$root = $this->model->config['path']['templates'].'/';
+		$files = get_files($root, false, 0, 100000, false, 'tpl' );
+		
+		foreach($files as $i=>$file)
+			if( !IsSet($recs[ $file['file'] ]) ){
+				$recs[ $file['file'] ] = array(
+					'id' => count($recs),
+					'title' => 'Дополнительный шаблон '.$file['file'],
+					'file' => $file['file'],
+				);
+		}
+
+		foreach($recs as $i=>$rec){
+			if( file_exists($this->model->config['path']['templates'].'/'.$rec['file']) ){
+				$content = @file_get_contents($this->model->config['path']['templates'].'/'.$rec['file']);
+			}else{
+				$content = '
+{include file=\'head.tpl\'}
+<body>
+	<p>Пустой шаблон</p>
+</body>
+{include file=\'footer.tpl\'}
+				';
+			}
+			$recs[$i]['content'] = $content;
+		}
+		
+		if ($recs)
+			$res['recs'] = $recs;
+			
+		return $res;
+	}
+	public function saveTemplates(){
+		$path = $this->model->config['path']['tmp'].'/temp.tpl';
+		file_put_contents($path, stripslashes( $this->vars['html'] ), LOCK_EX );
+
+		//Подключаем шаблонизатор
+		require_once($this->model->config['path']['core'] . '/classes/templates.php');
+		$tmpl = new templater($this->model);
+		$tmpl->assign('paths', $this->model->config['path']);
+
+		//Создаём папку, если нет
+		if( !file_exists( $this->model->config['path']['tmp'] ) ){
+			mkdir( $this->model->config['path']['tmp'] );
+			chmod( $this->model->config['path']['tmp'], '0775' );
+		}
+		
+		//Проверяем корректность шаблона
+		try {
+			$ready_html = @$tmpl->fetch($path);
+		} catch (Exception $e) {
+			print('Шаблон содержит синтаксические ошибки.<br />');
+			print('<textarea style="width:500px; height:400px;">'.stripslashes( $this->vars['html'] ).'</textarea>');
+			pr($e);
+			exit();
+		}
+		
+		//Всё гуд - записываем
+		$path = $this->model->config['path']['templates'].'/'.basename($this->vars['title']);
+		$res = file_put_contents($path, stripslashes( $this->vars['html'] ), LOCK_EX);
+		chmod($path, 0775);
+
+		//Настройки компонентов и интерфейсов
+		$settings = array(
+			'interfaces_int' => (array)$this->vars['interfaces_int'],
+			'interfaces_ext' => (array)$this->vars['interfaces_ext'],
+			'components_int' => (array)$this->vars['components_int'],
+			'components_ext' => (array)$this->vars['components_ext'],
+		);
+		$path = $this->model->config['path']['templates'].'/'.basename($this->vars['title'].'.cfg');
+		$res = file_put_contents($path, serialize($settings), LOCK_EX);
+		chmod($path, 0775);
+		
+		header('Location: /');
+		exit();
+	}
 }
 
 ?>

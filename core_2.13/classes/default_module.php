@@ -134,7 +134,7 @@ class default_module{
 
 		//Стандартные
 		$system_prepares=array(
-			'recs'=>array('function'=>'prepareRecs','title'=>'Список всех записей', 'hidden'=>true),
+			'recs'=>array('function'=>'prepareRecs','title'=>'Список всех записей'),
 			'parent'=>array('function'=>'prepareParent','title'=>'Родительская запись', 'hidden'=>true),
 			'tags'=>array('function'=>'prepareTags','title'=>'Облако тегов раздела'),
 			'map'=>array('function'=>'prepareMap','title'=>'Дерево раздела'),
@@ -1586,7 +1586,7 @@ class default_module{
 					$flag=false;
 					foreach($table_fields as $f)
 						if($f['Field']==$sid)$flag=true;
-					if(!$flag){
+					if(!$flag and IsSet( $this->model->types[$field['type']] ) ){
 						$sql='alter table `'.$this->getCurrentTable($structure_sid).'` add '.$this->model->types[$field['type']]->creatingString($sid);
 						$this->model->execSql($sql,'update');
 //						pr('Поле "'.$sid.'" в таблице "'.$this->getCurrentTable($structure_sid).'" отсутствовало - исправлено.');

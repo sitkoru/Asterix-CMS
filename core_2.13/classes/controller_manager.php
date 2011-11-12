@@ -295,6 +295,7 @@ class controller_manager
 				$action = new $name($this->model, $this->vars, $this->cache);
 				
 				//Передаём управление
+				$this->model->controller = $action;
 				$action->start();
 			}
 	}
@@ -305,6 +306,7 @@ class controller_manager
 		return true;
 	}
 	
+
 	//Проверка доступа текущего пользователя к указанному контроллеру
 	private function checkAccessToController($controller)
 	{

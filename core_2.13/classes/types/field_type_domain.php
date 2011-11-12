@@ -54,7 +54,9 @@ class field_type_domain extends field_type_default
 			);
 		
 		//Готово
-		if (@in_array('all', $values[$value_sid])) {
+		if ( $values[$value_sid] == 'all'){
+			$res_value = 'all';
+		}elseif (@in_array('all', $values[$value_sid])) {
 			$res_value = 'all';
 		} else {
 			$res_value = '|' . (is_array($values[$value_sid]) ? implode('|', $values[$value_sid]) : $values[$value_sid]) . '|';

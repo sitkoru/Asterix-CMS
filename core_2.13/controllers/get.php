@@ -23,6 +23,33 @@ class controller_get extends default_controller
 {
 	public function start()
 	{
+		//JavaScript
+		$this->addJS('http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js');
+		$this->addJS('http://src.sitko.ru/a/j/lightbox.js');
+		//Библиотеки для Администратора
+		if($this->model->user->info['id']){
+			$this->addJS('http://src.sitko.ru/j/jquery.ui.core.js');
+			$this->addJS('http://src.sitko.ru/j/jquery.ui.widget.js');
+			$this->addJS('http://src.sitko.ru/j/jquery.ui.mouse.js');
+			$this->addJS('http://src.sitko.ru/j/jquery.ui.sortable.js');
+			$this->addJS('http://src.sitko.ru/j/jquery.ui.position.js');
+			$this->addJS('http://src.sitko.ru/j/jquery.ui.autocomplete.js');
+			$this->addJS('http://src.sitko.ru/a/j/a03.js');
+			$this->addJS('http://src.sitko.ru/a/j/a02.js');
+			$this->addJS('http://www.cdolivet.com/editarea/editarea/edit_area/edit_area_full.js');
+		}
+		$this->addJS('http://src.sitko.ru/a/j/j03.js');
+		
+		//CSS
+		$this->addCSS('http://src.sitko.ru/a/c/lightbox.css');
+		$this->addCSS('http://src.sitko.ru/a/c/s03.css');
+		$this->addCSS('http://src.sitko.ru/a/c/s03p.css');
+		$this->addCSS('http://jqueryui.com/themes/base/jquery.ui.all.css');
+		
+		//Doctype по умолчанию
+		if( !$this->model->settings['doctype'])
+			$this->model->settings['doctype'] = 'XHTML 1.0 Transitional';
+		
 		//Подготавливаем запись
 		$main_record = $this->model->prepareMainRecord();
 
@@ -58,8 +85,11 @@ class controller_get extends default_controller
 		//Подключаем шаблонизатор
 		require_once($this->model->config['path']['core'] . '/classes/templates.php');
 		$tmpl = new templater($this->model);
-
+		
 		//Пишем данные в шаблонизатор
+		$tmpl->assign('doctype', $this->model->settings['doctype']);
+		$tmpl->assign('head_add', $this->add);
+		
 		$tmpl->assign('mainmenu', $mainmenu);
 		$tmpl->assign('original_url', $this->model->ask->original_url);
 		$tmpl->assign('ask', $this->model->ask);
@@ -162,7 +192,7 @@ class controller_get extends default_controller
 			$main_record = $this->getInterfaces($settings, $main_record);
 
 		}
-
+		
 		//Дописываем саму запись
 		$tmpl->assign('content', $main_record);
 

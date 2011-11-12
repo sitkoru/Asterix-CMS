@@ -159,7 +159,6 @@ class ask
 		if( $this->mode[count($this->mode)-1] == intval($this->rec['page']) && (strlen($this->mode[count($this->mode)-1]) == strlen($this->rec['page'])) ){
 			UnSet($this->mode[count($this->mode)-1]);
 		}
-		
 	}
 	
 	//Вытащить из части URL все данные

@@ -127,12 +127,6 @@ class extention_domains extends extention_default
 		//Дата
 		$this->domain['date_public'] = $this->model->types['datetime']->getValueExplode($this->domain['date_start']);
 		
-		//Получаем тарифный план
-		$this->tarif = $this->model->execSql('select * from `tarifs` where `id`="' . mysql_real_escape_string($this->domain['tarif']) . '"', 'getrow');
-		
-		//Превращаем модули тарифа в модули домена
-		$this->domain['modules'] = explode('|', substr( $this->tarif['modules'], 1, strlen($this->tarif['modules'])-2 ) );
-		
 		//Текущий хост
 		$this->domain['current_host'] = $host;
 	}
