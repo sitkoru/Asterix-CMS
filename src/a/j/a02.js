@@ -29,7 +29,7 @@ var init_ckeditor = function() {
 			'Source','-','FontSize','Format','-','Bold','Italic','Underline','-',
 			'Subscript','Superscript','SpecialChar','-',
 			'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull','-',
-			'NumberedList','BulletedList','-',
+			'NumberedList','BulletedList','-','Outdent','Indent','-',
 			'Link','Unlink','Anchor','-',
 			'Table','Flash','Image','-','PasteFromWord','RemoveFormat','Blockquote','typograf'
 			],

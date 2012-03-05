@@ -2,7 +2,7 @@
 
 class acmsDirs{
 
-	function get_dirs($path, $current_dir, $level, $limit){
+	function get_dirs($path, $current_dir = false, $level = 0, $limit = 1000){
 		$files = array();
 		if($path[strlen($path)-1]!='/')
 			$path.='/';
@@ -36,8 +36,11 @@ class acmsDirs{
 		return $files;
 	}
 
-	function get_files($path, $current_dir, $level, $limit){
+	function get_files($path, $current_dir = false, $level = 0, $limit = 1000){
 		$files = array();
+		
+		if($path[ strlen($path)-1 ] != '/')
+			$path.='/';
 
 		$f = opendir($path);
 		$i=0;
