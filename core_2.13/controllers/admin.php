@@ -69,8 +69,7 @@ class controller_admin extends default_controller
 	);
 
 	//Основная цункция контроллера, получающая управление после инициализации
-	public function start()
-	{
+	public function start(){
 
 		//Очистка кеша
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {

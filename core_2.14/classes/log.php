@@ -43,7 +43,7 @@ class log
 		
 		print('Страница не может быть показана.<br />Ошибка '.$error_code.'.');
 		if( $error_comment ) print('<br />---<br />'.$error_comment);
-		if( $error_report ) pr('<pre><code>'.$error_report.'</code></pre>');
+		if( $error_report ) pr_r($error_report);
 		exit();	
 	}
 	
@@ -108,31 +108,53 @@ class log
 	}
 	
 	public static function pr($a){
-//		if( user::is_admin() ) {
+		if( class_exists(user) ){
+			if( user::is_admin() ) {
+				if (!headers_sent())
+					header('Content-Type: text/html; charset=utf-8');
+				print('
+					<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal;">
+						<b>Служебный вывод, виден только администраторам (длина: '.strlen($a).'):</b>
+						<br>' . $a . '<br />
+					</div>');
+			}
+		}else{
 			if (!headers_sent())
 				header('Content-Type: text/html; charset=utf-8');
 			print('
 				<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal;">
-					<b>Служебный вывод, виден только администраторам:</b>
+					<b>Служебный вывод, виден только администраторам (длина: '.strlen($a).'):</b>
 					<br>' . $a . '<br />
 				</div>');
-//		}
+		}
 	}
 	
 	public static function pr_r($a){
-//		if( user::is_admin() ) {
-			if (!headers_sent())
-				header('Content-Type: text/html; charset=utf-8');
-			print('
-				<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal; text-align:left;">
-					<b>Служебный вывод, виден только администраторам:</b>
-					<pre>');
-			print_r($a);
-			print('
-					</pre>
-					<i>(элементов в массиве: ' . count($a) . ')</i>
-				</div>');
-//		}
+		if( class_exists(user) ){
+			if( user::is_admin() ) {
+				if (!headers_sent())
+					header('Content-Type: text/html; charset=utf-8');
+				print('
+					<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal; text-align:left;">
+						<b>Служебный вывод, виден только администраторам (элементов в массиве: ' . count($a) . '):</b>
+						<pre>');
+				print_r($a);
+				print('
+						</pre>
+					</div>');
+			}
+		}else{
+				if (!headers_sent())
+					header('Content-Type: text/html; charset=utf-8');
+				print('
+					<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal; text-align:left;">
+						<b>Служебный вывод, виден только администраторам (элементов в массиве: ' . count($a) . '):</b>
+						<pre>');
+				print_r($a);
+				print('
+						</pre>
+					</div>');
+		}
 	}
 	public static function translitIt($str){
 		$tr = array(

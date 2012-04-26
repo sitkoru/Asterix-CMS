@@ -44,14 +44,8 @@ class field_type_date extends field_type_default
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values)
-	{
-		$val = $values[$value_sid]['year'] . '-' . str_pad($values[$value_sid]['month'], 2, '0', STR_PAD_LEFT) . '-' . str_pad($values[$value_sid]['day'], 2, '0', STR_PAD_LEFT);
-		
-		if (IsSet($values[$value_sid]['year']) && IsSet($values[$value_sid]['month']) && IsSet($values[$value_sid]['day']))
-			return $val;
-		else
-			return false;
+	public function toValue($value_sid, $values){
+		return date("Y-m-d", strtotime( $values[ $value_sid ]['date'] ));
 	}
 	
 	
@@ -60,7 +54,7 @@ class field_type_date extends field_type_default
 	//Получить простое значение по умолчанию из настроек поля
 	public function getDefaultValue($settings = false)
 	{
-		return date("Y-m-d H:i:s");
+		return date("Y-m-d");
 	}
 	
 	//Получить развёрнутое значение из простого значения

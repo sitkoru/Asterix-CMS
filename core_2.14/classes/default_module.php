@@ -17,8 +17,36 @@
 /*															*/
 /************************************************************/
 
+class Dynamic{
+
+	function __call($func, $args){
+		$func = strtolower($func);
+		$assoc = $this -> funcs[$func];
+		if (is_object($assoc))
+			return call_user_func_array(array($assoc,$func), $args);
+		if (!isset($assoc)) 
+			$assoc = get_class($this);
+		$argarr = array();
+		$keys = array_keys($args);
+		foreach ($keys as $id => $key)
+			$argarr[] = '$args[$keys['.$id.']]';
+		$argstr = implode($argarr, ",");
+		return 
+			eval("return $assoc::$func($argstr);");
+	}
+
+	public function class_import($arg1, $arg2=null){
+		assert (is_object($arg1) || class_exists($arg1));
+		if (isset($arg2))
+			$this -> funcs[strtolower($arg2)] = $arg1;
+		else
+			foreach (get_class_methods($arg1) as $method)
+				$this -> funcs[strtolower($method)] = $arg1;
+	}
+}
+
 //Модуль по умолчанию
-class default_module{
+class default_module extends Dynamic{
 
 	//Приставка перед таблицей в дазе данных - пока не используется
 	public $database_table_preface=false;
@@ -61,7 +89,7 @@ class default_module{
 	}
 
 	//Инициализация компонентов
-	public function initComponent($prepare,$params){
+	public function prepareComponent($prepare,$params){
 		return components::init($prepare,$params);
 	}
 
@@ -140,6 +168,9 @@ class default_module{
 		if( !is_array($record) ){$k = $record; $record = $structure_sid; $structure_sid = $k; }
 		return interfaces::editRecord($record, $structure_sid, $conditions);
 	}
+	public function updateRecord($record, $structure_sid = 'rec', $conditions=false){
+		return $this->editRecord($record, $structure_sid, $conditions);
+	}
 
 	//Удаление записи
 	public function deleteRecord($record, $structure_sid = 'rec', $conditions=false){
@@ -172,6 +203,54 @@ class default_module{
 	//Переместить на одну позицию ниже
 	public function updateChildren($structure_sid, $old_data, $new_data, $new_url, $condition = false, $domain = false){
 		return interfaces::moveDownupdateChildren($structure_sid, $old_data, $new_data, $new_url, $condition, $domain);
+	}
+
+////////////////////////////
+////	Компоненты 		////
+////////////////////////////
+
+	public function prepareRec($params){
+		return components::prepareRec($params);
+	}
+
+	public function prepareAnons($params){
+		return components::prepareAnons($params);
+	}
+
+	public function prepareAnonsList($params){
+		return components::prepareAnonsList($params);
+	}
+
+	public function prepareRecs($params){
+		return components::prepareRecs($params);
+	}
+
+	public function prepareCount($params){
+		return components::prepareCount($params);
+	}
+
+	public function prepareRandom($params){
+		return components::prepareRandom($params);
+	}
+
+	public function prepareRandomList($params){
+		return components::prepareRandomList($params);
+	}
+
+	public function prepareParent($params){
+		return components::prepareParent($params);
+	}
+
+	public function prepareMap($params){
+		return components::prepareMap($params);
+	}
+
+	public function preparePages($params){
+		return components::preparePages($params);
+	}
+
+	public function prepareTags($params){
+		return components::prepareTags($params);
 	}
 
 
@@ -258,5 +337,6 @@ class default_module{
 		return components::getOrderBy($params);
 	}
 }
+
 
 ?>

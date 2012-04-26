@@ -23,7 +23,6 @@ class unitTests{
 		if($this->structure)
 		foreach($this->structure as $structure_sid=>$structure){
 			if($structure['type']=='tree'){
-
 				$message=false;
 
 				//Забираем все записи дерева
@@ -56,7 +55,7 @@ class unitTests{
 					
 					//Строим нормальное дерево
 					$counter = 0;
-					$recs = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `sid`="index"','getall');
+					$recs = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where (`sid`="start" or `sid`="index")','getall');
 					foreach($recs as $i=>$rec){
 						$counter ++;
 						$rec['left_key'] = $counter;

@@ -22,13 +22,12 @@ class controller_manager
 	public static $config;
 	public $vars = array();
 	
+	public static $output_formats = array('html','json','xml','tpl');
+	
 	//Все стандартные контроллеры
 	public $controllers = array(
 		'get' => array('methods' => array('GET'), 'title' => 'Получение содержания страницы', 'protection' => false, 'model' => true, 'path' => 'get.php', 'format' => array('html')),
 		'admin' => array('methods' => array('GET', 'POST'), 'title' => 'Система управления', 'protection' => false, 'model' => true, 'path' => 'admin.php', 'format' => array('html')), 
-		'tree' => array('methods' => array('GET', 'POST'), 'title' => 'Дерево сайта', 'protection' => false, 'model' => true, 'path' => 'tree.php', 'format' => array('html')),
-		'feedback' => array('methods' => array('GET', 'POST'), 'title' => 'Форма обратной связи', 'protection' => array('referer'), 'model' => true, 'path' => 'feedback.php', 'format' => array('html')),
-		'register' => array('methods' => array('GET', 'POST'), 'title' => 'Регистрация', 'protection' => array('referer', 'captcha'), 'model' => true, 'path' => 'register.php', 'format' => array('html')),
 	);
 	
 	//Загружаемся
@@ -46,10 +45,10 @@ class controller_manager
 		
 		//Если сайт работает в режиме тестирования - проверяем можно ли показывать
 		$this->checkTestMode();
-		
+
 		//Определение контроллера
 		$this->activeController = $this->defineController();
-		
+
 		//Записываем контроллер
 		model::$ask->controller = $this->activeController;
 		
@@ -83,7 +82,12 @@ class controller_manager
 		if( IsSet( $this->activeController ) )
 			return $this->activeController;
 
-		//спец.контроллеры
+		//Admin
+		if( model::$ask->url[0] == 'admin' ){
+			return 'admin';
+		
+		
+/*		
 		if (IsSet($this->vars['action'])) {
 			if (IsSet($this->controllers[$this->vars['action']])) {
 				$controller = $this->vars['action'];
@@ -92,13 +96,16 @@ class controller_manager
 				$controller = 'admin';
 				return $controller;
 			}
+*/
 			
 		//Обычный контроллер
 		} else {
 			if ($_SERVER['REQUEST_METHOD'] == 'GET')
 				return 'get';
-			elseif ( $_SERVER['REQUEST_METHOD'] == 'POST' and model::$ask->mode[0] ){
-				model::$modules[ model::$ask->module ]->controlInterface(model::$ask->mode[0], $this->vars, true);
+			elseif( ($_SERVER['REQUEST_METHOD'] == 'POST') && ( IsSet(model::$ask->mode[0]) || IsSet($this->vars['interface']) ) ){
+				if( !IsSet($this->vars['interface']) )
+					$this->vars['interface'] = model::$ask->mode[0];
+				model::$modules[ model::$ask->module ]->controlInterface($this->vars['interface'], $this->vars, true);
 			}
 		}
 		
@@ -121,22 +128,28 @@ class controller_manager
 	public function execController($controller){
 		$current_module = model::$ask->module;
 
-		//Существует запрошенный интерфейс
-		if( IsSet( model::$modules[ $current_module ]->interfaces[ $this->vars['interface'] ] ) ){
-			//Запрос данных интерфейса
-			if( model::$ask->method == 'GET'){
-				model::$modules[ $current_module ]->prepareInterface($this->vars['interface'], $this->vars);
-			
-			//Обработка интерфейса			
-			}elseif( model::$ask->method == 'POST'){
-				model::$modules[ $current_module ]->controlInterface($this->vars['interface'], $this->vars);
-			}
-		
 		//Контроллера нет - запускаем стандартные
-		}elseif( $controller == 'admin' ){
+		if( $controller == 'admin' ){
 			require_once self::$config['path']['core'] . '/controllers/admin.php';
 			$controller = new controller_admin($this->model, $this->vars, $this->cache);
 			$controller -> start();
+		
+		//Существует запрошенный интерфейс
+		}elseif( (model::$ask->method == 'POST') && (IsSet( model::$modules[ $current_module ]->interfaces[ $this->vars['interface'] ] ) || IsSet( model::$modules[ $current_module ]->interfaces[ model::$ask->mode[0] ] )) ){
+/*
+До сюда не доходит, вызывается в defineController
+*/
+
+			if( !IsSet($this->vars['interface']) )
+				$this->vars['interface'] = model::$ask->mode[0];
+			model::$modules[ $current_module ]->controlInterface($this->vars['interface'], $this->vars);
+			pr('Вызванный контроллер интерфейса не вернул результата.');
+			exit();
+		
+		//Устаревший контроллер Feedback
+		}elseif( (model::$ask->method == 'POST') && ($this->vars['action'] == 'feedback') && IsSet(model::$ask->rec['feedback']) ){
+			$this->feedback();
+			exit();
 		
 		//Контроллера нет - запускаем стандартные
 		}else{
@@ -149,9 +162,9 @@ class controller_manager
 	
 	//Проверка работы в режиме тестирования
 	private function checkTestMode(){
-		return false;
+
 		if (intval(@model::$settings['test_mode'])) {
-			$current_ip = 0;//GetUserIP();
+			$current_ip = $_SERVER['REMOTE_ADDR'];
 			
 			//Обработка ошибки
 			if (!file_exists(self::$config['path']['core'] . '/ip_good.txt'))
@@ -166,12 +179,37 @@ class controller_manager
 			
 			//Проверяем
 			if (!in_array($current_ip, $white_ips)) {
-				if (!headers_sent())
+				if (!headers_sent()){
 					header('Content-Type: text/html; charset=utf-8');
+					header('HTTP/1.0 404 Not Found');
+				}
 				print(model::$settings['test_mode_text'] . ' <!--' . $current_ip . '-->');
 				exit();
 			}
 		}
+	}
+	
+	//Контроллер устаревшей формы обратной связи
+	private function feedback(){
+		$form = unserialize(model::$ask->rec['feedback']);
+		if( !is_array($form) )return false;
+
+		$message = '';
+		foreach($form['fields'] as $i=>$field)
+			$message .= $field['title'].': <strong>'.@$this->vars['f'.$i].'</strong><br />';
+
+		$subject = 'Соощение с сайта '.model::$ask->host;
+		$footer = 'Сообщение отослано со страницы: <a href="'.$_SERVER['HTTP_REFERER'].'">' . urldecode( $_SERVER['HTTP_REFERER'] ).'</a><br />'.date( 'd-m-Y H:i');
+		$message = 'Пользователь отправил сообщение с сайта http://'.model::$ask->host.'/<br /><br />'.$message.'<br /><hr />'.$footer;
+			
+		$email = model::initEmail();
+		$email->send($form['email'],$subject,$message,'html');
+		
+		$_SESSION['messages']['feedback']['ok'] = 'Сообщение успешно отправлено';
+		
+		//Готово
+		header('Location: ' . model::$ask->rec['url'].'.html#feedback');
+		exit();
 	}
 }
 

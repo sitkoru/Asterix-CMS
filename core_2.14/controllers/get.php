@@ -17,17 +17,19 @@
 /*															*/
 /************************************************************/
 
-require('default_controller.php');
+require_once('default_controller.php');
 
 class controller_get extends default_controller
 {
 	public function start(){
-	
-		if( model::$ask->output_format == 'html' )
+		if( (model::$ask->output_format == 'html') or (model::$ask->output_format == '404') )
 			$this->getHTML();
 			
 		elseif( model::$ask->output_format == 'json' ) 
 			$this->getJSON();
+			
+		elseif( model::$ask->output_format == 'tpl' ) 
+			$this->getHTML();
 	}
 
 
@@ -46,25 +48,41 @@ class controller_get extends default_controller
 			'data' => model::$ask->rec,
 		);
 		
-		pr_r($result);
+		if( model::$ask->mode[0] ){
+		
+			//Интерфейсы
+			if( IsSet( model::$modules[ model::$ask->module ]->interfaces[ model::$ask->mode[0] ] ) )
+				$result = model::$modules[ model::$ask->module ]->prepareInterface( model::$ask->mode[0], array('record'=>model::$ask->rec), true);
+			
+			//Компоненты
+			elseif( IsSet( model::$modules[ model::$ask->module ]->prepares[ model::$ask->mode[0] ] ) )
+				$result = model::$modules[ model::$ask->module ]->prepareComponent( model::$ask->mode[0], array('record'=>model::$ask->rec), true);
+		}
+
 		print json_encode( $result );
 		exit();
 	}
-	
+		
 	//Выдать результат обычной HTML-страничкой
 	private function getHTML(){
 		//JavaScript
+		
 		$this->addJS('http://src.sitko.ru/3.0/j/jquery-1.7.1.min.js');
 		$this->addJS('http://src.sitko.ru/3.0/jquery-ui/js/jquery-ui-1.8.17.custom.min.js');
-		$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-alert.js');
-		$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-button.js');
-		$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-dropdown.js');
-		$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-tab.js');
+		if( model::$settings['bootstrap'] ){
+			$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-alert.js');
+			$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-button.js');
+			$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-dropdown.js');
+			$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-tab.js');
+		}
 		$this->addJS('http://src.sitko.ru/3.0/j/panel.js');
+		$this->addJS('http://src.sitko.ru/3.0/j/j.js');
 
 		//Библиотеки для Администратора
-		$this->addCSS('http://twitter.github.com/bootstrap/assets/css/bootstrap.css');
-		$this->addCSS('http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css');
+		if( model::$settings['bootstrap'] ){
+			$this->addCSS('http://twitter.github.com/bootstrap/assets/css/bootstrap.css');
+			$this->addCSS('http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css');
+		}
 		$this->addCSS('http://src.sitko.ru/3.0/c/panel.css');
 		
 		//Подключаем шаблонизатор
@@ -114,7 +132,11 @@ class controller_get extends default_controller
 		}
 
 		//Файл основного шаблона
-		$template_file_path = model::$config['path']['templates'] . '/' . $current_template_file;
+		if( model::$ask->output_format == 'tpl' )
+			$template_file_path = model::$config['path']['templates'] . '/' . basename( end(model::$ask->mode) ).'.tpl';
+		else
+			$template_file_path = model::$config['path']['templates'] . '/' . $current_template_file;
+
 		//Если шаблон не установлен - копируем обычный текстовый шаблон
 		if (!file_exists($template_file_path))
 			if( !copy(model::$config['path']['templates'].'/start_content.tpl', $template_file_path) )
@@ -123,10 +145,18 @@ class controller_get extends default_controller
 		//Основная запись
 		$main_record = model::$modules[ model::$ask->module ]->explodeRecord(model::$ask->rec, model::$ask->structure_sid);
 		$main_record = model::$modules[ model::$ask->module ]->insertRecordUrlType($main_record, model::$ask->output_format);
+		//Интерфейсы
 		if( model::$ask->mode[0] )
 			if( IsSet( model::$modules[ model::$ask->module ]->interfaces[ model::$ask->mode[0] ] ) )
 				$main_record['interface'] = model::$modules[ model::$ask->module ]->prepareInterface( model::$ask->mode[0], array('record'=>model::$ask->rec), true);
-
+		//Компоненты
+		if( model::$ask->mode[0] )
+			if( IsSet( model::$modules[ model::$ask->module ]->prepares[ model::$ask->mode[0] ] ) )
+				$main_record['component'] = model::$modules[ model::$ask->module ]->prepareComponent( model::$ask->mode[0], array('record'=>model::$ask->rec), true);
+		//contentPrepare
+		if( is_callable( array( model::$modules[ model::$ask->module ], 'contentPrepare' )) )
+			$main_record = model::$modules[ model::$ask->module ]->contentPrepare( $main_record, $structure_sid='rec' );
+				
 		//Данные
 		$tmpl->assign('head_add', self::$add);
 		$tmpl->assign('mainmenu', $this->model->prepareMainMenu($levels));
@@ -145,7 +175,7 @@ class controller_get extends default_controller
 
 		//Компилируем
 		try {
-			$ready_html = $tmpl->fetch($current_template_file);
+			$ready_html = $tmpl->fetch($template_file_path);
 		} catch (Exception $e) {
 			log::stop('500 Internal Server Error', 'Шаблон ['.$current_template_file.'] содержит синтаксические ошибки.', '<textarea style="width:500px; height:400px;">'.stripslashes( $this->vars['html'] ).'</textarea><br />'.$e);
 		}
@@ -323,6 +353,5 @@ class controller_get extends default_controller
 		return $menu;	
 	}
 	
-
 }
 ?>

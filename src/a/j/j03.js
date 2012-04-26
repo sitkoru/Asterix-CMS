@@ -14,7 +14,7 @@ function listenInterface(){
 						alert( data['errors'][key]);
 					}
 				}else if(data['result']=='action'){
-					eval(data['action']);
+					eval(data['action'])(data['params']);
 				}else if(data['result']=='message'){
 					alert(data['message']);
 				}else if(data['result']=='redirect'){

@@ -6,7 +6,7 @@ class ModelLoader{
 	
 	//Загрузка конфига
 	public function loadConfig( $config ){
-
+	
 		//Совместимость с версиями до 2.14
 		$config['path']['libraries'] = 			$config['path']['core'].'/../libs';
 		$config['path']['admin_templates'] = 	$config['path']['core'].'/templates';
@@ -19,15 +19,17 @@ class ModelLoader{
 		$config['path']['cache'] = 				$config['path']['www'].'/../cache';
 		$config['path']['admin'] = 				$config['path']['www'].'/admin';
 
-		$config['path']['public_images'] = 		$config['path']['images'];
-		$config['path']['public_files'] = 		$config['path']['files'];
-		$config['path']['public_styles'] = 		$config['path']['styles'];
-		$config['path']['public_javascript'] = 	$config['path']['javascript'];
+		if( !IsSet( $config['path']['public_javascript'] ) ){
+			$config['path']['public_images'] = 		$config['path']['images'];
+			$config['path']['public_files'] = 		$config['path']['files'];
+			$config['path']['public_styles'] = 		$config['path']['styles'];
+			$config['path']['public_javascript'] = 	$config['path']['javascript'];
 
-		$config['path']['images'] = 			$config['path']['www'].$config['path']['public_images'];
-		$config['path']['files'] = 				$config['path']['www'].$config['path']['public_files'];
-		$config['path']['styles'] = 			$config['path']['www'].$config['path']['public_styles'];
-		$config['path']['javascript'] = 		$config['path']['www'].$config['path']['public_javascript'];
+			$config['path']['images'] = 			$config['path']['www'].$config['path']['public_images'];
+			$config['path']['files'] = 				$config['path']['www'].$config['path']['public_files'];
+			$config['path']['styles'] = 			$config['path']['www'].$config['path']['public_styles'];
+			$config['path']['javascript'] = 		$config['path']['www'].$config['path']['public_javascript'];
+		}
 
 		$config['settings']['phpversion'] = phpversion();
 
@@ -40,7 +42,15 @@ class ModelLoader{
 	public function loadDatabase(){
 		if( !$this->db ){
 		
-			require(model::$config['path']['core'] . '/classes/db.php');
+			//Поддерживаемые форматы баз данных
+			$supported_databases = array(
+				false => array(
+					'mysql' => 'mysql.php'
+				),
+				'ado' => array(
+					'mysql' => 'adodb5/adodb.inc.php'
+				)
+			);
 
 			//Инициализация баз данных
 			$db = array();
@@ -48,7 +58,7 @@ class ModelLoader{
 				if( IsSet( $supported_databases[ $one['lib_pack'] ][ $one['type'] ] ) ) {
 					
 					model::$config['db'][$name]['supported'] = true;
-					require_once(model::$config['path']['core'] . '/../libs/' . $supported_databases[ $one['lib_pack'] ][ $one['type'] ] );
+					require_once(model::$config['path']['libraries'] . '/' . $supported_databases[ $one['lib_pack'] ][ $one['type'] ] );
 					$n = $one['type'];
 					
 					//ADO
@@ -99,6 +109,7 @@ class ModelLoader{
 			'text' => 'field_type_text.php',
 			'textarea' => 'field_type_textarea.php',
 			'text_editor' => 'field_type_texteditor.php',
+			'textwiki' => 'field_type_textwiki.php',
 			
 			'password' => 'field_type_password.php',
 			'tags' => 'field_type_tags.php',
@@ -116,6 +127,7 @@ class ModelLoader{
 			
 			'image' => 'field_type_image.php',
 			'gallery' => 'field_type_gallery.php',
+			'video' => 'field_type_video.php',
 			'file' => 'field_type_file.php',
 			'user' => 'field_type_user.php',
 			'access' => 'field_type_access.php',
@@ -126,7 +138,9 @@ class ModelLoader{
 			'menu' => 'field_type_menu.php',
 			'menum' => 'field_type_menum.php',
 			'module' => 'field_type_module.php',
+			
 			'params' => 'field_type_params.php',
+			'array' => 'field_type_array.php',
 			
 			'link' => 'field_type_link.php',
 			'linkm' => 'field_type_linkm.php',
@@ -177,6 +191,9 @@ class ModelLoader{
 			}
 		}
 		
+		//older version support
+		$this->modules = $modules;
+		
 		return $modules;
 	}
 
@@ -200,21 +217,32 @@ class ModelLoader{
 	//Загрузка настроек домена
 	public function loadSettings(){
 		$settings = array();
-
+		
 		$res = $this->execSql('select * from `settings` where ' . model::pointDomain(), 'getall');
 
 		//Добавление поля field для старых версий ядра
-		if( !IsSet($res[0]['field']) ){
+		if( !IsSet($res[0]['field']) )
 			model::execSql('alter table `settings` add `field` TEXT NOT NULL','insert');
-		}
 		
 		//Разворачиваем поля настроек
 		foreach ($res as $r)
 			if( is_object( model::$types[ trim($r['type']) ] ) )
 				$settings[ trim($r['var']) ] = model::$types[ trim($r['type']) ]->getValueExplode( trim($r['value']), false, $res );
-		
+
 		$settings = ModelLoader::checkNeededSettings( $settings );
 
+		//Вывод ошибок для режима разработки
+		if( $settings['test_mode'] ){
+			error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
+			ini_set("display_errors", "on");
+		}else{
+			error_reporting(0);
+			ini_set("display_errors", "off");
+		}
+		
+		//older version support
+		$this->settings = $settings;
+		
 		return $settings;
 	}
 
@@ -226,6 +254,7 @@ class ModelLoader{
 		$ask->protocol = substr($_SERVER['SERVER_PROTOCOL'], 0, strpos($_SERVER['SERVER_PROTOCOL'], '/'));
 		$ask->host = $_SERVER['HTTP_HOST'];
 		$ask->output_type = '404';
+		$ask->output_format = 'html';
 
 		if($ask->original_url != '/'){
 			$ask->url = array_values( explode('/', substr($ask->original_url, 1) ) );
@@ -236,11 +265,21 @@ class ModelLoader{
 					$ask->tree[ $i ] = array('url' => $url, 'mode' => $mode);
 					$ask->url[ $i ] = $url;
 					
-					if( in_array( end( $ask->tree[ $i ]['mode'] ), array('html', 'json') ) )
+					if( class_exists( 'controller_manager' ) )
+						$formats = controller_manager::$output_formats;
+					else
+						$formats = array('html','json','xml','tpl');
+					
+					if( in_array( end( $ask->tree[ $i ]['mode'] ), $formats ) )
 						$ask->output_format = array_pop( $ask->tree[ $i ]['mode'] );
 
 					//Модификаторы
 					$ask->mode = $ask->tree[ $i ]['mode'];
+					
+					//Номер страницы
+					if( is_numeric( end( $ask->mode ) ) ){
+						$ask->current_page = intval( array_pop( $ask->mode) );
+					}
 					
 				}else{
 					$ask->tree[ $i ] = array(
@@ -301,6 +340,12 @@ class ModelLoader{
 				'title' => 'Название сайта', 
 				'type' => 'textarea', 
 				'default_value' => 'Сайт находится в разработке, ориентировочная дата открытия: '.date("d.m.Y", strtotime("+1 month")), 
+			),
+			'bootstrap' => array( 
+				'group' => 'main', 
+				'title' => 'Использовать на сайте библиотеку bootstrap', 
+				'type' => 'check', 
+				'default_value' => false, 
 			),
 			
 			//SEO

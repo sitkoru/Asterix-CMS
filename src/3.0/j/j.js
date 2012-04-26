@@ -4,7 +4,18 @@ document.write('<script src="http://src.sitko.ru/3.0/ckeditor/adapters/jquery.js
 var init_ckeditor = function() {
 
 	$('.controls textarea.html_editor').ckeditor({
+		toolbar:
+		[
+			[
+			'Bold','Italic','Underline','-',
+			'NumberedList','BulletedList','-',
+			'Link','Unlink','-',
+			],
+		],
+		language:'ru'
+	});
 
+	$('.controls textarea.html_editor_admin').ckeditor({
 		toolbar:
 		[
 			[
@@ -18,7 +29,7 @@ var init_ckeditor = function() {
 		],
 		language:'ru',
 		/*removePlugins:'scayt,menubutton,contextmenu',*/
-		filebrowserUploadUrl:'/admin/upload.php',
+		filebrowserUploadUrl:'/admin/',
 		extraPlugins:'iframedialog,typograf'
 	});
 }
@@ -50,20 +61,30 @@ function fn(){
 	$('.sortable').disableSelection();
 
 	//Params field type
-	$('.acms_field_params .add').unbind('click');
-	$('.acms_field_params .add').click(function(){
+	$('.acms_field_params .add, .acms_field_feedback .add').unbind('click');
+	$('.acms_field_params .add, .acms_field_feedback .add').click(function(){
 		$(this).parents('.controls').find('ul li:last').clone().appendTo( $(this).parents('.controls').find('ul') );
 		$(this).parents('.controls').find('ul li:last input').val('');
 		fn();
 		return false;	
 	});
-	$('.acms_field_params .delete').unbind('click');
-	$('.acms_field_params .delete').click(function(){
+	$('.acms_field_params .delete, .acms_field_feedback .delete').unbind('click');
+	$('.acms_field_params .delete, .acms_field_feedback .delete').click(function(){
 		if( confirm('Удалить параметр?') ){
 			$(this).parents('li').remove();
 		}
 		return false;
 	});
+	$('.acms_field_feedback .required').unbind('click');
+	$('.acms_field_feedback .required').click(function(){
+		$(this).toggleClass('badge badge-warning').find('i').toggleClass('icon-white');
+		if( $(this).hasClass('badge') ) 
+			$(this).parents('li').find('.required_field').val( 1 );
+		else
+			$(this).parents('li').find('.required_field').val( 0 );
+		return false;	
+	});
+	
 	$('.acms_field_params .header').unbind('click');
 	$('.acms_field_params .header').click(function(){
 		var id = $(this).parents('li').attr('id');
@@ -83,7 +104,7 @@ function fn(){
 jQuery(document).ready(function(){
 	
 	fn();
-	
+/*	
 	//Переключение групп полей (Настройки)
 	$('.acms-tabs a').click(function(){
 		
@@ -98,10 +119,11 @@ jQuery(document).ready(function(){
 		$('.'+group+'').fadeIn('fast');
 		return false;
 	});
-	
-	$(".alert-message").alert()
-	
+*/
+
+//	$(".alert-message").alert();
 	init_ckeditor();
+
 	
 	$('.acms_panel_groups .icon-ok').click(function(){
 		$(this).toggleClass('icon-ok').toggleClass('icon-remove');
@@ -114,7 +136,7 @@ jQuery(document).ready(function(){
 				{
 					'module_sid':		$(this).parents('li').attr('module_sid'),
 					'structure_sid':	$(this).parents('li').attr('structure_sid'),
-					'record':			rec_id,
+					'record':			rec_id
 				}, 
 				function(data) {
 					document.location.href='/admin.html';

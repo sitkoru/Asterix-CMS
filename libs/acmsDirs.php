@@ -74,6 +74,20 @@ class acmsDirs{
 		return $files;
 	}
 
+	function makeFolder($path, $chmod = 0775){
+		$dirs = explode('/', $path);
+		$t = false;
+		foreach($dirs as $dir)
+			if( strlen($dir) ){
+				$t .= '/'.$dir;
+				if( !@file_exists($t) ){
+					@mkdir( $t, $chmod );
+					@chmod( $t, $chmod );
+				}
+			}
+		return file_exists($path);
+	}
+	
 	//Выбрать файлы по расширению
 	function select_ext($ext, $files){
 		$items = array();

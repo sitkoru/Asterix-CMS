@@ -31,12 +31,11 @@ class components{
 	public function init($prepare, $params){
 		if( IsSet( $this->prepares[$prepare] ) ){
 			$function_name=$this->prepares[ $prepare ]['function'];
-			
-			if( method_exists( model::$modules[ $params['module'] ], $function_name) )
-				return model::$modules[ $params['module'] ]->$function_name($params);
-			
-			elseif( method_exists('components', $function_name) )
+			if( method_exists('components', $function_name) ){
 				return components::$function_name($params);
+			}elseif( is_callable(array($this, $function_name)) ){
+				return $this->$function_name($params);	
+			}
 		}
 		return false;
 	}
@@ -127,7 +126,6 @@ class components{
 
 	//Записи - полный список записей
 	public function prepareRecs($params){
-
 		//Брать параметры из GET
 		if($params['params_from_get']){
 			//Получаем условия
@@ -157,7 +155,7 @@ class components{
 		if( $params['chop_to_pages'] ){
 
 			//Текущая страница
-			$current_page = model::$ask->rec['page'];
+			$current_page = model::$ask->current_page;
 
 			//Всего записей по запросу
 			$num_of_records = $this->model->execSql('select count(`id`) as `counter` from `'.$this->getCurrentTable($structure_sid).'` where '.implode(' and ', $where['and']) . ' and (' . ($where['or']?implode(' or ', $where['or']):'1') .')'.' and '.model::pointDomain().'','getrow');
@@ -180,7 +178,7 @@ class components{
 					'limit'=>'limit '.($current_page*$items_per_page).', '.$items_per_page,
 				),
 				'getall'
-			);
+			);//pr(model::$last_sql);
 
 			//Раскрываем сложные поля
 			if($recs)
@@ -217,16 +215,16 @@ class components{
 				if($current_page<$num_of_pages-1)$next=$current_page+1;else $next=0;
 
 				//Предыдущая страница
-				$pages['prev']['url'] = model::$ask->rec['url'].$modifiers.'.'.$prev.'.'.model::$ask->output.($get_vars?'?'.implode('&', $get_vars):'');
+				$pages['prev']['url'] = model::$ask->rec['url'].$modifiers.'.'.$prev.'.'.model::$ask->output_format.($get_vars?'?'.implode('&', $get_vars):'');
 				$pages['prev']['num'] = $prev;
 
 				//Следующая страница
-				$pages['next']['url'] = model::$ask->rec['url'].$modifiers.'.'.$next.'.'.model::$ask->output.($get_vars?'?'.implode('&', $get_vars):'');
+				$pages['next']['url'] = model::$ask->rec['url'].$modifiers.'.'.$next.'.'.model::$ask->output_format.($get_vars?'?'.implode('&', $get_vars):'');
 				$pages['next']['num'] = $next;
 
 				//Другие страницы
 				for($i=0;$i<$num_of_pages;$i++){
-					$pages['items'][$i]['url']=model::$ask->rec['url'].$modifiers.'.'.$i.'.'.model::$ask->output.($get_vars?'?'.implode('&', $get_vars):'');
+					$pages['items'][$i]['url']=model::$ask->rec['url'].$modifiers.'.'.$i.'.'.model::$ask->output_format.($get_vars?'?'.implode('&', $get_vars):'');
 				}
 			}
 
@@ -258,12 +256,18 @@ class components{
 		//Без разбивки на страницы
 		}else{
 
+			$limit = false;
+			if( is_int($params['limit']) )
+				$limit = 'limit '.(IsSet($params['start'])?intval($params['start']).', ':'').intval($params['limit']);
+			elseif( is_string($params['limit']) )
+				$limit = mysql_real_escape_string($params['limit']);
+
 			//Забираем записи
 			$recs=$this->model->makeSql(
 				array(
 					'tables'=>array($this->getCurrentTable($structure_sid)),
 					'where'=>$where,
-					'limit'=>(isSet($params['limit'])?'limit '.(IsSet($params['start'])?intval($params['start']).', ':'').intval($params['limit']):''),
+					'limit'=>$limit,
 					'order'=>$order,
 				),
 				'getall'

@@ -17,7 +17,7 @@
 /*                              */
 /************************************************************/
 
-class mysql extends database{
+class mysql{
   public $title = 'ACMS Класс работы с базой данных MySQL';
   public $version = '1.0';
   
@@ -28,6 +28,18 @@ class mysql extends database{
   public $query_log=array();
   public $name;
 
+	public function __construct($model)
+	{
+		$this->model = $model;
+		$this->connection = false;
+		$this->active_database = false;
+	}
+	public function activate()
+	{
+		mysql_select_db($this->name, $this->connection);
+		$this->active_database = $this->name;
+	}
+  
   public function Connect($host,$user,$password,$name){
     $this->name=$name;
     $this->connection=@mysql_connect($host,$user,$password) or $this->error('connection');

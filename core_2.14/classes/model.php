@@ -30,9 +30,9 @@ class model{
 
 	function __construct($config, $log, $cache = false){
 
-		require($config['path']['core'].'/classes/model_loader.php');
-		require($config['path']['core'].'/classes/model_sql.php');
-		require($config['path']['core'].'/classes/model_finder.php');
+		require_once($config['path']['core'].'/classes/model_loader.php');
+		require_once($config['path']['core'].'/classes/model_sql.php');
+		require_once($config['path']['core'].'/classes/model_finder.php');
 
 		$this->log        = 	$log;
 		$this->log->model = 	$this;
@@ -52,6 +52,7 @@ class model{
 		$this->unittest_modules();
 		$this->check_no_www();
 		$this->authUser();
+
 		
 	}
 

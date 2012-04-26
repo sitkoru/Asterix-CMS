@@ -26,27 +26,38 @@ class field_type_feedback extends field_type_default
 	//Поле участввует в поиске
 	public $searchable = false;
 	
-	public function creatingString($name)
-	{
+	public function creatingString($name){
 		return '`' . $name . '` TEXT NOT NULL';
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false)
-	{
-		//Отметаем пустые поля
-		if (is_array($values[$value_sid]['fields']))
-			foreach ($values[$value_sid]['fields'] as $i => $f)
-				if (!strlen($f['title']))
-					UnSet($values[$value_sid]['fields'][$i]);
-		//Готово
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false){
+		$fields = array();
+		$value = $values[$value_sid];
+
+		foreach($value['fields'] as $var=>$vals){
+			foreach($vals as $i=>$val){
+				if( $var == 'required' )
+					$val = intval($val);
+				$fields[$i][$var] = $val;
+			}
+		}
+		$value['shw'] = intval($value['shw']);
+		$value['captcha'] = intval($value['captcha']);
+		$value['fields'] = $fields;
 		
-		return serialize($values[$value_sid]);
+		//Отметаем пустые поля
+		if (is_array($value['fields']))
+			foreach ($value['fields'] as $i => $f)
+				if (!strlen($f['title']))
+					UnSet($value['fields'][$i]);
+					
+		//Готово
+		return serialize( $value );
 	}
 	
 	//Получить развёрнутое значение из простого значения
-	public function getValueExplode($value, $settings = false, $record = array())
-	{
+	public function getValueExplode($value, $settings = false, $record = array()){
 		//Расшифровываем
 		$value = unserialize($value);
 
@@ -80,38 +91,20 @@ class field_type_feedback extends field_type_default
 			if (is_array($value['fields']))
 				foreach ($value['fields'] as $i => $f)
 					$value['fields'][$i]['sid'] = 'f' . $i;
+					
+		
 		//Готово
 		return $value;
 	}
 	
 	//Получить развёрнутое значение для системы управления из простого значения
-	public function getAdmValueExplode($value, $settings = false, $record = array())
-	{
-		$min_num_of_fields = 8;
+	public function getAdmValueExplode($value, $settings = false, $record = array()){
+		$value = unserialize( htmlspecialchars_decode( $value ) );
 		
-		$value = unserialize($value);
-		if(!is_array($value))
-			$value=array();
-
-		for ($i = 0; $i < 3; $i++)
-			$value['fields'][] = array(
-				'title' => false,
-				'type' => 'text',
-				'required' => false
-			);
+		if( IsSet($value['protection']) )
+			if( $value['protection'] == 'captcha' )
+				$value['captcha'] = 1;
 		
-		if (count($value['fields']) < $min_num_of_fields)
-			for ($i = count($value['fields']); $i < $min_num_of_fields; $i++) {
-				$value['fields'][] = array(
-					'title' => false,
-					'type' => 'text',
-					'required' => false
-				);
-			}
-		
-		//		$value['counter']=intval($value['counter']);
-		
-		//Готово
 		return $value;
 	}
 }

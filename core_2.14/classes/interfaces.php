@@ -12,10 +12,10 @@ class interfaces{
 			'title' => 'Добавить '.mb_strtolower($this->title_to, 'utf-8'),				//Название интерфейса
 			'structure_sid' => false,													//Используемая структура текущего модуля
 			'fields' => false,															//Поля для интерфейса
-			'public' => true,
+			'system' => true,
 			'ajax' => false,															//Отправка при помощи AJAX
 			'protection' => false,														//Защита формы
-			'auth' => true,															//Необходимый уровень доступа к интерфейсу
+			'auth' => true,																//Необходимый уровень доступа к интерфейсу
 			'use_record' => false,														//Использовать ли уже имеющуюся запись
 			'getfields' => 'getFields',
 			'control' => 'addRecord',													//Функция, отвечающая за обработку интерфейса после отправки
@@ -24,7 +24,7 @@ class interfaces{
 			'title' => 'Изменить '.mb_strtolower($this->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
-			'public' => true,
+			'system' => true,
 			'ajax' => false,
 			'protection' => false,
 			'auth' => true,
@@ -36,7 +36,7 @@ class interfaces{
 			'title' => 'Удалить '.mb_strtolower($this->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
-			'public' => true,
+			'system' => true,
 			'ajax' => false,
 			'protection' => false,
 			'auth' => true,
@@ -48,6 +48,7 @@ class interfaces{
 			'title' => 'Переместить выше по дереву '.mb_strtolower($this->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
+			'system' => true,
 			'ajax' => false,
 			'protection' => false,
 			'auth' => 'admin',
@@ -59,6 +60,7 @@ class interfaces{
 			'title' => 'Переместить ниже по дереву '.mb_strtolower($this->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
+			'system' => true,
 			'ajax' => false,
 			'protection' => false,
 			'auth' => 'admin',
@@ -70,6 +72,7 @@ class interfaces{
 			'title' => 'Переместить по дереву '.mb_strtolower($this->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
+			'system' => true,
 			'ajax' => false,
 			'protection' => false,
 			'auth' => 'admin',
@@ -81,7 +84,7 @@ class interfaces{
 			'title' => 'Показать/скрыть '.mb_strtolower($this->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
-			'public' => true,
+			'system' => true,
 			'ajax' => false,
 			'protection' => false,
 			'auth' => 'admin',
@@ -96,6 +99,7 @@ class interfaces{
 
 		//Если контроллер существует
 		if( IsSet( $this->interfaces[$prepare] ) ){
+
 			$structure_sid=$this->interfaces[$prepare]['structure_sid'];
 			if( !$structure_sid )$structure_sid = model::$ask->structure_sid;
 				
@@ -106,33 +110,25 @@ class interfaces{
 				else
 					$record=$this->getRecordById($structure_sid,$params['id']);
 			}
+			
+			//Адрес отправки интерфейса
+			if( $record )
+				$url = $record['url'].'.'.$prepare.'.html';
+			else
+				$url = $this->info['url'].'.'.$prepare.'.html';
 
 			$access = true;
-
 			//Требуется авторизация
 			if( !user::is_authorized() && $this->interfaces[$prepare]['auth'] )$access = false;
 
 			//Требуется авторизация админ, которого нет
 			if( ($this->interfaces[$prepare]['auth']==='admin') and ( !user::is_admin() ) )$access = false;
-
 			//Не автор при редактировании записи
 			if( !user::is_admin() and !user::is_moder() and ($record['author'] != user::$info['id']) and $this->interfaces[$prepare]['use_record'] and ($this->info['sid']!='users') )$access = false;
 			if( !user::is_admin() and !user::is_moder() and ($record['id'] != user::$info['id']) and $this->interfaces[$prepare]['use_record'] and ($this->info['sid']=='users') )$access = false;
 			
 			if( !$access )
-				return false;
-			
-/*
-			//Родитель
-			if($this->structure[$structure_sid]['dep_path'])
-				if(IsSet($this->interfaces[$prepare]['fields']['dep_path_'.$this->structure[$structure_sid]['dep_path']['structure']])){
-					$name='dep_path_'.$this->structure[$structure_sid]['dep_path']['structure'];
-					$type=$this->structure[$structure_sid]['dep_path']['link_type'];
-					$title=$this->structure[$this->structure[$structure_sid]['dep_path']['structure']]['title'];
-					$where=@$this->interfaces[$prepare]['fields']['dep_path_'.$this->structure[$structure_sid]['dep_path']['structure']]['where'];
-					$fields[$name]=array('sid'=>$name,'type'=>$type,'group'=>'main','title'=>$title,'module'=>$this->info['sid'],'structure_sid'=>$this->structure[$structure_sid]['dep_path']['structure'],'where'=>$where);
-				}
-*/
+				log::stop('401 Unauthorized','Нет доступа к интерфейсу '.$prepare, $this->interfaces);
 
 			$fields = interfaces::getFields($record, $prepare, $public);
 
@@ -140,6 +136,7 @@ class interfaces{
 			$result=array(
 				'sid'=>$prepare,									//Идентификатор интерфейса
 				'interface'=>$prepare,								//Идентификатор интерфейса
+				'url'=>$url,
 				'title'=>$this->interfaces[$prepare]['title'],		//Название интерфейса
 				'comment'=>@$this->interfaces[$prepare]['comment'],	//Название интерфейса
 				'fields'=>$fields,									//Поля и значения
@@ -188,12 +185,14 @@ class interfaces{
 		$fields = interfaces::getFields($params, $interface, $public);
 		foreach($params as $var=>$val)
 			if( !IsSet( $fields[$var] ) )
-				UnSet( $params[ $var ] );
+				if( $var != 'interface' )
+					UnSet( $params[ $var ] );
 	
 		$function_name = $this->interfaces[$interface]['control'];
-		if( method_exists( $this, $function_name) ){
+		if( is_callable(array($this, $function_name)) )
 			$this->answerInterface( $interface, $this->$function_name( $params, $structure_sid ) );
-		}
+		else
+			log::stop('500 Internal Server Error');
 	}
 	
 	//Собираем поля для интерфейса
@@ -215,6 +214,7 @@ class interfaces{
 			}
 		//Поля заданы в интерфейсе
 		}else{
+			if( IsSet( $this->interfaces[$interface]['fields'] ) )
 			foreach($this->interfaces[$interface]['fields'] as $sid=>$field){
 				if(!IsSet($field['sid']))
 					$field['sid'] = $sid;
@@ -227,7 +227,7 @@ class interfaces{
 				}
 			}
 		}
-		
+
 		//Раскрываем поля
 		if( $fields )
 		foreach( $fields as $i=>$field ){
@@ -235,8 +235,9 @@ class interfaces{
 				$field['type'] = 'text';
 			
 			if( IsSet( model::$types[ $field['type'] ] ) ){
-				if( IsSet($record[ $field['sid'] ]) )
-					$field['value'] = $record[ $field['sid'] ];
+				if( !IsSet($field['value']) )
+					if( IsSet($record[ $field['sid'] ]) )
+						$field['value'] = $record[ $field['sid'] ];
 				if( !IsSet($field['value']) )
 					$field['value'] = model::$types[ $field['type'] ]->getDefaultValue($field);
 				if( !is_array( $field['value'] ) )
@@ -372,6 +373,7 @@ class interfaces{
 			
 		//Вставляем просто так
 		}else{
+
 			//Вставляем запись
 			$res=model::makeSql(
 				array(

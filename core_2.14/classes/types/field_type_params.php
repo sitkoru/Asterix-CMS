@@ -35,26 +35,27 @@ class field_type_params extends field_type_default
 	public function toValue($value_sid, $values, $old_values = array(), $settings = false){
 	
 		$val = array();
-		foreach($values[$value_sid]['title'] as $i=>$title){
+		foreach($values[$value_sid]['title'] as $i=>$title)if($title){
 			$val[] = array(
 				'title' => $title,
 				'value' => $values[$value_sid]['value'][ $i ],
 				'header' => intval( $values[$value_sid]['header'][ $i ] ),
 			);
 		}
+		
 		return serialize( $val );
 	}
 	
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode($value, $settings = false, $record = array()){
 		//Готово
-		return unserialize( $values[ $value_sid ] );
+		$value = unserialize( $value );
+		return $value;
 	}
 	
 	//Получить развёрнутое значение для системы управления из простого значения
 	public function getAdmValueExplode($value, $settings = false, $record = array()){
-		$value = unserialize( $value );
-		return $value;
+		return $this->getValueExplode($value, $settings, $record);
 	}
 	
 	

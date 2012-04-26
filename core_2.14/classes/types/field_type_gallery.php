@@ -47,6 +47,7 @@ class field_type_gallery extends field_type_default
 		//Коррекция типа данных
 		$this->correctFieldType($module_sid, $structure_sid, $value_sid);
 		
+		require_once model::$config['path']['core'] . '/../libs/acmsDirs.php';
 		require_once model::$config['path']['core'] . '/../libs/acmsFiles.php';
 		require_once model::$config['path']['core'] . '/../libs/acmsImages.php';
 
@@ -65,10 +66,15 @@ class field_type_gallery extends field_type_default
 		foreach( $values[$value_sid]['name'] as $i => $value)
 			if( strlen($values[$value_sid]['tmp_name'][$i]) > 0 ){
 
+			//Создаём папку, если ещё нет
+			$created = acmsDirs::makeFolder( model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid );
+			if( !$created )
+				log::stop('500 Internal Server Error', 'Нет доступа для создания папки', model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid );
+			
 			//Удаление фотки
 			if ($values[$value_sid . '_delete'][$i]) {
 				$old_path = substr( $values[ $value_sid.'_old_id' ][$i], 0, strpos( $values[ $value_sid.'_old_id' ][$i], '|' ) );
-				acmsFiles::delete(model::$config['path']['www'] . model::$config['path']['public_images'] . '/' . $old_path);
+				acmsFiles::delete(model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid . '/' . $old_path);
 				
 			//Файл передан
 			} elseif (strlen( $values[$value_sid]['tmp_name'][$i] ) ) {
@@ -76,12 +82,12 @@ class field_type_gallery extends field_type_default
 				//Обновление картинки
 				if( @$values[$value_sid . '_old_id'] ){
 					$old_path = substr( $values[ $value_sid.'_old_id' ][$i], 0, strpos( $values[ $value_sid.'_old_id' ][$i], '|' ) );
-					acmsFiles::delete(model::$config['path']['www'] . model::$config['path']['public_images'] . '' . $old_path);
+					acmsFiles::delete(model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid . '' . $old_path);
 					$image_id = 0;
 				}
 				
 				//Проверка уникальности имени файла
-				$name = acmsFiles::unique( $values[$value_sid]['name'][$i], model::$config['path']['www'] . model::$config['path']['public_images'] );
+				$name = acmsFiles::unique( $values[$value_sid]['name'][$i], model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid );
 				
 				//Проверка корректности имени файла
 				$name = acmsFiles::filename_filter( $name );
@@ -90,7 +96,7 @@ class field_type_gallery extends field_type_default
 				$ext = substr($name, strrpos($name, '.') + 1);
 				
 				//Загружаем файл
-				$filename = acmsFiles::upload( $values[$value_sid]['tmp_name'][$i], model::$config['path']['www'] . model::$config['path']['public_images'] . '/' . $name );
+				$filename = acmsFiles::upload( $values[$value_sid]['tmp_name'][$i], model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid . '/' . $name );
 				
 				//Ужимаем до нужного размера и перезаписываем
 				$acmsImages = new acmsImages;
@@ -98,7 +104,7 @@ class field_type_gallery extends field_type_default
 				
 				//Доп.характеристики
 				$data['type'] = $values[$value_sid]['type'][$i];
-				$data['path'] = model::$config['path']['public_images'] . '/'. $name;
+				$data['path'] = model::$config['path']['public_images'].'/'.$module_sid . '/'. $name;
 				$data['title'] = strip_tags( $values[$value_sid . '_title'][$i] );
 				
 				//Определяем основные цвета картинки
@@ -108,7 +114,7 @@ class field_type_gallery extends field_type_default
 				if( IsSet( $settings['pre'] ) )
 					foreach( $settings['pre'] as $sid => $pre){
 						$pre_filename = str_replace( '.'.$ext, '_'.$sid.'.'.$ext, $filename );
-						$data[ $sid ] = model::$config['path']['public_images'] . '/' . str_replace( '.'.$ext, '_'.$sid.'.'.$ext, basename($data['path']) );
+						$data[ $sid ] = model::$config['path']['public_images'].'/'.$module_sid . '/' . str_replace( '.'.$ext, '_'.$sid.'.'.$ext, basename($data['path']) );
 						$acmsImages->resize( $filename, $pre_filename, $pre['resize_type'], @$pre['resize_width'], @$pre['resize_height'] );
 						
 						//Фильтры - чёлно-белый
@@ -132,9 +138,12 @@ class field_type_gallery extends field_type_default
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode($value, $settings = false, $record = array())
 	{
-		$result = unserialize($value);
+		$result = unserialize( $value );
 		
-		if ( is_array($result) and (!is_array($result[0])) ) {
+		if(is_array($result))
+			$keys = array_keys($result);
+		
+		if ( is_array($result) and ( !is_array( $result[ $keys[0] ] ) ) ) {
 			
 			foreach ($result as $i => $val) {
 				$result[$i] = array();

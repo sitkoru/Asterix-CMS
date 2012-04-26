@@ -143,6 +143,7 @@ class user
 
 	//Авторизация пользователя по локальной базе пользователей
 	private static function authUser_localhost(){
+		
 		//Авторизация по логину/паролю
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
 			//Поиск по базе
@@ -161,6 +162,32 @@ class user
 
 			UnSet($_POST['login']);
 			UnSet($_POST['password']);
+
+			//Запоминаем
+			if (IsSet($user['id'])) {
+				self::setCookie('auth', $user['session_id']);
+				self::all_ok($user);
+				$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
+			}
+
+		//Авторизация по GET-параметру
+		} elseif (IsSet($_GET['login']) && IsSet($_GET['auth'])) {
+			//Поиск по базе
+			$user = model::makeSql(array(
+				'tables' => array(
+					self::$table_name
+				),
+				'where' => array(
+					'and' => array(
+						'`login`="' . mysql_real_escape_string($_GET['login']) . '"',
+						'MD5(`session_id`)="' . mysql_real_escape_string($_GET['auth']) . '"',
+						'access' => '1'
+					)
+				)
+			), 'getrow');
+
+			UnSet($_GET['login']);
+			UnSet($_GET['auth']);
 
 			//Запоминаем
 			if (IsSet($user['id'])) {
@@ -197,7 +224,6 @@ class user
 				}
 			}
 			
-			
 		//Авторизация по Cookies
 		} elseif (strlen(@$_COOKIE['auth'])) {
 			//Поиск по базе
@@ -218,28 +244,6 @@ class user
 				self::all_ok($user);
 	
 				
-		//Авторизация по GET-параметру
-		} elseif (IsSet($_GET['login']) && IsSet($_GET['auth'])) {
-			//Поиск по базе
-			$user = model::makeSql(array(
-				'tables' => array(
-					self::$table_name
-				),
-				'where' => array(
-					'and' => array(
-						'`login`="' . mysql_real_escape_string($_GET['login']) . '"',
-						'MD5(`session_id`)="' . mysql_real_escape_string($_GET['auth']) . '"',
-						'access' => '1'
-					)
-				)
-			), 'getrow');
-
-			//Запоминаем
-			if (IsSet($user['id'])) {
-				self::setCookie('auth', $user['session_id']);
-				self::all_ok($user);
-			}
-
 		//Не авторизован
 		} else {
 			self::deleteCookie('auth');
@@ -333,6 +337,10 @@ class user
 				self::$info['admin'] = intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' );
 				self::$info['session_id'] = session_id();
 
+				//Первый пользователь в системе всегда становится админом
+				if( self::ifFirstThenAdmin() )
+					self::$info['admin'] = true;
+						
 				$_POST['login'] = self::$info['login'];
 				$_POST['password'] = self::$info['password'];
 				
@@ -402,6 +410,10 @@ class user
 					self::$info['admin'] = intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' );
 					self::$info['session_id'] = session_id();
 
+					//Первый пользователь в системе всегда становится админом
+					if( self::ifFirstThenAdmin() )
+						self::$info['admin'] = true;
+						
 					$_POST['login'] = self::$info['login'];
 					$_POST['password'] = self::$info['password'];
 					
@@ -548,6 +560,10 @@ class user
 					self::$info['admin'] = intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' );
 					self::$info['session_id'] = session_id();
 
+					//Первый пользователь в системе всегда становится админом
+					if( self::ifFirstThenAdmin() )
+						self::$info['admin'] = true;
+						
 					$_POST['login'] = self::$info['login'];
 					$_POST['password'] = self::$info['password'];
 				
@@ -635,7 +651,9 @@ class user
 						//Совместимость со старым форматом конфига
 						or IsSet(model::$config['openid'][ $openid_domain ]) ){
 							//Смотрим на конфиг, давать ли пользователям этого домена админа
-							$openid_user_admin = ( model::$config['openid'][ $openid_domain ] == 'admin' );
+							$openid_user_admin = false;
+							if( (model::$config['openid']['sitko.ru'] == 'admin') && substr_count($params['contact/email'], '@sitko.ru') )
+								$openid_user_admin = true;
 
 							$login = model::$types['sid']->correctValue( $openid_domain.'_'.$params['contact/email'] );
 							if( IsSet($params['namePerson/first']) ) 
@@ -662,9 +680,13 @@ class user
 							if( !self::$info['id'] ){
 								self::$info['sid'] = $login;
 								self::$info['shw'] = true;
-								self::$info['admin'] = intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' );
+								self::$info['admin'] = $openid_user_admin;
 								self::$info['session_id'] = session_id();
 
+								//Первый пользователь в системе всегда становится админом
+								if( self::ifFirstThenAdmin() )
+									self::$info['admin'] = true;
+									
 								$_POST['login'] = self::$info['login'];
 								$_POST['password'] = self::$info['password'];
 								
@@ -691,7 +713,10 @@ class user
 			}
 		}
 	}
-
+	public static function ifFirstThenAdmin(){
+		$c = model::execSql('select count(`id`) as `count` from `'.self::$table_name.'`', 'getrow');
+		return !$c['count'];
+	}
 	
 	
 	public static function is_authorized(){

@@ -21,8 +21,26 @@ require('default_controller.php');
 
 class controller_get extends default_controller
 {
-	public function start()
-	{
+	public function start(){
+
+		//Обновление
+		if( $this->model->user->info['admin']){
+			$update = file('http://src.opendev.ru/update.txt');
+			$ver = $this->model->config['settings']['version'];
+			if( in_array($ver, $update) ){
+				//Сливаем скрипт обновления ядра
+//				if( !file_exists($this->model->config['path']['www'].'/update_'.$ver.'.php') ){
+					$script = file_get_contents('http://src.opendev.ru/scripts/update_'.$ver.'.txt');
+					file_put_contents($this->model->config['path']['www'].'/update_'.$ver.'.php', $script);
+					chmod($this->model->config['path']['www'].'/update_'.$ver.'.php', 0775);
+//				}
+				//Показываем уведомление в панели управления
+				if( file_exists($this->model->config['path']['www'].'/update_'.$ver.'.php') ){
+					$this->model->settings['update_available'] = '/update_'.$ver.'.php';
+				}
+			}
+		}
+
 		//JavaScript
 		$this->addJSLib('http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js');
 		$this->addJSLib('http://src.sitko.ru/a/j/lightbox.js');

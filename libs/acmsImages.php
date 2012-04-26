@@ -19,45 +19,53 @@ class acmsImages{
 		$current_height = $size[1];
 		$type 			= $size['mime'];
 		
-		//Меняем размеры основного изображения
-		list($new_width, $new_height) = $this->newSize($current_width, $current_height, $resize_type, $resize_width, $resize_heigth);
-		
-		//Читаем картинку
-		$src = file_get_contents( $src_path );
-		$src = ImageCreateFromString( $src );
-
-		//Новая картинка
-		$dst = ImageCreateTrueColor($new_width, $new_height);
-
-		//Включаем прозрачность для GIF и PNG
-		if( in_array( $size['mime'], array('image/gif', 'image/png') ) ){
-			$transparentcolor = imagecolortransparent($src);
-			imagefill($dst,0,0,$transparentcolor);
-			imagecolortransparent($dst,$transparentcolor);
-			imagesavealpha($dst, true);
-		}
-		
-		//Копируем изображение
-		ImageCopyResampled($dst, $src, 0, 0, 0, 0, $new_width, $new_height, $current_width, $current_height);
-
 		//Если не указано другого пути - перезаписываем изображение
 		if( !$dest_path )
 			$dest_path = $src_path;
+			
+		//Меняем размеры основного изображения
+		list($new_width, $new_height) = $this->newSize($current_width, $current_height, $resize_type, $resize_width, $resize_heigth);
 		
-		//Сохраняем
-		if($type == 'image/jpeg')
-			ImageJpeg($dst, $dest_path, 100);
-		elseif ($type == 'image/gif')
-			ImageGif($dst, $dest_path);
-		elseif ($type == 'image/png')
-			ImagePng($dst, $dest_path, 1);
-	
-		//Освобождаем память
-		ImageDestroy($src);
-		ImageDestroy($dst);
+		//Нужно менять размер
+		if( $new_width && $new_height ){
+			//Читаем картинку
+			$src = file_get_contents( $src_path );
+			$src = ImageCreateFromString( $src );
 
-		//Разрешения на файл
-		chmod($dest_path, $chmod);
+			//Новая картинка
+			$dst = ImageCreateTrueColor($new_width, $new_height);
+
+			//Включаем прозрачность для GIF и PNG
+			if( in_array( $size['mime'], array('image/gif', 'image/png') ) ){
+				$transparentcolor = imagecolortransparent($src);
+				imagefill($dst,0,0,$transparentcolor);
+				imagecolortransparent($dst,$transparentcolor);
+				imagesavealpha($dst, true);
+			}
+			
+			//Копируем изображение
+			ImageCopyResampled($dst, $src, 0, 0, 0, 0, $new_width, $new_height, $current_width, $current_height);
+
+			//Сохраняем
+			if($type == 'image/jpeg')
+				ImageJpeg($dst, $dest_path, 100);
+			elseif ($type == 'image/gif')
+				ImageGif($dst, $dest_path);
+			elseif ($type == 'image/png')
+				ImagePng($dst, $dest_path, 1);
+		
+			//Освобождаем память
+			ImageDestroy($src);
+			ImageDestroy($dst);
+
+			//Разрешения на файл
+			chmod($dest_path, $chmod);
+		
+		//Не нужно менять размер - просто копируем
+		}else{
+			copy( $src_path, $dest_path );
+			chmod( $dest_path, $chmod );
+		}
 		
 		//Готово
 		return array(
@@ -241,13 +249,13 @@ class acmsImages{
 					$new_height = $current_height / $ratio_y;
 				}
 				
-				//Оставляем как есть
+			//Оставляем как есть
 			} else {
-				$new_width  = $current_width;
-				$new_height = $current_height;
+				$new_width  = false;
+				$new_height = false;
 			}
 			
-			//outer
+		//outer
 		} elseif ($resize_type == 'outer') {
 			//Нужно менять
 			if ($current_width > $resize_width && $current_height > $resize_height) {
@@ -261,13 +269,13 @@ class acmsImages{
 					$new_height = $current_height / $ratio_y;
 				}
 				
-				//Оставляем как есть
+			//Оставляем как есть
 			} else {
-				$new_width  = $current_width;
-				$new_height = $current_height;
+				$new_width  = false;
+				$new_height = false;
 			}
 			
-			//width
+		//width
 		} elseif ($resize_type == 'width') {
 			//Нужно менять
 			if ($current_width > $resize_width) {
@@ -275,13 +283,13 @@ class acmsImages{
 				$ratio      = $current_width / $resize_width;
 				$new_height = $current_height / $ratio;
 				
-				//Оставляем как есть
+			//Оставляем как есть
 			} else {
-				$new_width  = $current_width;
-				$new_height = $current_height;
+				$new_width  = false;
+				$new_height = false;
 			}
 			
-			//height
+		//height
 		} elseif ($resize_type == 'height') {
 			//Нужно менять
 			if ($current_height > $resize_height) {
@@ -289,23 +297,30 @@ class acmsImages{
 				$ratio      = $current_height / $resize_height;
 				$new_width  = $current_width / $ratio;
 				
-				//Оставляем как есть
+			//Оставляем как есть
 			} else {
-				$new_width  = $current_width;
-				$new_height = $current_height;
+				$new_width  = false;
+				$new_height = false;
 			}
 			
-			//exec
+		//exec
 		} elseif ($resize_type == 'exec') {
-			$new_width  = $resize_width;
-			$new_height = $resize_height;
+			//Нужно менять
+			if ($current_width != $resize_width || $current_height != $resize_height) {
+				$new_width  = $resize_width;
+				$new_height = $resize_height;
+			//Оставляем как есть
+			}else{
+				$new_width  = false;
+				$new_height = false;
+			}
 		}
 		
+		if( $new_width ) $new_width = round($new_width);
+		if( $new_height ) $new_height = round($new_height);
+		
 		//Готово
-		return array(
-			round($new_width),
-			round($new_height)
-		);
+		return array($new_width,$new_height);
 	}
 	
 }

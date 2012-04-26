@@ -65,18 +65,26 @@ class templater{
 			'addCSS'
 		));
     
+		@$this->tmpl->register_function('unserialize', array(
+			$this,
+			'unserialize'
+		));
+    
 	}
   
 	//Функция, которая будет загружать наши данные
 	public function preloadData($params, &$smarty)
 	{
-	
+
 		//Вызов происходит не по названию модуля, а по прототипу
 		if (IsSet($params['prototype'])) {
 			$module_sid       = $this->model->getModuleSidByPrototype($params['prototype']);
 			$params['module'] = $module_sid;
 			UnSet($params['prototype']);
 		}
+		if( IsSet($params['module']) )
+			if( !$params['module'] )
+				$params['module'] = 'start';
     
 		//Если модуль указан верно
 		if (IsSet($params['module'])){
@@ -86,10 +94,10 @@ class templater{
 				if (IsSet($params['data'])) {
 				
 					//Имя функции, которую будем вызывать
-					$function_name = $params['data'];
+					$component_name = $params['data'];
 
 					//Запрашиваем данные
-					$result        = model::$modules[ $params['module'] ]->initComponent($function_name, $params);
+					$result        = model::$modules[ $params['module'] ]->prepareComponent($component_name, $params);
 
 					//Записываем в шаблонизатор
 					$this->tmpl->assign($params['result'], $result);
@@ -184,6 +192,11 @@ class templater{
 	}
 	public function addJS($params, &$smarty){
 		$result = default_controller::addUserJS( $params['val'] );
+		$this->tmpl->assign($params['result'], $result);
+	}
+	public function unserialize($params, &$smarty){
+		$result = unserialize( $params['value'] );
+		pr_r($result);
 		$this->tmpl->assign($params['result'], $result);
 	}
 

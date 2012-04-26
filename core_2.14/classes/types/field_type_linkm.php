@@ -59,12 +59,15 @@ class field_type_linkm extends field_type_default
 		);
 			
 		//Варианты значений
+		$this->structure = model::$modules[$settings['module']]->structure[$settings['structure_sid']];
 		if( $this->structure['type'] == 'simple' )
 			$order = 'order by `title`';
 		else{
 			$order = 'order by `left_key`';
 			$fields[] = 'tree_level';
 		}
+		if( isset($this->structure['fields']['pos']) )
+			$order = 'order by `pos` asc';
 			
 		$recs = $this->model->makeSql(array(
 			'tables' => array(
@@ -108,7 +111,7 @@ class field_type_linkm extends field_type_default
 			'title',
 			'url'
 		);
-			
+		$this->structure = model::$modules[$settings['module']]->structure[$settings['structure_sid']];
 		//Варианты значений
 		if( $this->structure['type'] == 'simple' )
 			$order = 'order by `title`';
@@ -116,6 +119,7 @@ class field_type_linkm extends field_type_default
 			$order = 'order by `left_key`';
 			$fields[] = 'tree_level';
 		}
+		
 			
 		//Варианты значений
 		$variants = $this->model->makeSql(array(

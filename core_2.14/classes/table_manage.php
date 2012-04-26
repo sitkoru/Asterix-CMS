@@ -2,18 +2,18 @@
 
 /************************************************************/
 /*															*/
-/*	ßäðî ñèñòåìû óïðàâëåíèÿ Asterix	CMS						*/
-/*		Ìåíåäæåð óïðàâëåíèÿ òàáëèöàìè áàçû äàííûõ			*/
+/*	Ð¯Ð´Ñ€Ð¾ ÑÐ¸ÑÑ‚ÐµÐ¼Ñ‹ ÑƒÐ¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ñ Asterix	CMS						*/
+/*		ÐœÐµÐ½ÐµÐ´Ð¶ÐµÑ€ ÑƒÐ¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ñ Ñ‚Ð°Ð±Ð»Ð¸Ñ†Ð°Ð¼Ð¸ Ð±Ð°Ð·Ñ‹ Ð´Ð°Ð½Ð½Ñ‹Ñ…			*/
 /*															*/
-/*	Âåðñèÿ ÿäðà 2.0											*/
-/*	Âåðñèÿ ñêðèïòà 1.00										*/
+/*	Ð’ÐµÑ€ÑÐ¸Ñ ÑÐ´Ñ€Ð° 2.0											*/
+/*	Ð’ÐµÑ€ÑÐ¸Ñ ÑÐºÑ€Ð¸Ð¿Ñ‚Ð° 1.00										*/
 /*															*/
-/*	Copyright (c) 2009  Ìèøèí Îëåã							*/
-/*	Ðàçðàáîò÷èê: Ìèøèí Îëåã									*/
+/*	Copyright (c) 2009  ÐœÐ¸ÑˆÐ¸Ð½ ÐžÐ»ÐµÐ³							*/
+/*	Ð Ð°Ð·Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸Ðº: ÐœÐ¸ÑˆÐ¸Ð½ ÐžÐ»ÐµÐ³									*/
 /*	Email: dekmabot@gmail.com								*/
 /*	WWW: http://mishinoleg.ru								*/
-/*	Ñîçäàí: 10 ôåâðàëÿ 2009	ãîäà							*/
-/*	Ìîäèôèöèðîâàí: 25 ñåíòÿáðÿ 2009 ãîäà					*/
+/*	Ð¡Ð¾Ð·Ð´Ð°Ð½: 10 Ñ„ÐµÐ²Ñ€Ð°Ð»Ñ 2009	Ð³Ð¾Ð´Ð°							*/
+/*	ÐœÐ¾Ð´Ð¸Ñ„Ð¸Ñ†Ð¸Ñ€Ð¾Ð²Ð°Ð½: 25 ÑÐµÐ½Ñ‚ÑÐ±Ñ€Ñ 2009 Ð³Ð¾Ð´Ð°					*/
 /*															*/
 /************************************************************/
 
@@ -21,7 +21,7 @@ class table_manage
 {
 	public static $db;
 	
-	//Ïîääåðæèâàåìûå òèïû ïîëåé äàííûõ
+	//ÐŸÐ¾Ð´Ð´ÐµÑ€Ð¶Ð¸Ð²Ð°ÐµÐ¼Ñ‹Ðµ Ñ‚Ð¸Ð¿Ñ‹ Ð¿Ð¾Ð»ÐµÐ¹ Ð´Ð°Ð½Ð½Ñ‹Ñ…
 	private $supported_types = array('id' => 'field_type_id.php', 'sid' => 'field_type_sid.php', 'pos' => 'field_type_pos.php', 'ln' => 'field_type_ln.php', 'int' => 'field_type_int.php', 'float' => 'field_type_float.php', 'label' => 'field_type_label.php', 'text' => 'field_type_text.php', 'textarea' => 'field_type_textarea.php', 'text_editor' => 'field_type_texteditor.php', 'password' => 'field_type_password.php', 'object' => 'field_type_object.php', 'tags' => 'field_type_tags.php', 'map_point' => 'field_type_map_point.php', 'date' => 'field_type_date.php', 'domain' => 'field_type_domain.php', 'datetime' => 'field_type_datetime.php', 'image' => 'field_type_image.php', 'file' => 'field_type_file.php', 'menu' => 'field_type_menu.php', 'menu_m' => 'field_type_menum.php', 'menu_open' => 'field_type_menuopen.php', 'check' => 'field_type_check.php');
 	
 	public function __construct($db, $table_name, $structure, $core_path)
@@ -49,36 +49,39 @@ class table_manage
 		$sql = 'create table `' . $this->table_name . '` (' . "\n\r";
 		//		foreach($this->structure['dep_param'] as $name=>$field)$sql.=$this->supported_types[$field['type']]->creatingString($name).', '."\n\r";
 		
-		//Îñíîâíûå ïîëÿ
+		//ÐžÑÐ½Ð¾Ð²Ð½Ñ‹Ðµ Ð¿Ð¾Ð»Ñ
 		foreach ($this->structure['fields'] as $name => $field)
-			$sql .= model::$types[ $field['type'] ]->creatingString($name) . ', ' . "\n\r";
+			if( IsSet(model::$types[ $field['type'] ]) )
+				$sql .= model::$types[ $field['type'] ]->creatingString($name) . ', ' . "\n\r";
 		
 		$sql .= 'UNIQUE KEY `id` (`id`)' . "\n\r";
 		$sql .= ') ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;' . "\n\r";
 		//pr($sql);
 		model::execSql($sql, 'insert');
-		pr_r($sql);
 	}
 	private function create_tree()
 	{
 		$sql = 'create table `' . $this->table_name . '` (' . "\n\r";
 		//		foreach($this->structure['dep_param'] as $name=>$field)$sql.=$this->supported_types[$field['type']]->creatingString($name).', '."\n\r";
 		
-		//Îñíîâíûå ïîëÿ
+		//ÐžÑÐ½Ð¾Ð²Ð½Ñ‹Ðµ Ð¿Ð¾Ð»Ñ
 		foreach ($this->structure['fields'] as $name => $field) {
 			$sql .= model::$types[ $field['type'] ]->creatingString($name) . ', ' . "\n\r";
 		}
 		
-		//Ñòðóêòóðà DB-TREE
+		//Ð¡Ñ‚Ñ€ÑƒÐºÑ‚ÑƒÑ€Ð° DB-TREE
 		$sql .= '`left_key` INT NOT NULL DEFAULT 0, ' . "\n\r";
 		$sql .= '`right_key` INT NOT NULL DEFAULT 0, ' . "\n\r";
 		$sql .= '`tree_level` INT NOT NULL DEFAULT 0, ' . "\n\r";
 		
 		$sql .= 'UNIQUE KEY `id` (`id`)' . "\n\r";
 		$sql .= ') ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;' . "\n\r";
-		//pr($sql);
+		
 		model::execSql($sql, 'insert');
-		pr_r($sql);
+		
+		$sql = 'insert into `' . $this->table_name . '` set `sid`="'.$this->info['sid'].'", `title`="Ð“Ð»Ð°Ð²Ð½Ð°Ñ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ð° Ð¼Ð¾Ð´ÑƒÐ»Ñ", `shw`=1, `left_key`=1, `right_key`=2, `tree_level`=1, `url_alias`="/'.$this->info['sid'].'"';
+		model::execSql($sql, 'insert');
+		
 	}
 	
 }

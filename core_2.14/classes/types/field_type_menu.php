@@ -48,6 +48,16 @@ class field_type_menu extends field_type_default
 		return $values[$value_sid];
 	}
 	
+	//Получить развёрнутое значение из простого значения
+	public function getValueExplode($value, $settings = false, $record = array())
+	{
+/*
+		$variants = $settings['variants'];
+		if( IsSet( $settings['variants'][$value] ) )
+			$value = $settings['variants'][$value];
+*/	
+		return $value;
+	}
 	//Получить развёрнутое значение для системы управления из простого значения
 	public function getAdmValueExplode($value, $settings = false, $record = array()){
 		$variants = $settings['variants'];

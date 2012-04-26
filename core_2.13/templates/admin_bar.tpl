@@ -1,5 +1,4 @@
 <ul id="acms_bar">
-
 	<li class="a_logo"><img src="http://src.sitko.ru/i/logo_adm.png" style="height:29px;" alt="Asterix CMS" /></li>
 	<li class="a_wide"><a href="/" rel="tree" class="call_admin_interface">Дерево сайта</a></li>
 	<li class="a_narrow">
@@ -49,6 +48,40 @@
 			<li><a rel="exit" href="?logout=yes">Выход</a></li>
 		</ul>
 	</li>
+{if $settings.update_available}
+	<li OnClick="$j('#acms_update_bar').toggle('fast');" style="cursor:pointer;">
+		&nbsp;
+		<img src="http://src.sitko.ru/3.0/i/icon_up.gif" alt="Найдено обновление" />
+		&nbsp;
+	</li>
+	<div id="acms_update_bar" style="
+		display: none;
+		width: 80%;
+		background-color: #07B52A;
+		height: 28px;
+		position: absolute;
+		top: 30px;
+		margin: 0 10%;
+		border-radius: 0 0 10px 10px;
+		color: white;
+		line-height: 28px;
+	">Найдено бесплатное обновление для вашей Asterix CMS 
+		<a style="
+			color: white;
+			text-decoration: underline;	
+		" href="http://asterix.opendev.ru/news.html" target="_blank">до версии 2.14</a>.
+		<a href="{$settings.update_available}" style="
+			background-color: white;
+			color: #07B52A;
+			display: inline-block;
+			padding: 0 5px;
+			border-radius: 5px;
+			line-height: 20px;
+			margin: 0 10px;
+		" target="_blank">Установить</a>
+	</div>
+{/if}
+
 </ul>
 
 <div id="acms_content">

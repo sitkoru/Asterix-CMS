@@ -52,7 +52,15 @@ class field_type_menum extends field_type_default
 		$vals = explode('|', $value);
 		UnSet($vals[0]);
 		UnSet($vals[count($vals)]);
-		return array_values($vals);
+		
+		$new_vals = array();
+		foreach( $vals as $val )
+			if( IsSet( $settings['variants'][$val] ) )
+				$new_vals[$val] = $settings['variants'][$val];
+			else
+				$new_vals[] = $val;
+		
+		return $new_vals;
 	}
 	
 	//Получить развёрнутое значение для системы управления из простого значения

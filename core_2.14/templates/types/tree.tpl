@@ -1,4 +1,4 @@
-	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}"{if $key != main} style="display:none;"{/if}>
+	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}">
 		<label for="id_{$field_sid}">{$field.title}</label>
 		<div class="controls">
 			<select name="{$field.sid}" class="" id="id_{$field_sid}">

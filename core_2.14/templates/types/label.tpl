@@ -1,5 +1,6 @@
-<p>
-{$field.title}:<br />
-<input type="text" readonly="readonly" value="{$field.value}" style="width:300px" maxlength="250" /><br />
-
-</p>
+	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}">
+		<label class="control-label" for="field_{$field.sid}">{$field.title}</label>
+		<div class="controls">
+			<span class="input-xlarge uneditable-input">{$field.value}</span>
+		</div>
+	</div>

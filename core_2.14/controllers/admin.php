@@ -17,7 +17,7 @@
 /*															*/
 /************************************************************/
 
-require('default_controller.php');
+require_once('default_controller.php');
 
 class controller_admin extends default_controller{
 
@@ -107,7 +107,6 @@ class controller_admin extends default_controller{
 	
 	//Форма редактирования записи
 	private function preloadForm($action, $record){
-		
 		//Ресурсы		
 		if( !$action ){
 			$action = 'tree';
@@ -145,7 +144,7 @@ class controller_admin extends default_controller{
 
 		//Шаблоны
 		$current_template_file = 'admin.tpl';
-		require(model::$config['path']['core'] . '/classes/templates.php');
+		require_once(model::$config['path']['core'] . '/classes/templates.php');
 		$tmpl = new templater($this->model);
 
 		//Данные
@@ -157,7 +156,7 @@ class controller_admin extends default_controller{
 		$action_result['content_template_file'] = $tmpl->correctTemplatePackPath($action_result['content_template_file'], 'admin_templates');
 		
 		$action_result['groups'] 				= $this->getGroups($action, $record);
-
+		
 		$tmpl->assign('action', 				$action_result);
 		$tmpl->assign('ask', 					model::$ask);
 		$tmpl->assign('content', 				model::$ask->rec);
@@ -182,7 +181,11 @@ class controller_admin extends default_controller{
 	
 	//Контроллер обработки отправленной формы
 	private function controlForm($action, $record){
-	
+		
+		//Загрузка файлов через визуальный редактор
+		if( user::is_admin() && IsSet($_FILES['upload']) && !count($_POST) )
+			$this->ckeditorUpload($_FILES['upload']);
+		
 		if( $action == 'addRecord' ){
 			$this->checkRestBeforeAdd();
 			$url = $this->model->addRecord(model::$ask->module, model::$ask->structure_sid, $this->vars);
@@ -268,7 +271,7 @@ class controller_admin extends default_controller{
 	}
 	
 	private function getGroups($action, $record) {
-		
+			
 		//Поля для данных
 		if( $action == 'settings' )
 			$fields = $this->getSettingsFields();
@@ -294,13 +297,15 @@ class controller_admin extends default_controller{
 			$fields = $this->getAccess();
 			
 		else{
+			if( !IsSet(model::$modules[ model::$ask->module ]) )
+				log::stop('404 Not Found', 'Произошло обращение к несуществующему модулю', 'Вполне возможно, ссылка на модуль была удалёна из дерева сайта вручную. <br />Включите режим Разработки для автоматического исправления ошибки.');
 			$fields = model::$modules[ model::$ask->module ]->prepareInterface($action, array('id'=>$record['id']), false);
 			$fields = $fields['fields'];
 //			$fields = $this->getRecordFields(model::$ask->module, model::$ask->structure_sid, $record, false);
 		}
 
 		$groups = $this->sortFieldsToGroups( $fields );
-		
+
 		//Готово
 		return $groups;
 	}
@@ -341,7 +346,7 @@ class controller_admin extends default_controller{
 						array_merge(
 							$rec, 
 							array(
-								'group' => $module->info['title'], 
+								'group' => $module->info['title'].($structure_sid!='rec'?' ('.$structure['title'].')':''), 
 								'tree_level' => 1, 
 								'sortable' => $sortable
 							)
@@ -547,6 +552,31 @@ class controller_admin extends default_controller{
 		exit();
 	}
 
+	//Загрузка файлов через CKEditor
+	private function ckeditorUpload($file){
+		$ext = substr($file['name'], strrpos($file['name'],'.'));
+		$dir = date("Y");
+		$filename = 'img' . date("YmdHis") . '.' . $ext;
+		$path = model::$config['path']['files'] . '/' . $dir. '/' . $filename;
+		
+		include_once(model::$config['path']['libraries'].'/acmsFiles.php');
+		include_once(model::$config['path']['libraries'].'/acmsDirs.php');
+		acmsDirs::makeFolder(model::$config['path']['files'] . '/' . $dir);
+		$result = acmsFiles::upload($file['tmp_name'], $path);
+		
+		if( $result ){
+			$public_filename = model::$config['path']['public_files'] . '/' . $dir . '/' . $filename;
+			print('
+			<script type"text/javascript">
+				window.parent.CKEDITOR.tools.callFunction(\''.$_GET['CKEditorFuncNum'].'\', \''.$public_filename.'\', \'\');
+			</script>
+			');
+			exit();
+		}
+		
+		
+		
+	}
 }
 
 ?>

@@ -106,7 +106,7 @@ class field_type_file extends field_type_default
 
 			//Доп.характеристики
 			$data['type'] = $values[$value_sid]['type'];
-			$data['path'] = model::$config['path']['public_images'] . '/'. $name;
+			$data['path'] = model::$config['path']['public_files'] . '/'. $name;
 			$data['title'] = strip_tags( $values[$value_sid . '_title'] );
 			$data['date'] = date("Y-m-d H:i:s");
 			$data['size'] = filesize( model::$config['path']['files'] . '/'. $name );
@@ -127,25 +127,16 @@ class field_type_file extends field_type_default
 
 
 	//Получить развёрнутое значение из простого значения
-	public function getValueExplode($rec, $settings = false, $record = array()){
+	public function getValueExplode($value, $settings = false, $record = array()){
 		
-		if( !is_array($rec) )
-			$rec_old = $rec;
-			$rec = unserialize( $rec );
+		//Старые значения
+		if( (substr_count($value, '|')>1) && (!substr_count($value, '{')) )
+			$value = $this->old2new($value, $settings);
+
+		if( !is_array($value) ){
+			$rec_old = $value;
+			$rec = unserialize( htmlspecialchars_decode( $value ) );
 			$rec['old'] = $rec_old;
-		
-		//Совместимость со старым форматом хранения
-		if ( !$rec ) {
-			$rec = array();
-			
-			//Данные
-			if(!is_array($value)){
-				list($rec['path'], $rec['type'], $rec['size'], $rec['title'], $rec['realname']) = explode('|', $value);
-			}
-			
-			//ID
-			$rec['id'] = $value;
-			$rec['old'] = serialize($rec);
 		}
 		
 		//Готово
@@ -173,6 +164,22 @@ class field_type_file extends field_type_default
 			}
 		}
 	}
+	
+	private function old2new($value, $settings){
+		$rec = array();
+		
+		//Данные
+		if(!is_array($value)){
+			list($rec['path'], $rec['type'], $rec['size'], $rec['title'], $rec['realname']) = explode('|', $value);
+		}
+		
+		//ID
+		$rec['id'] = $value;
+		$rec['old'] = serialize($rec);
+		
+		return serialize($rec);
+	}
+
 }
 
 ?>

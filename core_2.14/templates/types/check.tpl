@@ -1,8 +1,8 @@
-	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}"{if $key != main} style="display:none;"{/if}>
+	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}">
 		<label class="control-label" for="field_{$field.sid}">{$field.title}</label>
 		<div class="controls">
 			<label>
-				<input id="field_{$field.sid}_yes" type="radio" name="{$field.sid}" value="1"{if $field.value eq 1} checked="checked"{/if} />
+				<input id="field_{$field.sid}_yes" type="radio" name="{$field.sid}" value="1"{if $field.value eq 1} checked="checked"{/if}{if $field.required} required="required"{/if} />
 				<span>да</span>
 			</label>
 			<label>

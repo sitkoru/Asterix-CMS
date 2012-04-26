@@ -64,7 +64,6 @@ class field_type_user extends field_type_default
 							'`'.$this->link_field.'`="' . mysql_real_escape_string($value) . '"'
 						)
 					),
-					'order' => 'order by `admin` desc, `moder` desc, `title`'
 				), 'getrow');
 			if ($rec){
 				$value = $rec;
@@ -94,19 +93,20 @@ class field_type_user extends field_type_default
 				$s = $settings['where'];
 			}
 		}
-		
+
+		$s['is_link_to'] = '`is_link_to`=0';
 		$fields = array($this->link_field, 'title', 'login');
-		$order = 'order by `admin` desc, `moder` desc, `title`';
+		$order = 'order by `admin` desc, `title`';
 
 		
 		//Варианты значений
 		$variants = $this->model->makeSql(array(
 			'tables' => array(model::$modules['users']->getCurrentTable($settings['structure_sid'])),
-			'where' => (IsSet($settings['where']) ? array('and' => array($s)) : false),
+			'where' => array('and' => $s),
 			'fields' => $fields,
 			'order' => $order
 		), 'getall');
-		
+
 		//Отмечаем в массиве выбранные элементы
 		foreach ($variants as $i => $variant)
 			if (strlen($variant['title']))
