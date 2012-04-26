@@ -75,6 +75,3 @@
 			<a class="btn add"><i class="icon-plus-sign"></i> Добавить ещё поле</a>
 		</div>
 	</div>
-	<style type="text/css">
-		.
-	</style>
