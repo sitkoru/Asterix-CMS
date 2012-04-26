@@ -9,6 +9,11 @@ jQuery(document).ready(function(){
 		$('#acms_content').fadeOut('slow')
 	});
 
+	$('.acms_lb-close').click(function(){
+		$('.acms_lb-background').hide();
+		$('.acms_lb-contentWrap').hide();
+	});
+
 	//Показать панель авторизации
 	$(document).keyup(function(e){
 		if(e.keyCode==113||e.keyCode==117){
