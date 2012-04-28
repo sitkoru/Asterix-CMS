@@ -45,8 +45,9 @@
 						<option value="check"{if $feedback_field.type == 'check'} selected="selected"{/if}>Галочка да/нет</option>
 <!--
 						<option value="menu"{if $feedback_field.type == 'menu'} selected="selected"{/if}>Выбор из списка</option>
-						<option value="file"{if $feedback_field.type == 'file'} selected="selected"{/if}>Прикрепить файл</option>
 -->
+						<option value="file"{if $feedback_field.type == 'file'} selected="selected"{/if}>Прикрепить файл</option>
+
 					</select>
 					<input type="text" id="field_{$field.sid}_fields_title_{$key}" name="{$field.sid}[fields][title][]" placeholder="Заголовок поля" value="{$feedback_field.title}" />
 					<input type="hidden" id="field_{$field.sid}_fields_required_{$key}" name="{$field.sid}[fields][required][]" class="required_field" value="{$feedback_field.required}" title="Обязательное поле">
