@@ -202,10 +202,10 @@ class controller_manager
 
 		$message = '';
 		foreach($form['fields'] as $i=>$field) {
-			$message .= $field['title'].': <strong>'.@$this->vars['f'.$i].'</strong><br />';
 			if ( $field['type'] == 'file' ) {
-					$attach = true;			
-			}
+					$message .= $field['title'].': <strong>Смотреть в прикрепленных файлах</strong><br />';
+			} else 
+				$message .= $field['title'].': <strong>'.@$this->vars['f'.$i].'</strong><br />';
 		}
 
 			foreach ( $_FILES as $key => $file ) {
