@@ -194,16 +194,53 @@ class controller_manager
 		$form = unserialize(model::$ask->rec['feedback']);
 		if( !is_array($form) )return false;
 
+		$allow_files = array(
+			'image/jpeg', 'image/png', 'image/gif',
+			'application/msword', 'application/msexcel',
+			'application/pdf', 'application/rtf'
+		);
+
 		$message = '';
-		foreach($form['fields'] as $i=>$field)
-			$message .= $field['title'].': <strong>'.@$this->vars['f'.$i].'</strong><br />';
+		foreach($form['fields'] as $i=>$field) {
+			if ( $field['type'] == 'file' ) {
+					$message .= $field['title'].': <strong>Смотреть в прикрепленных файлах</strong><br />';
+			} else 
+				$message .= $field['title'].': <strong>'.@$this->vars['f'.$i].'</strong><br />';
+		}
+
+			foreach ( $_FILES as $key => $file ) {
+
+				if ( ! is_array( $file['name'] ) ) {
+
+					foreach ( $file as $prop => $value ) {
+
+						$new_file[$prop][] = $value;
+					}
+
+					$file = $new_file;
+				}
+
+				foreach ( $file['type'] as $i => $mimetype ) {
+
+					if ( ! in_array( $mimetype, $allow_files ) ) {
+
+						$errors['file'] = "Недопустимый тип файла '{$file['name'][$i]}'({$file['type'][$i]})";
+					} else
+							
+					$files[]=array('file'=>$file['tmp_name'][$i],				
+									'type'=>$mimetype,						
+					);
+				}
+			}	
 
 		$subject = 'Соощение с сайта '.model::$ask->host;
 		$footer = 'Сообщение отослано со страницы: <a href="'.$_SERVER['HTTP_REFERER'].'">' . urldecode( $_SERVER['HTTP_REFERER'] ).'</a><br />'.date( 'd-m-Y H:i');
 		$message = 'Пользователь отправил сообщение с сайта http://'.model::$ask->host.'/<br /><br />'.$message.'<br /><hr />'.$footer;
-			
+
 		$email = model::initEmail();
-		$email->send($form['email'],$subject,$message,'html');
+
+		//$email->send($form['email'],$subject,$message,'html');
+		$email->send($form['email'], $subject, $message, 'html', $files);
 		
 		$_SESSION['messages']['feedback']['ok'] = 'Сообщение успешно отправлено';
 		
