@@ -21,7 +21,7 @@ class field_type_hidden extends field_type_default
 {
 	public $default_settings = array('sid' => false, 'title' => 'Однострочный текст', 'value' => '', 'width' => '100%');
 	
-	public $template_file = 'types/text.tpl';
+	public $template_file = 'types/hidden.tpl';
 	
 	//Поле участввует в поиске
 	public $searchable = false;

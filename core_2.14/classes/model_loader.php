@@ -154,11 +154,9 @@ class ModelLoader{
 		$types = array();
 		foreach ($supported_types as $type_sid => $path){
 			$type_path = model::$config['path']['core'] . '/classes/types/' . $path;
-			if( file_exists( $type_path ) ){
-				require_once( $type_path);
-				$type_name = 'field_type_' . $type_sid;
-				$types[ $type_sid ] = new $type_name( $this );
-			}
+			require_once( $type_path);
+			$type_name = 'field_type_' . $type_sid;
+			$types[ $type_sid ] = new $type_name( $this );
 		}
 		
 		return $types;

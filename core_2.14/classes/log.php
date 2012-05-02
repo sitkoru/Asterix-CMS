@@ -79,8 +79,24 @@ class log
 		global $user_ip;
 		if (model::$settings['show_stat'] == 'shirt') {
 			self::setStop();
-			pr('Генерация заняла ' . number_format(self::$time_stop - self::$time_start, 5, '.', ' ') . ' секунд, использовано ' . number_format(self::$memory_total, 2, '.', ' ') . ' мегабайт памяти, сделано ' . count(self::$sql) . ' запросов, кеширование '.(model::$config['cache']?'включено ('.model::$config['cache']['type'].')':'отключено').'.');
-			
+
+			$xhprof_data = xhprof_disable();
+			$XHPROF_ROOT = model::$config['path']['core'].'/../libs';
+			if( is_readable( $XHPROF_ROOT . "/xhprof/xhprof_lib/utils/xhprof_lib.php" ) ){
+				include_once $XHPROF_ROOT . "/xhprof/xhprof_lib/utils/xhprof_lib.php";
+				include_once $XHPROF_ROOT . "/xhprof/xhprof_lib/utils/xhprof_runs.php";
+
+				// save raw data for this profiler run using default
+				// implementation of iXHProfRuns.
+				$xhprof_runs = new XHProfRuns_Default();
+
+				// save the run under a namespace "xhprof_foo"
+				$run_id = $xhprof_runs->save_run($xhprof_data, "xhprof_foo");
+				
+				$xhprof = ', <a href="http://mars.sitko.ru/xhprof/xhprof_html/index.php?run='.$run_id.'&source=xhprof_foo">xhprof</a>';
+			}                                 
+				
+			pr('Генерация заняла ' . number_format(self::$time_stop - self::$time_start, 5, '.', ' ') . ' секунд, использовано ' . number_format(self::$memory_total, 2, '.', ' ') . ' мегабайт памяти, сделано ' . count(self::$sql) . ' запросов, кеширование '.(model::$config['cache']?'включено ('.model::$config['cache']['type'].')':'отключено').''.($xhprof?$xhprof:'').'.');
 			
 		} elseif (model::$settings['show_stat'] == 'all') {
 			pr('Генерация страницы: ' . number_format(self::$time_stop - self::$time_start, 5, '.', ' ') . ' секунд.');
