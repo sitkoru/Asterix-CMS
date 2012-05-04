@@ -143,8 +143,9 @@ class field_type_image extends field_type_default
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode($value, $settings = false, $record = array()){
 		//Старые значения
-		if( (substr_count($value, '|')>5) && (!substr_count($value, '{')) )
-			$value = $this->old2new($value, $settings);
+		if( is_string($value) )
+			if( (substr_count($value, '|')>5) && (!substr_count($value, '{')) )
+				$value = $this->old2new($value, $settings);
 		if( !is_array($value) ){
 			$rec_old = $value;
 			$rec = unserialize( htmlspecialchars_decode( $value ) );
