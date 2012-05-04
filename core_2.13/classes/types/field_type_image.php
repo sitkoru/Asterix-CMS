@@ -134,7 +134,8 @@ class field_type_image extends field_type_default
 	
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode($value, $settings = false, $record = array()){
-		$rec = unserialize( $value );
+		if( is_string($value) )
+			$rec = unserialize( $value );
 		
 		//Совместимость со старым форматом хранения
 		if ( !$rec ) {
