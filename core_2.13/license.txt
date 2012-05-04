@@ -1,6 +1,6 @@
 Asterix CMS - система управления сайтами.
 
-Copyright (c) 2004 - 2011 Asterix CMS
+Copyright (c) 2004 - 2011 Asterix CMS.
 Автор: Мишин Олег, dekmabot@gmail.com, http://mishinoleg.ru
 
 Эта программа является свободным программным обеспечением;
