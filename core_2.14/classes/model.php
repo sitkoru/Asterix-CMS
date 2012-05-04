@@ -30,9 +30,10 @@ class model{
 
 	function __construct($config, $log, $cache = false){
 
-		require_once($config['path']['core'].'/classes/model_loader.php');
-		require_once($config['path']['core'].'/classes/model_sql.php');
-		require_once($config['path']['core'].'/classes/model_finder.php');
+		require_once($config['path']['core'] . '/classes/model_loader.php');
+		require_once($config['path']['core'] . '/classes/model_sql.php');
+		require_once($config['path']['core'] . '/classes/model_finder.php');
+		require_once($config['path']['core'] . '/classes/user.php');
 
 		$this->log        = 	$log;
 		$this->log->model = 	$this;
@@ -59,7 +60,6 @@ class model{
 
 	//Подключение базы данных
 	public function authUser(){
-		require_once(self::$config['path']['core'] . '/classes/user.php');
 		$this->user = new user($this);
 	}
 
