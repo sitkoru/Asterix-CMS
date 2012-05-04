@@ -141,6 +141,7 @@ class field_type_gallery extends field_type_default
 		if( is_string($value) )
 			$result = unserialize( $value );
 		
+		
 		if(is_array($result))
 			$keys = array_keys($result);
 		
