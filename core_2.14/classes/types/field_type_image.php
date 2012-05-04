@@ -152,8 +152,6 @@ class field_type_image extends field_type_default
 			$rec['old'] = $rec_old;
 //			$rec['pre'] = $settings['pre'];
 		}
-		pr('2');
-		pr_r($rec);
 		//Готово
 		return $rec;
 	}
