@@ -95,7 +95,8 @@ class log
 				
 				$xhprof = ', <a href="http://mars.sitko.ru/xhprof/xhprof_html/index.php?run='.$run_id.'&source=xhprof_foo">xhprof</a>';
 			}                                 
-*/				
+*/
+				
 			pr('Генерация заняла ' . number_format(self::$time_stop - self::$time_start, 5, '.', ' ') . ' секунд, использовано ' . number_format(self::$memory_total, 2, '.', ' ') . ' мегабайт памяти, сделано ' . count(self::$sql) . ' запросов, кеширование '.(model::$config['cache']?'включено ('.model::$config['cache']['type'].')':'отключено').''.($xhprof?$xhprof:'').'.');
 			
 		} elseif (model::$settings['show_stat'] == 'all') {

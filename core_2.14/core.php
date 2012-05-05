@@ -7,6 +7,7 @@ ini_set("display_errors", "on");
 //Трассировка
 //xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 
+
 session_start();
 
 ini_set('error_log', $config['path']['www'].'../error_'.$_SERVER['HTTP_HOST'].'.log');
