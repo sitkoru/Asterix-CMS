@@ -144,6 +144,7 @@ jQuery(document).ready(function(){
 			);
 		}
 	});
+	
 	$('.acms_panel_groups .icon-random').click(function(){
 		$(this).parent('li').find('ol').toggleClass('well sortable');
 		fn();
