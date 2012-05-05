@@ -129,6 +129,10 @@ class field_type_image extends field_type_default
 		//Файл не передан, просто обновление Alt
 		} elseif (strlen( $_POST[$value_sid . '_old_id'])) {
 			$data = $this->getValueExplode( $_POST[$value_sid . '_old_id'] );
+
+pr_r($data);
+exit();
+
 			$data['title'] = strip_tags( $_POST[$value_sid . '_title'] );
 		}
 
