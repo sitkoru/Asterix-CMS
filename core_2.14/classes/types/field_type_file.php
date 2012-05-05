@@ -113,9 +113,9 @@ class field_type_file extends field_type_default
 
 		
 		//Файл не передан, просто обновление Alt
-		} elseif (strlen($values[$value_sid . '_title'])) {
-			$data = $this->getValueExplode( $values[$value_sid . '_old_id'] );
-			$data['title'] = strip_tags( $values[$value_sid . '_title'] );
+		} elseif (strlen( $_POST[$value_sid . '_old_id'])) {
+			$data = $this->getValueExplode( $_POST[$value_sid . '_old_id'] );
+			$data['title'] = strip_tags( $_POST[$value_sid . '_title'] );
 		}
 
 		//Готово
