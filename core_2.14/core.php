@@ -5,7 +5,7 @@ error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
 ini_set("display_errors", "on");
 
 //Трассировка
-xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
+//xhprof_enable(XHPROF_FLAGS_CPU + XHPROF_FLAGS_MEMORY);
 
 session_start();
 
