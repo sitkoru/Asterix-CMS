@@ -130,8 +130,8 @@ class field_type_image extends field_type_default
 		} elseif (strlen( $_POST[$value_sid . '_old_id'])) {
 			$data = $this->getValueExplode( $_POST[$value_sid . '_old_id'] );
 
-pr_r($data);
-exit();
+pr_r($data);//
+exit();//
 
 			$data['title'] = strip_tags( $_POST[$value_sid . '_title'] );
 		}
