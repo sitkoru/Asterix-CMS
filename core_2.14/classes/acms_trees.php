@@ -39,7 +39,7 @@ class acms_trees{
 		}
 
 		//Обработка расширениями - получаем в Where подстановки от расширений
-		if($this->model->extensions)foreach(model::$extensions as $ext){
+		if(model::$extensions)foreach(model::$extensions as $ext){
 			if( method_exists ( $ext , 'onSql' ) )
 				list($a,$a,$where,$a,$a,$a)=$ext->onSql(false,false,$where,false,false,false);
 		}
