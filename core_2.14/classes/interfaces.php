@@ -478,9 +478,8 @@ class interfaces{
 		UnSet($what['settings']);
 
 		//Empty URL in main page, control headshot...
-		if( in_array($values['sid'], array('index', 'start') ) ){
-			$what['url'] = '';
-		}
+		if( in_array($values['sid'], array('index', 'start') ) )
+			$what['url'] = '`url`=""';
 		
 		//Вносим изменения
 		$this->model->makeSql(
@@ -493,9 +492,6 @@ class interfaces{
 			),
 			'update'
 		);
-		
-		pr(model::$last_sql);
-		exit();
 		
 		//Обновляем элемент дерева вместе с переносом
 		if( ($parent_field_type == 'tree') and (@$values['dep_path_parent'] != @$data_before['dep_path_parent']) and ($values['sid'] != 'index') ){
