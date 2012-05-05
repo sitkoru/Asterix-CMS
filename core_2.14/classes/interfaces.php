@@ -477,6 +477,11 @@ class interfaces{
 		UnSet($what['acms_settings']);
 		UnSet($what['settings']);
 
+		//Empty URL in main page, control headshot...
+		if( in_array($values['sid'], array('index', 'start') ) ){
+			$what['url'] = '';
+		}
+		
 		//Вносим изменения
 		$this->model->makeSql(
 			array(
