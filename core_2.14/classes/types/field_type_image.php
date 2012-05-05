@@ -132,6 +132,7 @@ class field_type_image extends field_type_default
 			$data['title'] = strip_tags( $_POST[$value_sid . '_title'] );
 		}
 
+pr('testing image save');
 pr_r($data);
 exit();
 
