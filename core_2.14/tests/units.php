@@ -166,7 +166,7 @@ class unitTests{
 		
 		//Обновляем алиасные ссылки для модулей в дереве
 		model::execSql('update `start_rec` set `sid`=`is_link_to_module`, `url_alias`=CONCAT("/",`is_link_to_module`) where `is_link_to_module`!=""','update');
-		model::execSql('update `start_rec` set `sid`="start", `url_alias`="/start" where `left_key`=1','update');
+		model::execSql('update `start_rec` set `sid`="start", `url_alias`="/start", `url`="" where `left_key`=1','update');
 		model::execSql('update `start_rec` set `dep_path_parent`="start" where `dep_path_parent`="index"','update');
 	}
 
