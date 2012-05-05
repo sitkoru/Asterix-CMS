@@ -125,7 +125,7 @@ class unitTests{
 						$counter ++;
 						$rec['right_key'] = $counter;
 						$tree_level=1;
-						$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec['left_key'] ).', `right_key`='.intval( $rec['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'" where `id`='.intval($rec['id']).'','update');
+						$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec['left_key'] ).', `right_key`='.intval( $rec['right_key'] ).', `tree_level`='.intval($tree_level).' where `id`='.intval($rec['id']).'','update');
 					}
 				}
 			}
@@ -166,7 +166,7 @@ class unitTests{
 		
 		//Обновляем алиасные ссылки для модулей в дереве
 		model::execSql('update `start_rec` set `sid`=`is_link_to_module`, `url_alias`=CONCAT("/",`is_link_to_module`) where `is_link_to_module`!=""','update');
-		model::execSql('update `start_rec` set `sid`="start", `url_alias`="/start", `url`="" where `left_key`=1','update');
+		model::execSql('update `start_rec` set `sid`="start", `url_alias`="/start" where `left_key`=1','update');
 		model::execSql('update `start_rec` set `dep_path_parent`="start" where `dep_path_parent`="index"','update');
 	}
 
