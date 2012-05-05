@@ -482,9 +482,6 @@ class interfaces{
 			$what['url'] = '';
 		}
 		
-		pr_r($what);
-		exit();
-		
 		//Вносим изменения
 		$this->model->makeSql(
 			array(
