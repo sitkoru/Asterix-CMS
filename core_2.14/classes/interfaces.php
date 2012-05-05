@@ -480,6 +480,7 @@ class interfaces{
 		//Empty URL in main page, control headshot...
 		if( in_array($values['sid'], array('index', 'start') ) ){
 			$what['url'] = '`url`=""';
+			$url = '';
 		}
 		
 		//Вносим изменения
