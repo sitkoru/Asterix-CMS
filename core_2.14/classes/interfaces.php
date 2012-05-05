@@ -494,6 +494,7 @@ class interfaces{
 			),
 			'update'
 		);
+		pr(model::$last_sql);
 		
 		//Обновляем элемент дерева вместе с переносом
 		if( ($parent_field_type == 'tree') and (@$values['dep_path_parent'] != @$data_before['dep_path_parent']) and ($values['sid'] != 'index') ){
@@ -524,6 +525,8 @@ class interfaces{
 			$url .= '.html';
 		else
 			$url = '';
+
+		exit();
 
 		//Возвращаем URL, на который будет переброшен пользователь
 		return array(
@@ -842,10 +845,10 @@ class interfaces{
 				$root_level_structure_sid = $tree[ count($tree)-1 ];
 				
 				//Обновляем все корневые записи того модуля
-				$this->model->execSql('update `'.model::$modules[ $linked_module ]->getCurrentTable($root_level_structure_sid).'` set `url`=CONCAT("'.mysql_real_escape_string($new_url).'/",`sid`) where '.model::pointDomain().'','update');
-				
+				model::execSql('update `'.model::$modules[ $linked_module ]->getCurrentTable($root_level_structure_sid).'` set `url`=CONCAT("'.mysql_real_escape_string($new_url).'/",`sid`) where '.model::pointDomain().'','update');
+
 				//Теперь запускаем по ним рекурсию
-				$recs = $this->model->execSql('select * from `'.model::$modules[ $linked_module ]->getCurrentTable($root_level_structure_sid).'` where '.model::pointDomain().'','getall');
+				$recs = model::execSql('select * from `'.model::$modules[ $linked_module ]->getCurrentTable($root_level_structure_sid).'` where '.model::pointDomain().'','getall');
 				foreach($recs as $rec)
 					
 					//Рекурсия - спуск
@@ -860,7 +863,8 @@ class interfaces{
 			}
 			
 			//Обновляем все дочерние записи этого модуля
-			$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `url`=CONCAT("'.mysql_real_escape_string($new_url).'/", `sid`), `dep_path_parent`="'.mysql_real_escape_string($new_data['sid']).'" where `left_key`>'.intval($old_data['left_key']).' and `right_key`<'.intval($old_data['right_key']).' and `tree_level`='.intval($old_data['tree_level']+1).' and '.model::pointDomain().'','update');
+			model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `url`=CONCAT("'.mysql_real_escape_string($new_url).'/", `sid`), `dep_path_parent`="'.mysql_real_escape_string($new_data['sid']).'" where `left_key`>'.intval($old_data['left_key']).' and `right_key`<'.intval($old_data['right_key']).' and `tree_level`='.intval($old_data['tree_level']+1).' and '.model::pointDomain().'','update');
+			pr(model::$last_sql);
 			
 			//Теперь запускаем по ним рекурсию
 			$recs = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `left_key`>'.intval($old_data['left_key']).' and `right_key`<'.intval($old_data['right_key']).' and `tree_level`='.intval($old_data['tree_level']+1).' and '.model::pointDomain().'','getall');
