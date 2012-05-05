@@ -155,9 +155,9 @@ class field_type_image extends field_type_default
 			}
 		}
 
-pr($value);
-pr_r($rec);
-exit();
+pr($value); 
+pr_r($rec); 
+exit(); 
 
 
 		//Готово
