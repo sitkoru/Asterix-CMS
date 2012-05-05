@@ -51,7 +51,6 @@ class acms_trees{
 			else
 				$where['and']=$conditions['and'];
 		}
-		pr_r($where);
 
 		//Учитываем уровень
 		if($levels_to_show > 0){
