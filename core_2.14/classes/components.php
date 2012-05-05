@@ -426,33 +426,6 @@ class components{
 		return $rec;
 	}
 
-	//Комментарии к записи
-	public function prepareCount($params){
-
-		//Указание на структуру
-		if( IsSet($params['structure_sid']) )
-			$structure_sid = $params['structure_sid'];
-		else
-			$structure_sid = 'rec';
-
-		//Получаем условия
-		$where=components::convertParamsToWhere($params);
-		$where['and']['shw']='`shw`=1';
-
-		//Получаем записи
-		$res=$this->model->makeSql(
-			array(
-				'tables' => array($this->getCurrentTable($structure_sid)),
-				'fields' => array( 'count(`id`) as `counter`' ),
-				'where' => $where,
-			),
-			'getrow'
-		);//pr($this->model->last_sql);
-
-		//Готово
-		return $res['counter'];
-	}
-
 	//Список страниц
 	public function preparePages($params){
 
