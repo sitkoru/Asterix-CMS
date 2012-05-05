@@ -478,8 +478,9 @@ class interfaces{
 		UnSet($what['settings']);
 
 		//Empty URL in main page, control headshot...
-		if( in_array($values['sid'], array('index', 'start') ) )
+		if( in_array($values['sid'], array('index', 'start') ) ){
 			$what['url'] = '`url`=""';
+		}
 		
 		//Вносим изменения
 		$this->model->makeSql(
