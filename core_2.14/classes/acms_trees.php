@@ -2,25 +2,25 @@
 
 class acms_trees{
 
-	//Показать краткое дерево модуля
+	//РџРѕРєР°Р·Р°С‚СЊ РєСЂР°С‚РєРѕРµ РґРµСЂРµРІРѕ РјРѕРґСѓР»СЏ
 	public function getModuleShirtTree(
-			$root_record_id,		//id записи, с которой начинать счетать дерево
-			$structure_sid,			//интересующая нас структура
-			$levels_to_show,		//количество уровней, которые необходимо найти
-			$conditions=array()	//уcловия выборки веток
+			$root_record_id,		//id Р·Р°РїРёСЃРё, СЃ РєРѕС‚РѕСЂРѕР№ РЅР°С‡РёРЅР°С‚СЊ СЃС‡РµС‚Р°С‚СЊ РґРµСЂРµРІРѕ
+			$structure_sid,			//РёРЅС‚РµСЂРµСЃСѓСЋС‰Р°СЏ РЅР°СЃ СЃС‚СЂСѓРєС‚СѓСЂР°
+			$levels_to_show,		//РєРѕР»РёС‡РµСЃС‚РІРѕ СѓСЂРѕРІРЅРµР№, РєРѕС‚РѕСЂС‹Рµ РЅРµРѕР±С…РѕРґРёРјРѕ РЅР°Р№С‚Рё
+			$conditions=array()	//СѓcР»РѕРІРёСЏ РІС‹Р±РѕСЂРєРё РІРµС‚РѕРє
 		){
 
 		return acms_trees::getStructureShirtTree($root_record_id,$structure_sid,$levels_to_show,$conditions);
 	}
 
-	//Показать краткое дерево сруктуры
+	//РџРѕРєР°Р·Р°С‚СЊ РєСЂР°С‚РєРѕРµ РґРµСЂРµРІРѕ СЃСЂСѓРєС‚СѓСЂС‹
 	public function getStructureShirtTree($root_record_id,$structure_sid,$levels_to_show,$conditions){
-		//Некоторые структуры скрываются из деревьев
+		//РќРµРєРѕС‚РѕСЂС‹Рµ СЃС‚СЂСѓРєС‚СѓСЂС‹ СЃРєСЂС‹РІР°СЋС‚СЃСЏ РёР· РґРµСЂРµРІСЊРµРІ
 		if(!$this->structure[$structure_sid]['hide_in_tree']){
-			//Древовидные структуры
+			//Р”СЂРµРІРѕРІРёРґРЅС‹Рµ СЃС‚СЂСѓРєС‚СѓСЂС‹
 			if($this->structure[$structure_sid]['type']=='tree'){
 				$recs = acms_trees::getStructureShirtTree_typeTree($root_record_id,$structure_sid,$levels_to_show,$conditions);
-			//Линейные структуры
+			//Р›РёРЅРµР№РЅС‹Рµ СЃС‚СЂСѓРєС‚СѓСЂС‹
 			}else{
 				$recs = acms_trees::getStructureShirtTree_typeSimple($root_record_id,$structure_sid,$levels_to_show,false,$conditions);
 			}
@@ -29,22 +29,22 @@ class acms_trees{
 		return $recs;
 	}
 
-	//Поиск краткого дерева в древовидной структуре
+	//РџРѕРёСЃРє РєСЂР°С‚РєРѕРіРѕ РґРµСЂРµРІР° РІ РґСЂРµРІРѕРІРёРґРЅРѕР№ СЃС‚СЂСѓРєС‚СѓСЂРµ
 	public function getStructureShirtTree_typeTree($root_record_id,$structure_sid,$levels_to_show,$conditions){
 
-		//Если не установлен обработчик таблицы деревьев - устанавливаем
+		//Р•СЃР»Рё РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ РѕР±СЂР°Р±РѕС‚С‡РёРє С‚Р°Р±Р»РёС†С‹ РґРµСЂРµРІСЊРµРІ - СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј
 		if(!IsSet($this->structure[$structure_sid]['db_manager'])){
 			require_once(model::$config['path']['core'].'/classes/nestedsets.php');
 			$this->structure[$structure_sid]['db_manager']=new nested_sets($this->model,$this->getCurrentTable($structure_sid));
 		}
 
-		//Обработка расширениями - получаем в Where подстановки от расширений
-		if($this->model->extensions)foreach($this->model->extensions as $ext){
+		//РћР±СЂР°Р±РѕС‚РєР° СЂР°СЃС€РёСЂРµРЅРёСЏРјРё - РїРѕР»СѓС‡Р°РµРј РІ Where РїРѕРґСЃС‚Р°РЅРѕРІРєРё РѕС‚ СЂР°СЃС€РёСЂРµРЅРёР№
+		if($this->model->extensions)foreach(model::$extensions as $ext){
 			if( method_exists ( $ext , 'onSql' ) )
 				list($a,$a,$where,$a,$a,$a)=$ext->onSql(false,false,$where,false,false,false);
 		}
 
-		//Учитываем переданные в функцию условия
+		//РЈС‡РёС‚С‹РІР°РµРј РїРµСЂРµРґР°РЅРЅС‹Рµ РІ С„СѓРЅРєС†РёСЋ СѓСЃР»РѕРІРёСЏ
 		if(is_array($conditions['and'])){
 			if($where)
 				$where['and']=array_merge($where['and'],$conditions['and']);
@@ -52,9 +52,9 @@ class acms_trees{
 				$where['and']=$conditions['and'];
 		}
 
-		//Учитываем уровень
+		//РЈС‡РёС‚С‹РІР°РµРј СѓСЂРѕРІРµРЅСЊ
 		if($levels_to_show > 0){
-			//Если указан корень откуда брать дерево - будем брать количество уровней относительно указанного
+			//Р•СЃР»Рё СѓРєР°Р·Р°РЅ РєРѕСЂРµРЅСЊ РѕС‚РєСѓРґР° Р±СЂР°С‚СЊ РґРµСЂРµРІРѕ - Р±СѓРґРµРј Р±СЂР°С‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ СѓСЂРѕРІРЅРµР№ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ СѓРєР°Р·Р°РЅРЅРѕРіРѕ
 			if($root_record_id){
 				$rec=$this->getRecordById($structure_sid,$root_record_id);
 				if($rec['tree_level']==1){
@@ -67,59 +67,59 @@ class acms_trees{
 			}
 		}
 		
-		//Если указано откуда считать дерево - счетаем поддерево
+		//Р•СЃР»Рё СѓРєР°Р·Р°РЅРѕ РѕС‚РєСѓРґР° СЃС‡РёС‚Р°С‚СЊ РґРµСЂРµРІРѕ - СЃС‡РµС‚Р°РµРј РїРѕРґРґРµСЂРµРІРѕ
 		if($root_record_id){
 
-			//Засекаем время
+			//Р—Р°СЃРµРєР°РµРј РІСЂРµРјСЏ
 			$t=explode(' ',microtime());
 			$sql_start=$t[1]+$t[0];
 
-			//Поля для вывода
+			//РџРѕР»СЏ РґР»СЏ РІС‹РІРѕРґР°
 			$what = $this->getMainFields($structure_sid);
 						
-			//Забираем записи полного дерева
+			//Р—Р°Р±РёСЂР°РµРј Р·Р°РїРёСЃРё РїРѕР»РЅРѕРіРѕ РґРµСЂРµРІР°
 			$recs=$this->structure[$structure_sid]['db_manager']->getSub($root_record_id, $what, $where);
 			
-			//Сколько прошло
+			//РЎРєРѕР»СЊРєРѕ РїСЂРѕС€Р»Рѕ
 			$t=explode(' ',microtime());
 			$sql_stop=$t[1]+$t[0];
 			$time=$sql_stop-$sql_start;
 
-			//Статистика
+			//РЎС‚Р°С‚РёСЃС‚РёРєР°
 			log::sql('nested_sets -> getSub',$time,$recs,$this->info['sid'],'getStructureShirtTree_typeTree');
 
-		//Иначе получаем полное дерево структуры
+		//РРЅР°С‡Рµ РїРѕР»СѓС‡Р°РµРј РїРѕР»РЅРѕРµ РґРµСЂРµРІРѕ СЃС‚СЂСѓРєС‚СѓСЂС‹
 		}else{
-			//Засекаем время
+			//Р—Р°СЃРµРєР°РµРј РІСЂРµРјСЏ
 			$t=explode(' ',microtime());
 			$sql_start=$t[1]+$t[0];
 
-			//Поля для вывода
+			//РџРѕР»СЏ РґР»СЏ РІС‹РІРѕРґР°
 			$what = $this->getMainFields($structure_sid);
 
-			//ЗДЕСЬ ДОДУМАТЬ ОТКУДА БЕРУТСЯ ОТРИЦАТЕЛЬНЫЕ ЗНАЧЕНИЯ И ВОССТАНОВИТЬ ИХ АККУРАТНО
-			//Переход между модулями тратит 2 уровня "tree_level", восстанавливаем их
+			//Р—Р”Р•РЎР¬ Р”РћР”РЈРњРђРўР¬ РћРўРљРЈР”Рђ Р‘Р•Р РЈРўРЎРЇ РћРўР РР¦РђРўР•Р›Р¬РќР«Р• Р—РќРђР§Р•РќРРЇ Р Р’РћРЎРЎРўРђРќРћР’РРўР¬ РРҐ РђРљРљРЈР РђРўРќРћ
+			//РџРµСЂРµС…РѕРґ РјРµР¶РґСѓ РјРѕРґСѓР»СЏРјРё С‚СЂР°С‚РёС‚ 2 СѓСЂРѕРІРЅСЏ "tree_level", РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РёС…
 			if(count($this->structure)>1)
 				if(IsSet($where['and']['tree_level']))
 					$where['and']['tree_level']='`tree_level`>1';
 
-			//Забираем записи полного дерева
+			//Р—Р°Р±РёСЂР°РµРј Р·Р°РїРёСЃРё РїРѕР»РЅРѕРіРѕ РґРµСЂРµРІР°
 			$recs=$this->structure[$structure_sid]['db_manager']->getFull($what,$where);
 
-			//Сколько прошло
+			//РЎРєРѕР»СЊРєРѕ РїСЂРѕС€Р»Рѕ
 			$t=explode(' ',microtime());
 			$sql_stop=$t[1]+$t[0];
 			$time=$sql_stop-$sql_start;
 
-			//Статистика
+			//РЎС‚Р°С‚РёСЃС‚РёРєР°
 			log::sql('nested_sets -> getFull',$time,$recs,$this->info['sid'],'getStructureShirtTree_typeTree');
 		}
 
 		if(!count($recs)){
 //			pr('not found');
 			if( (model::$ask->structure_sid != 'rec') ){
-				// Сначала смотрим зависимые структуры
-				// потом к ним будем вызывать рекурсии
+				// РЎРЅР°С‡Р°Р»Р° СЃРјРѕС‚СЂРёРј Р·Р°РІРёСЃРёРјС‹Рµ СЃС‚СЂСѓРєС‚СѓСЂС‹
+				// РїРѕС‚РѕРј Рє РЅРёРј Р±СѓРґРµРј РІС‹Р·С‹РІР°С‚СЊ СЂРµРєСѓСЂСЃРёРё
 				$search_children=false;
 				foreach($this->structure as $s_sid=>$s)
 					if($s['dep_path']['structure']==model::$ask->structure_sid){
@@ -128,10 +128,10 @@ class acms_trees{
 					}
 
 				if($search_children){
-					//Связь производится по полю
+					//РЎРІСЏР·СЊ РїСЂРѕРёР·РІРѕРґРёС‚СЃСЏ РїРѕ РїРѕР»СЋ
 					$dep_field_sid = model::$types[$link_type]->link_field;
 					
-					//Ищем только значимых родителей
+					//РС‰РµРј С‚РѕР»СЊРєРѕ Р·РЅР°С‡РёРјС‹С… СЂРѕРґРёС‚РµР»РµР№
 					if( $rec[$dep_field_sid] ){
 						$where = array( 
 							'and' => array(
@@ -145,11 +145,11 @@ class acms_trees{
 			}
 		}
 		
-		//Ищем ссылки на модули и считаем их деревья
+		//РС‰РµРј СЃСЃС‹Р»РєРё РЅР° РјРѕРґСѓР»Рё Рё СЃС‡РёС‚Р°РµРј РёС… РґРµСЂРµРІСЊСЏ
 		if($recs)
 		foreach($recs as $i=>$rec){
 
-			//Вложенные модули
+			//Р’Р»РѕР¶РµРЅРЅС‹Рµ РјРѕРґСѓР»Рё
 			if($levels_to_show>2)
 			if(strlen($rec['is_link_to_module'])){
 
@@ -159,19 +159,19 @@ class acms_trees{
 				if(IsSet(model::$modules[$rec['is_link_to_module']])){
 					if(is_object(model::$modules[$rec['is_link_to_module']])){
 
-						//Корневая структура зависимого модуля
+						//РљРѕСЂРЅРµРІР°СЏ СЃС‚СЂСѓРєС‚СѓСЂР° Р·Р°РІРёСЃРёРјРѕРіРѕ РјРѕРґСѓР»СЏ
 						$tree = model::$modules[$rec['is_link_to_module']]->getLevels('rec');
 						$dep_structure_sid = $tree[count($tree)-1];
 					
-						//Ищем записи вложеного модуля
+						//РС‰РµРј Р·Р°РїРёСЃРё РІР»РѕР¶РµРЅРѕРіРѕ РјРѕРґСѓР»СЏ
 						$tmp=model::$modules[$rec['is_link_to_module']]->getModuleShirtTree(false,$dep_structure_sid,$levels_to_show-2,$conditions);
-						//Нашли вложенные модули
+						//РќР°С€Р»Рё РІР»РѕР¶РµРЅРЅС‹Рµ РјРѕРґСѓР»Рё
 						if(count($tmp)){
 
-							//Если вложенные записи есть на ряду с вложенными модулями - суммируем
+							//Р•СЃР»Рё РІР»РѕР¶РµРЅРЅС‹Рµ Р·Р°РїРёСЃРё РµСЃС‚СЊ РЅР° СЂСЏРґСѓ СЃ РІР»РѕР¶РµРЅРЅС‹РјРё РјРѕРґСѓР»СЏРјРё - СЃСѓРјРјРёСЂСѓРµРј
 							if(IsSet($recs[$i]['sub'])){
 								$recs[$i]['sub']=array_merge($recs[$i]['sub'],$tmp);
-							//Отсутствуют вложенные записи, только вложенные модули
+							//РћС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ РІР»РѕР¶РµРЅРЅС‹Рµ Р·Р°РїРёСЃРё, С‚РѕР»СЊРєРѕ РІР»РѕР¶РµРЅРЅС‹Рµ РјРѕРґСѓР»Рё
 							}else{
 								$recs[$i]['sub']=$tmp;
 							}
@@ -180,29 +180,29 @@ class acms_trees{
 				}
 			}
 
-			//Вложенные структуры в пределах этого модуля
+			//Р’Р»РѕР¶РµРЅРЅС‹Рµ СЃС‚СЂСѓРєС‚СѓСЂС‹ РІ РїСЂРµРґРµР»Р°С… СЌС‚РѕРіРѕ РјРѕРґСѓР»СЏ
 			if(count($this->structure)>1){
-				//Ищем следующий уровень
+				//РС‰РµРј СЃР»РµРґСѓСЋС‰РёР№ СѓСЂРѕРІРµРЅСЊ
 				$levels=$this->getLevels('rec', array());
 				$levels=array_reverse($levels);
 				$next_structure_sid=false;
 				foreach($levels as $j=>$level)if($level==$structure_sid)$next_structure_sid=@$levels[$j+1];
-				//Нашли вложенную структуру в данном модуле
+				//РќР°С€Р»Рё РІР»РѕР¶РµРЅРЅСѓСЋ СЃС‚СЂСѓРєС‚СѓСЂСѓ РІ РґР°РЅРЅРѕРј РјРѕРґСѓР»Рµ
 				if($next_structure_sid){
-					//Название поля-связки с текущей структурой
+					//РќР°Р·РІР°РЅРёРµ РїРѕР»СЏ-СЃРІСЏР·РєРё СЃ С‚РµРєСѓС‰РµР№ СЃС‚СЂСѓРєС‚СѓСЂРѕР№
 					$field_name='dep_path_'.$structure_sid;
-					//Добавялем условие поиска
+					//Р”РѕР±Р°РІСЏР»РµРј СѓСЃР»РѕРІРёРµ РїРѕРёСЃРєР°
 					$where=$conditions;
 					$where['and'][$field_name]='`'.mysql_real_escape_string($field_name).'`="'.mysql_real_escape_string($rec['sid']).'"';
 				}
-				//Забираем вложенные записи структуры
+				//Р—Р°Р±РёСЂР°РµРј РІР»РѕР¶РµРЅРЅС‹Рµ Р·Р°РїРёСЃРё СЃС‚СЂСѓРєС‚СѓСЂС‹
 				$subs=acms_trees::getStructureShirtTree(false,$next_structure_sid,$levels_to_show-1,$where);
-				//Нашли вложенные модули
+				//РќР°С€Р»Рё РІР»РѕР¶РµРЅРЅС‹Рµ РјРѕРґСѓР»Рё
 				if($subs){
-					//Если вложенные записи есть на ряду с вложенными модулями - суммируем
+					//Р•СЃР»Рё РІР»РѕР¶РµРЅРЅС‹Рµ Р·Р°РїРёСЃРё РµСЃС‚СЊ РЅР° СЂСЏРґСѓ СЃ РІР»РѕР¶РµРЅРЅС‹РјРё РјРѕРґСѓР»СЏРјРё - СЃСѓРјРјРёСЂСѓРµРј
 					if(IsSet($recs[$i]['sub'])){
 						$recs[$i]['sub']=array_merge($recs[$i]['sub'],$subs);
-					//Отсутствуют вложенные записи, только вложенные модули
+					//РћС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ РІР»РѕР¶РµРЅРЅС‹Рµ Р·Р°РїРёСЃРё, С‚РѕР»СЊРєРѕ РІР»РѕР¶РµРЅРЅС‹Рµ РјРѕРґСѓР»Рё
 					}else{
 						$recs[$i]['sub']=$subs;
 					}
@@ -211,12 +211,12 @@ class acms_trees{
 
 		}
 
-		//Перекомпановка из линейного массива во вложенные списки
+		//РџРµСЂРµРєРѕРјРїР°РЅРѕРІРєР° РёР· Р»РёРЅРµР№РЅРѕРіРѕ РјР°СЃСЃРёРІР° РІРѕ РІР»РѕР¶РµРЅРЅС‹Рµ СЃРїРёСЃРєРё
 		$recs=self::reformRecords($recs,$recs[0]['tree_level'],0,count($recs));
-		//Вставляем окончание .html
+		//Р’СЃС‚Р°РІР»СЏРµРј РѕРєРѕРЅС‡Р°РЅРёРµ .html
 		$recs=$this->insertRecordUrlType($recs);
 
-		//Помним какая запись из какого модуля
+		//РџРѕРјРЅРёРј РєР°РєР°СЏ Р·Р°РїРёСЃСЊ РёР· РєР°РєРѕРіРѕ РјРѕРґСѓР»СЏ
 		foreach($recs as &$rec){
 			if(!IsSet($rec['module'])){
 				$rec['module']=$this->info['sid'];
@@ -227,14 +227,14 @@ class acms_trees{
 		return $recs;
 	}
 
-	//Поиск краткого дерева в линейной структуре
+	//РџРѕРёСЃРє РєСЂР°С‚РєРѕРіРѕ РґРµСЂРµРІР° РІ Р»РёРЅРµР№РЅРѕР№ СЃС‚СЂСѓРєС‚СѓСЂРµ
 	public function getStructureShirtTree_typeSimple($root_record_id,$structure_sid,$levels_to_show,$where=false,$conditions=false){
 
 		if($root_record_id){
 //			pr('-> '.$this->info['sid'].'_'.$structure_sid.' ['.$root_record_id.']');
 
-			// Сначала смотрим зависимые структуры
-			// потом к ним будем вызывать рекурсии
+			// РЎРЅР°С‡Р°Р»Р° СЃРјРѕС‚СЂРёРј Р·Р°РІРёСЃРёРјС‹Рµ СЃС‚СЂСѓРєС‚СѓСЂС‹
+			// РїРѕС‚РѕРј Рє РЅРёРј Р±СѓРґРµРј РІС‹Р·С‹РІР°С‚СЊ СЂРµРєСѓСЂСЃРёРё
 			$search_children=false;
 			if($structure_sid!='rec')
 				if($this->structure)
@@ -243,40 +243,40 @@ class acms_trees{
 							$search_children=$s_sid;
 						}
 
-			//Найдена структура-потомок
+			//РќР°Р№РґРµРЅР° СЃС‚СЂСѓРєС‚СѓСЂР°-РїРѕС‚РѕРјРѕРє
 			if($search_children){
 				$parent=$this->getRecordById($structure_sid,$root_record_id);
 
-				//В разных типах используются разные поля для связки
-				//Берём нужное поле связки
+				//Р’ СЂР°Р·РЅС‹С… С‚РёРїР°С… РёСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ СЂР°Р·РЅС‹Рµ РїРѕР»СЏ РґР»СЏ СЃРІСЏР·РєРё
+				//Р‘РµСЂС‘Рј РЅСѓР¶РЅРѕРµ РїРѕР»Рµ СЃРІСЏР·РєРё
 				$link_field=model::$types[$this->structure[$search_children]['dep_path']['link_type']]->link_field;
 
-				//Условие связи элементов
+				//РЈСЃР»РѕРІРёРµ СЃРІСЏР·Рё СЌР»РµРјРµРЅС‚РѕРІ
 				$where['and']=array('`dep_path_'.$structure_sid.'`="'.$parent[$link_field].'"');
 
-				//Учитываем переданные в функцию условия
+				//РЈС‡РёС‚С‹РІР°РµРј РїРµСЂРµРґР°РЅРЅС‹Рµ РІ С„СѓРЅРєС†РёСЋ СѓСЃР»РѕРІРёСЏ
 				if(is_array($conditions['and'])){
 					$where['and']=array_merge($where['and'],$conditions['and']);
 				}
 
-				//Ищем потомков
+				//РС‰РµРј РїРѕС‚РѕРјРєРѕРІ
 				if($search_children){
 					$recs=acms_trees::getStructureShirtTree_typeSimple(false,$search_children,$levels_to_show,$where);
 				}
 			}
 
-		//Смотрим всю структуру
+		//РЎРјРѕС‚СЂРёРј РІСЃСЋ СЃС‚СЂСѓРєС‚СѓСЂСѓ
 		}else{
 
-			//Учитываем переданные в функцию условия
+			//РЈС‡РёС‚С‹РІР°РµРј РїРµСЂРµРґР°РЅРЅС‹Рµ РІ С„СѓРЅРєС†РёСЋ СѓСЃР»РѕРІРёСЏ
 			if(is_array($conditions['and']) && is_array($where) ){
 				$where['and']=array_merge($where['and'],$conditions['and']);
 			}elseif(is_array($conditions['and'])){
 				$where=$conditions;
 			}
 
-			// Сначала смотрим зависимые структуры
-			// потом к ним будем вызывать рекурсии
+			// РЎРЅР°С‡Р°Р»Р° СЃРјРѕС‚СЂРёРј Р·Р°РІРёСЃРёРјС‹Рµ СЃС‚СЂСѓРєС‚СѓСЂС‹
+			// РїРѕС‚РѕРј Рє РЅРёРј Р±СѓРґРµРј РІС‹Р·С‹РІР°С‚СЊ СЂРµРєСѓСЂСЃРёРё
 			$search_children=false;
 			if($structure_sid!='rec')
 				if($this->structure)
@@ -285,12 +285,12 @@ class acms_trees{
 							$search_children=$s_sid;
 						}
 
-			//Сортировка:
-			//если есть поле POS - сортируем по нему,
-			//иначе сортируем по публичной дате, в обратном порядке
+			//РЎРѕСЂС‚РёСЂРѕРІРєР°:
+			//РµСЃР»Рё РµСЃС‚СЊ РїРѕР»Рµ POS - СЃРѕСЂС‚РёСЂСѓРµРј РїРѕ РЅРµРјСѓ,
+			//РёРЅР°С‡Рµ СЃРѕСЂС‚РёСЂСѓРµРј РїРѕ РїСѓР±Р»РёС‡РЅРѕР№ РґР°С‚Рµ, РІ РѕР±СЂР°С‚РЅРѕРј РїРѕСЂСЏРґРєРµ
 			$order=IsSet($this->structure[$structure_sid]['fields']['pos'])?'order by `pos`':'order by `date_public` desc';
 
-			//Получаем записи
+			//РџРѕР»СѓС‡Р°РµРј Р·Р°РїРёСЃРё
 			if($levels_to_show > 0){
 				$recs=$this->model->makeSql(
 					array(
@@ -302,36 +302,36 @@ class acms_trees{
 				);
 			}//pr($this->model->last_sql);
 			
-			//Вставляем завиcимые записи если нужно
+			//Р’СЃС‚Р°РІР»СЏРµРј Р·Р°РІРёcРёРјС‹Рµ Р·Р°РїРёСЃРё РµСЃР»Рё РЅСѓР¶РЅРѕ
 			if(is_array($recs))
 			if($search_children)
 			if($structure_sid!='rec')
 			if($levels_to_show > 1)
 			foreach($recs as $i=>$rec){
 
-				//В разных типах используются разные поля для связки
-				//Берём нужное поле связки
+				//Р’ СЂР°Р·РЅС‹С… С‚РёРїР°С… РёСЃРїРѕР»СЊР·СѓСЋС‚СЃСЏ СЂР°Р·РЅС‹Рµ РїРѕР»СЏ РґР»СЏ СЃРІСЏР·РєРё
+				//Р‘РµСЂС‘Рј РЅСѓР¶РЅРѕРµ РїРѕР»Рµ СЃРІСЏР·РєРё
 				$link_field=model::$types[$this->structure[$search_children]['dep_path']['link_type']]->link_field;
 
-				//Условие связи элементов
+				//РЈСЃР»РѕРІРёРµ СЃРІСЏР·Рё СЌР»РµРјРµРЅС‚РѕРІ
 				$where['and']=array('`dep_path_'.$structure_sid.'`="'.$rec[$link_field].'"');
 
-				//Учитываем переданные в функцию условия
+				//РЈС‡РёС‚С‹РІР°РµРј РїРµСЂРµРґР°РЅРЅС‹Рµ РІ С„СѓРЅРєС†РёСЋ СѓСЃР»РѕРІРёСЏ
 				if(is_array($conditions['and'])){
 					$where['and']=array_merge($where['and'],$conditions['and']);
 				}
 
-				//Ищем потомков
+				//РС‰РµРј РїРѕС‚РѕРјРєРѕРІ
 				if($search_children){
 					$children=acms_trees::getStructureShirtTree_typeSimple($root_record_id,$search_children,$levels_to_show-1,$where);
 					if($children)$recs[$i]['sub']=$children;
 				}
 			}
 		}
-		//Вставляем окончание .html
+		//Р’СЃС‚Р°РІР»СЏРµРј РѕРєРѕРЅС‡Р°РЅРёРµ .html
 		$recs=$this->insertRecordUrlType($recs);
 		
-		//Помним какая запись из какого модуля
+		//РџРѕРјРЅРёРј РєР°РєР°СЏ Р·Р°РїРёСЃСЊ РёР· РєР°РєРѕРіРѕ РјРѕРґСѓР»СЏ
 		if($recs)
 		foreach($recs as $i=>$rec){
 			if(!IsSet($recs[$i]['module'])){
@@ -340,14 +340,14 @@ class acms_trees{
 			}
 		}
 
-		//Готово
+		//Р“РѕС‚РѕРІРѕ
 		if(count($recs))
 			return $recs;
 		else 
 			return false;
 	}
 	
-	//Рекурсивная функция переформирования линейного списка записей в дерево
+	//Р РµРєСѓСЂСЃРёРІРЅР°СЏ С„СѓРЅРєС†РёСЏ РїРµСЂРµС„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ Р»РёРЅРµР№РЅРѕРіРѕ СЃРїРёСЃРєР° Р·Р°РїРёСЃРµР№ РІ РґРµСЂРµРІРѕ
 	public static function reformRecords($recs,$level,$from,$to){
 		$found=array();
 		for($i=$from;$i<$to;$i++){
@@ -363,10 +363,10 @@ class acms_trees{
 				$new_subs=self::reformRecords($recs,$level+1,$f['from'],$found[$i+1]['from']);
 			}
 			if($new_subs){
-				//Уже есть какие-то подразделы
+				//РЈР¶Рµ РµСЃС‚СЊ РєР°РєРёРµ-С‚Рѕ РїРѕРґСЂР°Р·РґРµР»С‹
 				if(is_array($recs[$f['id']]['sub']))
 					$recs[$f['id']]['sub']=array_merge($new_subs,$recs[$f['id']]['sub']);
-				//Подразделов пока нет
+				//РџРѕРґСЂР°Р·РґРµР»РѕРІ РїРѕРєР° РЅРµС‚
 				else
 					$recs[$f['id']]['sub']=$new_subs;
 			}
