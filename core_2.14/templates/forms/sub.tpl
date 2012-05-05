@@ -14,6 +14,7 @@
 			{/if}
 	{include file="$path_admin_templates/forms/sub.tpl" rec=$sub}
 			{if count( $sub.sub )>3 }
+					<br />
 				</div>
 			{/if}
 
