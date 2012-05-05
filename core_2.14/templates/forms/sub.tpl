@@ -9,7 +9,7 @@
 
 			{if count( $sub.sub )>3 }
 				<br />
-				<i class="icon-list" OnClick="$('#sub{$rec.id}_{$field.module}_{$field.structure_sid}').toggle();"></i>
+				<i OnClick="$('#sub{$rec.id}_{$field.module}_{$field.structure_sid}').toggle();">…</i>
 				<div id="sub{$rec.id}_{$field.module}_{$field.structure_sid}">
 			{/if}
 	{include file="$path_admin_templates/forms/sub.tpl" rec=$sub}
