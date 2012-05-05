@@ -9,7 +9,7 @@
 
 			{if count( $sub.sub )>3 }
 				<br />
-				<i OnClick="$('#sub{$sub.id}_{$field.module}_{$field.structure_sid}').toggle('fast');" style="cursor:ponter;">…</i>
+				<i OnClick="$('#sub{$sub.id}_{$field.module}_{$field.structure_sid}').toggle('fast');" style="cursor:pointer;">…</i>
 				<div id="sub{$sub.id}_{$field.module}_{$field.structure_sid}" style="display:none;">
 			{/if}
 	{include file="$path_admin_templates/forms/sub.tpl" rec=$sub}
