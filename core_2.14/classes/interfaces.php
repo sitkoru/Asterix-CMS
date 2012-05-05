@@ -483,6 +483,7 @@ class interfaces{
 		}
 		
 		pr_r($what);
+		exit();
 		
 		//Вносим изменения
 		$this->model->makeSql(
