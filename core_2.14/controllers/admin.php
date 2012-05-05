@@ -311,7 +311,7 @@ class controller_admin extends default_controller{
 	}
 
 	public function getSettingsFields(){
-		$fields = $this->model->execSql('select * from `settings`','getall');
+		$fields = $this->model->execSql('select * from `settings` where '.model::pointDomain(),'getall');
 		foreach( $fields as $i => $field ){
 			if($field['field'])
 				$field = array_merge( unserialize( $field['field'] ), $field );
