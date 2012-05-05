@@ -168,7 +168,7 @@ class ModelLoader{
 		require_once( model::$config['path']['core'] . '/classes/default_module.php' );
 		
 		//Подгружаем модули
-		$mods = $this->execSql('select * from `modules` where `active`=1 order by `pos`','getall');
+		$mods = $this->execSql('select * from `modules` where `active`=1 order by `id`','getall');
 
 		//Обратная совместимость с ядрами 2.13 и меньше
 		foreach($mods as $i=>$mod)
