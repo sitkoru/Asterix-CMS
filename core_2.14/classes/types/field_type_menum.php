@@ -49,6 +49,7 @@ class field_type_menum extends field_type_default
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode($value, $settings = false, $record = array())
 	{
+
 		$vals = explode('|', $value);
 		UnSet($vals[0]);
 		UnSet($vals[count($vals)]);
@@ -74,10 +75,10 @@ class field_type_menum extends field_type_default
 		//Если значение ещё не развёрнуто - разворачиваем
 		if( !is_array($value) )
 			$value      = explode('|', $value);
-			
+		
 		//Отмечаем в массиве выбранные элементы
 		if(is_array($variants)){
-			foreach ($variants as $sid => $title){
+			foreach ($variants as $sid => $title)if($title){
 				if( is_int($sid) )
 					$res[] = array(
 						'value' => $title,
@@ -94,14 +95,15 @@ class field_type_menum extends field_type_default
 		
 		//Если почему-то нет variants - сохраняем текущие значения
 		}else{
-			foreach($value as $sid => $title){
-				if( isset($title['title']) )
+			foreach($value as $sid => $title)if($title){
+				if( is_array($title) ){
+					pr_r($title);
 					$res[] = array(
 						'value' => $title['value'],
-						'title' => $title['title'],
+						'title' => '+'.$title['title'],
 						'selected' => $title['selected']
 					);
-				elseif( is_int($sid) )
+				}elseif( is_int($sid) )
 					$res[] = array(
 						'value' => $title,
 						'title' => $title,
@@ -115,7 +117,6 @@ class field_type_menum extends field_type_default
 					);
 			}
 		}
-		
 		
 		//Готово
 		return $res;

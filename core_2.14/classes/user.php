@@ -67,7 +67,7 @@ class user
 
 		//Начальные данные пользователя
 		} else {
-			$this->info = array(
+			self::$info = array(
 				'id' => 0,
 				'title' => 'Гость',
 				'admin' => false
@@ -280,7 +280,7 @@ class user
 	//Старт авторизации по OAuth - запрос в сторону провайдера
 	private static function start_OAuthUser(){
 		$provider = $_GET['login_oauth'];
-		
+
 		if( in_array($provider, array('vk.com','vk') ) ){
 			if( IsSet($_GET['error']))
 				return false;
@@ -292,6 +292,7 @@ class user
 
 			session_start();
 			$code = $_REQUEST["code"];
+
 				
 			//получаем код доступа
 			if(empty($code)) {
@@ -299,21 +300,22 @@ class user
 				$dialog_url = 'http://api.vk.com/oauth/authorize?client_id='.$app_id.'&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
-				
+
 			//Получаем Token
 			$token_url = 'https://oauth.vkontakte.ru/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			$token = (array)json_decode(@file_get_contents($token_url));
-				
+
 			//Запрос данных
 			$url2="https://api.vkontakte.ru/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
 			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
-				
+	
 			if( !IsSet( $datas['response'] ) )
 				return false;
-				
+
 			$datas=(array)$datas['response'][0];
-			$this->info = array(
+
+			self::$info = array(
 				'login' => 'vk'.$datas['uid'],
 				'password' => md5($datas['uid'].'thisismyverybigwordformd5'),
 				'admin' => false,
@@ -325,7 +327,7 @@ class user
 				
 			$_POST['login'] = self::$info['login'];
 			$_POST['password'] = self::$info['password'];
-					
+				
 			//Авторизуем
 			self::authUser_localhost();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
@@ -347,7 +349,7 @@ class user
 				model::addRecord('users', 'rec', self::$info);
 				self::$authUser_localhost();
 			}
-			
+		
 			//На главную
 			header('Location: /');
 			exit();
@@ -380,7 +382,7 @@ class user
 				parse_str($response, $params);
 		
 				$graph_url = "https://graph.facebook.com/me?access_token=".$params['access_token'];
-				
+
 				//получаем данные пользователя с помощью токена
 				$datas = json_decode(@file_get_contents($graph_url));
 				$datas=(array)$datas;
@@ -400,7 +402,7 @@ class user
 				$_POST['password'] = self::$info['password'];
 					
 				//Авторизуем
-				self::$authUser_localhost();
+				self::authUser_localhost();
 				$login = model::$types['sid']->correctValue( self::$info['login'] );
 								
 				//Регистрируем
@@ -426,6 +428,7 @@ class user
 				
 			}else
 				echo("Произошла ошибка авторизации. Попробуйте еще раз.");
+				exit();
 		
 		
 		}elseif( in_array($provider, array('twitter.com','twitter') ) ){
@@ -470,11 +473,11 @@ class user
 				$url .= '&oauth_signature_method=HMAC-SHA1';
 				$url .= '&oauth_timestamp='.$oauth_timestamp;
 				$url .= '&oauth_version=1.0';
-	
+
 				//отправляем запрос.
 				$response = @file_get_contents($url);
 				parse_str($response, $result);
-					
+
 				$oauth_token = $result['oauth_token'];
 				$oauth_token_secret = $result['oauth_token_secret'];
 				

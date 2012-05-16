@@ -102,12 +102,14 @@ class field_type_domain extends field_type_default
 	//Получить развёрнутое значение для системы управления из простого значения
 	public function getAdmValueExplode($value, $settings = false, $record = array())
 	{
+/*
 		//Переключение домена записей в рамках сайта
 		$domain_switch = model::$config['settings']['domain_switch'];
 		
 		$res = array();
 		
 		if ($domain_switch) {
+*/
 			//Варианты значений
 			$variants = $this->model->execSql('select `id`,`title` from `domains` where `active`=1 order by `title`');
 			//Вариант универсальной записи
@@ -117,13 +119,14 @@ class field_type_domain extends field_type_default
 					'title' => '- все домены -'
 				)
 			), $variants);
+/*
 		} else {
 			//Варианты значений
 			$variants = array(
 				model::getDomain()
 			);
 		}
-		
+*/		
 		//Если значение ещё не развёрнуто - разворачиваем
 		$arr = explode('|', $value);
 		

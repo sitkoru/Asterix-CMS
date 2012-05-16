@@ -44,6 +44,7 @@ class extention_languages extends extention_default
 	//Вставим дополнительные поля в модули
 	private function insertFields()
 	{
+		if(model::$modules)
 		foreach (model::$modules as $module_sid => $module)
 			if ($module->structure) {
 				foreach ($module->structure as $structure_sid => $structure) {
