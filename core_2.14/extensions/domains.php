@@ -48,7 +48,8 @@ class extention_domains extends extention_default
 	//Вставим дополнительные поля в модули
 	private function insertFields()
 	{
-		if( model::$config['settings']['domain_switch'])
+//		if( model::$config['settings']['domain_switch'])
+		if(model::$modules)
 		foreach (model::$modules as $module_sid => $module)
 			if ($module->structure) {
 				foreach ($module->structure as $structure_sid => $structure) {
@@ -65,13 +66,14 @@ class extention_domains extends extention_default
 	//Определяем текущий домен
 	private function defineCurrentDomain()
 	{
+/*
 		if( !model::$config['settings']['domain_switch']){
 			$this->domain = array(
 				'title' => model::$settings['domain_title'],
 				'host' => $_SERVER['HTTP_HOST'],
 			);
 		}
-		
+*/		
 		//Хост
 		$host = $_SERVER['HTTP_HOST'];
 		$host = str_replace('www.', '', $host);
@@ -133,7 +135,7 @@ class extention_domains extends extention_default
 	//Перед выполнением запроса
 	public function onSql($fields, $tables, $where = false, $group = false, $order = false, $limit = false, $query_type = 'getall')
 	{
-		if( model::$config['settings']['domain_switch']){
+//		if( model::$config['settings']['domain_switch']){
 			if ($query_type == 'insert') {
 				if (!$fields)
 					$fields = array();
@@ -146,7 +148,7 @@ class extention_domains extends extention_default
 					if (!IsSet($where['and']['domain']))
 						$where['and']['domain'] = $this->getWhere();
 			}
-		}
+//		}
 		return array(
 			$fields,
 			$tables,
@@ -160,10 +162,12 @@ class extention_domains extends extention_default
 	//Составить подстроку для запроса
 	public function getWhere()
 	{
-		if( model::$config['settings']['domain_switch'])
+//		if( model::$config['settings']['domain_switch'])
 			return '( (`domain`="all") || (`domain` LIKE "%|' . $this->domain['id'] . '|%") )';
+/*
 		else
 			return '1';
+*/
 	}
 	
 	

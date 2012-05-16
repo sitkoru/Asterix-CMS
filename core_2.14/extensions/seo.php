@@ -105,6 +105,7 @@ class extention_seo extends extention_default
 */
 		);
 		
+		if(model::$modules)
 		foreach (model::$modules as $module_sid => $module)
 			if ($module->structure) {
 				foreach ($module->structure as $structure_sid => $structure) {

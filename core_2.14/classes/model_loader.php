@@ -185,21 +185,19 @@ class ModelLoader{
 				$module['path'] = $module_path;
 				
 				$name = $module['prototype'] . '_module';
-				$modules[ $module['sid'] ] = new $name($this, $module);
+				$this->modules[ $module['sid'] ] = new $name($this, $module);
 			}
 		}
 		
-		//older version support
-		$this->modules = $modules;
-		
-		return $modules;
+		return $this->modules;
 	}
 
 	//Подгрузка расширений к модулю
 	public function loadExtensions(){
+
 		$extensions = array();
 		//Подгрузка библиотеки расширений к модулям, инициализация
-		if( is_array(@model::$config['extensions']) )
+		if( is_array(model::$config['extensions']) )
 		foreach (model::$config['extensions'] as $extention_sid => $filename) {
 			//Подключаем файл библиотеки
 			require_once(model::$config['path']['core'] . '/extensions/' . $filename);
@@ -208,7 +206,7 @@ class ModelLoader{
 			$extensions[ $extention_sid ] = new $name($this);
 			$extensions[ $extention_sid ] -> execute();
 		}
-		
+
 		return $extensions;
 	}
 

@@ -42,7 +42,7 @@ class model{
 		self::$config = 		ModelLoader::loadConfig( $config );
 		self::$db = 			ModelLoader::loadDatabase( $this );
 		self::$types = 			ModelLoader::loadTypes();
-		self::$modules = 		ModelLoader::loadModules();
+		ModelLoader::loadModules();
 		self::$extensions = 	ModelLoader::loadExtensions();
 		self::$settings = 		ModelLoader::loadSettings();
 		self::$ask = 			ModelLoader::loadAsk();
@@ -245,6 +245,11 @@ class model{
 	public function editRecord($module_sid = 'start', $structure_sid, $values, $conditions = false){
 		return self::$modules[$module_sid]->editRecord($values, $structure_sid, $conditions);
 	}
+	//Старое название функции
+	public function updateRecord($module_sid = 'start', $structure_sid, $values, $conditions = false){
+		return self::$modules[$module_sid]->editRecord($values, $structure_sid, $conditions);
+	}
+
 
 	//Добавление записей в структуру модуля, с проверкой существования этих записей (проверка по SID)
 	public function importRecords($module, $structure_sid, $records, $check_unique_field = 'sid', $conditions = false){

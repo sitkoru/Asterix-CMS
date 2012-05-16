@@ -96,7 +96,7 @@ class interfaces{
 
 	//Получить содержимое интерфейса
 	public function prepareInterface($prepare, $params, $public = false){
-
+		
 		//Если контроллер существует
 		if( IsSet( $this->interfaces[$prepare] ) ){
 
@@ -141,7 +141,7 @@ class interfaces{
 				'comment'=>@$this->interfaces[$prepare]['comment'],	//Название интерфейса
 				'fields'=>$fields,									//Поля и значения
 				'auth'=>$this->interfaces[$prepare]['auth'],
-				'action'=>(IsSet($this->interfaces[$prepare]['action'])?$this->interfaces[$prepare]['action']:'/'.$this->info['sid']).'.html',
+				'action'=>(IsSet($this->interfaces[$prepare]['action'])?$this->interfaces[$prepare]['action']:'/'.$this->info['sid'].'.'.$prepare).'.html',
 				'ajax'=>$this->interfaces[$prepare]['ajax'],
 				'protection'=>$this->interfaces[$prepare]['protection'],
 			);
@@ -187,7 +187,7 @@ class interfaces{
 			if( !IsSet( $fields[$var] ) )
 				if( $var != 'interface' )
 					UnSet( $params[ $var ] );
-	
+
 		$function_name = $this->interfaces[$interface]['control'];
 		if( is_callable(array($this, $function_name)) )
 			$this->answerInterface( $interface, $this->$function_name( $params, $structure_sid ) );
