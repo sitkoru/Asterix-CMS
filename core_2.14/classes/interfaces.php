@@ -180,12 +180,12 @@ class interfaces{
 	public function controlInterface($interface, $params, $public = false){
 		$structure_sid=$this->interfaces[$interface]['structure_sid'];
 		if( !$structure_sid )$structure_sid = model::$ask->structure_sid;
-		
+/*		
 		//Captcha checkout
 		if( $this->interfaces[ $interface ]['protection'] == 'captcha' )
 			if( @$_SESSION['form_captcha_code'] != $params['captcha'] )
 				log::stop('401 Unauthorized');
-		
+*/		
 		//Фильтрация переданных значений - убираем лишние
 		$fields = interfaces::getFields($params, $interface, $public);
 		foreach($params as $var=>$val)
