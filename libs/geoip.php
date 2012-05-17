@@ -45,6 +45,9 @@ class geoip {
     public function getLocation() {
 
         $db = mysql_connect($this->host, $this->login, $this->password);
+        if( !$db )
+            $this->checkInstallGeoIP();
+
         mysql_select_db($this->name, $db);
         mysql_query('SET CHARACTER SET utf8');
         
@@ -63,9 +66,20 @@ class geoip {
             $location['district']=$data[3];
         }
         mysql_close($db);
+
         //возвращаем ассоциативный массив
         return $location;
     }
+
+    private function checkInstallGeoIP(){
+
+
+        
+
+        pr('Установлена библиотека GeoIP.');
+        exit();
+    }
+
 
 }
 
