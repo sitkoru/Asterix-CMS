@@ -179,7 +179,7 @@ class components{
 					'limit'=>'limit '.($current_page*$items_per_page).', '.$items_per_page,
 				),
 				'getall'
-			);//pr(model::$last_sql);
+			);pr(model::$last_sql);
 
 			//Раскрываем сложные поля
 			if($recs)
