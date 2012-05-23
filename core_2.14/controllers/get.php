@@ -24,12 +24,17 @@ class controller_get extends default_controller
 	public function start(){
 		if( (model::$ask->output_format == 'html') or (model::$ask->output_format == '404') )
 			$this->getHTML();
+		else {
+			header('Content-Type: text/html; charset=utf-8');
+			header("HTTP/1.0 200 Ok");
+			print(model::$ask->output_format);
+			die();
+		}
+		// elseif( model::$ask->output_format == 'json' )
+		// 	$this->getJSON();
 			
-		elseif( model::$ask->output_format == 'json' )
-			$this->getJSON();
-			
-		elseif( model::$ask->output_format == 'tpl' ) 
-			$this->getHTML();
+		// elseif( model::$ask->output_format == 'tpl' ) 
+		// 	$this->getHTML();
 	}
 
 
