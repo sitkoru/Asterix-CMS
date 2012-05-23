@@ -35,37 +35,32 @@ class controller_get extends default_controller
 
 	//Выдать результат в формате JSON
 	private function getJSON(){
-		// if (!headers_sent()){
-		// 	header('Content-Type: text/html; charset=utf-8');
-		// 	header("HTTP/1.0 200 Ok");
-		// }
+		if (!headers_sent()){
+			header('Content-Type: text/html; charset=utf-8');
+			header("HTTP/1.0 200 Ok");
+		}
 
-		// $result = array(
-		// 	'status' => 'ok',
-		// 	'url' => 'http://'.model::$ask->host.model::$ask->rec['url'],
-		// 	'module_sid' => model::$ask->module,
-		// 	'structure_sid' => model::$ask->structure_sid,
-		// 	'data' => model::$ask->rec,
-		// );
-		header('Content-Type: text/html; charset=utf-8');
-		header("HTTP/1.0 200 Ok");
-		$result='iam json';
+		$result = array(
+			'status' => 'ok',
+			'url' => 'http://'.model::$ask->host.model::$ask->rec['url'],
+			'module_sid' => model::$ask->module,
+			'structure_sid' => model::$ask->structure_sid,
+			'data' => model::$ask->rec,
+		);
+		
+		if( model::$ask->mode[0] ){
+		
+			//Интерфейсы
+			if( IsSet( model::$modules[ model::$ask->module ]->interfaces[ model::$ask->mode[0] ] ) )
+				$result = model::$modules[ model::$ask->module ]->prepareInterface( model::$ask->mode[0], array('record'=>model::$ask->rec), true);
+			
+			//Компоненты
+			elseif( IsSet( model::$modules[ model::$ask->module ]->prepares[ model::$ask->mode[0] ] ) )
+				$result = model::$modules[ model::$ask->module ]->prepareComponent( model::$ask->mode[0], array('record'=>model::$ask->rec), true);
+		}
+
 		print json_encode( $result );
 		exit();
-		
-		// if( model::$ask->mode[0] ){
-		
-		// 	//Интерфейсы
-		// 	if( IsSet( model::$modules[ model::$ask->module ]->interfaces[ model::$ask->mode[0] ] ) )
-		// 		$result = model::$modules[ model::$ask->module ]->prepareInterface( model::$ask->mode[0], array('record'=>model::$ask->rec), true);
-			
-		// 	//Компоненты
-		// 	elseif( IsSet( model::$modules[ model::$ask->module ]->prepares[ model::$ask->mode[0] ] ) )
-		// 		$result = model::$modules[ model::$ask->module ]->prepareComponent( model::$ask->mode[0], array('record'=>model::$ask->rec), true);
-		// }
-
-		// print json_encode( $result );
-		// exit();
 	}
 		
 	//Выдать результат обычной HTML-страничкой
