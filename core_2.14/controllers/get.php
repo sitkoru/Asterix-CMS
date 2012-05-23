@@ -25,8 +25,13 @@ class controller_get extends default_controller
 		if( (model::$ask->output_format == 'html') or (model::$ask->output_format == '404') )
 			$this->getHTML();
 			
-		elseif( model::$ask->output_format == 'json' ) 
+		elseif( model::$ask->output_format == 'json' ) {
+			header('Content-Type: text/html; charset=utf-8');
+			header("HTTP/1.0 200 Ok");
+			print('i am json!!!');
+			die();
 			$this->getJSON();
+			}
 			
 		elseif( model::$ask->output_format == 'tpl' ) 
 			$this->getHTML();
