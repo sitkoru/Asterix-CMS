@@ -22,6 +22,8 @@ require_once('default_controller.php');
 class controller_get extends default_controller
 {
 	public function start(){
+		pr(model::$ask->output_format);
+
 		if( (model::$ask->output_format == 'html') or (model::$ask->output_format == '404') )
 			$this->getHTML();
 			
