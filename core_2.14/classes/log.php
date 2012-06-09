@@ -108,32 +108,21 @@ class log
 	}
 	
 	public static function pr($a){
-		if( class_exists(user) ){
-			if( user::is_admin() ) {
-				if (!headers_sent())
-					header('Content-Type: text/html; charset=utf-8');
+		if( $_SERVER['REMOTE_ADDR'] == '176.56.12.2' )
+			if (!headers_sent()){
+				header('Content-Type: text/html; charset=utf-8');
 				print('
 					<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal;">
 						<b>Служебный вывод, виден только администраторам (длина: '.strlen($a).'):</b>
 						<br>' . $a . '<br />
 					</div>');
 			}
-		}else{
-			if (!headers_sent())
-				header('Content-Type: text/html; charset=utf-8');
-			print('
-				<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal;">
-					<b>Служебный вывод, виден только администраторам (длина: '.strlen($a).'):</b>
-					<br>' . $a . '<br />
-				</div>');
-		}
 	}
 	
 	public static function pr_r($a){
-		if( class_exists(user) ){
-			if( user::is_admin() ) {
-				if (!headers_sent())
-					header('Content-Type: text/html; charset=utf-8');
+		if( $_SERVER['REMOTE_ADDR'] == '176.56.12.2' )
+			if (!headers_sent()){
+				header('Content-Type: text/html; charset=utf-8');
 				print('
 					<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal; text-align:left;">
 						<b>Служебный вывод, виден только администраторам (элементов в массиве: ' . count($a) . '):</b>
@@ -143,18 +132,6 @@ class log
 						</pre>
 					</div>');
 			}
-		}else{
-				if (!headers_sent())
-					header('Content-Type: text/html; charset=utf-8');
-				print('
-					<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal; text-align:left;">
-						<b>Служебный вывод, виден только администраторам (элементов в массиве: ' . count($a) . '):</b>
-						<pre>');
-				print_r($a);
-				print('
-						</pre>
-					</div>');
-		}
 	}
 	public static function translitIt($str){
 		$tr = array(

@@ -14,5 +14,8 @@
 			{/foreach}
 			</ul>
 		{/if}
+			<span class="help-block">
+				Вы можете выбрать сразу несколько фотографий
+			</span>
 		</div>
 	</div>

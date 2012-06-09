@@ -27,6 +27,7 @@ class model{
 	public static $settings;
 	public static $ask;
 	public static $last_sql;
+	public static $active_database = 'system';
 
 	function __construct($config, $log, $cache = false){
 

@@ -21,6 +21,32 @@ class structures{
 		//Подгружаем заданную структуру модуля
 		$this->setStructure();
 
+	
+		if($this->structure)
+		foreach($this->structure as $structure_sid=>$part)
+			if( is_array( $part['fields'] ) )
+				if( count( $part['fields'] ) )
+					foreach( $part['fields'] as $field_sid=>$field)
+						if( $field['type'][0] == '_' )
+							if( !ModelLoader::loadUserType( $field ) )
+								UnSet( $this->structure[ $structure_sid ]['fields'][ $field_sid ] );
+
+
+/*		
+		//Проверяем на пользовательские типы данных
+		if($this->structure)
+		foreach($this->structure as $structure_sid=>$part)
+			if($part['fields'])
+				foreach($part['fields'] as $field_sid=>$field){
+					
+					pr($field_sid);
+					
+					if( $field_sid[0] == '_' ){
+						if( !ModelLoader::loadUserType( $field ) )
+							UnSet( $this->structure[ $structure_sid ]['fields'][ $field_sid ] );
+					}
+				}
+*/		
 		//Заносим системные поля
 		if($this->structure)
 		foreach($this->structure as $structure_sid=>$part){
@@ -140,6 +166,10 @@ class structures{
 				}
 			}
 		}
+		
+		//BETA
+		$rec['module'] = $this->info['sid'];
+		$rec['structure_sid'] = $structure_sid;
 
 		//Если установлено расширение социального графа - дополняем записи значением вершины графа
 		if(IsSet($this->model->extensions['graph'])){

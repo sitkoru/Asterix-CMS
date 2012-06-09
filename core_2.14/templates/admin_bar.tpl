@@ -1,7 +1,18 @@
 <ul id="acms_bar" class="draggable">
 
 	<li class="a_logo"><img src="http://src.sitko.ru/i/logo_adm.png" style="height:29px;" alt="Asterix CMS" /></li>
-	<li class="a_wide"><a href="/admin.html" target="acms">Дерево сайта</a></li>
+	<li class="a_wide">
+		<a href="/admin.html" target="acms">Дерево сайта</a>
+		<ul class="a_sub">
+{foreach from=$add.recs item=rec}
+			<li><a href="/admin.{$rec.module}.html" target="acms">{$rec.structure}</a></li>
+{/foreach}
+			<li><br /></li>
+{foreach from=$add.subs item=rec}
+			<li><a href="/admin.{$rec.module}.html" target="acms">{$rec.structure}</a></li>
+{/foreach}
+		</ul>
+	</li>
 	<li class="a_narrow">
 		<a rel="add" href="#" OnClick="return false;">Добавить</a>
 		<ul class="a_sub">

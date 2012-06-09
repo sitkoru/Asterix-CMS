@@ -27,15 +27,15 @@ class ModelSql{
 
 //			pr('sql:exec ['.$sql.'|'.$query_type.']');
 		
-            //Получение одной записи
+			// Получение одной записи
             if ($query_type == 'getrow') {
                 $result = model::$db[$database]->GetRow($sql);
 
-                //Получение списка данных
+			// Получение списка данных
             } elseif ($query_type == 'getall') {
                 $result = model::$db[$database]->GetAll($sql);
 
-                //Обновление данных
+			// Обновление данных
             } elseif ($query_type == 'update') {
                 //			pr($sql);
                 if (model::$config['settings']['demo_mode']) {
@@ -45,17 +45,17 @@ class ModelSql{
                     $result = model::$db[$database]->Execute($sql);
                 }
 
-                //Вставка данных
+			// Вставка данных
             } elseif ($query_type == 'insert') {
                 //			pr($sql);
-                if ($this->config['settings']['demo_mode']) {
+                if (model::$config['settings']['demo_mode']) {
                     print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');
                     exit();
                 } else {
                     $result = model::$db[$database]->Execute($sql);
                 }
 
-                //Удаление данных
+			// Удаление данных
             } elseif ($query_type == 'delete') {
                 if ($this->config['settings']['demo_mode']) {
                     print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');

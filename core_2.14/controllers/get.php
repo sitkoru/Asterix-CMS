@@ -25,7 +25,7 @@ class controller_get extends default_controller
 		if( (model::$ask->output_format == 'html') or (model::$ask->output_format == '404') )
 			$this->getHTML();
 			
-		elseif( model::$ask->output_format == 'json' )
+		elseif( model::$ask->output_format == 'json' ) 
 			$this->getJSON();
 			
 		elseif( model::$ask->output_format == 'tpl' ) 
@@ -84,7 +84,7 @@ class controller_get extends default_controller
 			$this->addCSS('http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css');
 		}
 		$this->addCSS('http://src.sitko.ru/3.0/c/panel.css');
-		
+
 		//Подключаем шаблонизатор
 		require_once(model::$config['path']['core'] . '/classes/templates.php');
 		$tmpl = new templater($this->model);
@@ -133,7 +133,7 @@ class controller_get extends default_controller
 
 		//Файл основного шаблона
 		if( model::$ask->output_format == 'tpl' )
-			$template_file_path = model::$config['path']['templates'] . '/' . basename( end(model::$ask->mode) ).'.tpl';
+			$template_file_path = model::$config['path']['templates'] . '/ajax/' . basename( end(model::$ask->mode) ).'.tpl';
 		else
 			$template_file_path = model::$config['path']['templates'] . '/' . $current_template_file;
 

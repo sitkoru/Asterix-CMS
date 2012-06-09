@@ -11,8 +11,10 @@ class ModelLoader{
 		$config['path']['libraries'] = 			$config['path']['core'].'/../libs';
 		$config['path']['admin_templates'] = 	$config['path']['core'].'/templates';
 	
+		if( !IsSet( $config['path']['templates'] ) )
+			$config['path']['templates'] = 			$config['path']['www'].'/../templates';
+			
 		$config['path']['modules'] = 			$config['path']['www'].'/../modules';
-		$config['path']['templates'] = 			$config['path']['www'].'/../templates';
 		$config['path']['backup'] = 			$config['path']['www'].'/../backup';
 		$config['path']['temp'] = 				$config['path']['www'].'/../tmp';
 		$config['path']['tmp'] = 				$config['path']['www'].'/../tmp';
@@ -160,6 +162,23 @@ class ModelLoader{
 		}
 		
 		return $types;
+	}
+
+	//Подгружаем пользовательский тип данных
+	public function loadUserType( $field ){
+		if( ( $field['type'][0] == '_' ) && IsSet( $field['type_path'] ) ){
+			$type_path = model::$config['path']['www'] . '/' . $field['type_path'];
+
+			if( file_exists( $type_path ) ){
+				require_once( $type_path);
+				$type_sid = $field['type'];
+				$type_name = 'field_usertype' . $type_sid;
+				model::$types[ $type_sid ] = new $type_name( $this );
+				
+				return true;
+			}
+		}
+		return false;
 	}
 
 	//Подключение модулей

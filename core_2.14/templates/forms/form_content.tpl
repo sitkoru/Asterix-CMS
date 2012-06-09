@@ -10,7 +10,11 @@
 		{foreach from=$action.groups item=group key=key}
 			{foreach from=$group.fields item=field}
 				{if $field.type == 'hidden'}
-					{include file="$path_admin_templates/`$field.template_file`"}
+					{if isset( $field.template_userfile ) }
+						[{$field.template_userfile}]
+					{else}
+						{include file="$path_admin_templates/`$field.template_file`"}
+					{/if}
 				{/if}
 			{/foreach}
 		{/foreach}
@@ -27,7 +31,11 @@
 
 				{foreach from=$group.fields item=field}
 				{if $field.type != 'hidden'}
-					{include file="$path_admin_templates/`$field.template_file`"}
+					{if isset( $field.template_userfile ) }
+						[{$field.template_userfile}]
+					{else}
+						{include file="$path_admin_templates/`$field.template_file`"}
+					{/if}
 				{/if}
 				{/foreach}
 				

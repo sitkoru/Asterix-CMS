@@ -23,17 +23,37 @@ class components{
 
 		//Предобъявленные в модуле
 		foreach($system_prepares as $sid=>$prepare)
-			if(!IsSet($this->prepares[$sid])){
+			if( !IsSet( $this->prepares[$sid] ) ){
 				$this->prepares[$sid]=$prepare;
 			}
+		
+		//Новый способ объявления компонент в функции
+		if( method_exists($this, 'setComponents') )
+			return $this->setComponents();
+		
 	}
 	
 	//Запуск подготовки данных в компоненте
 	public function init($prepare, $params){
 		if( IsSet( $this->prepares[$prepare] ) ){
-			$function_name=$this->prepares[ $prepare ]['function'];
+		
+			if( IsSet($this->prepares[ $prepare ]['function']) )
+				$function_name=$this->prepares[ $prepare ]['function'];
+			else
+				$function_name=$this->prepares[ $prepare ]['control'];
+			
+			/*
+				В параметры функции передаются 
+				как значения из вызова в шаблоне, 
+				так и описанные значения 
+				в описании компонента
+			*/
+			if( IsSet( $this->prepares[ $prepare ]['params'] ) )
+				$params = array_merge( @$this->prepares[ $prepare ]['params'], $params );
+			
 			if( method_exists('components', $function_name) ){
 				return components::$function_name($params);
+				
 			}elseif( is_callable(array($this, $function_name)) ){
 				return $this->$function_name($params);	
 			}
@@ -102,6 +122,10 @@ class components{
 		if( IsSet($this->structure['rec']['fields']['show_in_anons']) )
 			$where['and'][]='`show_in_anons`=1';
 
+		//По умолчанию не более 100 записей
+		if( !IsSet($params['limit']) )
+			$params['limit'] = 'limit 100';
+		
 		//Забираем записи
 		$recs=$this->model->makeSql(
 			array(
@@ -127,16 +151,14 @@ class components{
 
 	//Записи - полный список записей
 	public function prepareRecs($params){
-		//Брать параметры из GET
-		if($params['params_from_get']){
-			//Получаем условия
-			$where=components::convertParamsToWhere($_GET);
-
-		}else{
-			//Получаем условия
-			$where=components::convertParamsToWhere($params);
-
-		}
+		$params['data'] = 'recs';
+	
+		//Получаем условия
+		$where=components::convertParamsToWhere($params);
+		
+		//По умолчанию не более 100 записей
+		if( !IsSet($params['limit']) )
+			$params['limit'] = 'limit 100';
 		
 		//Определяем структуру к которой обращается
 		$structure_sid='rec';
@@ -350,6 +372,10 @@ class components{
 		//Получаем условия
 		$where=components::convertParamsToWhere($params);
 
+		//По умолчанию не более 100 записей
+		if( !IsSet($params['limit']) )
+			$params['limit'] = 'limit 100';
+		
 		//Забираем запись
 		$recs=$this->model->makeSql(
 			array(
@@ -505,6 +531,10 @@ class components{
 	//Переводим список переданных параметров в условия запроса
 	public function convertParamsToWhere($params){
 		
+		//Условия из GET
+		if($params['params_from_get'])
+			$params = array_merge($_GET, $params);
+			
 		//Текущий вывод
 		$prepare=$params['data'];
 
@@ -586,6 +616,9 @@ class components{
 							$where['and'][$var] = '`'.$var.'`="'.mysql_real_escape_string($val).'"';
 						}
 					}
+				//Прямая вставка SQL-запроса
+				}elseif( $var == 'sql' ){
+					$where['and'][] = $val;
 				}
 			}
 		}

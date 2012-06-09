@@ -2,6 +2,7 @@
 		<label class="control-label" for="field_{$field.sid}">{$field.title}</label>
 		<div class="controls">
 			<select size=8 name="{$field.sid}[]" class="" id="field_{$field_sid}" multiple{if $field.required} required="required"{/if}>
+				<option value="0">- пусто -</option>
 			{foreach from=$field.value item=val}
 				<option value="{$val.value}"{if $val.selected} selected="selected"{/if}>{$val.title}{if !strlen($val.title)}[пусто]{/if}</option>
 			{/foreach}

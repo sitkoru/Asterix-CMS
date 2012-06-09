@@ -32,12 +32,14 @@ class mysql{
 	{
 		$this->model = $model;
 		$this->connection = false;
-		$this->active_database = false;
+		if( property_exists('model', 'active_database') )
+			model::$active_database = false;
 	}
 	public function activate()
 	{
 		mysql_select_db($this->name, $this->connection);
-		$this->active_database = $this->name;
+		if( property_exists('model', 'active_database') )
+			model::$active_database = $this->name;
 	}
   
   public function Connect($host,$user,$password,$name){

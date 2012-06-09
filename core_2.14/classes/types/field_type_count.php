@@ -27,109 +27,76 @@ class field_type_count extends field_type_default
 	//Поле участвует в поиске
 	public $searchable = true;
 	
-	public function creatingString($name)
-	{
-		return '`' . $name . '` TEXT NOT NULL';
+	public function creatingString($name){
+		return '`' . $name . '` INT NOT NULL';
 	}
 
-	//Получить развёрнутое значение из простого значения
-	public function getValueExplode($value, $settings = false, $record = array())
-	{
-		//Включены комментарии у записи
-		$res=unserialize($value);
-		
-		//Готово
-		return $res;
-	}
-
+	// Переиндексация всех полей типа COUNT в модели
 	public function reindex(){
 		
-		//Все модули
 		foreach(model::$modules as $module_sid => $module){
-			//Все структуры
 			if($module->structure)
 			foreach($module->structure as $structure_sid => $structure){
-				//Проверяем все поля
 				foreach($structure['fields'] as $field_sid => $field){
-					//Ищем поля типа count
+					
+					// Ищем поля типа count
 					if($field['type'] == 'count'){
 
-						//Ищем все записи найденной структуры
-						$recs=$this->model->execSql('select * from `'.$module->getCurrentTable($structure_sid).'` where '.model::pointDomain().'','getall');
-
-						$count=array();
+						// Ищем какие поля будем считать ссылкой на наш COUNT
+						$target_module_sid = $field['module'];
+						$target_structure_sid = $field['structure_sid'];
+						$target_field_sid = false;
 						
-						//Проверяем у них зависимости
-						foreach($recs as $i=>$rec){	
-							//Все дети или ссылающиеся щаписиы
-							$count = $this->getMyChildren($module_sid, $structure_sid, $rec);
+						$fields = model::$modules[ $target_module_sid ]->structure[ $target_structure_sid ]['fields'];
+						foreach( $fields as $i_field_sid => $i_field ){
+						
+							// Поле типа Link
+							if( ($i_field['type'] == 'link') && ($i_field['module'] == $module_sid) && ($i_field['structure_sid'] == $structure_sid) ){
+								$target_field_sid = $i_field_sid;
+								$link = 'link';
+								
+							// Поле типа LinkM
+							}elseif( ($i_field['type'] == 'linkm') && ($i_field['module'] == $module_sid) && ($i_field['structure_sid'] == $structure_sid) ){
+								$target_field_sid = $i_field_sid;
+								$link = 'linkm';
+							
+							// Поля типа Module/Structure_sid/Record_id
+							}elseif( IsSet($i_field['module_sid']) && IsSet($i_field['structure_sid']) && IsSet($i_field['record_id']) ){
+								$target_field_sid = true;
+								$link = 'msr';
 
-							//Обновляем текущую запись
-							$this->model->execSql('update `'.$module->getCurrentTable($structure_sid).'` set `'.$field_sid.'`="'.mysql_real_escape_string( serialize($count) ).'" where `id`="'.$rec['id'].'" limit 1','update');
-						}	
+							}
+							
+						}
+						
+						// Если связка найдена - считаем связанные записи
+						if( $target_field_sid ){
+							
+							// Ищем все записи текущей структуры структуры
+							$recs = model::execSql('select * from `'.model::$modules[ $module_sid ]->getCurrentTable( $structure_sid ).'`','getall');
+							foreach($recs as $rec){	
+								
+								if( $link == 'link' )
+									$where = '`'.$target_field_sid.'`='.intval( $rec['id'] );
+								elseif( $link == 'linkm' )
+									$where = '`'.$target_field_sid.'` LIKE "%|'.intval( $rec['id'] ).'|%"';
+								elseif( $link == 'msr' )
+									$where = '(`module_sid`="'.$module_sid.'" && `structure_sid`="'.$structure_sid.'" && `record_id`="'.intval( $rec['id'] ).'")';
+								
+								// Считаем всех детей или ссылающиеся записи
+								$count = $this->model->execSql('select COUNT(`id`) as `counter` from `'.model::$modules[ $target_module_sid ]->getCurrentTable( $target_structure_sid ).'` where '.$where.'','getrow');
+								$count = $count['counter'];
+								
+								// Обновляем текущую запись
+								model::execSql('update `'.model::$modules[ $module_sid ]->getCurrentTable( $structure_sid ).'` set `'.$field_sid.'`='.intval( $count ).' where `id`='.intval($rec['id']),'getall');
+							}
+						}
 					}
 				}
 			}
 		}
 	}
 
-	//Получить всех детей и ссылающихся записей
-	public function getMyChildren($rec_module_sid, $rec_structure_sid, $record){
-		
-		$types=array();
-		
-		//Все модули
-		foreach(model::$modules as $module_sid => $module){
-			//Все структуры
-			if($module->structure)
-			foreach($module->structure as $structure_sid => $structure){
-				
-				$count=0;
-			
-				//Перебираем поля - ссылки
-				foreach($structure['fields'] as $field_sid => $field){
-
-					//Тип link
-					if( ($field['type'] == 'link') && ($field['module'] == $rec_module_sid) && ($field['structure_sid'] == $rec_structure_sid) ){
-						$n=$this->model->execSql('select count(`id`) as `counter` from `'.$module->getCurrentTable( $structure_sid ).'` where `'.$field_sid.'`="'.$record['id'].'"','getrow');
-						$count+=$n['counter'];
-					
-					//Тип linkm
-					}elseif( ($field['type'] == 'linkm') && ($field['module'] == $rec_module_sid) && ($field['structure_sid'] == $rec_structure_sid) ){
-						$n=$this->model->execSql('select count(`id`) as `counter` from `'.$module->getCurrentTable( $structure_sid ).'` where `'.$field_sid.'` LIKE "%|'.$record['id'].'|%"','getrow');
-						$count+=$n['counter'];
-					}
-					
-				}
-				
-				//Есть записимая структура типа link или linkm
-				if( ( $rec_module_sid == $module_sid ) && ( $structure['dep_path']['structure'] == $rec_structure_sid) ){
-					$n=$this->model->execSql('select count(`id`) as `counter` from `'.$module->getCurrentTable( $structure_sid ).'` where `dep_path_'.$rec_structure_sid.'`="'.$record[ model::$types[ $structure['dep_path']['link_type'] ]->link_field ].'"','getrow');
-					$count+=$n['counter'];
-				}
-		
-				//Итого
-				if($count)
-					$types[$module->info['prototype'].'_'.$structure_sid]=array(
-						'module'=>$module_sid,
-						'structure_sid'=>$structure_sid,
-						'count'=>$count
-					);
-				
-			}
-		}
-		
-		$total=0;
-		foreach($types as $t)$total+=$t['count'];
-		
-		$result=array(
-			'total'=>$total,
-			'modules'=>$types,
-		);
-		
-		//Готово
-		return $result;
-	}
 }
 
 ?>

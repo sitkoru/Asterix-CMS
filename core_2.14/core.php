@@ -18,7 +18,7 @@ require_once($config['path']['core'].'/classes/cache.php');
 $cache=new cache($config,$log);
 $cache->readCache();
 
-//Обхявленная переменная позволяет просто запустить ядро, без выполнения контроллеров
+//Объявленная переменная позволяет просто запустить ядро, без выполнения контроллеров
 if( !$start_only ){
 	//Менеджер контроллеров
 	require_once($config['path']['core'].'/classes/controller_manager.php');

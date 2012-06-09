@@ -163,7 +163,7 @@ class controller_manager
 	//Проверка работы в режиме тестирования
 	private function checkTestMode(){
 
-		if (intval(@model::$settings['test_mode'])) {
+		if( intval(@model::$settings['test_mode'] ) && ( !user::is_admin() ) ) {
 			$current_ip = $_SERVER['REMOTE_ADDR'];
 			
 			//Обработка ошибки

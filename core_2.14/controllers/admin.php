@@ -107,6 +107,7 @@ class controller_admin extends default_controller{
 	
 	//Форма редактирования записи
 	private function preloadForm($action, $record){
+
 		//Ресурсы		
 		if( !$action ){
 			$action = 'tree';
@@ -121,6 +122,7 @@ class controller_admin extends default_controller{
 			model::$ask->module = 'start';
 			model::$ask->structure_sid = 'rec';
 			model::$ask->output_type = 'content';
+/*
 		}elseif( in_array($action, array('users', 'css', 'js', 'templates', 'modules')) ){
 			model::$ask->module = 'start';
 			model::$ask->structure_sid = 'rec';
@@ -128,10 +130,15 @@ class controller_admin extends default_controller{
 				model::$ask->output_type = 'content';
 			else
 				model::$ask->output_type = 'list';
+*/
 		}elseif( in_array($action, array('access')) ){
 			model::$ask->module = 'start';
 			model::$ask->structure_sid = 'rec';
 			model::$ask->output_type = 'access';
+		}else{
+			$action = 'tree';
+			model::$ask->output_type = $action;
+			$record['module_sid'] = model::$ask->mode[0];
 		}
 		
 		//Ошибки
@@ -276,7 +283,7 @@ class controller_admin extends default_controller{
 		if( $action == 'settings' )
 			$fields = $this->getSettingsFields();
 		elseif( $action == 'tree' )
-			$fields = $this->getTree();
+			$fields = $this->getTree( $record );
 
 		elseif( $action == 'templates' and !IsSet(model::$ask->mode[3]) )
 			$fields = $this->getTemplates();
@@ -333,10 +340,19 @@ class controller_admin extends default_controller{
 		return $fields;
 	}
 
-	public function getTree(){
-		foreach(model::$modules as $module_sid=>$module){
+	public function getTree( $record ){
+
+		// Вывод только указанного модуля
+		$only_module = false;
+		if( IsSet( $record['module_sid'] ) ){
+			$only_module = $record['module_sid'];
+		}
+
+		foreach(model::$modules as $module_sid => $module){
+			if( !$only_module || ($only_module == $module_sid) )
 			if( is_array($module->structure) )
-			foreach($module->structure as $structure_sid=>$structure)if( !$structure['hide_in_tree'] ){
+			foreach($module->structure as $structure_sid=>$structure)
+			if( !$structure['hide_in_tree'] ){
 				$sortable = (IsSet($structure['fields']['pos']) || ($structure['type'] == 'tree'));
 				$recs = $module->getModuleShirtTree(false, $structure_sid, 10);
 				

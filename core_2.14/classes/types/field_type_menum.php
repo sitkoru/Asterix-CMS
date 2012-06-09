@@ -31,7 +31,7 @@ class field_type_menum extends field_type_default
 	
 	public function creatingString($name)
 	{
-		return '`' . $name . '` TEXT NOT NULL';
+		return '`' . $name . '` LONGTEXT NOT NULL';
 	}
 	
 	//Подготавливаем значение для SQL-запроса
