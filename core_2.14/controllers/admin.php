@@ -353,7 +353,7 @@ class controller_admin extends default_controller{
 			if( is_array($module->structure) )
 			foreach($module->structure as $structure_sid=>$structure)
 			if( !$structure['hide_in_tree'] ){
-				$sortable = (IsSet($structure['fields']['pos']) || ($structure['type'] == 'tree'));
+				$sortable = ( IsSet($structure['fields']['pos']) || ($structure['type'] == 'tree') );
 				$recs = $module->getModuleShirtTree(false, $structure_sid, 10);
 				
 				if( is_array($recs) )				
@@ -370,6 +370,7 @@ class controller_admin extends default_controller{
 				}
 			}
 		}
+		
 		ksort($fields);
 		return $fields;
 	}
