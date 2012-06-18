@@ -74,7 +74,7 @@ class ModelLoader{
 						$db[ $name ] = new $n( $model );
 					}
 					
-					$db[$name]->PConnect($one['host'], $one['user'], $one['password'], $one['name']);
+					$db[$name]->Connect($one['host'], $one['user'], $one['password'], $one['name']);
 					if( !$db[$name]->connection ){
 						print('Ошибка соединения с базой данных.');
 						exit();
@@ -112,6 +112,7 @@ class ModelLoader{
 			'textarea' => 'field_type_textarea.php',
 			'text_editor' => 'field_type_texteditor.php',
 			'textwiki' => 'field_type_textwiki.php',
+			'textmeta' => 'field_type_textmeta.php',
 			
 			'password' => 'field_type_password.php',
 			'tags' => 'field_type_tags.php',
@@ -156,9 +157,11 @@ class ModelLoader{
 		$types = array();
 		foreach ($supported_types as $type_sid => $path){
 			$type_path = model::$config['path']['core'] . '/classes/types/' . $path;
-			require_once( $type_path);
-			$type_name = 'field_type_' . $type_sid;
-			$types[ $type_sid ] = new $type_name( $this );
+			if( file_exists( $type_path ) ){
+				require_once( $type_path);
+				$type_name = 'field_type_' . $type_sid;
+				$types[ $type_sid ] = new $type_name( $this );
+			}
 		}
 		
 		return $types;
@@ -263,7 +266,8 @@ class ModelLoader{
 
 	//Разбор параметров запроса
 	public function loadAsk(){
-		$ask->original_url = ModelLoader::getCurrentUrl();
+		$ask = new StdClass;
+		$ask->original_url = self::getCurrentUrl();
 
 		$ask->method = $_SERVER['REQUEST_METHOD'];
 		$ask->protocol = substr($_SERVER['SERVER_PROTOCOL'], 0, strpos($_SERVER['SERVER_PROTOCOL'], '/'));
@@ -311,11 +315,14 @@ class ModelLoader{
 			$ask->controller = array_shift( $ask->url );
 //			$ask->tree = $ask->url;
 		}
+		
+		pr_r($ask);
+		
 		return $ask;
 	}
 	
 	//Определить текущий URL
-	function getCurrentUrl(){
+	public static function getCurrentUrl(){
 		if( $_SERVER['REDIRECT_URL'][0] == '/' )
 			$_SERVER['REDIRECT_URL'] = $_SERVER['REQUEST_URI'];
 		$original_url = urldecode($_SERVER['REDIRECT_URL']);
