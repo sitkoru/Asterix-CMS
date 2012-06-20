@@ -238,18 +238,18 @@ class ModelLoader{
 		
 		$res = $this->execSql('select * from `settings` where ' . model::pointDomain(), 'getall');
 
-		//Добавление поля field для старых версий ядра
+		// Добавление поля field для старых версий ядра
 		if( !IsSet($res[0]['field']) )
 			model::execSql('alter table `settings` add `field` TEXT NOT NULL','insert');
 		
-		//Разворачиваем поля настроек
+		// Разворачиваем поля настроек
 		foreach ($res as $r)
 			if( is_object( model::$types[ trim($r['type']) ] ) )
 				$settings[ trim($r['var']) ] = model::$types[ trim($r['type']) ]->getValueExplode( trim($r['value']), false, $res );
 
 		$settings = ModelLoader::checkNeededSettings( $settings );
 
-		//Вывод ошибок для режима разработки
+		// Вывод ошибок для режима разработки
 		if( $settings['test_mode'] ){
 			error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
 			ini_set("display_errors", "on");
@@ -258,7 +258,7 @@ class ModelLoader{
 			ini_set("display_errors", "off");
 		}
 		
-		//older version support
+		// older version support
 		$this->settings = $settings;
 		
 		return $settings;
