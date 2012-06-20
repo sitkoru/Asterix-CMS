@@ -316,8 +316,6 @@ class ModelLoader{
 //			$ask->tree = $ask->url;
 		}
 		
-		pr_r($ask);
-		
 		return $ask;
 	}
 	
