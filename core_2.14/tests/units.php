@@ -26,7 +26,7 @@ class unitTests{
 				$message=false;
 
 				//Забираем все записи дерева
-				$recs=$this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` order by `left_key`','getall');
+				$recs=model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` order by `left_key`','getall');
 
 				//Проверяем общую контрольную сумму дерева
 				if($recs[0]['right_key']!=count($recs)*2)
@@ -35,12 +35,12 @@ class unitTests{
 				//Проверяем все записи на совпадение разницы индексов и числа подразделов
 				if($recs)
 				foreach($recs as $i=>$rec){
-					$subrecs=$this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `left_key`>'.$rec['left_key'].' and `right_key`<'.$rec['right_key'].' and `tree_level`>'.$rec['tree_level'].' order by `left_key`','getall');
+					$subrecs=model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `left_key`>'.$rec['left_key'].' and `right_key`<'.$rec['right_key'].' and `tree_level`>'.$rec['tree_level'].' order by `left_key`','getall');
 
 					//Проверка числа подразделов
 					if($rec['left_key']+1+($subrecs?count($subrecs)*2:0)!=$rec['right_key']){
 						$message.='['.$this->info['sid'].'] > ['.$structure_sid.'] -> ['.$rec['id'].'] subs checksum error'."\n";
-						$message.=$this->model->last_sql."\n";
+						$message.=model::$last_sql."\n";
 						$message.=$rec['left_key'].'+1+'.($subrecs?count($subrecs)*2:0).' != '.$rec['right_key']."\n\n";
 					}
 				}
@@ -48,84 +48,84 @@ class unitTests{
 				//Если были ошибки - высылаем сообщение
 				if($message){
 //					print('<h1 style="color:#f00">Редактировать что-либо временно не рекомендуется.</h1>');
-//					mail('dekmabot@gmail.com',$this->model->extensions['domains']->domain['host'].' tree checksum error',$message);
+//					mail('dekmabot@gmail.com',model::$extensions['domains']->domain['host'].' tree checksum error',$message);
 //					pr_r($message);
 
 					error_reporting(E_ERROR | E_WARNING | E_PARSE);	
 					
 					//Строим нормальное дерево
 					$counter = 0;
-					$recs = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where (`sid`="start" or `sid`="index")','getall');
+					$recs = model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where (`sid`="start" or `sid`="index")','getall');
 					foreach($recs as $i=>$rec){
 						$counter ++;
 						$rec['left_key'] = $counter;
-						$recs2 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec['sid'].'" order by `left_key`, `id`','getall');
+						$recs2 = model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec['sid'].'" order by `left_key`, `id`','getall');
 						foreach($recs2 as $i2=>$rec2){
 							$counter ++;
 							$rec2['left_key'] = $counter;
-							$recs3 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec2['sid'].'" order by `left_key`, `id`','getall');
+							$recs3 = model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec2['sid'].'" order by `left_key`, `id`','getall');
 							foreach($recs3 as $i3=>$rec3){
 								$counter ++;
 								$rec3['left_key'] = $counter;
-								$recs4 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec3['sid'].'" order by `left_key`, `id`','getall');
+								$recs4 = model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec3['sid'].'" order by `left_key`, `id`','getall');
 								foreach($recs4 as $i4=>$rec4){
 									$counter ++;
 									$rec4['left_key'] = $counter;
-									$recs5 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec4['sid'].'" order by `left_key`, `id`','getall');
+									$recs5 = model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec4['sid'].'" order by `left_key`, `id`','getall');
 									foreach($recs5 as $i5=>$rec5){
 										$counter ++;
 										$rec5['left_key'] = $counter;
-										$recs6 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec5['sid'].'" order by `left_key`, `id`','getall');
+										$recs6 = model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec5['sid'].'" order by `left_key`, `id`','getall');
 										foreach($recs6 as $i6=>$rec6){
 											$counter ++;
 											$rec6['left_key'] = $counter;
-											$recs7 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec6['sid'].'" order by `left_key`, `id`','getall');
+											$recs7 = model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec6['sid'].'" order by `left_key`, `id`','getall');
 											foreach($recs7 as $i7=>$rec7){
 												$counter ++;
 												$rec7['left_key'] = $counter;
-												$recs8 = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec7['sid'].'" order by `left_key`, `id`','getall');
+												$recs8 = model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `dep_path_parent`="'.$rec7['sid'].'" order by `left_key`, `id`','getall');
 												foreach($recs8 as $i8=>$rec8){
 													$counter ++;
 													$rec8['left_key'] = $counter;
 													$counter ++;
 													$rec8['right_key'] = $counter;
 													$tree_level=8;
-													$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec8['left_key'] ).', `right_key`='.intval( $rec8['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'/'.$rec7['sid'].'/'.$rec8['sid'].'" where `id`='.intval($rec8['id']).'','update');
+													model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec8['left_key'] ).', `right_key`='.intval( $rec8['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'/'.$rec7['sid'].'/'.$rec8['sid'].'" where `id`='.intval($rec8['id']).'','update');
 												}
 												$counter ++;
 												$rec7['right_key'] = $counter;
 												$tree_level=7;
-												$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec7['left_key'] ).', `right_key`='.intval( $rec7['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'/'.$rec7['sid'].'" where `id`='.intval($rec7['id']).'','update');
+												model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec7['left_key'] ).', `right_key`='.intval( $rec7['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'/'.$rec7['sid'].'" where `id`='.intval($rec7['id']).'','update');
 											}
 											$counter ++;
 											$rec6['right_key'] = $counter;
 											$tree_level=6;
-											$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec6['left_key'] ).', `right_key`='.intval( $rec6['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'" where `id`='.intval($rec6['id']).'','update');
+											model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec6['left_key'] ).', `right_key`='.intval( $rec6['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'/'.$rec6['sid'].'" where `id`='.intval($rec6['id']).'','update');
 										}
 										$counter ++;
 										$rec5['right_key'] = $counter;
 										$tree_level=5;
-										$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec5['left_key'] ).', `right_key`='.intval( $rec5['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'" where `id`='.intval($rec5['id']).'','update');
+										model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec5['left_key'] ).', `right_key`='.intval( $rec5['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'/'.$rec5['sid'].'" where `id`='.intval($rec5['id']).'','update');
 									}
 									$counter ++;
 									$rec4['right_key'] = $counter;
 									$tree_level=4;
-									$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec4['left_key'] ).', `right_key`='.intval( $rec4['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'" where `id`='.intval($rec4['id']).'','update');
+									model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec4['left_key'] ).', `right_key`='.intval( $rec4['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'/'.$rec4['sid'].'" where `id`='.intval($rec4['id']).'','update');
 								}
 								$counter ++;
 								$rec3['right_key'] = $counter;
 								$tree_level=3;
-								$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec3['left_key'] ).', `right_key`='.intval( $rec3['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'" where `id`='.intval($rec3['id']).'','update');
+								model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec3['left_key'] ).', `right_key`='.intval( $rec3['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'/'.$rec3['sid'].'" where `id`='.intval($rec3['id']).'','update');
 							}
 							$counter ++;
 							$rec2['right_key'] = $counter;
 							$tree_level=2;
-							$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec2['left_key'] ).', `right_key`='.intval( $rec2['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'" where `id`='.intval($rec2['id']).'','update');
+							model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec2['left_key'] ).', `right_key`='.intval( $rec2['right_key'] ).', `tree_level`='.intval($tree_level).', `url`="'.($this->info['sid']?'/'.$this->info['sid']:'').'/'.$rec2['sid'].'" where `id`='.intval($rec2['id']).'','update');
 						}
 						$counter ++;
 						$rec['right_key'] = $counter;
 						$tree_level=1;
-						$this->model->execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec['left_key'] ).', `right_key`='.intval( $rec['right_key'] ).', `tree_level`='.intval($tree_level).' where `id`='.intval($rec['id']).'','update');
+						model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `left_key`='.intval( $rec['left_key'] ).', `right_key`='.intval( $rec['right_key'] ).', `tree_level`='.intval($tree_level).' where `id`='.intval($rec['id']).'','update');
 					}
 				}
 			}
@@ -140,7 +140,7 @@ class unitTests{
 		foreach($this->structure as $structure_sid=>$structure){
 
 			//Проверяем есть ли таблицы, пр необходимости переустанавливаем
-			$res=$this->model->execSql('show tables like "'.$this->getCurrentTable($structure_sid).'"');
+			$res=model::execSql('show tables like "'.$this->getCurrentTable($structure_sid).'"');
 
 			if(!count($res)){
 				//Переустановка
@@ -149,7 +149,7 @@ class unitTests{
 			}else{
 
 				//Все имеющиеся поля
-				$table_fields=$this->model->execSql('show columns from `'.$this->getCurrentTable($structure_sid).'`','getall');
+				$table_fields=model::execSql('show columns from `'.$this->getCurrentTable($structure_sid).'`','getall');
 				
 				//Все поля
 				foreach($structure['fields'] as $sid=>$field){
@@ -158,7 +158,7 @@ class unitTests{
 						if($f['Field']==$sid)$flag=true;
 					if(!$flag and IsSet( model::$types[$field['type']] ) ){
 						$sql='alter table `'.$this->getCurrentTable($structure_sid).'` add '.model::$types[$field['type']]->creatingString($sid);
-						$this->model->execSql($sql,'update');
+						model::execSql($sql,'update');
 					}
 				}
 			}
@@ -174,7 +174,7 @@ class unitTests{
 	public function module_checkInstallation(){
 		if( $this->info['sid'] == 'start' )
 			return false;
-		$res = $this->model->execSql('select * from `start_rec` where `is_link_to_module`="'.mysql_real_escape_string( $this->info['sid'] ).'"','getrow');
+		$res = model::execSql('select * from `start_rec` where `is_link_to_module`="'.mysql_real_escape_string( $this->info['sid'] ).'"','getrow');
 		if( !$res ){
 			$this->info['dep_path_parent'] == 'start';
 			$this->info['shw'] == true;
@@ -198,7 +198,7 @@ class unitTests{
 		
 		//Вставляем первую корневую запись в дерево
 		if( $this->structure[$part_sid]['type'] == 'tree' )
-			$this->model->execSql('insert into `' . $this->getCurrentTable($part_sid) . '` set `sid`="index", `title`="'.$this->info['title'].'", `left_key`=1, `right_key`=2, `tree_level`=1, `url`="/'.$this->info['sid'].'", `domain`="all", `shw`=1, `ln`=1','insert');
+			model::execSql('insert into `' . $this->getCurrentTable($part_sid) . '` set `sid`="index", `title`="'.$this->info['title'].'", `left_key`=1, `right_key`=2, `tree_level`=1, `url`="/'.$this->info['sid'].'", `domain`="all", `shw`=1, `ln`=1','insert');
 	}
 	
 }

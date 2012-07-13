@@ -49,13 +49,13 @@ class nested_sets
 		
 		//Указан корень
 		if($record_id){
-			$root = $this->model->execSql('select `left_key`, `right_key` from `'.$this->table.'` where `id`='.intval($record_id), 'getrow');
+			$root = model::execSql('select `left_key`, `right_key` from `'.$this->table.'` where `id`='.intval($record_id), 'getrow');
 			$where .= ' and `left_key`>='.$root['left_key'].' and `right_key`<='.$root['right_key'];
 		}
 
 		//Выполняем
-		$recs = $this->model->execSql('select '.$fields.' from `'.$this->table.'` where '.$where.' order by `left_key`', 'getall');
-//		pr($this->model->last_sql);
+		$recs = model::execSql('select '.$fields.' from `'.$this->table.'` where '.$where.' order by `left_key`', 'getall');
+//		pr(model::$last_sql);
 		
 		//Готово
 		return $recs;
@@ -65,11 +65,11 @@ class nested_sets
 	public function addChild($parent_id, $record, $conditions = false){
 	
 		//Ищем Родителя, в которого вставлять
-		$root = $this->model->execSql('select `right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($parent_id), 'getrow');
+		$root = model::execSql('select `right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($parent_id), 'getrow');
 		
 		//Обновляем ключи записей, идущие после текущей записи (раздвигаем ветки)
-		$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`+2) where `left_key`>'.$root['right_key'],'update');
-		$this->model->execSql('update `'.$this->table.'` set `right_key`=(`right_key`+2) where `right_key`>='.$root['right_key'],'update');
+		model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`+2) where `left_key`>'.$root['right_key'],'update');
+		model::execSql('update `'.$this->table.'` set `right_key`=(`right_key`+2) where `right_key`>='.$root['right_key'],'update');
 
 		//Ключи новой записи
 		$record['left_key'] = '`left_key`='.intval($root['right_key']);
@@ -77,16 +77,16 @@ class nested_sets
 		$record['tree_level'] = '`tree_level`='.intval($root['tree_level']+1);
 		
 		//Вставляем в пустое место запись
-		$this->model->execSql('insert into `'.$this->table.'` set '.implode(', ', $record).'','insert');
+		model::execSql('insert into `'.$this->table.'` set '.implode(', ', $record).'','insert');
 	}
 	
 	//Перемещение внутрь определенной записи
 	public function moveChild($parent_id, $record_id, $condition = false){
 		//Забираем запись, которую перемещаем
-		$record = $this->model->execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($record_id), 'getrow');
+		$record = model::execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($record_id), 'getrow');
 		
 		//Забираем запись родителя, в которую перемещаем запись
-		$root = $this->model->execSql('select `right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($parent_id), 'getrow');
+		$root = model::execSql('select `right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($parent_id), 'getrow');
 		
 		$right_key_near = $root['right_key']-1;
 		
@@ -96,32 +96,32 @@ class nested_sets
 		$skew_edit = $right_key_near - $record['left_key'] + 1 - $skew_tree;
 			
 		//ID перемещаемых записей
-		$t = $this->model->execSql('select `id` from `'.$this->table.'` where `left_key`>='.$record['left_key'].' and `right_key`<='.$record['right_key'],'getall');
+		$t = model::execSql('select `id` from `'.$this->table.'` where `left_key`>='.$record['left_key'].' and `right_key`<='.$record['right_key'],'getall');
 		$ids = array();
 		foreach($t as $ti)$ids[]=$ti['id'];
 		
 		//Перемещаем вверх по дереву
 		if( $root['right_key']<$record['right_key']){
-			$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`+'.$skew_tree.') where `left_key`<'.$record['right_key'].' and `left_key`>'.$right_key_near,'update');
-			$this->model->execSql('update `'.$this->table.'` set `right_key`=(`right_key`+'.$skew_tree.') where `right_key`<='.$record['right_key'].' and `right_key`>'.$right_key_near,'update');
+			model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`+'.$skew_tree.') where `left_key`<'.$record['right_key'].' and `left_key`>'.$right_key_near,'update');
+			model::execSql('update `'.$this->table.'` set `right_key`=(`right_key`+'.$skew_tree.') where `right_key`<='.$record['right_key'].' and `right_key`>'.$right_key_near,'update');
 
 		//Перемещаем вниз по дереву
 		}else{
-			$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`-'.$skew_tree.') where `left_key`>'.$record['right_key'].' and `left_key`<='.$right_key_near,'update');
-			$this->model->execSql('update `'.$this->table.'` set `right_key`=(`right_key`-'.$skew_tree.') where `right_key`>'.$record['right_key'].' and `right_key`<='.$right_key_near,'update');
+			model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`-'.$skew_tree.') where `left_key`>'.$record['right_key'].' and `left_key`<='.$right_key_near,'update');
+			model::execSql('update `'.$this->table.'` set `right_key`=(`right_key`-'.$skew_tree.') where `right_key`>'.$record['right_key'].' and `right_key`<='.$right_key_near,'update');
 		}
 		
 		//Перемещаем ветку
-		$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`+'.($skew_edit).'), `right_key`=(`right_key`+'.$skew_edit.'), `tree_level`=(`tree_level`+'.$skew_level.') where `id` IN ('.implode(',', $ids).')', 'update');
+		model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`+'.($skew_edit).'), `right_key`=(`right_key`+'.$skew_edit.'), `tree_level`=(`tree_level`+'.$skew_level.') where `id` IN ('.implode(',', $ids).')', 'update');
 	}
 	
 	//Поменять местами две записи
 	public function move($first_id, $second_id, $conditions = false){
 		//Забираем запись, которую перемещаем
-		$first = $this->model->execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($first_id), 'getrow');
+		$first = model::execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($first_id), 'getrow');
 		
 		//Забираем запись родителя, в которую перемещаем запись
-		$second = $this->model->execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($second_id), 'getrow');
+		$second = model::execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($second_id), 'getrow');
 		
 		$right_key_near = $first['right_key'];
 		$left_key_near = $first['left_key'];
@@ -131,27 +131,27 @@ class nested_sets
 		$second_volume = $second['right_key'] - $second['left_key'] + 1;
 			
 		//ID перемещаемых записей
-		$t = $this->model->execSql('select `id` from `'.$this->table.'` where `left_key`>='.$first['left_key'].' and `right_key`<='.$first['right_key'],'getall');
+		$t = model::execSql('select `id` from `'.$this->table.'` where `left_key`>='.$first['left_key'].' and `right_key`<='.$first['right_key'],'getall');
 		$first_ids = array();
 		foreach($t as $ti)$first_ids[]=$ti['id'];
 		
 		//ID перемещаемых записей
-		$t = $this->model->execSql('select `id` from `'.$this->table.'` where `left_key`>='.$second['left_key'].' and `right_key`<='.$second['right_key'],'getall');
+		$t = model::execSql('select `id` from `'.$this->table.'` where `left_key`>='.$second['left_key'].' and `right_key`<='.$second['right_key'],'getall');
 		$second_ids = array();
 		foreach($t as $ti)$second_ids[]=$ti['id'];
 		
 		//Перемещаем ветку
-		$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`+'.($second_volume).'), `right_key`=(`right_key`+'.$second_volume.') where `id` IN ('.implode(',', $first_ids).')', 'update');
-		$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`-'.($first_volume).'), `right_key`=(`right_key`-'.$first_volume.') where `id` IN ('.implode(',', $second_ids).')', 'update');
+		model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`+'.($second_volume).'), `right_key`=(`right_key`+'.$second_volume.') where `id` IN ('.implode(',', $first_ids).')', 'update');
+		model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`-'.($first_volume).'), `right_key`=(`right_key`-'.$first_volume.') where `id` IN ('.implode(',', $second_ids).')', 'update');
 	}
 	
 	//Поменять местами две записи
 	public function moveTo($first_id, $second_id, $conditions = false){
 		//Забираем запись, которую перемещаем
-		$first = $this->model->execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($first_id), 'getrow');
+		$first = model::execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($first_id), 'getrow');
 		
 		//Забираем запись родителя, в которую перемещаем запись
-		$second = $this->model->execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($second_id), 'getrow');
+		$second = model::execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($second_id), 'getrow');
 		
 		//Направление перемещения
 		$move_down = $first['left_key'] < $second['left_key'];
@@ -163,14 +163,14 @@ class nested_sets
 		$first_volume = $first['right_key'] - $first['left_key'] + 1;
 			
 		//ID перемещаемых записей
-		$t = $this->model->execSql('select `id` from `'.$this->table.'` where `left_key`>='.$first['left_key'].' and `right_key`<='.$first['right_key'],'getall');
+		$t = model::execSql('select `id` from `'.$this->table.'` where `left_key`>='.$first['left_key'].' and `right_key`<='.$first['right_key'],'getall');
 		$first_ids = array();
 		foreach($t as $ti)$first_ids[]=$ti['id'];
 		
 		//ID перемещаемых записей
 		if( $move_down ){	//вниз
-			$t = $this->model->execSql('select `id` from `'.$this->table.'` where `left_key`>'.$first['right_key'].' and `right_key`<='.$second['right_key'],'getall');
-			print('down: '.$this->model->last_sql.'<br />');
+			$t = model::execSql('select `id` from `'.$this->table.'` where `left_key`>'.$first['right_key'].' and `right_key`<='.$second['right_key'],'getall');
+			print('down: '.model::$last_sql.'<br />');
 			$second_ids = array();
 			foreach($t as $ti)$second_ids[]=$ti['id'];
 			
@@ -181,15 +181,15 @@ class nested_sets
 			if( count($first_ids) && count($second_ids) ){
 			print('
 update `'.$this->table.'` set `left_key`=(`left_key`+'.($second_volume).'), `right_key`=(`right_key`+'.$second_volume.') where `id` IN ('.implode(',', $first_ids).')');
-				$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`+'.($second_volume).'), `right_key`=(`right_key`+'.$second_volume.') where `id` IN ('.implode(',', $first_ids).')', 'update');
+				model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`+'.($second_volume).'), `right_key`=(`right_key`+'.$second_volume.') where `id` IN ('.implode(',', $first_ids).')', 'update');
 			print('
 update `'.$this->table.'` set `left_key`=(`left_key`-'.($first_volume).'), `right_key`=(`right_key`-'.$first_volume.') where `id` IN ('.implode(',', $second_ids).')');
-				$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`-'.($first_volume).'), `right_key`=(`right_key`-'.$first_volume.') where `id` IN ('.implode(',', $second_ids).')', 'update');
+				model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`-'.($first_volume).'), `right_key`=(`right_key`-'.$first_volume.') where `id` IN ('.implode(',', $second_ids).')', 'update');
 			}
 		
 		}else{				//вверх
-			$t = $this->model->execSql('select `id` from `'.$this->table.'` where `left_key`>'.$second['right_key'].' and `right_key`<'.$first['left_key'],'getall');
-			print('up: '.$this->model->last_sql.'<br />');
+			$t = model::execSql('select `id` from `'.$this->table.'` where `left_key`>'.$second['right_key'].' and `right_key`<'.$first['left_key'],'getall');
+			print('up: '.model::$last_sql.'<br />');
 			$second_ids = array();
 			foreach($t as $ti)$second_ids[]=$ti['id'];
 			
@@ -200,10 +200,10 @@ update `'.$this->table.'` set `left_key`=(`left_key`-'.($first_volume).'), `righ
 			if( count($first_ids) && count($second_ids) ){
 			print('
 update `'.$this->table.'` set `left_key`=(`left_key`-'.($second_volume).'), `right_key`=(`right_key`-'.$second_volume.') where `id` IN ('.implode(',', $first_ids).')');
-				$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`-'.($second_volume).'), `right_key`=(`right_key`-'.$second_volume.') where `id` IN ('.implode(',', $first_ids).')', 'update');
+				model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`-'.($second_volume).'), `right_key`=(`right_key`-'.$second_volume.') where `id` IN ('.implode(',', $first_ids).')', 'update');
 			print('
 update `'.$this->table.'` set `left_key`=(`left_key`+'.($first_volume).'), `right_key`=(`right_key`+'.$first_volume.') where `id` IN ('.implode(',', $second_ids).')');
-				$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`+'.($first_volume).'), `right_key`=(`right_key`+'.$first_volume.') where `id` IN ('.implode(',', $second_ids).')', 'update');
+				model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`+'.($first_volume).'), `right_key`=(`right_key`+'.$first_volume.') where `id` IN ('.implode(',', $second_ids).')', 'update');
 			}
 		}
 	}
@@ -211,17 +211,17 @@ update `'.$this->table.'` set `left_key`=(`left_key`+'.($first_volume).'), `righ
 	//Удаление
 	public function delete($record_id, $conditions = false){
 		//Забираем запись, которую перемещаем
-		$record = $this->model->execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($record_id), 'getrow');
+		$record = model::execSql('select `left_key`,`right_key`,`tree_level` from `'.$this->table.'` where `id`='.intval($record_id), 'getrow');
 		
 		//Смещения
 		$volume = $record['right_key'] - $record['left_key'] + 1;
 
 		//Удаляем
-		$this->model->execSql('delete from `'.$this->table.'` where `left_key`>='.$record['left_key'].' and `right_key`<='.$record['right_key'], 'delete');
+		model::execSql('delete from `'.$this->table.'` where `left_key`>='.$record['left_key'].' and `right_key`<='.$record['right_key'], 'delete');
 		
 		//Подтягиваем остальные
-		$this->model->execSql('update `'.$this->table.'` set `left_key`=(`left_key`-'.$volume.') where `left_key`>'.$record['right_key'],'update');
-		$this->model->execSql('update `'.$this->table.'` set `right_key`=(`right_key`-'.$volume.') where `right_key`>='.$record['right_key'],'update');
+		model::execSql('update `'.$this->table.'` set `left_key`=(`left_key`-'.$volume.') where `left_key`>'.$record['right_key'],'update');
+		model::execSql('update `'.$this->table.'` set `right_key`=(`right_key`-'.$volume.') where `right_key`>='.$record['right_key'],'update');
 	}
 	
 }

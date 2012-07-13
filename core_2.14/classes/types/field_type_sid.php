@@ -34,7 +34,8 @@ class field_type_sid extends field_type_default
 
 	//Проверка уникальности значения SID
 	public function checkUnique($module, $structure_sid, $value, $id = false){
-		$repeats = $this->model->makeSql(array(
+		
+		$repeats = model::makeSql(array(
 			'tables' => array(
 				model::$modules[$module]->getCurrentTable($structure_sid)
 			),
@@ -81,22 +82,25 @@ class field_type_sid extends field_type_default
 	}
 
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values, $settings, $module_sid, $structure_sid){
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		
-		//Если в модуле указано - генерируем SID через специальную функцию
+		// Если в модуле указано - генерируем SID через специальную функцию
 		if( method_exists( model::$modules[ $module_sid ], 'generateSid') ){
 			$function_name = 'generateSid';
 			$values[$value_sid] = model::$modules[$module_sid]->$function_name( $values, $structure_sid );
 			
-		//Если поле SID пустое - берём его из заголовка
+		// Если поле SID пустое - берём его из заголовка
 		}elseif (!strlen($values[$value_sid])){
 			$values[$value_sid] = $values['title'];
 		}
 
-		//Проверим значение, уберём лишнее
+		// Проверим значение, уберём лишнее
 		$values[$value_sid] = $this->correctValue($values[$value_sid]);
 
-		return htmlspecialchars($values[$value_sid]);
+		// Проверим на уникальность
+//		$values[$value_sid] = $this->makeUnique($module_sid, $structure_sid, $values[$value_sid], $values['id']);
+		
+		return htmlspecialchars( $values[$value_sid] );
 	}
 
 	//Перевести массив значений в само значение для системы управления

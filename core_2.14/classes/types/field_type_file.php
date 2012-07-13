@@ -64,8 +64,7 @@ class field_type_file extends field_type_default
 	}
 
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false)
-	{
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 
 		//Коррекция типа данных
 		$this->correctFieldType($module_sid, $structure_sid, $value_sid);
@@ -158,10 +157,10 @@ class field_type_file extends field_type_default
 	private function correctFieldType($module_sid, $structure_sid, $field_sid){
 		if( $module ){
 			$sql = 'select DATA_TYPE from information_schema.COLUMNS where TABLE_SCHEMA="'.model::$config['db']['system']['name'].'" and TABLE_NAME="'.model::$modules[ $module_sid ]->getCurrentTable($structure_sid).'" and COLUMN_NAME="'.$field_sid.'"';
-			$res = $this->model->execSql($sql, 'getrow');
+			$res = model::execSql($sql, 'getrow');
 			if( $res['DATA_TYPE'] != 'text' ){
 				$sql = 'alter table `'.model::$modules[ $module_sid ]->getCurrentTable($structure_sid).'` modify '.$this->creatingString( $field_sid );
-				$res = $this->model->execSql($sql, 'update');
+				$res = model::execSql($sql, 'update');
 			}
 		}
 	}

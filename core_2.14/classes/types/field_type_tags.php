@@ -33,8 +33,7 @@ class field_type_tags extends field_type_default
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values)
-	{
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		$arr  = explode(',', $values[$value_sid]);
 		$recs = array();
 		foreach ($arr as $a)
@@ -54,7 +53,7 @@ class field_type_tags extends field_type_default
 		$vals = explode('|', $value);
 		$recs = array();
 		
-		$search_module_sid=$this->model->getModuleSidByPrototype('search');
+		$search_module_sid=model::getModuleSidByPrototype('search');
 		
 		foreach ($vals as $i => $val)
 			if (strlen($val)) {
@@ -105,7 +104,7 @@ class field_type_tags extends field_type_default
 	//Получить список тегов
 	public function getTagsList($counter_limit = 2)
 	{
-		$recs = $this->model->makeSql(array(
+		$recs = model::makeSql(array(
 			'tables' => array(
 				$this->table
 			),
@@ -120,7 +119,7 @@ class field_type_tags extends field_type_default
 		
 		$recs = $recs ? $recs : array();
 		
-		$search_module_sid=$this->model->getModuleSidByPrototype('search');
+		$search_module_sid=model::getModuleSidByPrototype('search');
 
 		//Вставляем ссылки
 		foreach ($recs as $i => $rec) {
@@ -149,7 +148,7 @@ class field_type_tags extends field_type_default
 					foreach ($structure['fields'] as $field_sid => $field) {
 						//Ищем все поля с Тегами
 						if ($field['type'] == 'tags') {
-							$recs = $this->model->makeSql(array(
+							$recs = model::makeSql(array(
 								'tables' => array(
 									$module->getCurrentTable($structure_sid)
 								),
@@ -194,9 +193,9 @@ class field_type_tags extends field_type_default
 		}
 		
 		//Записываем теги в базу
-		$this->model->execSql('delete from `' . $this->table . '` where '.model::pointDomain().'', 'insert');
+		model::execSql('delete from `' . $this->table . '` where '.model::pointDomain().'', 'insert');
 		foreach ($all_tags as $tag => $tag_vals) {
-			$this->model->makeSql(array(
+			model::makeSql(array(
 				'tables' => array(
 					$this->table
 				),

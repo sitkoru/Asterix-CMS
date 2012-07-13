@@ -119,6 +119,8 @@ class extention_seo extends extention_default
 	//Учёт приходов поисковиков
 	public function crawlerCount()
 	{
+		return false;
+
 		//Учёт поисковиков отключен
 		if (!model::$config['settings']['count_crawlers'])
 			return false;
@@ -140,7 +142,7 @@ class extention_seo extends extention_default
 				
 				//Если поисковик опознан - обновляем страничку
 				if ($field) {
-					$this->model->makeSql(array(
+					model::makeSql(array(
 						'tables' => array(
 							model::$modules[model::$ask->module]->getCurrentTable(model::$ask->structure_sid)
 						),
@@ -153,12 +155,12 @@ class extention_seo extends extention_default
 							)
 						)
 					), 'update');
-					$sql = $this->model->last_sql;
+					$sql = model::$last_sql;
 				}
 				
 				//Пишем лог для выявления ошибок
 				$f = fopen(model::$config['path']['www'] . '/crawlers.log', 'a+');
-				fwrite($f, date("Y-m-d H:i:s") . '|' . $this->model->extensions['domains']->domain['host'] . '|' . $browser->browser . '|' . model::$ask->original_url . '|' . @$sql . "\r\n");
+				fwrite($f, date("Y-m-d H:i:s") . '|' . model::$extensions['domains']->domain['host'] . '|' . $browser->browser . '|' . model::$ask->original_url . '|' . @$sql . "\r\n");
 				fclose($f);
 				
 				chmod(model::$config['path']['www'] . '/crawlers.log', 0775);

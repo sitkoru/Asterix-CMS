@@ -61,7 +61,7 @@ class log
 	}
 	
 	//SQL-запрос
-	public function sql($sql, $time = false, $result = false, $module = 'start', $function = false)
+	public static function sql($sql, $time = false, $result = false, $module = 'start', $function = false)
 	{
 		self::$sql[] = array(
 			'sql' => $sql,
@@ -73,13 +73,10 @@ class log
 	}
 	
 	//Показать статистику
-	public function showStat()	{
+	public static function showStat()	{
 		self::setStop();
 		
-		global $user_ip;
 		if (model::$settings['show_stat'] == 'shirt') {
-			self::setStop();
-				
 			pr('Генерация заняла ' . number_format(self::$time_stop - self::$time_start, 5, '.', ' ') . ' секунд, использовано ' . number_format(self::$memory_total, 2, '.', ' ') . ' мегабайт памяти, сделано ' . count(self::$sql) . ' запросов, кеширование '.(model::$config['cache']?'включено ('.model::$config['cache']['type'].')':'отключено').''.($xhprof?$xhprof:'').'.');
 			
 		} elseif (model::$settings['show_stat'] == 'all') {
@@ -91,7 +88,7 @@ class log
 			$unique = array();
 			$time   = false;
 			foreach (self::$sql as $q) {
-				$desc[] = $q['sql'].' [time:'.$q['time'].']';
+				$desc[] = $q['sql'].' [время: '.number_format($q['time'], 5, '.', ' ').' сек]';
 				if (!in_array($q['sql'], $unique))
 					$unique[] = $q['sql'];
 				$time += $q['time'];
@@ -108,30 +105,30 @@ class log
 	}
 	
 	public static function pr($a){
-		if( $_SERVER['REMOTE_ADDR'] == '176.56.12.2' )
-			if (!headers_sent()){
+		if( $_SERVER['REMOTE_ADDR'] == '176.56.12.2' ){
+			if (!headers_sent())
 				header('Content-Type: text/html; charset=utf-8');
-				print('
-					<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal;">
-						<b>Служебный вывод, виден только администраторам (длина: '.strlen($a).'):</b>
-						<br>' . $a . '<br />
-					</div>');
-			}
+			print('
+				<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal;">
+					<b>Служебный вывод, виден только администраторам (длина: '.strlen($a).'):</b>
+					<br>' . $a . '<br />
+				</div>');
+		}
 	}
 	
 	public static function pr_r($a){
-		if( $_SERVER['REMOTE_ADDR'] == '176.56.12.2' )
-			if (!headers_sent()){
+		if( $_SERVER['REMOTE_ADDR'] == '176.56.12.2' ){
+			if (!headers_sent())
 				header('Content-Type: text/html; charset=utf-8');
-				print('
-					<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal; text-align:left;">
-						<b>Служебный вывод, виден только администраторам (элементов в массиве: ' . count($a) . '):</b>
-						<pre>');
-				print_r($a);
-				print('
-						</pre>
-					</div>');
-			}
+			print('
+				<div style="border-radius:10px; background-color:#FEE9CC; margin:5px; padding:5px; color:black; font-family: Arial; font-size:12px; font-weight:normal; text-align:left;">
+					<b>Служебный вывод, виден только администраторам (элементов в массиве: ' . count($a) . '):</b>
+					<pre>');
+			print_r($a);
+			print('
+					</pre>
+				</div>');
+		}
 	}
 	public static function translitIt($str){
 		$tr = array(

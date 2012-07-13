@@ -35,8 +35,7 @@ class field_type_textmeta extends field_type_default{
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid, $structure_sid)
-	{
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 
 		$meta = false;
 		if( !IsSet( $settings['field'] ) )

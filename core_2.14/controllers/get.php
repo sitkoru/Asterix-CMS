@@ -87,7 +87,7 @@ class controller_get extends default_controller
 
 		//Подключаем шаблонизатор
 		require_once(model::$config['path']['core'] . '/classes/templates.php');
-		$tmpl = new templater($this->model);
+		$tmpl = new templater();
 		
 		//Для панели управления - модули
 		if( user::is_authorized() ) {
@@ -110,7 +110,7 @@ class controller_get extends default_controller
 					//Перенаправляем
 					if( $old == model::$ask->original_url ){
 						header( 'HTTP/1.1 301 Moved Permanently' ); 
-						header( 'Location: http://'.$this->model->extensions['domains']->domain['host'].$new );
+//						header( 'Location: http://'.model::$extensions['domains']->domain['host'].$new );
 						exit();
 					}
 				}
@@ -165,7 +165,7 @@ class controller_get extends default_controller
 		$tmpl->assign('paths', model::$config['path']);
 		$tmpl->assign('config', model::$config['settings']);
 		$tmpl->assign('openid', model::$config['openid']);
-		$tmpl->assign('path', $this->model->prepareModelPath(0));
+		$tmpl->assign('path', model::prepareModelPath(0));
 		$tmpl->assign('domain', model::getDomain() );
 		$tmpl->assign('settings', model::$settings);
 		$tmpl->assign('user', user::$info);
@@ -179,12 +179,13 @@ class controller_get extends default_controller
 		} catch (Exception $e) {
 			log::stop('500 Internal Server Error', 'Шаблон ['.$current_template_file.'] содержит синтаксические ошибки.', '<textarea style="width:500px; height:400px;">'.stripslashes( $this->vars['html'] ).'</textarea><br />'.$e);
 		}
-		
+
 		//Ответ сервера
 		print($ready_html);
 
 		//Показать статистику
 		log::showStat();
+
 	}
 	
 	//Укажите модуль, в который будет добавлена запись
@@ -250,7 +251,7 @@ class controller_get extends default_controller
 
 		//SID модуля и компонента
 		list($module_prototype, $component_sid) = explode('|', $value);
-		$module_sid = $this->model->getModuleSidByPrototype($module_prototype);
+		$module_sid = model::getModuleSidByPrototype($module_prototype);
 		
 		//Запускаем компонент
 		return model::$modules[ $module_sid ]->initComponent($component_sid, $main_record);
@@ -262,7 +263,7 @@ class controller_get extends default_controller
 		foreach($settings['components_ext'] as $value){
 			//SID модуля и компонента
 			list($module_prototype, $component_sid) = explode('|', $value);
-			$module_sid = $this->model->getModuleSidByPrototype($module_prototype);
+			$module_sid = model::getModuleSidByPrototype($module_prototype);
 			$url_mode = str_replace('|', '_', $value);
 			if( IsSet(model::$modules[ $module_sid ]->prepares[ $component_sid ]) ){
 				$component = model::$modules[ $module_sid ]->prepares[ $component_sid ];
@@ -306,7 +307,7 @@ class controller_get extends default_controller
 
 		//SID модуля и компонента
 		list($module_prototype, $interface_sid) = explode('|', $value);
-		$module_sid = $this->model->getModuleSidByPrototype($module_prototype);
+		$module_sid = model::getModuleSidByPrototype($module_prototype);
 		
 		//Если компонент доступен в модуле
 		if( IsSet(model::$modules[ $module_sid ]->interfaces[ $interface_sid ]) ){
@@ -330,7 +331,7 @@ class controller_get extends default_controller
 		foreach($settings['interfaces_ext'] as $value){
 			//SID модуля и компонента
 			list($module_prototype, $interface_sid) = explode('|', $value);
-			$module_sid = $this->model->getModuleSidByPrototype($module_prototype);
+			$module_sid = model::getModuleSidByPrototype($module_prototype);
 			$url_mode = str_replace('|', '_', $value);
 			if( IsSet(model::$modules[ $module_sid ]->interfaces[ $interface_sid ]) ){
 

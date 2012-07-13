@@ -78,9 +78,9 @@ class default_module extends Dynamic{
 		require_once model::$config['path']['core'].'/classes/interfaces.php';
 		require_once model::$config['path']['core'].'/classes/acms_trees.php';
 		
-		structures::load();
-		components::load();
-		interfaces::load();
+		$this->structure = 	structures::load( $this );
+		$this->prepares = 	components::load( $this );
+		$this->interfaces = interfaces::load( $this );
 	}
 
 	//Инициализация структуры модуля
@@ -90,7 +90,7 @@ class default_module extends Dynamic{
 
 	//Инициализация компонентов
 	public function prepareComponent($prepare,$params){
-		return components::init($prepare,$params);
+		return components::init($this, $prepare, $params);
 	}
 
 	//Эти функции используются в модулях для донастройки структуры и интерфейсов
@@ -167,9 +167,6 @@ class default_module extends Dynamic{
 		//Для версий до 2.14 параметры шли наоборот, сохраняем обратную совместимость
 		if( !is_array($record) ){$k = $record; $record = $structure_sid; $structure_sid = $k; }
 		return interfaces::editRecord($record, $structure_sid, $conditions);
-	}
-	public function updateRecord($record, $structure_sid = 'rec', $conditions=false){
-		return $this->editRecord($record, $structure_sid, $conditions);
 	}
 
 	//Удаление записи
@@ -285,18 +282,23 @@ class default_module extends Dynamic{
 	
 	//Получить иерархию структур модуля
 	public function getLevels($structure, $level_tree = false){
-		$level_tree[]=$structure;
-
-		//Структура без зависимостей
-		if($this->structure[$structure]['type']=='tree'){
-			$level_tree[]=$structure;
-
-		//Учитываем найденную зависимость
-		}elseif($this->structure[$structure]['dep_path']){
-			$new_structure=$this->structure[$structure]['dep_path']['structure'];
-			$level_tree=$this->getLevels($new_structure, $level_tree);
+		
+		if( IsSet( $this->structure[ 'rec' ] ) )
+			$level_tree[] = 'rec';
+		
+		if( $this->structure['rec']['dep_path'] )
+			if( !in_array($this->structure['rec']['dep_path']['structure'], $level_tree) )
+				$level_tree[] = $this->structure['rec']['dep_path']['structure'];
+			
+		if( is_array( $this->structure ) )
+		foreach( $this->structure as $sid=>$structure ){
+			if( !in_array($sid, $level_tree) )
+				$level_tree[] = $sid;
+			if( $structure['dep_path'] )
+				if( !in_array($structure['dep_path']['structure'], $level_tree) )
+					$level_tree[] = $sid;
 		}
-
+		
 		return $level_tree;
 	}
 
@@ -336,6 +338,23 @@ class default_module extends Dynamic{
 	public function getOrderBy($params){
 		return components::getOrderBy($params);
 	}
+	
+////////////////////////////
+/// СОВМЕСТИМОСТЬ С 2.13 ///
+////////////////////////////
+/*
+	public function execSql($sql, $query_type = 'getall', $database = 'system', $no_cache = false){
+		return model::execSql($sql, $query_type, $database, $no_cache);
+	}
+	
+	public function makeSql($sql_conditions, $query_type = 'getall', $database = 'system', $no_cache = false){
+		return model::makeSql($sql_conditions, $query_type, $database, $no_cache);
+	}
+*/
+	public function updateRecord($record, $structure_sid = 'rec', $conditions=false){
+		return $this->editRecord($record, $structure_sid, $conditions);
+	}
+	
 }
 
 

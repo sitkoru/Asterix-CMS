@@ -3,7 +3,7 @@
 class structures{
 
 	//Достройка структуры, связей, параметров, типов данных
-	public function load(){
+	public static function load( $module ){
 
 		//Системные поля, необходимые каждому модулю
 		$system_fields=array(
@@ -19,41 +19,26 @@ class structures{
 		);
 	
 		//Подгружаем заданную структуру модуля
-		$this->setStructure();
-
+		$module->setStructure();
 	
-		if($this->structure)
-		foreach($this->structure as $structure_sid=>$part)
+		if($module->structure)
+		foreach($module->structure as $structure_sid=>$part)
 			if( is_array( $part['fields'] ) )
 				if( count( $part['fields'] ) )
 					foreach( $part['fields'] as $field_sid=>$field)
 						if( $field['type'][0] == '_' )
 							if( !ModelLoader::loadUserType( $field ) )
-								UnSet( $this->structure[ $structure_sid ]['fields'][ $field_sid ] );
+								UnSet( $module->structure[ $structure_sid ]['fields'][ $field_sid ] );
 
 
-/*		
-		//Проверяем на пользовательские типы данных
-		if($this->structure)
-		foreach($this->structure as $structure_sid=>$part)
-			if($part['fields'])
-				foreach($part['fields'] as $field_sid=>$field){
-					
-					pr($field_sid);
-					
-					if( $field_sid[0] == '_' ){
-						if( !ModelLoader::loadUserType( $field ) )
-							UnSet( $this->structure[ $structure_sid ]['fields'][ $field_sid ] );
-					}
-				}
-*/		
-		//Заносим системные поля
-		if($this->structure)
-		foreach($this->structure as $structure_sid=>$part){
-			$this->structure[$structure_sid]['fields']=$system_fields;
+
+		// Заносим системные поля
+		if($module->structure)
+		foreach($module->structure as $structure_sid=>$part){
+			$module->structure[$structure_sid]['fields']=$system_fields;
 			if($part['fields']){
 				foreach($part['fields'] as $field_sid=>$field){
-					$this->structure[$structure_sid]['fields'][$field_sid]=array_merge(
+					$module->structure[$structure_sid]['fields'][$field_sid]=array_merge(
 						array('sid'=>$field_sid),
 						$field
 					);
@@ -62,30 +47,33 @@ class structures{
 			
 			//Деревьям приклеиваем поле наследования
 			if( $part['type'] == 'tree' )
-				$this->structure[$structure_sid]['fields']['dep_path_parent'] = array('sid'=>'dep_path_parent',	'group'=>'main', 'type'=>'tree', 'title'=>'Расположение в дереве сайта', 'module'=>$this->info['sid'], 'structure_sid'=>$structure_sid);
+				$module->structure[$structure_sid]['fields']['dep_path_parent'] = array('sid'=>'dep_path_parent',	'group'=>'main', 'type'=>'tree', 'title'=>'Расположение в дереве сайта', 'module'=>$module->info['sid'], 'structure_sid'=>$structure_sid);
 
 			//Указатель на родительскую структуру
-			if( $this->structure[$structure_sid]['dep_path'] )
-				$this->structure[$structure_sid]['fields']['dep_path_dir'] = 
+			if( $module->structure[$structure_sid]['dep_path'] )
+				$module->structure[$structure_sid]['fields']['dep_path_dir'] = 
 					array(
 						'sid' =>			'dep_path_dir',	
 						'group' =>			'main', 
-						'type' =>			$this->structure[ $structure_sid ]['dep_path']['link_type'], 
-						'title' =>			$this->structure[ $this->structure[$structure_sid]['dep_path']['structure'] ]['title'], 
-						'module' =>			$this->info['sid'], 
-						'structure_sid' =>	$this->structure[$structure_sid]['dep_path']['structure'],
+						'type' =>			$module->structure[ $structure_sid ]['dep_path']['link_type'], 
+						'title' =>			$module->structure[ $module->structure[$structure_sid]['dep_path']['structure'] ]['title'], 
+						'module' =>			$module->info['sid'], 
+						'structure_sid' =>	$module->structure[$structure_sid]['dep_path']['structure'],
 					);
 		}
 
 		//Если модуль Start - будем клеить поле-ссылку
-		if($this->info['sid'] == 'start'){
-			$this->structure['rec']['fields']['is_link_to_module']=	array('sid'=>'is_link_to_module','type'=>'module','group'=>'system','title'=>'Раздел является ссылкой на модуль','variants'=>$all_modules);
-			$this->structure['rec']['fields']['url_alias']=			array('sid'=>'url_alias','group'=>'system','public'=>false,'type'=>'text','title'=>'Виртуальный адрес записи','default'=>'');
+		if($module->info['sid'] == 'start'){
+			$module->structure['rec']['fields']['is_link_to_module']=	array('sid'=>'is_link_to_module','type'=>'module','group'=>'system','title'=>'Раздел является ссылкой на модуль','variants'=>$all_modules);
+			$module->structure['rec']['fields']['url_alias']=			array('sid'=>'url_alias','group'=>'system','public'=>false,'type'=>'text','title'=>'Виртуальный адрес записи','default'=>'');
 		}
 		//Если модуль Start - будем клеить поле-ссылку
-		if($this->info['sid'] == 'users'){
-			$this->structure['rec']['fields']['is_link_to']=		array('sid'=>'is_link_to','type'=>'user','group'=>'system','title'=>'Этот модуль является ссылкой на модуль');
+		if($module->info['sid'] == 'users'){
+			$module->structure['rec']['fields']['is_link_to']=		array('sid'=>'is_link_to','type'=>'user','group'=>'system','title'=>'Этот модуль является ссылкой на модуль');
+			$module->structure['rec']['fields']['salt']=			array('sid'=>'salt','type'=>'hidden','group'=>'system','title'=>'Соль для пароля');
 		}
+		
+		return $module->structure;
 	}
 
 	//Вернуть массив основных полей структуры
@@ -145,7 +133,7 @@ class structures{
 					//Разварачиваем картинки у связанных записей
 					}elseif( $field_settings['type'] == 'user' ){
 
-						$module_sid = $this->model->getModuleSidByPrototype('users');
+						$module_sid = model::getModuleSidByPrototype('users');
 						foreach(model::$modules[ $module_sid ]->structure[ 'rec' ]['fields'] as $sub_field_sid => $sub_field)
 							if($sub_field['type'] == 'image'){
 
@@ -172,7 +160,7 @@ class structures{
 		$rec['structure_sid'] = $structure_sid;
 
 		//Если установлено расширение социального графа - дополняем записи значением вершины графа
-		if(IsSet($this->model->extensions['graph'])){
+		if(IsSet(model::$extensions['graph'])){
 			$rec['graph_top']=$this->getGraphTop($rec['id'],$structure_sid);
 			$rec['graph_top_text']=implode('|', $this->getGraphTop($rec['id'],$structure_sid));
 		}

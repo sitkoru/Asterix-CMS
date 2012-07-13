@@ -37,14 +37,7 @@ class field_type_menu extends field_type_default
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false)
-	{
-		//Настройки поля, переданные из модуля
-		if ($settings)
-			foreach ($settings as $var => $val)
-				$this->$var = $val;
-		
-		//Готово
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		return $values[$value_sid];
 	}
 	
@@ -88,7 +81,7 @@ class field_type_menu extends field_type_default
 			if( model::$modules[ $settings['module'] ]->structure[ $settings['structure_sid'] ]['type'] == 'tree' )
 				$fields[] = 'tree_level';
 			if( IsSet( $settings['module'] ) && IsSet( $settings['structure_sid'] ) ){
-				$variants=$this->model->makeSql(
+				$variants=model::makeSql(
 					array(
 						'tables'=>array( model::$modules[ $settings['module'] ]->getCurrentTable( $settings['structure_sid'] ) ),
 						'fields'=>array( $this->link_field, 'title' ),

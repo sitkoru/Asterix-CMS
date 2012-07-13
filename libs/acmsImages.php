@@ -14,7 +14,7 @@ class acmsImages{
 	public function resize( $src_path, $dest_path = false, $resize_type = 'inner', $resize_width = 400, $resize_heigth = 300, $chmod = 0775){
 	
 		//Читаем размер рисунка
-		$size           = GetImageSize($src_path);
+		$size           = @getimagesize($src_path);
 		$current_width  = $size[0];
 		$current_height = $size[1];
 		$type 			= $size['mime'];
@@ -81,7 +81,7 @@ class acmsImages{
 		require_once( 'getImageColor.php' );
 		$img = new GeneratorImageColorPalette();
 		$colors = $img->getImageColor( $path, $num_or_colors, $step );
-		return array_keys( $colors );
+		return @array_keys( $colors );
 	}
 
 	//Сделать изображение чёрно-белым

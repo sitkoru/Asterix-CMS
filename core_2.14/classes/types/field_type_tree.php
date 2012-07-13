@@ -42,7 +42,7 @@ class field_type_tree extends field_type_default
 		$res      = array();
 		
 		//Варианты значений предоставлены заранее
-		$recs=$this->model->makeSql(
+		$recs=model::makeSql(
 			array(
 				'tables'=>array( model::$modules[ $settings['module'] ]->getCurrentTable( $settings['structure_sid'] ) ),
 				'fields' => array('id','sid','title','tree_level','left_key','right_key'),

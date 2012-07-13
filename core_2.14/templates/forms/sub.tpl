@@ -1,6 +1,6 @@
 {if $rec.sub}
 	<ol>
-	{foreach from=$rec.sub item=sub}{if !$sub.module || $sub.module == 'start'}
+	{foreach from=$rec.sub item=sub}{if ($sub.module == $rec.module) || !$sub.module || $sub.module == 'start'}
 		<li rec_id="{$sub.id}" module_sid="{$field.module}" structure_sid="{$field.structure_sid}" class="acms_panel_groups{if !$field.sortable} not_sorted{/if}">
 <!--			{if $field.sortable}<i class="icon-resize-vertical"></i>{/if}-->
 			<a href="/admin{$sub.url_clear}.editRecord.html">{$sub.title}</a> 

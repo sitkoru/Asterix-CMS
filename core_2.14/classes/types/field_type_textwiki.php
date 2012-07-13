@@ -34,7 +34,7 @@ class field_type_textwiki extends field_type_default
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false){
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		$values[$value_sid] = strip_tags( $values[$value_sid] );
 		return $values[$value_sid];
 	}

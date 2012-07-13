@@ -75,6 +75,7 @@ class acmsDirs{
 	}
 
 	function makeFolder($path, $chmod = 0775){
+		clearstatcache();
 		$dirs = explode('/', $path);
 		$t = false;
 		foreach($dirs as $dir)

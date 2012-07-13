@@ -45,8 +45,7 @@ class field_type_comments extends field_type_default
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values)
-	{
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		return false;
 		//Включены комментарии у записи
 		if ($values[$value_sid]) {
@@ -116,7 +115,7 @@ class field_type_comments extends field_type_default
 			$levels=50;
 		$levels+=2;
 		
-		$recs = $this->model->makeSql(array(
+		$recs = model::makeSql(array(
 			'tables' => array(
 				$this->table
 			),
@@ -132,9 +131,9 @@ class field_type_comments extends field_type_default
 			),
 			'order' => 'order by `left_key'
 		), 'getall','system',true);
-//		pr($this->model->last_sql);
+//		pr(model::$last_sql);
 
-		$users_module_sid=$this->model->getModuleSidByPrototype('users');
+		$users_module_sid=model::getModuleSidByPrototype('users');
 		
 		//Расшифровываем значения
 		if ($recs)
@@ -161,7 +160,7 @@ class field_type_comments extends field_type_default
 	//Получить комментарии определённой записи в модели
 	public function getLastCommentByRecord($module_sid, $structure_sid, $id)
 	{
-		$rec = $this->model->makeSql(array(
+		$rec = model::makeSql(array(
 			'tables' => array(
 				$this->table
 			),
@@ -174,7 +173,7 @@ class field_type_comments extends field_type_default
 				)
 			),
 			'order' => 'order by `date` desc'
-		), 'getrow'); //pr($this->model->last_sql);
+		), 'getrow'); //pr(model::$last_sql);
 		
 		//Расшифровываем значения
 		if ($rec) {
@@ -223,7 +222,7 @@ class field_type_comments extends field_type_default
 		//Корень найден - будем класть в него
 		if(IsSet($values['parent'])){
 			
-			$parent_rec = $this->model->makeSql(array(
+			$parent_rec = model::makeSql(array(
 				'tables' => array($this->table),
 				'where' => array(
 					'and' => array(
@@ -239,7 +238,7 @@ class field_type_comments extends field_type_default
 		
 		}else{
 			//Ищем корень дерево комментариев, если есть - новый комментарий будет класться в него
-			$parent_rec = $this->model->makeSql(array(
+			$parent_rec = model::makeSql(array(
 				'tables' => array(
 					$this->table
 				),
@@ -257,7 +256,7 @@ class field_type_comments extends field_type_default
 		
 			//Корня дерева не найдено - придётся создавать
 			if (!$parent_rec) {
-				$this->model->makeSql(array(
+				model::makeSql(array(
 					'tables' => array(
 						$this->table
 					),
@@ -275,7 +274,7 @@ class field_type_comments extends field_type_default
 					)
 				), 'insert');
 				//Ищем последнюю по дате
-				$parent_rec = $this->model->makeSql(array(
+				$parent_rec = model::makeSql(array(
 					'tables' => array(
 						$this->table
 					),
@@ -297,9 +296,9 @@ class field_type_comments extends field_type_default
 		}
 		
 		//Если не установлен обработчик таблицы
-		if (!IsSet($this->model->extensions['domains']->db_manager)) {
+		if (!IsSet(model::$extensions['domains']->db_manager)) {
 			require_once(model::$config['path']['core'] . '/classes/nestedsets.php');
-			$this->model->extensions['domains']->db_manager = new nested_sets($this->model, $this->table);
+			model::$extensions['domains']->db_manager = new nested_sets($this->model, $this->table);
 		}
 		
 		//Условие для обновления деревьев
@@ -324,24 +323,24 @@ class field_type_comments extends field_type_default
 			'module' => mysql_real_escape_string($module_sid),
 			'structure_sid' => mysql_real_escape_string($structure_sid),
 			'record_id' => mysql_real_escape_string($record_id),
-			'domain' => '|' . $this->model->extensions['domains']->domain['id'] . '|',
+			'domain' => '|' . model::$extensions['domains']->domain['id'] . '|',
 			'ln' => 1,
 			'url' => $original_rec['url']
 		);
 		
 		//Добавляем запись
-		$this->model->extensions['domains']->db_manager->addChild($parent_id, $what, $conditions);
+		model::$extensions['domains']->db_manager->addChild($parent_id, $what, $conditions);
 		
 		//Данные комментария, для указания в записи
 		$comm_data=date("Y-m-d H:i:s") . '|' . 
-			str_replace('|', '', $this->model->user->info['title']). '|' . 
+			str_replace('|', '', model::$user->info['title']). '|' . 
 			user::$info['url']. '|' . 
 			htmlspecialchars($comment). '|' . 
 			round($parent_rec['right_key']/2)
 		;
 		
 		//Обновляем запись, к которой был сделан комментарий
-		$this->model->makeSql(
+		model::makeSql(
 			array(
 				'tables' => array(model::$modules[$module_sid]->getCurrentTable($structure_sid)),
 				'fields' => array('`comments`="' . mysql_real_escape_string($module_sid . '|' . $structure_sid . '|' . $record_id . '|' . $comm_data) . '"'),
@@ -350,7 +349,7 @@ class field_type_comments extends field_type_default
 			'update'
 		);
 		
-		$this->model->execSql('update `comments` set `domain`="all"','update');
+		model::execSql('update `comments` set `domain`="all"','update');
 		
 		$rec=false;
 		//Уведомление об ответе на комментарий
@@ -360,10 +359,10 @@ class field_type_comments extends field_type_default
 			//Если ответ не на свой комментарий
 			if($parent_rec['author'] != user::$info['id']){
 				$message = array(
-					'subject'=>$this->model->extensions['domains']->domain['title'].': на ваш комментарий ответили.',
-					'message'=>'Пользователь <a href="http://'.$this->model->extensions['domains']->domain['host'].''.$this->model->user->info['url'].'.html">'.user::$info['title'].'</a> ответил на ваш <a href="http://'.$this->model->extensions['domains']->domain['host'].''.$rec['url'].'#comm'.$parent_rec['id'].'">комментарий</a> к записи <a href="http://'.$this->model->extensions['domains']->domain['host'].''.$rec['url'].'">'.$rec['title'].'</a>.',
+					'subject'=>model::$extensions['domains']->domain['title'].': на ваш комментарий ответили.',
+					'message'=>'Пользователь <a href="http://'.model::$extensions['domains']->domain['host'].''.model::$user->info['url'].'.html">'.user::$info['title'].'</a> ответил на ваш <a href="http://'.model::$extensions['domains']->domain['host'].''.$rec['url'].'#comm'.$parent_rec['id'].'">комментарий</a> к записи <a href="http://'.model::$extensions['domains']->domain['host'].''.$rec['url'].'">'.$rec['title'].'</a>.',
 				);
-				$module_sid = $this->model->getModuleSidByPrototype('users');
+				$module_sid = model::getModuleSidByPrototype('users');
 				model::$modules[ $module_sid ]->messageTo($parent_rec['author'], $message, 'subscribe_comments');
 			}
 		}
@@ -375,10 +374,10 @@ class field_type_comments extends field_type_default
 			if($rec['author']){
 				if($rec['author'] != user::$info['id']){
 					$message = array(
-						'subject'=>$this->model->extensions['domains']->domain['title'].': комментарий к вашей записи.',
-						'message'=>'Пользователь <a href="http://'.$this->model->extensions['domains']->domain['host'].''.user::$info['url'].'.html">'.user::$info['title'].'</a> прокомментировал вашу запись <a href="http://'.$this->model->extensions['domains']->domain['host'].''.$rec['url'].'">'.$rec['title'].'</a>.',
+						'subject'=>model::$extensions['domains']->domain['title'].': комментарий к вашей записи.',
+						'message'=>'Пользователь <a href="http://'.model::$extensions['domains']->domain['host'].''.user::$info['url'].'.html">'.user::$info['title'].'</a> прокомментировал вашу запись <a href="http://'.model::$extensions['domains']->domain['host'].''.$rec['url'].'">'.$rec['title'].'</a>.',
 					);
-					$module_sid = $this->model->getModuleSidByPrototype('users');
+					$module_sid = model::getModuleSidByPrototype('users');
 					model::$modules[ $module_sid ]->messageTo($rec['author'], $message, 'subscribe_my');
 				}
 			}
@@ -387,12 +386,12 @@ class field_type_comments extends field_type_default
 			if($rec['company']){
 				if($rec['company'] != user::$info['corporate']){
 					//Все корпоративные пользователи
-					$users = $this->model->execSql('select * from `users` where `corporate`="'.intval($rec['company']).'" order by `id`','getall');
+					$users = model::execSql('select * from `users` where `corporate`="'.intval($rec['company']).'" order by `id`','getall');
 					$message = array(
-						'subject'=>$this->model->extensions['domains']->domain['title'].': комментарий к записи вашей компании.',
-						'message'=>'Пользователь <a href="http://'.$this->model->extensions['domains']->domain['host'].''.user::$info['url'].'.html">'.user::$info['title'].'</a> прокомментировал запись <a href="http://'.$this->model->extensions['domains']->domain['host'].''.$rec['url'].'">'.$rec['title'].'</a>, которая размещена от лица вашей компании.',
+						'subject'=>model::$extensions['domains']->domain['title'].': комментарий к записи вашей компании.',
+						'message'=>'Пользователь <a href="http://'.model::$extensions['domains']->domain['host'].''.user::$info['url'].'.html">'.user::$info['title'].'</a> прокомментировал запись <a href="http://'.model::$extensions['domains']->domain['host'].''.$rec['url'].'">'.$rec['title'].'</a>, которая размещена от лица вашей компании.',
 					);
-					$module_sid = $this->model->getModuleSidByPrototype('users');
+					$module_sid = model::getModuleSidByPrototype('users');
 					foreach($users as $user)
 						//Рассылаем всем кроме автора материала, ему уже отправили выше.
 						if($user['id'] != $rec['author'])
@@ -407,12 +406,12 @@ class field_type_comments extends field_type_default
 	//Добавляем комментарий
 	public function hideComment($comment_id){
 		//Сам комментарий
-		$comm = $this->model->execSql('select * from `comments` where `id`="'.mysql_real_escape_string($comment_id).'" limit 1','getrow');
+		$comm = model::execSql('select * from `comments` where `id`="'.mysql_real_escape_string($comment_id).'" limit 1','getrow');
 		//Скрываем текст
-		$this->model->execSql('update `comments` set `text`="(мой комментарий скрыт модераторами)" where `id`="'.mysql_real_escape_string($comment_id).'" limit 1','update');
+		model::execSql('update `comments` set `text`="(мой комментарий скрыт модераторами)" where `id`="'.mysql_real_escape_string($comment_id).'" limit 1','update');
 		//Обновляем запись
 		$comms = $this->commentsForRecord($comm['module'], $comm['structure_sid'], $comm['record_id']);
-		$this->model->execSql('update `'.model::$modules[ $comm['module'] ]->getCurrentTable( $comm['structure_sid'] ).'` set `comments`="'.mysql_real_escape_string($comms).'" where `id`="'.$comm['record_id'].'" limit 1', 'update');
+		model::execSql('update `'.model::$modules[ $comm['module'] ]->getCurrentTable( $comm['structure_sid'] ).'` set `comments`="'.mysql_real_escape_string($comms).'" where `id`="'.$comm['record_id'].'" limit 1', 'update');
 		//Готовоы
 		print('Комментарий скрыт');
 		exit();
@@ -420,10 +419,10 @@ class field_type_comments extends field_type_default
 
 	
 	public function commentsForRecord($module, $structure_sid, $record_id){
-		$count=$this->model->execSql('select count(`id`) as `counter` from `comments` where `module`="'.mysql_real_escape_string($module).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'" and `record_id`="'.mysql_real_escape_string($record_id).'" and `tree_level`>1', 'getrow');
+		$count=model::execSql('select count(`id`) as `counter` from `comments` where `module`="'.mysql_real_escape_string($module).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'" and `record_id`="'.mysql_real_escape_string($record_id).'" and `tree_level`>1', 'getrow');
 		$count=$count['counter'];
 		
-		$rec = $this->model->execSql('select * from `comments` where `module`="'.mysql_real_escape_string($module).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'" and `record_id`="'.mysql_real_escape_string($record_id).'" and `tree_level`>1 order by `id` desc','getrow');
+		$rec = model::execSql('select * from `comments` where `module`="'.mysql_real_escape_string($module).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'" and `record_id`="'.mysql_real_escape_string($record_id).'" and `tree_level`>1 order by `id` desc','getrow');
 		$rec['author'] = model::$types['user']->getValueExplode($rec['author']);
 		return $module.'|'.$structure_sid.'|'.$record_id.'|'.$rec['date'].'|'.$rec['author']['title'].'|'.$rec['author']['url'].'|'.$rec['text'].'|'.$count;
 	}
@@ -435,19 +434,19 @@ class field_type_comments extends field_type_default
 				foreach($structure['fields'] as $field_sid=>$field){
 					if($field['type'] == 'comments'){
 						//К каким записям есть голоса
-						$t=$this->model->execSql('select distinct `record_id` from `comments` where `module`="'.mysql_real_escape_string($module_sid).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'" and `tree_level`>1','getall');
+						$t=model::execSql('select distinct `record_id` from `comments` where `module`="'.mysql_real_escape_string($module_sid).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'" and `tree_level`>1','getall');
 						$ids=array();
 						foreach($t as $ti)$ids[]=$ti['record_id'];
 						//Сами записи
-						$recs=$this->model->execSql('select * from `'.$module->getCurrentTable($structure_sid).'` where `id` IN ('.implode(', ', $ids).') order by `id`','getall');
+						$recs=model::execSql('select * from `'.$module->getCurrentTable($structure_sid).'` where `id` IN ('.implode(', ', $ids).') order by `id`','getall');
 						if($recs)
 						foreach($recs as $rec){
 							$comms = $this->commentsForRecord($module_sid, $structure_sid, $rec['id']);
 							if($comms){
-								$this->model->execSql('update `'.$module->getCurrentTable($structure_sid).'` set `'.$field_sid.'`="'.mysql_real_escape_string($comms).'" where `id`="'.$rec['id'].'" limit 1', 'update');
+								model::execSql('update `'.$module->getCurrentTable($structure_sid).'` set `'.$field_sid.'`="'.mysql_real_escape_string($comms).'" where `id`="'.$rec['id'].'" limit 1', 'update');
 							}
 						}
-						$this->model->execSql('update `'.$module->getCurrentTable($structure_sid).'` set `'.$field_sid.'`="0" where `id` NOT IN ('.implode(', ', $ids).')','update');
+						model::execSql('update `'.$module->getCurrentTable($structure_sid).'` set `'.$field_sid.'`="0" where `id` NOT IN ('.implode(', ', $ids).')','update');
 					}
 				}
 			}

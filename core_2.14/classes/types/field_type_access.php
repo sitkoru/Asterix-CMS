@@ -43,7 +43,7 @@ class field_type_access extends field_type_default{
 	}
 
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid,$values,$old_values=array(),$settings=false){
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		
 		//Доступы групп
 		$groups=array();
@@ -62,7 +62,7 @@ class field_type_access extends field_type_default{
 	//Получить развёрнутое значение для системы управления из простого значения
 	public function getAdmValueExplode($value, $settings=false, $record=array()){
 		//Группы в системе
-		$groups=$this->model->getUserGroups();
+		$groups=model::getUserGroups();
 		
 		//Разбираем имеющиеся значения
 		if(is_array($value)){

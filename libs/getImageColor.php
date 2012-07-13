@@ -30,14 +30,14 @@ class GeneratorImageColorPalette
    		$size = @getimagesize($imageFile_URL);
    		if($size === false)
    		{
-      		user_error("Unable to get image size data");
+//      		user_error("Unable to get image size data");
       		return false;
    		}
    		// open image
    		$img = @imagecreatefromjpeg($imageFile_URL);
    		if(!$img)
    		{
-   	  		user_error("Unable to open image file");
+//   	  		user_error("Unable to open image file");
    		   return false;
    		}
    		

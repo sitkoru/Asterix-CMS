@@ -28,20 +28,21 @@ class model{
 	public static $ask;
 	public static $last_sql;
 	public static $active_database = 'system';
-
+	
 	function __construct($config, $log, $cache = false){
 
 		require_once($config['path']['core'] . '/classes/model_loader.php');
 		require_once($config['path']['core'] . '/classes/model_sql.php');
 		require_once($config['path']['core'] . '/classes/model_finder.php');
 		require_once($config['path']['core'] . '/classes/user.php');
+		require_once($config['path']['core'] . '/tests/compatibility.php');
 
 		$this->log        = 	$log;
 		$this->log->model = 	$this;
 		$this->cache = $cache;
 
 		self::$config = 		ModelLoader::loadConfig( $config );
-		self::$db = 			ModelLoader::loadDatabase( $this );
+		self::$db = 			ModelLoader::loadDatabase( self::$db );
 		self::$types = 			ModelLoader::loadTypes();
 		self::$modules =     	ModelLoader::loadModules();
 		self::$extensions = 	ModelLoader::loadExtensions();
@@ -55,7 +56,8 @@ class model{
 		$this->check_no_www();
 		$this->authUser();
 
-		
+		// Включаем все необходимые режимы совместимости
+		compatibility::init();
 	}
 
 
@@ -92,7 +94,7 @@ class model{
 	}
 
 	//Подготовка данных для ввода в шаблонизатор
-	public function prepareMainMenu($levels_to_show){
+	public static function prepareMainMenu($levels_to_show){
 		//Рекурсивная функция по расставлению статусов
 		function setOpenAndActiveStatus($recs, $current_user_url)
 		{
@@ -136,7 +138,7 @@ class model{
 		}
 
 		//Получаем дерево
-		$recs = $this->prepareShirtTree('start', 'rec', false, $levels_to_show, array(
+		$recs = self::prepareShirtTree('start', 'rec', false, $levels_to_show, array(
 			'and' => array(
 				'`show_in_menu`=1',
 				'`shw`=1'
@@ -144,13 +146,13 @@ class model{
 		));
 		
 		//Расславляем статусы открытия и активности
-		$recs = setOpenAndActiveStatus($recs, self::$ask->original_url);
+		$recs = setOpenAndActiveStatus($recs, model::$ask->original_url);
 
 		return $recs;
 	}
 
 	//Готовим путь на сайте, основываясь на разобранных данных запроса ASK
-	public function prepareModelPath(){
+	public static function prepareModelPath(){
 		$path = array();
 
 		//Текущий модуль и его структура
@@ -169,7 +171,7 @@ class model{
 				$fields[] = 'is_link_to_module';
 			//Если уже не
 			//Получаем запись
-			$rec = $this->makeSql(array(
+			$rec = model::makeSql(array(
 				'tables' => array(
 					self::$modules[$current_module]->getCurrentTable($structure_sid)
 				),
@@ -183,7 +185,7 @@ class model{
 			
 			//Дочерние структуры записей
 			if( ($structure_sid != 'rec') and (!$rec) ){
-				$rec = $this->makeSql(array(
+				$rec = model::makeSql(array(
 					'tables' => array(
 						self::$modules[$current_module]->getCurrentTable('rec')
 					),
@@ -232,7 +234,7 @@ class model{
 	}
 
 	//Создание краткого дерева модели
-	public function prepareShirtTree($module_sid = 'start', $structure_sid = 'rec', $root_record_id = false, $levels_to_show = 2, $conditions = array('and' => array('`shw`=1'))){
+	public static function prepareShirtTree($module_sid = 'start', $structure_sid = 'rec', $root_record_id = false, $levels_to_show = 2, $conditions = array('and' => array('`shw`=1'))){
 		if( is_object( self::$modules[$module_sid] ) )
 			return self::$modules[$module_sid]->getModuleShirtTree($root_record_id, $structure_sid, $levels_to_show, $conditions);
 	}
@@ -305,12 +307,12 @@ class model{
 	}
 
 	//Выполнить готовый запрос к базе данных
-	public function execSql($sql, $query_type = 'getall', $database = 'system', $no_cache = false){
+	public static function execSql($sql, $query_type = 'getall', $database = 'system', $no_cache = false){
 		return ModelSql::execSql($sql, $query_type, $database, $no_cache);
 	}
 
 	//Подготовить запрос к базе данных на основе предоставленных характеристик
-	public function makeSql($sql_conditions, $query_type = 'getall', $database = 'system', $no_cache = false	){		
+	public static function makeSql($sql_conditions, $query_type = 'getall', $database = 'system', $no_cache = false	){		
 		return ModelSql::makeSql($sql_conditions, $query_type, $database, $no_cache);
 	}
 
@@ -385,6 +387,7 @@ class model{
 	public function unittest_modules(){
 		foreach(self::$modules as $module)
 			$module->unitTests();
+		
 	}
 	
 	//Класс работы с Excel
@@ -422,8 +425,13 @@ class model{
 		include_once(self::$config['path']['core'] . '/../libs/geoip.php');
 		return new geoip( self::$config['path'] );
 	}
-
 	
 }
+
+
+////////////////////////////
+/// СОВМЕСТИМОСТЬ С 2.13 ///
+////////////////////////////
+
 
 ?>

@@ -157,7 +157,7 @@ class field_type_datetime extends field_type_default
 
 
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values){
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		if (is_array($values[$value_sid])) {
 			//Фильтруем несуществующие даты
 			if (!checkdate( date("m",$values[$value_sid]['date']), date("d",$values[$value_sid]['date']), date("Y",$values[$value_sid]['date']) ))

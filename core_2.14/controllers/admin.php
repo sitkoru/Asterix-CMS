@@ -42,7 +42,7 @@ class controller_admin extends default_controller{
 		),
 		'media' => array(
 			'pos' =>	20,
-			'title' => 'Картинки',
+			'title' => 'Медиа',
 			'help' => 'Здесь вы можете разместить необходимые для записи изображения, либо звук/видео, если такое предусмотрено на вашем сайте. <br /><br />
 				<strong>Картинки</strong>: при закачке выбранного вами изображения, происходит автоматическое создание всех необходимых уменьшенных копий изображения. Их вы можете посмотреть в закладке "Подробнее" у интересующего поля.<br /><br />
 				<strong>Видео</strong>: помните, что объём видео-файлов обычно достаточно велик, и скорость закачки видео на сайт сильно зависит от скорости вашего интернета. Будьте терпиливы и дождитесь окончательной закачки файла.<br /><br />
@@ -152,7 +152,7 @@ class controller_admin extends default_controller{
 		//Шаблоны
 		$current_template_file = 'admin.tpl';
 		require_once(model::$config['path']['core'] . '/classes/templates.php');
-		$tmpl = new templater($this->model);
+		$tmpl = new templater();
 
 		//Данные
 		$action_result['title']					= $this->actions[ $action ] .' '. model::$modules[ model::$ask->module ]->structure[$structure_sid]['title'];
@@ -170,7 +170,6 @@ class controller_admin extends default_controller{
 		$tmpl->assign('paths', 					model::$config['path']);
 		$tmpl->assign('settings', 				model::$settings);
 		$tmpl->assign('path_admin_templates', 	model::$config['path']['admin_templates']);
-		$tmpl->assign('domain', 				$this->model->extensions['domains']->domain);
 		
 		//Компилируем
 		try {
@@ -179,8 +178,10 @@ class controller_admin extends default_controller{
 			log::stop('500 Internal Server Error', 'Ошибка компиляции', $e);
 		}
 
-		header('Content-Type: text/html; charset=utf-8');
-		header("HTTP/1.0 200 Ok");
+		if (!headers_sent()){
+			header('Content-Type: text/html; charset=utf-8');
+			header("HTTP/1.0 200 Ok");
+		}
 		
 		echo $ready_html;
 		exit();
@@ -195,7 +196,7 @@ class controller_admin extends default_controller{
 		
 		if( $action == 'addRecord' ){
 			$this->checkRestBeforeAdd();
-			$url = $this->model->addRecord(model::$ask->module, model::$ask->structure_sid, $this->vars);
+			$url = model::addRecord(model::$ask->module, model::$ask->structure_sid, $this->vars);
 			
 		}elseif( $action == 'editRecord' ){
 			$this->checkRestBeforeEdit();
@@ -254,7 +255,7 @@ class controller_admin extends default_controller{
 			log::stop('501 Not Implemented');
 
 //		header('Location: '.$url);
-		header('Location: /admin.html');
+		header('Location: /admin.'.model::$ask->module.'.html');
 		exit();
 	}
 
@@ -318,7 +319,7 @@ class controller_admin extends default_controller{
 	}
 
 	public function getSettingsFields(){
-		$fields = $this->model->execSql('select * from `settings` where '.model::pointDomain(),'getall');
+		$fields = model::execSql('select * from `settings` where '.model::pointDomain(),'getall');
 		foreach( $fields as $i => $field ){
 			if($field['field'])
 				$field = array_merge( unserialize( $field['field'] ), $field );
@@ -348,17 +349,22 @@ class controller_admin extends default_controller{
 			$only_module = $record['module_sid'];
 		}
 
+		$j=0;
 		foreach(model::$modules as $module_sid => $module){
+			
+			
 			if( !$only_module || ($only_module == $module_sid) )
 			if( is_array($module->structure) )
 			foreach($module->structure as $structure_sid=>$structure)
 			if( !$structure['hide_in_tree'] ){
+				$j++;
+				
 				$sortable = ( IsSet($structure['fields']['pos']) || ($structure['type'] == 'tree') );
 				$recs = $module->getModuleShirtTree(false, $structure_sid, 10);
 				
 				if( is_array($recs) )				
 				foreach($recs as $i=>$rec){
-					$fields[ 1000*$module->info['id'] + $i ] = 
+					$fields[ 1000*$module->info['id'] + 100*$j + $i ] = 
 						array_merge(
 							$rec, 
 							array(
@@ -555,14 +561,14 @@ class controller_admin extends default_controller{
 
 	//Сохраняем настройки
 	private function updateSettings(){
-		$sets = $this->model->execSql('select * from `settings` where ' . model::pointDomain() . '', 'getall');
+		$sets = model::execSql('select * from `settings` where ' . model::pointDomain() . '', 'getall');
 		
 		foreach ($sets as $set) {
 			if (IsSet($this->vars[$set['var']]) or ($set['type'] == 'check')) {
-				$in_str = model::$types[$set['type']]->toSql($set['var'], $this->vars, $set);
-				$in_str = str_replace('`' . $set['var'] . '`=', '`value`=', $in_str);
+				$val = model::$types[ $set['type'] ]->toValue($set['var'], $this->vars, $set);
+				$in_str = '`value`="'. mysql_real_escape_string( $val ) .'"';
 				$sql    = 'update `settings` set ' . $in_str . ' where ' . model::pointDomain() . ' and `var`="' . mysql_real_escape_string($set['var']) . '"';
-				$this->model->execSql($sql, 'update');
+				model::execSql($sql, 'update');
 			}
 		}
 		header('Location: /admin/start.settings.rec.success.html');
@@ -573,7 +579,7 @@ class controller_admin extends default_controller{
 	private function ckeditorUpload($file){
 		$ext = substr($file['name'], strrpos($file['name'],'.'));
 		$dir = date("Y");
-		$filename = 'img' . date("YmdHis") . '.' . $ext;
+		$filename = 'img' . date("YmdHis") . $ext;
 		$path = model::$config['path']['files'] . '/' . $dir. '/' . $filename;
 		
 		include_once(model::$config['path']['libraries'].'/acmsFiles.php');

@@ -30,43 +30,18 @@ class field_type_default
 	
 	public $template_file = 'types/default.tpl';
 	
-	public function __construct($model){
-		$this->model = $model;
-		
-		//Настройки поля по умолчанию
-		foreach ($this->default_settings as $var => $val)
-			$this->$var = $val;
-	}
-	
 	public function creatingString($name){
 		return '`' . $name . '` VARCHAR(255) NOT NULL';
 	}
 	
-	
-	//Подготавливаем значение для SQL-запроса
-	public function toSQL($value_sid, $values, $old_values = array(), $settings = false, $return_just_value = false, $module_sid = false, $structure_sid = false){
-	
-		//Готовим значение
-		$value = $this->toValue($value_sid, $values, $old_values, $settings, $module_sid, $structure_sid);
-		
-		//Возвращаем false
-		if ($value === false) {
-			return false;
-			
-			//Возвращаем пустое значение для переменной
-		} else {
-			//Возвращаем просто значение
-			if ($return_just_value)
-				return $value;
-			//Возвращаем значение в обёртке
-			else
-				return '`' . mysql_real_escape_string($value_sid) . '`="' . mysql_real_escape_string($value) . '"';
-		}
+	// Свернуть значение до хранимого вида
+	public function implodeValue($field_sid, $record, $old_record = array(), $settings = false, $module_sid = false, $structure_sid = false){
+		$record[ $field_sid ] = $this->toValue($field_sid, $record, $old_record, $settings, $module_sid, $structure_sid);
+		return $record;
 	}
 	
-	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false){
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		//Если значение найдено
 		if (IsSet($values[$value_sid])) {
 			//Вернуть просто значение, без sql-обёртки

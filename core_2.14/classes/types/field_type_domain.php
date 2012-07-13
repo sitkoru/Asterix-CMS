@@ -31,17 +31,16 @@ class field_type_domain extends field_type_default
 		return '`' . $name . '` VARCHAR(255) NOT NULL';
 	}
 	
-	public function getDefaultValue()
+	public function getDefaultValue( $settings = false )
 	{
 		if( model::$config['settings']['domain_switch'] )
 			return 'all';
 		else
-			return $this->model->extensions['domains']->domain['id'];
+			return model::$extensions['domains']->domain['id'];
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false)
-	{
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		//Настройки поля, переданные из модуля
 		if ($settings)
 			foreach ($settings as $var => $val)
@@ -50,7 +49,7 @@ class field_type_domain extends field_type_default
 		//Если нет значения - ставим значение по умолчанию
 		if (!IsSet($values[$value_sid]))
 			$values[$value_sid] = array(
-				$this->model->extensions['domains']->domain['id']
+				model::$extensions['domains']->domain['id']
 			);
 		
 		//Готово
@@ -82,7 +81,7 @@ class field_type_domain extends field_type_default
 		if($value == 'all'){
 			//Варианты значений
 			if(!$this->recs){
-				$recs = $this->model->execSql('select `id`,`title`,`host` from `domains` where `active`=1 order by `pos`');
+				$recs = model::execSql('select `id`,`title`,`host` from `domains` where `active`=1 order by `pos`');
 				$this->recs = $recs;
 			}else
 				$recs = $this->recs;
@@ -92,7 +91,7 @@ class field_type_domain extends field_type_default
 			$arr  = explode('|', $value);
 			$res  = array();
 			//Варианты значений
-			$recs = $this->model->execSql('select `id`,`title`,`host` from `domains` where `id` in ("' . implode('", "', $arr) . '") and `active`=1 order by `pos`');
+			$recs = model::execSql('select `id`,`title`,`host` from `domains` where `id` in ("' . implode('", "', $arr) . '") and `active`=1 order by `pos`');
 		}
 		
 		//Готово
@@ -111,7 +110,7 @@ class field_type_domain extends field_type_default
 		if ($domain_switch) {
 */
 			//Варианты значений
-			$variants = $this->model->execSql('select `id`,`title` from `domains` where `active`=1 order by `title`');
+			$variants = model::execSql('select `id`,`title` from `domains` where `active`=1 order by `title`');
 			//Вариант универсальной записи
 			$variants = array_merge(array(
 				array(

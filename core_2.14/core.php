@@ -1,7 +1,7 @@
 <?php
 
 //До момента запуска ядра ошибки показываются, потом - в зависимости от режима test_mode
-error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
+error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
 ini_set("display_errors", "on");
 
 session_start();

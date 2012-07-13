@@ -32,14 +32,7 @@ class field_type_map extends field_type_default
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false)
-	{
-		//Настройки поля, переданные из модуля
-		if ($settings)
-			foreach ($settings as $var => $val)
-				$this->$var = $val;
-		
-		//Готово
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		return $values[$value_sid]['x'] . '|' . $values[$value_sid]['y'] . '|' . $values[$value_sid]['z'];
 	}
 	

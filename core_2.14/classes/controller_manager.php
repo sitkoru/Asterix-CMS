@@ -43,6 +43,9 @@ class controller_manager
 		//Загружаем модель
 		$this->loadModel();
 		
+		// Обрабатываем стандартные пути, вроде favicon/sitemap/robots/etc...
+		$this->ansverDefinedPaths();		
+		
 		//Если сайт работает в режиме тестирования - проверяем можно ли показывать
 		$this->checkTestMode();
 
@@ -248,6 +251,126 @@ class controller_manager
 		header('Location: ' . model::$ask->rec['url'].'.html#feedback');
 		exit();
 	}
+
+	// Отдаём ответы на стандартные запросы
+	private function ansverDefinedPaths(){
+		$path = strtolower($_SERVER['REQUEST_URI']);
+	
+		// favicon.ico
+		if( $path == '/favicon.ico' ){
+			$rec = model::execSql('select `value` from `settings` where `var`="favicon"','getrow');
+			$rec = unserialize( htmlspecialchars_decode( $rec['value'] ) );
+			if( is_readable( model::$config['path']['www'] . $rec['path'] ) ){
+				header("HTTP/1.0 200 Ok");
+				header('Content-Type: image/x-icon; charset=utf-8');
+				readfile( model::$config['path']['www'] . $rec['path'] );
+			}else{
+				header("HTTP/1.0 404 Not Found");
+			}
+			exit();
+		
+		// sitemap.xml
+		}elseif( $path == '/sitemap.xml' ){
+			require(model::$config['path']['core'].'/classes/templates.php');
+			$tmpl=new templater($model);
+			$recs=$this->siteMap();
+			$tmpl->assign('recs',$recs);
+			header("HTTP/1.0 200 Ok");
+			header('Content-Type:text/xml');
+			$current_template_file=model::$config['path']['admin_templates'].'/sitemap.tpl';
+			$ready_html=$tmpl->fetch($current_template_file);
+			print($ready_html);
+			exit();
+			
+		// robots.txt
+		}elseif( $path == '/robots.txt' ){
+			$rec = model::execSql('select `value` from `settings` where `var`="robots"','getrow');
+			if( $rec ){
+				header("HTTP/1.0 200 Ok");
+				header('Content-Type: text/plain; charset=utf-8');
+				print( $rec['value'] );
+			}else{
+				header("HTTP/1.0 404 Not Found");
+			}
+			exit();
+		}
+		
+	}
+	
+		//Учёт приходов поисковиков
+	private function siteMap()
+	{
+
+		// Фильтровать подобные адреса, и не показывать их в карте сайта
+		$filter = array();
+		
+		// Читаем robots.txt и учитываем его в выдаче
+		$f = explode("\n", model::$settings['robots']);
+		foreach( $f as $fi )
+			if( substr_count( $fi, 'Disallow') ){
+				$path = substr( $fi, strpos($fi, ' ')+1 );
+				$path = str_replace('*', '', $path);
+				$filter[] = $path;
+			}
+				
+		
+		// Получаем дерево
+		$tree = model::prepareShirtTree('start', 'rec', false, 10, $conditions = array(
+			'and' => array(
+				'`shw`=1'
+			)
+		));
+		
+		function toLine($tree)
+		{
+			$recs = array();
+			$i    = 0;
+			
+			//Перебираем дерево
+			foreach ($tree as $i => $t) {
+				$i = count($recs) + 1;
+				
+				//Сама запись
+				$recs[$i] = $t;
+				
+				//Если есть подразделы
+				if (@$recs[$i]['sub'])
+					if (count($recs[$i]['sub'])) {
+						//Делаем из них список
+						$subs = toLine($recs[$i]['sub']);
+						//Убираем список подразделов у текущей записи
+						UnSet($recs[$i]['sub']);
+						//Вставляем список подразделов следом
+						$recs = array_merge($recs, $subs);
+					}
+			}
+			
+			return $recs;
+		}
+		
+		//Получаем данные
+		$recs = toLine($tree);
+		
+		//Форматируем данные
+		foreach ($recs as $i => $rec){
+
+			$flag = true;
+			foreach( $filter as $fi )
+				if( substr_count($recs[$i]['url'], $fi) )
+					$flag = false;
+		
+			if( $flag ){
+				//Дописываем Url
+				$recs[$i]['url']         = 'http://' . $_SERVER['HTTP_HOST'] . $recs[$i]['url'];
+				//Форматируем дату
+				$recs[$i]['date_public'] = @date("c", strtotime($recs[$i]['date_public']));
+			}
+		}
+		
+		return $recs;
+	}
+
+	
 }
 
 ?>

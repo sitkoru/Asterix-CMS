@@ -38,8 +38,7 @@ class field_type_rating extends field_type_default
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values)
-	{
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		foreach($values[$value_sid] as &$val)
 			$val = str_pad($val, 6, '0', STR_PAD_LEFT);
 		
@@ -75,7 +74,7 @@ class field_type_rating extends field_type_default
 	public function addThanks($user_id, $record_graph_top = false){	
 	
 		//Ищем нужную запись
-		$module_sid = $this->model->getModuleSidByPrototype('users');
+		$module_sid = model::getModuleSidByPrototype('users');
 		$rec = model::$modules[ $module_sid ]->getRecordById('rec', $user_id);
 		$rec = model::$modules[ $module_sid ]->explodeRecord($rec, 'rec');
 		
@@ -83,8 +82,9 @@ class field_type_rating extends field_type_default
 		foreach($rec as $field_sid => &$field){
 			if( model::$modules[ $module_sid ]->structure['rec']['fields'][ $field_sid ]['type'] == 'rating' ){
 				@$field['thanks']++;
-				$rating = $this->toValue($field_sid, $rec);
-				$this->model->execSql('update `'.model::$modules[ $module_sid ]->getCurrentTable('rec').'` set `'.$field_sid.'`="'.$rating.'" where `id`="'.$rec['id'].'" limit 1', 'update');
+				$rec = $this->implodeValue($field_sid, $rec);
+				$rating = $rec[ $field_sid ];
+				model::execSql('update `'.model::$modules[ $module_sid ]->getCurrentTable('rec').'` set `'.$field_sid.'`="'.$rating.'" where `id`="'.$rec['id'].'" limit 1', 'update');
 			}
 		}
 		
@@ -93,7 +93,7 @@ class field_type_rating extends field_type_default
 	}
 	
 	public function votesForRecord($module, $structure_sid, $record_id){
-		$votes=$this->model->execSql('select * from `votes` where `module`="'.mysql_real_escape_string($module).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'" and `record_id`="'.mysql_real_escape_string($record_id).'"', 'getall');
+		$votes=model::execSql('select * from `votes` where `module`="'.mysql_real_escape_string($module).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'" and `record_id`="'.mysql_real_escape_string($record_id).'"', 'getall');
 		$authors=array();
 		$yes=0;
 		$no=0;
@@ -124,19 +124,19 @@ class field_type_rating extends field_type_default
 				foreach($structure['fields'] as $field_sid=>$field){
 					if($field['type'] == 'votes'){
 						//К каким записям есть голоса
-						$t=$this->model->execSql('select distinct `record_id` from `votes` where `module`="'.mysql_real_escape_string($module_sid).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'"','getall');
+						$t=model::execSql('select distinct `record_id` from `votes` where `module`="'.mysql_real_escape_string($module_sid).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'"','getall');
 						$ids=array();
 						foreach($t as $ti)$ids[]=$ti['record_id'];
 						//Сами записи
-						$recs=$this->model->execSql('select * from `'.$module->getCurrentTable($structure_sid).'` where `id` IN ('.implode(', ', $ids).') order by `id`','getall');
+						$recs=model::execSql('select * from `'.$module->getCurrentTable($structure_sid).'` where `id` IN ('.implode(', ', $ids).') order by `id`','getall');
 						if($recs)
 						foreach($recs as $rec){
 							$votes = $this->votesForRecord($module_sid, $structure_sid, $rec['id']);
 							if($votes){
-								$this->model->execSql('update `'.$module->getCurrentTable($structure_sid).'` set `'.$field_sid.'`="'.implode('|', $votes).'" where `id`="'.$rec['id'].'" limit 1', 'update');
+								model::execSql('update `'.$module->getCurrentTable($structure_sid).'` set `'.$field_sid.'`="'.implode('|', $votes).'" where `id`="'.$rec['id'].'" limit 1', 'update');
 							}
 						}
-						$this->model->execSql('update `'.$module->getCurrentTable($structure_sid).'` set `votes`="0000|0000|0|0" where `id` NOT IN ('.implode(', ', $ids).')','update');
+						model::execSql('update `'.$module->getCurrentTable($structure_sid).'` set `votes`="0000|0000|0|0" where `id` NOT IN ('.implode(', ', $ids).')','update');
 					}
 				}
 			}

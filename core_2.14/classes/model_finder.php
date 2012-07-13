@@ -63,7 +63,7 @@ class ModelFinder{
 	//Забрать запись по ID
 	public function getRecordById($structure_sid,$id){
 		//Получаем записи
-		$rec=$this->model->makeSql(
+		$rec=model::makeSql(
 			array(
 				'fields'=>false,
 				'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -84,7 +84,7 @@ class ModelFinder{
 	//Забрать запись по SID
 	public function getRecordBySid($structure_sid,$sid){
 		//Получаем записи
-		$rec=$this->model->makeSql(
+		$rec=model::makeSql(
 			array(
 				'fields'=>false,
 				'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -109,7 +109,7 @@ class ModelFinder{
 		if($this->structure[$structure_sid]['type']=='tree')$order='order by `left_key`';
 
 		//Получаем записи
-		$recs=$this->model->makeSql(
+		$recs=model::makeSql(
 			array(
 				'fields'=>false,
 				'tables'=>array($this->getCurrentTable($structure_sid)),

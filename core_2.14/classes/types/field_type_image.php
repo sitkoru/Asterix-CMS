@@ -45,7 +45,7 @@ class field_type_image extends field_type_default
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid, $structure_sid){
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		$data = false;
 		
 		//Коррекция типа данных
@@ -130,6 +130,9 @@ class field_type_image extends field_type_default
 		} elseif (strlen( $_POST[$value_sid . '_old_id'])) {
 			$data = $this->getValueExplode( $_POST[$value_sid . '_old_id'] );
 			$data['title'] = strip_tags( $_POST[$value_sid . '_title'] );
+		} elseif (strlen( $values[$value_sid . '_old_id'])) {
+			$data = $this->getValueExplode( $values[$value_sid . '_old_id'] );
+			$data['title'] = strip_tags( $values[$value_sid . '_title'] );
 		}
 
 		//Готово

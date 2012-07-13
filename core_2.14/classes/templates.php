@@ -22,8 +22,7 @@ class templater{
 	private $version = 'Smarty-3.0.8';
 
 	//Запускаемсо
-	public function __construct($model){
-		$this->model = $model;
+	public function __construct(){
 		$this->paths = model::$config['path'];
 		include_once(model::$config['path']['core'] . '/../libs/'.$this->version.'/libs/Smarty.class.php');
 		
@@ -76,9 +75,12 @@ class templater{
 	public function preloadData($params, &$smarty)
 	{
 
+		$t                	= explode(' ', microtime());
+		$time_start 	= $t[1] + $t[0];
+
 		//Вызов происходит не по названию модуля, а по прототипу
 		if (IsSet($params['prototype'])) {
-			$module_sid       = $this->model->getModuleSidByPrototype($params['prototype']);
+			$module_sid       = model::getModuleSidByPrototype($params['prototype']);
 			$params['module'] = $module_sid;
 			UnSet($params['prototype']);
 		}
@@ -107,34 +109,40 @@ class templater{
 					//Имя интерфейса, которую будем вызывать
 					$function_name = $params['interface'];
 					//Запрашиваем данные
-					$result        = model::$modules[$params['module']]->prepareInterface($function_name, $params);
+					$result        = model::$modules[ $params['module'] ]->prepareInterface($function_name, $params);
 					if( $result )
 						//Записываем в шаблонизатор
 						$this->tmpl->assign($params['result'], $result);
 				}
 			}
 		//Подгрузка данных Социального Графа
-		} elseif (IsSet($params['graph']) && IsSet($this->model->extensions['graph']) ) {
+		} elseif (IsSet($params['graph']) && IsSet(model::$extensions['graph']) ) {
 			//Имя интерфейса, которую будем вызывать
 			$function_name = $params['graph'];
 			//Запрашиваем данные
-			$result        = $this->model->extensions['graph']->askFromTemplate($function_name, $params);
+//			$result        = model::$extensions['graph']->askFromTemplate($function_name, $params);
 			//Записываем в шаблонизатор
 			$this->tmpl->assign($params['result'], $result);
 		}
+
+		$t               	= explode(' ', microtime());
+		$time_stop 	= $t[1] + $t[0];
+		if( model::$settings['show_stat'] == 'all' )
+			pr('Preload '.$params['module'].'->'.$params['data'].': ' . number_format($time_stop - $time_start, 5, '.', ' ') . ' секунд.');
+
 	}
   
 	//Функция, которая сортирует деревья и поддеревья по заданному ключу
 	public function treesortData($params, &$smarty){
     
-    //Подгрузка библиотеки
-    include_once(model::$config['path']['core'] . '/../libs/tree_sort.php');
-    
-    //Сортировка
-    $result = prepareTreeSort( $params );
-    
-    //Записываем в шаблонизатор
-    $this->tmpl->assign($params['result'], $result);
+		//Подгрузка библиотеки
+		include_once(model::$config['path']['core'] . '/../libs/tree_sort.php');
+		
+		//Сортировка
+		$result = prepareTreeSort( $params );
+		
+		//Записываем в шаблонизатор
+		$this->tmpl->assign($params['result'], $result);
   }
   
   //Согласование форм с числительными (value, form1, form2, form5)
@@ -196,7 +204,6 @@ class templater{
 	}
 	public function unserialize($params, &$smarty){
 		$result = unserialize( $params['value'] );
-		pr_r($result);
 		$this->tmpl->assign($params['result'], $result);
 	}
 
@@ -228,15 +235,17 @@ class templater{
     return $filename;
   }
   
-  //Вставляем все данные в шаблон
-  public function fetch($filename, $template_from_other_pack = false)
-  {
-    $filename = $this->correctTemplatePackPath($filename, $template_from_other_pack);
-    if ($filename) {
-      return $this->tmpl->fetch($filename);
-    }
-    return false;
-  }
+	//Вставляем все данные в шаблон
+	public function fetch($filename, $template_from_other_pack = false){
+		
+		$filename = $this->correctTemplatePackPath($filename, $template_from_other_pack);
+		
+		if ($filename){
+			return $this->tmpl->fetch( $filename );
+		}
+			
+		return false;
+	}
   
 }
 

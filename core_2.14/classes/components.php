@@ -2,7 +2,7 @@
 
 class components{
 
-	public function load(){
+	public static function load( $module ){
 		
 		//Стандартные
 		$system_prepares=array(
@@ -23,24 +23,26 @@ class components{
 
 		//Предобъявленные в модуле
 		foreach($system_prepares as $sid=>$prepare)
-			if( !IsSet( $this->prepares[$sid] ) ){
-				$this->prepares[$sid]=$prepare;
+			if( !IsSet( $module->prepares[$sid] ) ){
+				$module->prepares[$sid]=$prepare;
 			}
 		
 		//Новый способ объявления компонент в функции
-		if( method_exists($this, 'setComponents') )
-			return $this->setComponents();
+		if( method_exists($module, 'setComponents') )
+			$module->setComponents();
 		
+		return $module->prepares;
 	}
 	
 	//Запуск подготовки данных в компоненте
-	public function init($prepare, $params){
-		if( IsSet( $this->prepares[$prepare] ) ){
+	public static function init( $module, $prepare, $params ){
+	
+		if( IsSet( $module->prepares[$prepare] ) ){
 		
-			if( IsSet($this->prepares[ $prepare ]['function']) )
-				$function_name=$this->prepares[ $prepare ]['function'];
+			if( IsSet($module->prepares[ $prepare ]['function']) )
+				$function_name=$module->prepares[ $prepare ]['function'];
 			else
-				$function_name=$this->prepares[ $prepare ]['control'];
+				$function_name=$module->prepares[ $prepare ]['control'];
 			
 			/*
 				В параметры функции передаются 
@@ -48,14 +50,19 @@ class components{
 				так и описанные значения 
 				в описании компонента
 			*/
-			if( IsSet( $this->prepares[ $prepare ]['params'] ) )
-				$params = array_merge( @$this->prepares[ $prepare ]['params'], $params );
+			if( IsSet( $module->prepares[ $prepare ]['params'] ) )
+				$params = array_merge( @$module->prepares[ $prepare ]['params'], $params );
 			
-			if( method_exists('components', $function_name) ){
-				return components::$function_name($params);
+/* Разобраться почему три разных метода */
+			
+			if( is_callable( array( $module, $function_name ) ) ){
+				return $module->$function_name($params);	
+
+			}elseif( method_exists($module, $function_name) ){
+				return call_user_func( array($this, $function_name), $params);	
 				
-			}elseif( is_callable(array($this, $function_name)) ){
-				return $this->$function_name($params);	
+			}elseif( method_exists( 'components', $funciton_name) ){
+				return components::$function_name($params);
 			}
 		}
 		return false;
@@ -70,7 +77,7 @@ class components{
 		$where=components::convertParamsToWhere($params);
 
 		//Забираем запись
-		$rec=$this->model->makeSql(
+		$rec=model::makeSql(
 			array(
 				'tables'=>array($this->getCurrentTable('rec')),
 				'where'=>$where,
@@ -94,7 +101,7 @@ class components{
 		$where=components::convertParamsToWhere($params);
 
 		//Забираем запись
-		$rec=$this->model->makeSql(
+		$rec=model::makeSql(
 			array(
 				'tables'=>array($this->getCurrentTable('rec')),
 				'where'=>$where,
@@ -127,7 +134,7 @@ class components{
 			$params['limit'] = 'limit 100';
 		
 		//Забираем записи
-		$recs=$this->model->makeSql(
+		$recs=model::makeSql(
 			array(
 				'tables'=>array($this->getCurrentTable('rec')),
 				'where'=>$where,
@@ -181,7 +188,7 @@ class components{
 			$current_page = model::$ask->current_page;
 
 			//Всего записей по запросу
-			$num_of_records = $this->model->execSql('select count(`id`) as `counter` from `'.$this->getCurrentTable($structure_sid).'` where '.implode(' and ', $where['and']) . ' and (' . ($where['or']?implode(' or ', $where['or']):'1') .')'.' and '.model::pointDomain().'','getrow');
+			$num_of_records = model::execSql('select count(`id`) as `counter` from `'.$this->getCurrentTable($structure_sid).'` where '.implode(' and ', $where['and']) . ' and (' . ($where['or']?implode(' or ', $where['or']):'1') .')'.' and '.model::pointDomain().'','getrow');
 			$num_of_records = $num_of_records['counter'];
 
 			//Записей на страницу
@@ -286,7 +293,7 @@ class components{
 				$limit = mysql_real_escape_string($params['limit']);
 
 			//Забираем записи
-			$recs=$this->model->makeSql(
+			$recs=model::makeSql(
 				array(
 					'tables'=>array($this->getCurrentTable($structure_sid)),
 					'where'=>$where,
@@ -329,14 +336,14 @@ class components{
 		$where['and']['shw']='`shw`=1';
 
 		//Получаем записи
-		$res=$this->model->makeSql(
+		$res=model::makeSql(
 			array(
 				'tables' => array($this->getCurrentTable($structure_sid)),
 				'fields' => array( 'count(`id`) as `counter`' ),
 				'where' => $where,
 			),
 			'getrow'
-		);//pr($this->model->last_sql);
+		);//pr(model::$last_sql);
 
 		//Готово
 		return $res['counter'];
@@ -349,14 +356,14 @@ class components{
 		$where=components::convertParamsToWhere($params);
 
 		//Забираем запись
-		$rec=$this->model->makeSql(
+		$rec=model::makeSql(
 			array(
 				'tables'=>array($this->getCurrentTable('rec')),
 				'where'=>$where,
 				'order'=>'order by RAND()'
 			),
 			'getrow'
-		);//pr($this->model->last_sql);
+		);//pr(model::$last_sql);
 
 		//Раскрываем сложные поля
 		$rec=$this->explodeRecord($rec,'rec');
@@ -377,7 +384,7 @@ class components{
 			$params['limit'] = 'limit 100';
 		
 		//Забираем запись
-		$recs=$this->model->makeSql(
+		$recs=model::makeSql(
 			array(
 				'tables'=>array($this->getCurrentTable('rec')),
 				'where'=>$where,
@@ -418,14 +425,14 @@ class components{
 		$order=$this->getOrderBy('rec');
 
 		//Забираем запись
-		$rec=$this->model->makeSql(
+		$rec=model::makeSql(
 			array(
 				'tables'=>array($this->getCurrentTable($parent_structure_sid)),
 				'where'=>array('and'=>array('`'.$link_field.'`="'.mysql_real_escape_string($parent_sid).'"')),
 				'order'=>$order,
 			),
 			'getrow'
-		);//pr($this->model->last_sql);
+		);//pr(model::$last_sql);
 
 		//Раскрываем сложные поля
 		$rec=$this->explodeRecord($rec,'rec');
@@ -439,7 +446,7 @@ class components{
 	public function prepareMap($params){
 
 		//Дерево
-		$recs=$this->model->prepareShirtTree('start', 'rec', false,5,array('and'=>array('`shw`=1')));
+		$recs=model::prepareShirtTree('start', 'rec', false,5,array('and'=>array('`shw`=1')));
 
 		//Раскрываем сложные поля
 		foreach($recs as $i=>$rec){
@@ -459,7 +466,7 @@ class components{
 		if(IsSet($params['count'])){
 			$recs['counter']=$params['count'];
 		}else{
-			$recs=$this->model->execSql('select count(`id`) as `counter` from `'.$this->getCurrentTable(model::$ask->structure_sid).'` where `shw`=1 and '.model::pointDomain().'','getrow');
+			$recs=model::execSql('select count(`id`) as `counter` from `'.$this->getCurrentTable(model::$ask->structure_sid).'` where `shw`=1 and '.model::pointDomain().'','getrow');
 		}
 
 
@@ -623,6 +630,8 @@ class components{
 			}
 		}
 
+		// Прямая передача запроса
+		
 		//Готово
 		return $where;
 	}

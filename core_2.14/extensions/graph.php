@@ -81,14 +81,14 @@ class extention_graph extends extention_default
 		if($params['type'])$where['type']='`type`="'.mysql_real_escape_string($params['type']).'"';
 		
 		//Проверка
-		$links=$this->model->makeSql(
+		$links=model::makeSql(
 			array(
 				'tables'=>array($this->table_name),
 				'where'=>array('and'=>$where),
 				'order'=>'order by `date_added` desc',
 			),
 			'getall'
-		);//pr($this->model->last_sql);
+		);//pr(model::$last_sql);
 		
 		///Восстанавливаем записи из этих ссылок
 		$recs=array();
@@ -162,7 +162,7 @@ class extention_graph extends extention_default
 		if($params['author'])$where[]='`author`="'.mysql_real_escape_string($params['author']).'"';
 		
 		//Проверка
-		$link=$this->model->makeSql(
+		$link=model::makeSql(
 			array(
 				'tables'=>array($this->table_name),
 				'where'=>array('and'=>$where),
@@ -183,7 +183,7 @@ class extention_graph extends extention_default
 		$check=$this->check($params);
 		
 		if($check){
-			$result=$this->model->makeSql(
+			$result=model::makeSql(
 				array(
 					'tables'=>array($this->table_name),
 					'fields'=>array(
@@ -203,12 +203,12 @@ class extention_graph extends extention_default
 				),
 				'update'
 			);
-//			pr($this->model->last_sql);
+//			pr(model::$last_sql);
 //			exit();
 			return false;
 		}
 
-		$result=$this->model->makeSql(
+		$result=model::makeSql(
 			array(
 				'tables'=>array($this->table_name),
 				'fields'=>array(
@@ -236,7 +236,7 @@ class extention_graph extends extention_default
 		$check=$this->check($params);
 		if(!$check)return false;
 
-		$result=$this->model->makeSql(
+		$result=model::makeSql(
 			array(
 				'tables'=>array($this->table_name),
 				'where'=>array('and'=>array(
@@ -257,7 +257,7 @@ class extention_graph extends extention_default
 	public function waiting( $params )
 	{
 		//Ищем незавершённые ссылки
-		$links=$this->model->makeSql(
+		$links=model::makeSql(
 			array(
 				'tables'=>array($this->table_name),
 				'where'=>array('and'=>array(
@@ -267,7 +267,7 @@ class extention_graph extends extention_default
 				)),
 			),
 			'getall'
-		);//pr($this->model->last_sql);
+		);//pr(model::$last_sql);
 		
 		///Восстанавливаем записи из этих ссылок
 		$recs=array();
@@ -300,7 +300,7 @@ class extention_graph extends extention_default
 		);
 		if($check)return 'Запись уже есть в очереди ожидания';
 
-		$result=$this->model->makeSql(
+		$result=model::makeSql(
 			array(
 				'tables'=>array($this->table_name),
 				'fields'=>array(
@@ -326,7 +326,7 @@ class extention_graph extends extention_default
 		if( !IsSet($params['type']) )
 			$params['type'] = 'link';
 		
-		$result=$this->model->makeSql(
+		$result=model::makeSql(
 			array(
 				'tables'=>array($this->table_name),
 				'fields'=>array(

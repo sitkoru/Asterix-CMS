@@ -29,14 +29,8 @@ class user
 		
 		//Logout
 		if (IsSet($_GET['logout'])) {
-			UnSet($_SESSION['auth']);
-			session_regenerate_id();
-			self::deleteCookie('auth');
-			self::$info = array(
-				'id' => 0,
-				'title' => 'Гость',
-				'admin' => false
-			);
+			self::logout();
+			
 			header('Location: ?');
 			exit();
 		}
@@ -75,6 +69,18 @@ class user
 		}
 	}
 
+	// Выйти из учётной записи
+	public static function logout(){
+		UnSet($_SESSION['auth']);
+		session_regenerate_id();
+		self::deleteCookie('auth');
+		self::$info = array(
+			'id' => 0,
+			'title' => 'Гость',
+			'admin' => false
+		);
+	}
+	
 	//Учёт последнего входа в систему
 	public static function updateMyLoginDate($my_id){
 		model::execSql('update `'.self::$table_name.'` set `date_logged`=NOW() where `id`="'.$my_id.'" limit 1','update');
@@ -103,8 +109,10 @@ class user
 		}
 		
 		//Проверка на пустой URL, такое могло случаться на движке моложе 2.14
-		if( !$user['url'] )
-			model::execSql('update `'.self::$table_name.'` set `url`="/users/'.mysql_real_escape_string( model::$types['sid']->toValue('sid', $user) ).'" where `id`='.intval($user['id']).' limit 1','update');
+		if( !$user['url'] ){
+			$user = model::$types['sid']->toValue('sid', $user);
+			model::execSql('update `'.self::$table_name.'` set `url`="/users/'.mysql_real_escape_string( $user['sid'] ).'" where `id`='.intval($user['id']).' limit 1','update');
+		}
 		
 		$_SESSION['auth'] = $user['session_id'];
 
@@ -146,106 +154,44 @@ class user
 		
 		//Авторизация по логину/паролю
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
-			//Поиск по базе
-			$user = model::makeSql(array(
-				'tables' => array(
-					self::$table_name
-				),
-				'where' => array(
-					'and' => array(
-						'`login`="' . mysql_real_escape_string($_POST['login']) . '"',
-						'`password`="' . model::$types['password']->encrypt($_POST['password']) . '"',
-						'access' => '1'
-					)
-				)
-			), 'getrow');
-
+			$user = model::$types['password'] -> tryAuth( 'login',  $_POST );
 			UnSet($_POST['login']);
 			UnSet($_POST['password']);
 
-			//Запоминаем
-			if (IsSet($user['id'])) {
-				self::setCookie('auth', $user['session_id']);
-				self::all_ok($user);
+			// Только что вошёл
+			if (IsSet($user['id']))
 				$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
-			}
 
 		//Авторизация по GET-параметру
 		} elseif (IsSet($_GET['login']) && IsSet($_GET['auth'])) {
-			//Поиск по базе
-			$user = model::makeSql(array(
-				'tables' => array(
-					self::$table_name
-				),
-				'where' => array(
-					'and' => array(
-						'`login`="' . mysql_real_escape_string($_GET['login']) . '"',
-						'MD5(`session_id`)="' . mysql_real_escape_string($_GET['auth']) . '"',
-						'access' => '1'
-					)
-				)
-			), 'getrow');
-
+			$user = model::$types['password'] -> tryAuth( 'auth',  $_POST );
 			UnSet($_GET['login']);
 			UnSet($_GET['auth']);
 
-			//Запоминаем
-			if (IsSet($user['id'])) {
-				self::setCookie('auth', $user['session_id']);
-				self::all_ok($user);
-				$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
-			}
-
 		//Авторизация по сессии
 		} elseif (strlen(@$_SESSION['auth'])) {
-			//Поиск по базе
-			$user = model::makeSql(array(
-				'tables' => array(
-					self::$table_name
-				),
-				'where' => array(
-					'and' => array(
-						'`session_id`="' . mysql_real_escape_string($_SESSION['auth']) . '"',
-						'access' => '1'
-					)
-				)
-			), 'getrow');
+			$user = model::$types['password'] -> tryAuth( 'session',  $_SESSION['auth'] );
 
-			//Запоминаем
+			// Только что вошёл
 			if (IsSet($user['id']))
-				self::all_ok($user);
+				$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
 
-			//Первая страница после авторизации через форму "логин/пароль"
-			if($_SESSION['just_logged']){
-				if($_SESSION['just_logged'] >= date('H:i:s')){
-					self::$info['just_logged']=$_SESSION['just_logged'];
-				}else{
-					UnSet($_SESSION['just_logged']);
-				}
-			}
 			
 		//Авторизация по Cookies
 		} elseif (strlen(@$_COOKIE['auth'])) {
-			//Поиск по базе
-			$user = model::makeSql(array(
-				'tables' => array(
-					self::$table_name
-				),
-				'where' => array(
-					'and' => array(
-						'`session_id`="' . mysql_real_escape_string($_COOKIE['auth']) . '"',
-						'`active`' => '1'
-					)
-				)
-			), 'getrow');
-
-			//Запоминаем
-			if (IsSet($user['id']))
-				self::all_ok($user);
-	
-				
-		//Не авторизован
-		} else {
+			$user = model::$types['password'] -> tryAuth( 'session',  $_COOKIE['auth'] );
+		}
+		
+		
+		// Удачно
+		if( $user ){
+		
+			self::setCookie('auth', $user['session_id']);
+			self::all_ok($user);
+			$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
+		
+		// Не удачно		
+		}else{
 			self::deleteCookie('auth');
 			self::$info = array(
 				'id' => 0,
@@ -253,6 +199,7 @@ class user
 				'admin' => false
 			);
 		}
+		
 	}
 
 	
@@ -631,6 +578,7 @@ class user
 	
 		//Если есть разрешённые сервера для авторизации
 		if( model::$config['openid'] ){
+		
 			require_once( model::$config['path']['libraries'].'/openid.php' );
 			$openid = new LightOpenID( 'http://' . $_SERVER['HTTP_HOST'] );
 			
@@ -650,9 +598,8 @@ class user
 						$openid_domain = str_replace('openid.','', $openid_domain);
 						$openid_domain = str_replace('www.','', $openid_domain);
 								
-						if( @in_array($openid_domain, model::$settings['oauth_openid']) 
-						//Совместимость со старым форматом конфига
-						or IsSet(model::$config['openid'][ $openid_domain ]) ){
+						if( @in_array($openid_domain, model::$settings['oauth_openid']) ){
+
 							//Смотрим на конфиг, давать ли пользователям этого домена админа
 							$openid_user_admin = false;
 							if( (model::$config['openid']['sitko.ru'] == 'admin') && substr_count($params['contact/email'], '@sitko.ru') )
@@ -663,11 +610,11 @@ class user
 								$title = $params['namePerson/first'].' '.$params['namePerson/last'];
 							else
 								$title = $params['namePerson'];
-								
+					
 							//Начинаем регить
 							self::$info = array(
 								'login' => $login,
-								'password' => $_GET['openid_identity'],
+								'password' => $_GET['openid_identity'],	//$openid->data['openid_assoc_handle'],
 								'admin' => $openid_user_admin,
 								'title' => $title,
 								'email' => $params['contact/email'],
@@ -677,12 +624,15 @@ class user
 							$_POST['password'] = self::$info['password'];
 							
 							//Авторизуем
+							$user = self::$info;
 							self::authUser_localhost();
 							
 							//Регистрируем
 							if( !self::$info['id'] ){
+								self::$info = $user;
 								self::$info['sid'] = $login;
 								self::$info['shw'] = true;
+								self::$info['active'] = true;
 								self::$info['admin'] = $openid_user_admin;
 								self::$info['session_id'] = session_id();
 

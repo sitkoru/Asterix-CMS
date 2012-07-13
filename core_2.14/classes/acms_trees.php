@@ -33,9 +33,9 @@ class acms_trees{
 	public function getStructureShirtTree_typeTree($root_record_id,$structure_sid,$levels_to_show,$conditions){
 
 		//Если не установлен обработчик таблицы деревьев - устанавливаем
-		if(!IsSet($this->structure[$structure_sid]['db_manager'])){
+		if( !IsSet($this->structure[$structure_sid]['db_manager']) ){
 			require_once(model::$config['path']['core'].'/classes/nestedsets.php');
-			$this->structure[$structure_sid]['db_manager']=new nested_sets($this->model,$this->getCurrentTable($structure_sid));
+			$this->structure[$structure_sid]['db_manager']=new nested_sets(model,$this->getCurrentTable($structure_sid));
 		}
 
 		//Обработка расширениями - получаем в Where подстановки от расширений
@@ -76,7 +76,7 @@ class acms_trees{
 
 			//Поля для вывода
 			$what = $this->getMainFields($structure_sid);
-						
+
 			//Забираем записи полного дерева
 			$recs=$this->structure[$structure_sid]['db_manager']->getSub($root_record_id, $what, $where);
 			
@@ -116,7 +116,6 @@ class acms_trees{
 		}
 
 		if(!count($recs)){
-//			pr('not found');
 			if( (model::$ask->structure_sid != 'rec') ){
 				// Сначала смотрим зависимые структуры
 				// потом к ним будем вызывать рекурсии
@@ -292,7 +291,7 @@ class acms_trees{
 
 			//Получаем записи
 			if($levels_to_show > 0){
-				$recs=$this->model->makeSql(
+				$recs=model::makeSql(
 					array(
 						'tables'=>array($this->getCurrentTable($structure_sid)),
 						'where'=>$where,
@@ -300,7 +299,7 @@ class acms_trees{
 					),
 					'getall'
 				);
-			}//pr($this->model->last_sql);
+			}//pr(model::$last_sql);
 			
 			//Вставляем завиcимые записи если нужно
 			if(is_array($recs))

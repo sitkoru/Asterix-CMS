@@ -84,7 +84,7 @@ class field_type_count extends field_type_default
 									$where = '(`module_sid`="'.$module_sid.'" && `structure_sid`="'.$structure_sid.'" && `record_id`="'.intval( $rec['id'] ).'")';
 								
 								// Считаем всех детей или ссылающиеся записи
-								$count = $this->model->execSql('select COUNT(`id`) as `counter` from `'.model::$modules[ $target_module_sid ]->getCurrentTable( $target_structure_sid ).'` where '.$where.'','getrow');
+								$count = model::execSql('select COUNT(`id`) as `counter` from `'.model::$modules[ $target_module_sid ]->getCurrentTable( $target_structure_sid ).'` where '.$where.'','getrow');
 								$count = $count['counter'];
 								
 								// Обновляем текущую запись

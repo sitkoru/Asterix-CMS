@@ -2,14 +2,14 @@
 
 class interfaces{
 
-	public function load(){
+	public static function load( $module ){
 		
 		//Грузим интерфейсы модуля
-		$this->setInterfaces();
+		$module->setInterfaces();
 
 		//Интерфейсы для администраторов
-		$this->interfaces['addRecord'] = array(
-			'title' => 'Добавить '.mb_strtolower($this->title_to, 'utf-8'),				//Название интерфейса
+		$module->interfaces['addRecord'] = array(
+			'title' => 'Добавить '.mb_strtolower($module->title_to, 'utf-8'),				//Название интерфейса
 			'structure_sid' => false,													//Используемая структура текущего модуля
 			'fields' => false,															//Поля для интерфейса
 			'system' => true,
@@ -20,8 +20,8 @@ class interfaces{
 			'getfields' => 'getFields',
 			'control' => 'addRecord',													//Функция, отвечающая за обработку интерфейса после отправки
 		);
-		$this->interfaces['editRecord'] = array(
-			'title' => 'Изменить '.mb_strtolower($this->title_to, 'utf-8'),
+		$module->interfaces['editRecord'] = array(
+			'title' => 'Изменить '.mb_strtolower($module->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
 			'system' => true,
@@ -32,8 +32,8 @@ class interfaces{
 			'getfields' => 'getFields',
 			'control' => 'editRecord',
 		);
-		$this->interfaces['deleteRecord'] = array(
-			'title' => 'Удалить '.mb_strtolower($this->title_to, 'utf-8'),
+		$module->interfaces['deleteRecord'] = array(
+			'title' => 'Удалить '.mb_strtolower($module->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
 			'system' => true,
@@ -44,8 +44,8 @@ class interfaces{
 			'getfields' => 'getFields',
 			'control' => 'deleteRecord',
 		);
-		$this->interfaces['moveUp'] = array(
-			'title' => 'Переместить выше по дереву '.mb_strtolower($this->title_to, 'utf-8'),
+		$module->interfaces['moveUp'] = array(
+			'title' => 'Переместить выше по дереву '.mb_strtolower($module->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
 			'system' => true,
@@ -56,8 +56,8 @@ class interfaces{
 			'getfields' => 'getFields',
 			'control' => 'moveUp',
 		);
-		$this->interfaces['moveDown'] = array(
-			'title' => 'Переместить ниже по дереву '.mb_strtolower($this->title_to, 'utf-8'),
+		$module->interfaces['moveDown'] = array(
+			'title' => 'Переместить ниже по дереву '.mb_strtolower($module->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
 			'system' => true,
@@ -68,8 +68,8 @@ class interfaces{
 			'getfields' => 'getFields',
 			'control' => 'moveDown',
 		);
-		$this->interfaces['moveTo'] = array(
-			'title' => 'Переместить по дереву '.mb_strtolower($this->title_to, 'utf-8'),
+		$module->interfaces['moveTo'] = array(
+			'title' => 'Переместить по дереву '.mb_strtolower($module->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
 			'system' => true,
@@ -80,8 +80,8 @@ class interfaces{
 			'getfields' => 'getFields',
 			'control' => 'moveTo',
 		);
-		$this->interfaces['toggleRecord'] = array(
-			'title' => 'Показать/скрыть '.mb_strtolower($this->title_to, 'utf-8'),
+		$module->interfaces['toggleRecord'] = array(
+			'title' => 'Показать/скрыть '.mb_strtolower($module->title_to, 'utf-8'),
 			'structure_sid' => false,
 			'fields' => false,
 			'system' => true,
@@ -92,6 +92,8 @@ class interfaces{
 			'getfields' => 'getFields',
 			'control' => 'toggleRecord',
 		);
+		
+		return $module->interfaces;
 	}
 
 	//Получить содержимое интерфейса
@@ -194,10 +196,11 @@ class interfaces{
 					UnSet( $params[ $var ] );
 
 		$function_name = $this->interfaces[$interface]['control'];
+		
 		if( is_callable(array($this, $function_name)) )
 			$this->answerInterface( $interface, $this->$function_name( $params, $structure_sid ) );
 		else
-			log::stop('500 Internal Server Error');
+			log::stop('500 Internal Server Error', 'Не могу запустить контроллер "'.$function_name.'" интерфейса "'.$interface.'".');
 	}
 	
 	//Собираем поля для интерфейса
@@ -214,14 +217,18 @@ class interfaces{
 						$fields[$field_sid] = $field;
 			
 			}else{
-				$this->interfaces[$interface]['fields']=$fields;
+//				$this->interfaces[$interface]['fields']=$fields;
 				$fields=$this->$name($interface);
 			}
-		//Поля заданы в интерфейсе
-		}else{
-			if( IsSet( $this->interfaces[$interface]['fields'] ) )
-			foreach($this->interfaces[$interface]['fields'] as $sid=>$field){
-				if(!IsSet($field['sid']))
+		// Поля заданы в интерфейсе
+		}elseif( IsSet( $this->interfaces[$interface]['fields'] ) ){
+			$fields = $this->interfaces[$interface]['fields'];
+		}
+		
+		// Дополняем поля
+		if( is_array( $fields ) )
+			foreach($fields as $sid=>$field){
+				if( !IsSet( $field['sid'] ) )
 					$field['sid'] = $sid;
 				//Поле из струкуруы модуля
 				if(IsSet($this->structure[$structure_sid]['fields'][$sid])){
@@ -231,7 +238,6 @@ class interfaces{
 					$fields[$sid]=$field;
 				}
 			}
-		}
 
 		//Раскрываем поля
 		if( $fields )
@@ -260,7 +266,7 @@ class interfaces{
 	public function answerInterface($interface,$result){
 
 		if( model::$ask->controller == 'admin' )
-			header('Location: /admin/');
+			header('Location: /admin.'.model::$ask->module.'.html');
 	
 		//Ajax внутренним скриптом
 		elseif( $this->interfaces[$interface]['ajax'] === 'action' )
@@ -282,13 +288,12 @@ class interfaces{
 
 	//Добавление записи в структуру модуля
 	public function addRecord($values, $structure_sid = 'rec'){
-		$this->model->check_demo();
+		model::check_demo();
 
 		$what=array();
 
 		//Корректиуем SID
-		$values['sid'] = model::$types['sid']->toValue('sid', $values, false, $this->structure[$structure_sid]['fields']['sid'], $this->info['sid'], $structure_sid);
-		$values['sid'] = model::$types['sid']->makeUnique($this->info['sid'], $structure_sid, $values['sid']);
+		$values = model::$types['sid']->implodeValue('sid', $values, false, $this->structure[$structure_sid]['fields']['sid'], $this->info['sid'], $structure_sid);
 		$what['sid']='`sid`="'.mysql_real_escape_string( $values['sid'] ).'"';
 
 		//Обновляем дату добавления и дату последней модификации
@@ -315,11 +320,15 @@ class interfaces{
 		foreach( $fields as $field_sid => $field )
 			if( !IsSet( $what[ $field_sid ] ) and IsSet( $values[ $field_sid ] ) ){
 				//Значение
-				$value = model::$types[ $field['type'] ]->toSQL($field_sid, $values, array(), $field, false, $this->info['sid'], $structure_sid);
+				$values = model::$types[ $field['type'] ]->implodeValue($field_sid, $values, array(), $field, $this->info['sid'], $structure_sid);
 				//Запоминаем
-				if($value)
-					$what[ $field_sid ]=$value;
+				if( $values[ $field_sid ] )
+					$what[ $field_sid ]='`'.$field_sid.'`="' . mysql_real_escape_string( $values[ $field_sid ] ) . '"';
 			}
+		
+		//id - хардкод !!!!!!!!!!!!!!!!!!!!!!
+		if( IsSet( $values['id'] ) )
+			$what['id']='`id`="' . intval( $values['id'] ) . '"';
 			
 		//Зависимые структуры
 		if( $this->structure[ $structure_sid ]['dep_path']['structure'] ){
@@ -342,7 +351,7 @@ class interfaces{
 		
 		//Получаем родителя
 		if( !$url ){
-			$parent=$this->model->makeSql(
+			$parent=model::makeSql(
 				array(
 					'fields'=>array('id','url'),
 					'tables'=>array( $this->getCurrentTable( $parent_field_structure ) ),
@@ -385,7 +394,7 @@ class interfaces{
 					'fields'=>$what,
 					'tables'=>array( $this->getCurrentTable( $structure_sid ) ),
 				),
-				'insert'
+				'replace'
 			);
 		}
 
@@ -402,7 +411,7 @@ class interfaces{
 	//Добавление записи в структуру модуля
 	public function editRecord($values, $structure_sid = 'rec', $conditions=false){
 	
-		$this->model->check_demo();
+		model::check_demo();
 
 		$what=array();
 		UnSet($values['url']);
@@ -411,8 +420,7 @@ class interfaces{
 		$data_before=$this->getRecordById( $structure_sid, $values['id'] );
 
 		//Корректиуем SID
-		$values['sid'] = model::$types['sid']->toValue('sid', $values, false, $this->structure[$structure_sid]['fields']['sid'], $this->info['sid'], $structure_sid);
-		$values['sid'] = model::$types['sid']->makeUnique($this->info['sid'], $structure_sid, $values['sid'], $values['id']);
+		$values = model::$types['sid']->implodeValue('sid', $values, false, $this->structure[$structure_sid]['fields']['sid'], $this->info['sid'], $structure_sid);
 		$what['sid']='`sid`="'.mysql_real_escape_string( $values['sid'] ).'"';
 
 		//Обновляем дату добавления и дату последней модификации
@@ -423,16 +431,16 @@ class interfaces{
 			$values['shw'] = 1;
 			UnSet($values['dep_path_parent']);
 		}
-		
+
 		//Обработка присланных значений
 		$fields=$this->structure[$structure_sid]['fields'];
 		foreach( $fields as $field_sid => $field )
 			if( !IsSet( $what[ $field_sid ] ) and IsSet( $values[ $field_sid ] ) ){
 				//Значение
-				$value = model::$types[ $field['type'] ]->toSQL($field_sid, $values, $data_before, $field, false, $this->info['sid'], $structure_sid);
+				$values = model::$types[ $field['type'] ]->implodeValue($field_sid, $values, $data_before, $field, $this->info['sid'], $structure_sid);
 				//Запоминаем
-				if($value)
-					$what[ $field_sid ]=$value;
+				if( $values[ $field_sid ] )
+					$what[ $field_sid ]='`'.$field_sid.'`="' . mysql_real_escape_string( $values[ $field_sid ] ) . '"';
 			}
 	
 		//Зависимые структуры
@@ -457,7 +465,7 @@ class interfaces{
 		
 		//Получаем родителя
 		if( IsSet( $values[ $parent_field_sid ] ) ){
-			$parent=$this->model->makeSql(
+			$parent=model::makeSql(
 				array(
 					'fields'=>array('id','url'),
 					'tables'=>array( $this->getCurrentTable( $parent_field_structure ) ),
@@ -487,9 +495,9 @@ class interfaces{
 			$what['url'] = '`url`=""';
 			$url = '';
 		}
-		
+
 		//Вносим изменения
-		$this->model->makeSql(
+		model::makeSql(
 			array(
 				'fields'=>$what,
 				'tables'=>array( $this->getCurrentTable( $structure_sid ) ),
@@ -541,7 +549,7 @@ class interfaces{
 	//Удаление записи
 	public function deleteRecord($record, $structure_sid = 'rec', $conditions){
 		
-		$this->model->check_demo();
+		model::check_demo();
 
 		//Удаляем поддерево
 		if($this->structure[$structure_sid]['type']=='tree'){
@@ -565,7 +573,7 @@ class interfaces{
 		}else{
 		
 			//Выставляем POS у линейных структур
-			$res=$this->model->makeSql(
+			$res=model::makeSql(
 				array(
 					'tables'=>array($this->getCurrentTable($structure_sid)),
 					'where'=>array('and'=>array('`id`="'.mysql_real_escape_string($record['id']).'"'))
@@ -590,19 +598,19 @@ class interfaces{
 		);
 		
 		//Вносим изменения
-		$this->model->execSql('update `'.$this->getCurrentTable( $structure_sid ).'` set `acms_settings`="'.mysql_real_escape_string( serialize($settings) ).'" where `id`="'.mysql_real_escape_string( $values['id'] ).'" limit 1','update');
+		model::execSql('update `'.$this->getCurrentTable( $structure_sid ).'` set `acms_settings`="'.mysql_real_escape_string( serialize($settings) ).'" where `id`="'.mysql_real_escape_string( $values['id'] ).'" limit 1','update');
 	}
 
 	//Переместить на одну позицию выше
 	public function moveUp($record, $structure_sid = 'rec',$conditions){
 
-		$this->model->check_demo();
+		model::check_demo();
 
 		//Дерево - переносим структуры
 		if($this->structure[$structure_sid]['type']=='tree'){
 
 			//Выбираем вторую запись, с которой будем меняться местами
-			$other=$this->model->makeSql(
+			$other=model::makeSql(
 				array(
 					'fields'=>array('id'),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -641,7 +649,7 @@ class interfaces{
 			if($field_sid)$where['and'][]='`'.$field_sid.'`="'.mysql_real_escape_string($record[$field_sid]).'"';
 
 			//Выбираем вторую запись, с которой будем меняться местами
-			$other=$this->model->makeSql(
+			$other=model::makeSql(
 				array(
 					'fields'=>array('id','pos'),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -652,7 +660,7 @@ class interfaces{
 			);
 
 			//Обновляем первую запись
-			$this->model->makeSql(
+			model::makeSql(
 				array(
 					'fields'=>array('`pos`='.$other['pos'].''),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -662,7 +670,7 @@ class interfaces{
 			);
 
 			//Обновляем вторую запись
-			$this->model->makeSql(
+			model::makeSql(
 				array(
 					'fields'=>array('`pos`='.$record['pos'].''),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -676,7 +684,7 @@ class interfaces{
 	//Переместить на одну позицию ниже
 	public function moveDown($record, $structure_sid = 'rec',$conditions){
 
-		$this->model->check_demo();
+		model::check_demo();
 
 		//Условие для обновления деревьев
 		$conditions=array('and'=>array( model::pointDomain() ));
@@ -685,7 +693,7 @@ class interfaces{
 		if($this->structure[$structure_sid]['type']=='tree'){
 
 			//Выбираем вторую запись, с которой будем меняться местами
-			$other=$this->model->makeSql(
+			$other=model::makeSql(
 				array(
 					'fields'=>array('id'),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -722,7 +730,7 @@ class interfaces{
 			if($field_sid)$where['and'][]='`'.$field_sid.'`="'.mysql_real_escape_string($record[$field_sid]).'"';
 
 			//Выбираем вторую запись, с которой будем меняться местами
-			$other=$this->model->makeSql(
+			$other=model::makeSql(
 				array(
 					'fields'=>array('id','pos'),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -733,7 +741,7 @@ class interfaces{
 			);
 
 			//Обновляем первую запись
-			$this->model->makeSql(
+			model::makeSql(
 				array(
 					'fields'=>array('`pos`='.$other['pos'].''),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -743,7 +751,7 @@ class interfaces{
 			);
 
 			//Обновляем вторую запись
-			$this->model->makeSql(
+			model::makeSql(
 				array(
 					'fields'=>array('`pos`='.$record['pos'].''),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -760,7 +768,7 @@ class interfaces{
 		$record_id = $params['record'];
 		$after_id = $params['target'];
 	
-		$this->model->check_demo();
+		model::check_demo();
 
 		//Условие для обновления деревьев
 		$conditions=array('and'=>array( model::pointDomain() ));
@@ -791,7 +799,7 @@ class interfaces{
 			$where['and'][]='`id`='.intval($after_id).'';
 
 			//Выбираем вторую запись, с которой будем меняться местами
-			$other=$this->model->makeSql(
+			$other=model::makeSql(
 				array(
 					'fields'=>array('id','pos'),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -802,7 +810,7 @@ class interfaces{
 			);
 
 			//Обновляем первую запись
-			$this->model->makeSql(
+			model::makeSql(
 				array(
 					'fields'=>array('`pos`='.$other['pos'].''),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -812,7 +820,7 @@ class interfaces{
 			);
 
 			//Обновляем вторую запись
-			$this->model->makeSql(
+			model::makeSql(
 				array(
 					'fields'=>array('`pos`='.$record['pos'].''),
 					'tables'=>array($this->getCurrentTable($structure_sid)),
@@ -832,7 +840,7 @@ class interfaces{
 	//Обновляем поддерево зависимых записей
 	public function updateChildren($structure_sid,$old_data,$new_data,$new_url,$condition = false, $domain = false){
 
-		$this->model->check_demo();
+		model::check_demo();
 
 		//Если модуль дерево - найти и обновить все записи в поддереве, поискать ссылки на другие модули
 		//Если модуль сложный - найти и обновить все зависимые структуры
@@ -869,7 +877,7 @@ class interfaces{
 			model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `url`=CONCAT("'.mysql_real_escape_string($new_url).'/", `sid`), `dep_path_parent`="'.mysql_real_escape_string($new_data['sid']).'" where `left_key`>'.intval($new_data['left_key']).' and `right_key`<'.intval($new_data['right_key']).' and `tree_level`='.intval($new_data['tree_level']+1).' and '.model::pointDomain().'','update');
 			
 			//Теперь запускаем по ним рекурсию
-			$recs = $this->model->execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `left_key`>'.intval($new_data['left_key']).' and `right_key`<'.intval($new_data['right_key']).' and `tree_level`='.intval($new_data['tree_level']+1).' and '.model::pointDomain().'','getall');
+			$recs = model::execSql('select * from `'.$this->getCurrentTable($structure_sid).'` where `left_key`>'.intval($new_data['left_key']).' and `right_key`<'.intval($new_data['right_key']).' and `tree_level`='.intval($new_data['tree_level']+1).' and '.model::pointDomain().'','getall');
 			foreach($recs as $rec){
 				
 				//Рекурсия - спуск
@@ -896,10 +904,10 @@ class interfaces{
 					$dep_path_field = model::$types[ $str['dep_path']['link_type'] ]->link_field;
 				
 					//Обновляем все дочерние записи этого модуля
-					$this->model->execSql('update `'.$this->getCurrentTable($dep_structure).'` set `url`=CONCAT("'.mysql_real_escape_string($new_url).'/", `sid`), `dep_path_'.$structure_sid.'`="'.mysql_real_escape_string($new_data[ $dep_path_field ]).'" where `dep_path_'.$structure_sid.'`="'.mysql_real_escape_string($old_data[ $dep_path_field ]).'" and '.model::pointDomain().'','update');
+					model::execSql('update `'.$this->getCurrentTable($dep_structure).'` set `url`=CONCAT("'.mysql_real_escape_string($new_url).'/", `sid`), `dep_path_'.$structure_sid.'`="'.mysql_real_escape_string($new_data[ $dep_path_field ]).'" where `dep_path_'.$structure_sid.'`="'.mysql_real_escape_string($old_data[ $dep_path_field ]).'" and '.model::pointDomain().'','update');
 					
 					//Теперь запускаем по ним рекурсию
-					$recs = $this->model->execSql('select * from `'.$this->getCurrentTable($dep_structure).'` where `dep_path_'.$structure_sid.'`="'.mysql_real_escape_string($new_data[ $dep_path_field ]).'" and '.model::pointDomain().'','getall');
+					$recs = model::execSql('select * from `'.$this->getCurrentTable($dep_structure).'` where `dep_path_'.$structure_sid.'`="'.mysql_real_escape_string($new_data[ $dep_path_field ]).'" and '.model::pointDomain().'','getall');
 					foreach($recs as $rec){
 						
 						//Рекурсия - спуск

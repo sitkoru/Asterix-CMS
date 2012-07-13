@@ -5,7 +5,10 @@ class ModelLoader{
 	public static $config;
 	
 	//Загрузка конфига
-	public function loadConfig( $config ){
+	public static function loadConfig( $config ){
+	
+		if( !$config )
+			log::stop('500 Internal Server Error', 'Не загружен файл конфигурации');
 	
 		//Совместимость с версиями до 2.14
 		$config['path']['libraries'] = 			$config['path']['core'].'/../libs';
@@ -41,8 +44,9 @@ class ModelLoader{
 	}
 
 	//Подключение базы данных
-	public function loadDatabase(){
-		if( !$this->db ){
+	public static function loadDatabase( $db ){
+	
+		if( !$db ){
 		
 			//Поддерживаемые форматы баз данных
 			$supported_databases = array(
@@ -86,14 +90,13 @@ class ModelLoader{
 					model::$config['db'][$name]['supported'] = false;
 				}
 			}
-
-			return $db;
-		
 		}
+		
+		return $db;
 	}
 
 	//Подгружаем типы данных
-	public function loadTypes(){
+	public static function loadTypes(){
 		
 		//Загружаем библиотеку типов данных
 		$supported_types = array(
@@ -160,7 +163,7 @@ class ModelLoader{
 			if( file_exists( $type_path ) ){
 				require_once( $type_path);
 				$type_name = 'field_type_' . $type_sid;
-				$types[ $type_sid ] = new $type_name( $this );
+				$types[ $type_sid ] = new $type_name();
 			}
 		}
 		
@@ -168,7 +171,7 @@ class ModelLoader{
 	}
 
 	//Подгружаем пользовательский тип данных
-	public function loadUserType( $field ){
+	public static function loadUserType( $field ){
 		if( ( $field['type'][0] == '_' ) && IsSet( $field['type_path'] ) ){
 			$type_path = model::$config['path']['www'] . '/' . $field['type_path'];
 
@@ -176,7 +179,7 @@ class ModelLoader{
 				require_once( $type_path);
 				$type_sid = $field['type'];
 				$type_name = 'field_usertype' . $type_sid;
-				model::$types[ $type_sid ] = new $type_name( $this );
+				model::$types[ $type_sid ] = new $type_name();
 				
 				return true;
 			}
@@ -185,12 +188,12 @@ class ModelLoader{
 	}
 
 	//Подключение модулей
-	public function loadModules(){
+	public static function loadModules(){
 		$modules = array();
 		require_once( model::$config['path']['core'] . '/classes/default_module.php' );
 		
 		//Подгружаем модули
-		$mods = $this->execSql('select * from `modules` where `active`=1 order by `id`','getall');
+		$mods = model::execSql('select * from `modules` where `active`=1 order by `id`','getall');
 
 		//Обратная совместимость с ядрами 2.13 и меньше
 		foreach($mods as $i=>$mod)
@@ -201,21 +204,32 @@ class ModelLoader{
 			
 			$module_path = model::$config['path']['modules'] . '/' . $module['prototype'] . '.php';
 			if (file_exists($module_path)) {
+				
+				/*
+					Определение необходимости включения режима совместимости для старых классов
+					созданных для не статичного окружения ядра
+				*/				
+				if( !compatibility::$non_static ){
+					$s = file_get_contents( $module_path );
+					if( substr_count( $s, '$this->model->' ) )
+						compatibility::on('non_static', $module['prototype'] . '.php');
+				}
+				
 				require_once($module_path);
 
 				$module['url']  = '/' . $module['sid'];
 				$module['path'] = $module_path;
 				
 				$name = $module['prototype'] . '_module';
-				$this->modules[ $module['sid'] ] = new $name($this, $module);
+				$modules[ $module['sid'] ] = new $name(NULL, $module);
 			}
 		}
 		
-		return $this->modules;
+		return $modules;
 	}
 
 	//Подгрузка расширений к модулю
-	public function loadExtensions(){
+	public static function loadExtensions(){
 
 		$extensions = array();
 		//Подгрузка библиотеки расширений к модулям, инициализация
@@ -233,10 +247,10 @@ class ModelLoader{
 	}
 
 	//Загрузка настроек домена
-	public function loadSettings(){
+	public static function loadSettings(){
 		$settings = array();
 		
-		$res = $this->execSql('select * from `settings` where ' . model::pointDomain(), 'getall');
+		$res = model::execSql('select * from `settings` where ' . model::pointDomain(), 'getall');
 
 		// Добавление поля field для старых версий ядра
 		if( !IsSet($res[0]['field']) )
@@ -247,25 +261,15 @@ class ModelLoader{
 			if( is_object( model::$types[ trim($r['type']) ] ) )
 				$settings[ trim($r['var']) ] = model::$types[ trim($r['type']) ]->getValueExplode( trim($r['value']), false, $res );
 
-		$settings = ModelLoader::checkNeededSettings( $settings );
+		$settings = self::checkNeededSettings( $settings );
 
-		// Вывод ошибок для режима разработки
-		if( $settings['test_mode'] ){
-			error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
-			ini_set("display_errors", "on");
-		}else{
-			error_reporting(0);
-			ini_set("display_errors", "off");
-		}
-		
-		//older version support
-		$this->settings = $settings;
+		self::setErrorReporting( $settings['errors'] );
 		
 		return $settings;
 	}
 
 	//Разбор параметров запроса
-	public function loadAsk(){
+	public static function loadAsk(){
 		$ask = new StdClass;
 		$ask->original_url = self::getCurrentUrl();
 
@@ -330,7 +334,7 @@ class ModelLoader{
 	}
 
 	//Проверяем наличие необходимых настроек
-	private function checkNeededSettings( $settings = array() ){
+	private static function checkNeededSettings( $settings = array() ){
 		if(	IsSet( $settings['test_mode'] ) )
 			if( !$settings['test_mode'] )
 				return $settings;
@@ -430,6 +434,19 @@ class ModelLoader{
 					'shirt' => 'Показывать краткую статистику', 
 					'all' => 'Показывать полную статистику'),
 			),
+			'errors' => array( 
+				'group' => 'config', 
+				'title' => 'Настройки отображения ошибок', 
+				'type' => 'menum', 
+				'variants' => array(
+					'warning' => 'PHP: warnings',
+					'strict' => 'PHP: strict',
+					'notice' => 'PHP: notices',
+					'template' => 'PHP: ошибки при компиляции шаблонов',
+					'sql' => 'SQL: Ошибки в запросах',
+				),
+				'default_value' => '', 
+			),
 			'mainmenu_levels' => array( 
 				'group' => 'config', 
 				'title' => 'Сколько уровней главного меню обсчитывать', 
@@ -453,6 +470,12 @@ class ModelLoader{
 					'no_www' => 'Использовать адреса только без приставки www',
 					'www' => 'Использовать адреса только с приставкой www',
 				),
+			),
+			'block_ie6' => array(
+				'group' => 'config', 
+				'title' => 'Перенаправлять владельцев браузера IE6 на страницу обновления браузера', 
+				'type' => 'check', 
+				'default_value' => 0,
 			),
 			'doctype' => array( 
 				'group' => 'config', 
@@ -496,7 +519,7 @@ class ModelLoader{
 			
 			//Добавляем поле
 			if( !IsSet( $settings[ $key ] ) ){
-				$this->execSql('insert into `settings` set 
+				model::execSql('insert into `settings` set 
 					`pos`="'.($i*10).'", 
 					`group`="'.mysql_real_escape_string( $set['group'] ).'", 
 					`domain`="|'.model::pointDomainID().'|", 
@@ -509,7 +532,7 @@ class ModelLoader{
 				$settings[ $key ] = $set['default_value'];
 				
 			}else{
-				$this->execSql('update `settings` set 
+				model::execSql('update `settings` set 
 					`field`="'.mysql_real_escape_string( serialize( $set ) ).'"
 					where
 					`var`="'.mysql_real_escape_string( $key ).'" and
@@ -521,13 +544,50 @@ class ModelLoader{
 		return $settings;
 	}
 	
-	public function makeBackCompatible(){
+	public static function makeBackCompatible(){
 		
 		if( IsSet( model::$config['back_compatible'] ) ){
 			require_once( model::$config['path']['core'].'/tests/back_comp.php' );
 			back_comp::comp_213_to_214();
 		}
 		
+	}
+	
+	// Режим отображения ошикок
+	public static function setErrorReporting( $mode ){
+
+		if( $mode ){
+		
+			$warning = in_array( 'warning', $mode );
+			$notice = in_array( 'notice', $mode );
+			$strict = in_array( 'strict', $mode );
+			
+			if( $warning && $notice && $strict )
+				error_reporting( E_ALL ^ E_DEPRECATED );
+			elseif( $warning && $notice )
+				error_reporting( E_ALL ^ E_DEPRECATED ^ E_STRICT );
+			elseif( $warning && $strict )
+				error_reporting( E_ALL ^ E_DEPRECATED ^ E_NOTICE );
+			elseif( $notice && $strict )
+				error_reporting( E_ALL ^ E_DEPRECATED ^ E_WARNING );
+			elseif( $warning )
+				error_reporting( E_ALL ^ E_DEPRECATED ^ E_STRICT ^ E_NOTICE );
+			elseif( $strict )
+				error_reporting( E_ALL ^ E_DEPRECATED ^ E_WARNING ^ E_NOTICE );
+			elseif( $notice )
+				error_reporting( E_ALL ^ E_DEPRECATED ^ E_WARNING ^ E_STRICT );
+			else
+				error_reporting( 0 );
+			
+
+			ini_set("display_errors", "on");
+			
+		}else{
+		
+			error_reporting(0);
+			ini_set("display_errors", "off");
+			
+		}
 	}
 	
 }

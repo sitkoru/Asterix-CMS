@@ -86,9 +86,11 @@ class mysql{
     return $result;
   }
   
-  public function error($sql){
-//    pr( $sql.'<br />'.mysql_errno() . ": " . mysql_error() );
-  }
+	public function error($sql){
+		if( property_exists('model', 'settings') )
+			if( in_array( 'sql', model::$settings['errors'] ) )
+				pr( 'Обнаружена ошибка в запросе<br />'.$sql.'<br />'.mysql_errno() . ": " . mysql_error() );
+	}
   
 }
 

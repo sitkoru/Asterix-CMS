@@ -38,8 +38,7 @@ class field_type_linkm extends field_type_default
 	
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values)
-	{
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		if (IsSet($values[$value_sid]))
 			return htmlspecialchars('|' . implode('|', $values[$value_sid]) . '|');
 		else
@@ -57,6 +56,8 @@ class field_type_linkm extends field_type_default
 			'title',
 			'url'
 		);
+		if( IsSet( $record['img'] ) )
+			$fields[] = 'img';
 			
 		//Варианты значений
 		$this->structure = model::$modules[$settings['module']]->structure[$settings['structure_sid']];
@@ -69,7 +70,7 @@ class field_type_linkm extends field_type_default
 		if( isset($this->structure['fields']['pos']) )
 			$order = 'order by `pos` asc';
 			
-		$recs = $this->model->makeSql(array(
+		$recs = model::makeSql(array(
 			'tables' => array(
 				model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid'])
 			),
@@ -83,8 +84,11 @@ class field_type_linkm extends field_type_default
 			'order' => $order
 		), 'getall');
 		
-		foreach($recs as$i=>$rec)
+		foreach($recs as $i=>$rec){
+			if( IsSet( $rec['img']) )
+				$rec['img'] = model::$types['image']->getValueExplode($rec['img'], $modules[ $settings['module'] ]->structure[ $settings['structure_sid'] ]['fields']['img'], $record );
 			$recs[$i]=model::$modules['start']->insertRecordUrlType($rec);
+		}
 		
 		//Готово
 		return $recs;
@@ -122,7 +126,7 @@ class field_type_linkm extends field_type_default
 		
 			
 		//Варианты значений
-		$variants = $this->model->makeSql(array(
+		$variants = model::makeSql(array(
 			'tables' => array(
 				model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid'])
 			),
@@ -154,6 +158,18 @@ class field_type_linkm extends field_type_default
 		return '|' . implode('|', $value) . '|';
 	}
 	
+	public function toggleInLinkm($value, $id = false){
+		if(!$value)$value='|';
+		if(!$id)$id = user::$info['id'];
+		if( substr_count($value, '|'.$id.'|') ){
+			$value = str_replace('|'.$id.'|','|',$value);
+			if( $value == '|' )$value='';
+		}else{
+			$value .= $id.'|';
+		}
+		return $value;
+	}
+
 }
 
 ?>

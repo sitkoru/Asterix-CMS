@@ -79,11 +79,11 @@ class extention_domains extends extention_default
 		$host = str_replace('www.', '', $host);
 		
 		//Смотрим текущий хост среди заведённых в системе
-		$this->domain = $this->model->execSql('select * from `domains` where (`host`="' . mysql_real_escape_string($host) . '" or `host2`="' . mysql_real_escape_string($host) . '" or `host3`="' . mysql_real_escape_string($host) . '" or `host4`="' . mysql_real_escape_string($host) . '") and `active`=1', 'getrow');
+		$this->domain = model::execSql('select * from `domains` where (`host`="' . mysql_real_escape_string($host) . '" or `host2`="' . mysql_real_escape_string($host) . '" or `host3`="' . mysql_real_escape_string($host) . '" or `host4`="' . mysql_real_escape_string($host) . '") and `active`=1', 'getrow');
 		
 		//Если домен не найден - должен быть домен по умолчанию "_default_"
 		if (!$this->domain) {
-			$this->domain = $this->model->makeSql(array(
+			$this->domain = model::makeSql(array(
 				'tables' => array(
 					$this->table_name
 				),
@@ -136,7 +136,7 @@ class extention_domains extends extention_default
 	public function onSql($fields, $tables, $where = false, $group = false, $order = false, $limit = false, $query_type = 'getall')
 	{
 //		if( model::$config['settings']['domain_switch']){
-			if ($query_type == 'insert') {
+			if ( in_array($query_type, array('insert','replace') ) ) {
 				if (!$fields)
 					$fields = array();
 				if (!IsSet($fields['domain']))

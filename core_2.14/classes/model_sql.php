@@ -3,7 +3,7 @@
 class ModelSql{
 
 	//Выполнить готовый запрос к базе данных
-	public function execSql($sql, //готовый sql-запрос
+	public static function execSql($sql, //готовый sql-запрос
 		$query_type = 'getall', //варианты: getraw, getall, insert, update, delete
 		$database = 'system', //нужная база данных.
 		$no_cache = false		//Не использовать кеш запроса
@@ -11,22 +11,17 @@ class ModelSql{
 		//Засекаем время выполнения запроса
 		$t         = explode(' ', microtime());
 		$sql_start = $t[1] + $t[0];
-/*
-		if( $no_cache )
-			pr('NO_CACHE: '.$sql.'|'.$query_type);
-*/			
+
 		//Используется кеширование - запрашиваем кеш
         $result = false;
 
         if( model::$config['cache'] and (!$no_cache) and in_array($query_type, array('getrow', 'getall') ) ){
-            $result = $this->cache->load( $sql.'|'.$query_type, model::$config['cache']['cache_timeout'] );
+            $result = model::$cache->load( $sql.'|'.$query_type, model::$config['cache']['cache_timeout'] );
         }
 
         //Если кеша не найдено - собираем все данные заново
         if($result === false){
 
-//			pr('sql:exec ['.$sql.'|'.$query_type.']');
-		
 			// Получение одной записи
             if ($query_type == 'getrow') {
                 $result = model::$db[$database]->GetRow($sql);
@@ -35,42 +30,16 @@ class ModelSql{
             } elseif ($query_type == 'getall') {
                 $result = model::$db[$database]->GetAll($sql);
 
-			// Обновление данных
-            } elseif ($query_type == 'update') {
-                //			pr($sql);
-                if (model::$config['settings']['demo_mode']) {
-                    print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');
-                    exit();
-                } else {
-                    $result = model::$db[$database]->Execute($sql);
-                }
-
 			// Вставка данных
-            } elseif ($query_type == 'insert') {
-                //			pr($sql);
-                if (model::$config['settings']['demo_mode']) {
-                    print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');
-                    exit();
-                } else {
-                    $result = model::$db[$database]->Execute($sql);
-                }
-
-			// Удаление данных
-            } elseif ($query_type == 'delete') {
-                if ($this->config['settings']['demo_mode']) {
-                    print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');
-                    exit();
-                } else {
-                    $result = model::$db[$database]->Execute($sql);
-                }
-            }
+            } elseif ( in_array($query_type, array('insert', 'replace', 'update', 'delete') ) ) {
+				model::check_demo();
+				$result = model::$db[$database]->Execute($sql);
+			}
 
             //Используется кеширование - записываем результат
             if( model::$config['cache'] and (!$no_cache) and in_array($query_type, array('getrow', 'getall') ) ){
-                $this->cache->save( $result, $sql.'|'.$query_type );
+                model::$cache->save( $result, $sql.'|'.$query_type );
             }
-        }else{
-//			pr('sql:cache');
 		}
 
 		//Сколько прошло
@@ -89,7 +58,7 @@ class ModelSql{
 	}
 
 	//Подготовить запрос к базе данных на основе предоставленных характеристик
-	public function makeSql(
+	public static function makeSql(
 		$sql_conditions = array('fields' => array(), 'tables' => array(), 'where' => array(), 'group' => array(), 'order' => '', 'limit' => false), //массив условий для sql-запроса
 		$query_type = 'getall', //варианты: getrow, getall, insert, update, delete
 		$database = 'system', 	//нужная база данных.
@@ -123,7 +92,7 @@ class ModelSql{
 				}
 			}
 
-		} elseif ($query_type == 'insert' or $query_type == 'update') {
+		} elseif ( in_array($query_type, array('insert','update','replace') ) ) {
 			//Склеиваем без ковычек
 			$fields = implode(', ', $sql_conditions['fields']);
 		}
@@ -162,19 +131,23 @@ class ModelSql{
 		if ($query_type == 'getrow') {
 			$sql = 'select ' . $fields . ' from ' . $tables . '' . ($where ? ' where ' . $where : '') . ' ' . $group . ' ' . $order . ' limit 1';
 
-			//Получение списка данных
+		//Получение списка данных
 		} elseif ($query_type == 'getall') {
 			$sql = 'select ' . $fields . ' from ' . $tables . '' . ($where ? ' where ' . $where : '') . ' ' . $group . ' ' . $order . ' ' . $limit . '';
 
-			//Обновление данных
+		//Обновление данных
 		} elseif ($query_type == 'update') {
 			$sql = 'update ' . $tables . ' set ' . $fields . ' where ' . $where . ' ' . $limit . '';
 
-			//Вставка данных
+		//Вставка данных
 		} elseif ($query_type == 'insert') {
 			$sql = 'insert into ' . $tables . ' set ' . $fields . '';
 
-			//Удаление данных
+		//Вставка данных
+		} elseif ($query_type == 'replace') {
+			$sql = 'replace into ' . $tables . ' set ' . $fields . '';
+
+		//Удаление данных
 		} elseif ($query_type == 'delete') {
 			$sql = 'delete from ' . $tables . ' where ' . $where . '';
 		}
@@ -183,6 +156,7 @@ class ModelSql{
 		if (model::$config['settings']['demo_mode'] and (in_array($query_type, array(
 			'update',
 			'insert',
+			'replace',
 			'delete'
 		)))) {
 			print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');

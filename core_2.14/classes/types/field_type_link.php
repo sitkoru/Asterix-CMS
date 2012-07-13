@@ -37,14 +37,7 @@ class field_type_link extends field_type_default
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false)
-	{
-		//Настройки поля, переданные из модуля
-		if ($settings)
-			foreach ($settings as $var => $val)
-				$this->$var = $val;
-		
-		//Готово
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		return $values[$value_sid];
 	}
 	
@@ -58,7 +51,7 @@ class field_type_link extends field_type_default
 		//Варианты значений
 		if( IsSet(model::$modules[$settings['module']]) ){
 			if($value)
-				$rec = $this->model->makeSql(array(
+				$rec = model::makeSql(array(
 					'tables' => array(
 						model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid'])
 					),
@@ -109,13 +102,13 @@ class field_type_link extends field_type_default
 			return false;
 		
 		//Варианты значений
-		$variants = $this->model->makeSql(array(
+		$variants = model::makeSql(array(
 			'tables' => array(model::$modules[ $settings['module'] ]->getCurrentTable($settings['structure_sid'])),
 			'where' => (IsSet($settings['where']) ? array('and' => array($s)) : false),
 			'fields' => $fields,
 			'order' => $order
 		), 'getall');
-//		pr($this->model->last_sql);
+//		pr(model::$last_sql);
 		
 		
 		//Отмечаем в массиве выбранные элементы

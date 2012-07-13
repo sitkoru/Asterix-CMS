@@ -49,8 +49,7 @@ class field_type_votes extends field_type_default
 	}
 	
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values)
-	{
+	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
 		if ($values[$value_sid])
 			$value=implode('|',$values[$value_sid]);
 			
@@ -70,7 +69,7 @@ class field_type_votes extends field_type_default
 		$res['total']=intval($res['total']);
 		
 		//Голосовал ли текущий пользователь
-//		$this->model->execSql('select * from `votes` where `rec`','getrow');
+//		model::execSql('select * from `votes` where `rec`','getrow');
 		
 		//Готово
 		return $res;
@@ -91,7 +90,7 @@ class field_type_votes extends field_type_default
 			return false;
 		
 		//Дозаносим новую
-		$this->model->execSql('insert into `'.$this->table.'` set 
+		model::execSql('insert into `'.$this->table.'` set 
 			`date`=NOW(),
 			`value`="'.mysql_real_escape_string($mark).'",
 			`author`="'.user::$info['id'].'",
@@ -104,7 +103,7 @@ class field_type_votes extends field_type_default
 		
 		
 		//Все значения к записи
-		$vals=$this->model->makeSql(
+		$vals=model::makeSql(
 			array(
 				'tables'=>array($this->table),
 				'where'=>array('and'=>array(
@@ -137,13 +136,13 @@ class field_type_votes extends field_type_default
 		
 		//Обновляем значение голосов в записи
 		if( $module_sid == 'comments'){
-			$this->model->execSql('update `comments` set `votes`="'.mysql_real_escape_string($res).'" where `id`="'.$record_id.'" and '.model::pointDomain().' limit 1','update');
+			model::execSql('update `comments` set `votes`="'.mysql_real_escape_string($res).'" where `id`="'.$record_id.'" and '.model::pointDomain().' limit 1','update');
 		}else
-			$this->model->execSql('update `'.model::$modules[ $module_sid ]->getCurrentTable( $structure_sid ).'` set `votes`="'.mysql_real_escape_string($res).'" where `id`="'.$record_id.'" and '.model::pointDomain().' limit 1','update');
+			model::execSql('update `'.model::$modules[ $module_sid ]->getCurrentTable( $structure_sid ).'` set `votes`="'.mysql_real_escape_string($res).'" where `id`="'.$record_id.'" and '.model::pointDomain().' limit 1','update');
 	}
 	
 	public function votesForRecord($module, $structure_sid, $record_id){
-		$votes=$this->model->execSql('select * from `votes` where `module`="'.mysql_real_escape_string($module).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'" and `record_id`="'.mysql_real_escape_string($record_id).'"', 'getall');
+		$votes=model::execSql('select * from `votes` where `module`="'.mysql_real_escape_string($module).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'" and `record_id`="'.mysql_real_escape_string($record_id).'"', 'getall');
 		$authors=array();
 		$yes=0;
 		$no=0;
@@ -174,19 +173,19 @@ class field_type_votes extends field_type_default
 				foreach($structure['fields'] as $field_sid=>$field){
 					if($field['type'] == 'votes'){
 						//К каким записям есть голоса
-						$t=$this->model->execSql('select distinct `record_id` from `votes` where `module`="'.mysql_real_escape_string($module_sid).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'"','getall');
+						$t=model::execSql('select distinct `record_id` from `votes` where `module`="'.mysql_real_escape_string($module_sid).'" and `structure_sid`="'.mysql_real_escape_string($structure_sid).'"','getall');
 						$ids=array();
 						foreach($t as $ti)$ids[]=$ti['record_id'];
 						//Сами записи
-						$recs=$this->model->execSql('select * from `'.$module->getCurrentTable($structure_sid).'` where `id` IN ('.implode(', ', $ids).') order by `id`','getall');
+						$recs=model::execSql('select * from `'.$module->getCurrentTable($structure_sid).'` where `id` IN ('.implode(', ', $ids).') order by `id`','getall');
 						if($recs)
 						foreach($recs as $rec){
 							$votes = $this->votesForRecord($module_sid, $structure_sid, $rec['id']);
 							if($votes){
-								$this->model->execSql('update `'.$module->getCurrentTable($structure_sid).'` set `'.$field_sid.'`="'.implode('|', $votes).'" where `id`="'.$rec['id'].'" limit 1', 'update');
+								model::execSql('update `'.$module->getCurrentTable($structure_sid).'` set `'.$field_sid.'`="'.implode('|', $votes).'" where `id`="'.$rec['id'].'" limit 1', 'update');
 							}
 						}
-						$this->model->execSql('update `'.$module->getCurrentTable($structure_sid).'` set `votes`="0000|0000|0|0" where `id` NOT IN ('.implode(', ', $ids).')','update');
+						model::execSql('update `'.$module->getCurrentTable($structure_sid).'` set `votes`="0000|0000|0|0" where `id` NOT IN ('.implode(', ', $ids).')','update');
 					}
 				}
 			}
