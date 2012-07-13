@@ -25,7 +25,7 @@ class user
 	
 	public $auth_types = array('user' => 'Регистрация на сайте', 'yandex' => 'Яндекс', 'google' => 'Google', 'livejournal' => 'LiveJournal', 'openid' => 'OpenId');
 
-	public function __construct($model){
+	public function __construct(){
 		
 		//Logout
 		if (IsSet($_GET['logout'])) {

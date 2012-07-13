@@ -58,10 +58,12 @@ class field_type_gallery extends field_type_default
 			if( !$values[$value_sid . '_delete'][$i] )
 				if( strlen($old_values[$value_sid][$i]['path']) ){
 					//Обновляем заголовок
-					$old_values[$value_sid][$i]['title'] = $values[$value_sid . '_title'][$i];
+					$old_values[$value_sid][$i]['title'] = strip_tags( $values[$value_sid . '_title'][$i] );
+					if( IsSet( $_POST[$value_sid . '_title'][$i] ) )
+						$old_values[$value_sid][$i]['title'] = strip_tags( $_POST[$value_sid . '_title'][$i] );
 					$images[] = $old_values[$value_sid][$i];
 				}
-
+				
 		//Новые
 		foreach( $values[$value_sid]['name'] as $i => $value)
 			if( strlen($values[$value_sid]['tmp_name'][$i]) > 0 ){
@@ -123,7 +125,15 @@ class field_type_gallery extends field_type_default
 							$acmsImages->filter_bw($pre_filename);
 						
 					}
+			//Файл не передан, просто обновление Alt
+			} elseif ( strlen( $_POST[ $value_sid . '_old_id' ][ $i ] ) ) {
+				$data = $this->getValueExplode( $_POST[ $value_sid . '_old_id' ][ $i ] );
+				$data['title'] = strip_tags( $_POST[$value_sid . '_title'][$i] );
+			} elseif ( strlen( $values[ $value_sid . '_old_id' ][ $i ] ) ) {
+				$data = $this->getValueExplode( $values[$value_sid . '_old_id'][$i] );
+				$data['title'] = strip_tags( $values[$value_sid . '_title'][$i] );
 			}
+			
 			$images[] = $data;
 		}
 		

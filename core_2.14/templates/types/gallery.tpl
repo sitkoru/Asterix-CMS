@@ -10,6 +10,7 @@
 						<span class="label label-important acms_gallery_delete">Удалить</span>
 					</a>
 					<input type="hidden" name="{$field.sid}_old_id[{$key}]" value="{$field.value.old|escape}" />
+					<input type="text" name="{$field.sid}_title[{$key}]" value="{$rec.title|escape}" style="width:150px;" />
 				</li>
 			{/foreach}
 			</ul>
