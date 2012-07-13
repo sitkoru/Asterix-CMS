@@ -544,15 +544,6 @@ class ModelLoader{
 		return $settings;
 	}
 	
-	public static function makeBackCompatible(){
-		
-		if( IsSet( model::$config['back_compatible'] ) ){
-			require_once( model::$config['path']['core'].'/tests/back_comp.php' );
-			back_comp::comp_213_to_214();
-		}
-		
-	}
-	
 	// Режим отображения ошикок
 	public static function setErrorReporting( $mode ){
 

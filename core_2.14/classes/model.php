@@ -50,8 +50,6 @@ class model{
 		self::$ask = 			ModelLoader::loadAsk();
 		self::$ask->rec = 		ModelFinder::getRecordByAsk( self::$ask->url );
 
-		ModelLoader::makeBackCompatible();
-
 		$this->unittest_modules();
 		$this->check_no_www();
 		$this->authUser();
