@@ -322,7 +322,7 @@ class interfaces{
 				//Значение
 				$values = model::$types[ $field['type'] ]->implodeValue($field_sid, $values, array(), $field, $this->info['sid'], $structure_sid);
 				//Запоминаем
-				if( $values[ $field_sid ] )
+				if( IsSet( $values[ $field_sid ] ) )
 					$what[ $field_sid ]='`'.$field_sid.'`="' . mysql_real_escape_string( $values[ $field_sid ] ) . '"';
 			}
 		
@@ -439,7 +439,7 @@ class interfaces{
 				//Значение
 				$values = model::$types[ $field['type'] ]->implodeValue($field_sid, $values, $data_before, $field, $this->info['sid'], $structure_sid);
 				//Запоминаем
-				if( $values[ $field_sid ] )
+				if( IsSet( $values[ $field_sid ] ) )
 					$what[ $field_sid ]='`'.$field_sid.'`="' . mysql_real_escape_string( $values[ $field_sid ] ) . '"';
 			}
 	

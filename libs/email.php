@@ -136,7 +136,7 @@ Content-Transfer-Encoding: base64
 		//HTML
 		}elseif($type=='html'){
 			$headers  = 'MIME-Version: 1.0' . "\r\n";
-			$headers .= 'from: '.iconv('utf-8', 'koi8-r//IGNORE', $this->model->settings['domain_title']).' <'.$this->from . ">\r\n";
+			$headers .= 'from: '.$_SERVER['HTTP_HOST'].' <'.$this->from . ">\r\n";
 			$headers .= 'Content-Type: multipart/mixed; boundary="'.md5(1).'"' . "\r\n";
 		}
 
