@@ -186,7 +186,7 @@ class interfaces{
 		//Captcha checkout
 		if( $this->interfaces[ $interface ]['protection'] == 'captcha' )
 			if( @$_SESSION['form_captcha_code'] != $params['captcha'] )
-				log::stop('401 Unauthorized');
+				log::stop('401 Unauthorized', 'Captcha не введена, либо введена неверно');
 		
 		//Фильтрация переданных значений - убираем лишние
 		$fields = interfaces::getFields($params, $interface, $public);
