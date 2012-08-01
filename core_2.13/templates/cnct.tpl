@@ -1,7 +1,4 @@
-<!--
-<script type="text/javascript" src="http://stat.clientogenerator.ru/a.js"></script>
-<script type="text/javascript" src="http://beta.clientogenerator.ru/cg.js"></script>
--->
+<script type="text/javascript" src="http://clientogenerator.ru/cg.js"></script>
 
 {if $user.admin}{include file="`$paths.admin_templates`/admin_bar.tpl"}
 {else}
