@@ -1,0 +1,28 @@
+Asterix CMS - система управления сайтами.
+
+Copyright (c) 2004 - 2011 Asterix CMS.
+Автор: Мишин Олег, dekmabot@gmail.com, http://mishinoleg.ru
+
+Эта программа является свободным программным обеспечением;
+вы можете распространять её и/или изменять в соответствии
+с условиями лицензии GNU GPL, опубликованной Free Software
+Foundation в версии 1 от февраля 1989 года.
+
+Программа распространяется чтобы приносить пользу, 
+но БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ, в том числе без возможности
+защиты прав потребителей или возмещения упущенной выгоды.
+
+Подробности смотрите в полном тексте лицензии GNU GPL.
+
+Вы должны получить копию текста лицензии GNU GPL вместе
+с исходными кодами программы. Если нет - напишите об этом по адресу
+Free Software Foundation, Inc., 51 Franklin Street,
+Fifth Floor, Boston, MA  02110-1301  USA
+
+@category   Asterix CMS
+@package    Asterix CMS
+@copyright  Copyright (c) 2004 - 2011 Asterix CMS (http://asterix.opendev.ru)
+@license    http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt GPL
+@version    2.1, 2011-03-23
+
+Полный текст лицензии GNU GPL на английском языке вы можете найти здесь: http://www.gnu.org/licenses/old-licenses/gpl-1.0.txt
