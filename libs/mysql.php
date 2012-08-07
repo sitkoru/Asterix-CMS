@@ -88,7 +88,7 @@ class mysql{
   
 	public function error($sql){
 		if( property_exists('model', 'settings') )
-			if( in_array( 'sql', model::$settings['errors'] ) )
+			if( in_array( 'sql', (array)model::$settings['errors'] ) )
 				pr( 'Обнаружена ошибка в запросе<br />'.$sql.'<br />'.mysql_errno() . ": " . mysql_error() );
 	}
   

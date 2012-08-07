@@ -84,7 +84,7 @@ class components{
 				'order'=>'order by `date_public` desc',
 			),
 			'getrow'
-		);
+		);//pr(model::$last_sql);
 
 		//Раскрываем сложные поля
 		$rec=$this->explodeRecord($rec,'rec');
@@ -554,6 +554,7 @@ class components{
 			'anons'=>array('nid','dir','access'),
 			'anonslist'=>array('nid','dir','access','limit','start'),
 			'recs'=>array('nid','dir','access','limit','start'),
+			'rec'=>array('nid','dir','access','limit','start'),
 			'random'=>array('nid','dir','access'),
 			'randomlist'=>array('nid','dir','access','limit','start'),
 			'parent'=>array(),

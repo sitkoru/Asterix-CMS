@@ -77,6 +77,7 @@ class templater{
 
 		$t                	= explode(' ', microtime());
 		$time_start 	= $t[1] + $t[0];
+		$sql_start = count( log::$sql );
 
 		//Вызов происходит не по названию модуля, а по прототипу
 		if (IsSet($params['prototype'])) {
@@ -127,8 +128,9 @@ class templater{
 
 		$t               	= explode(' ', microtime());
 		$time_stop 	= $t[1] + $t[0];
+		$sql_stop = count( log::$sql );
 		if( model::$settings['show_stat'] == 'all' )
-			pr('Preload '.$params['module'].'->'.$params['data'].': ' . number_format($time_stop - $time_start, 5, '.', ' ') . ' секунд.');
+			pr('Preload '.$params['module'].'->'.$params['data'].': ' . number_format($time_stop - $time_start, 5, '.', ' ') . ' секунд, '.($sql_stop-$sql_start).'<sub>/'.count(log::$sql).'</sub> запросов.');
 
 	}
   
@@ -203,7 +205,7 @@ class templater{
 		$this->tmpl->assign($params['result'], $result);
 	}
 	public function unserialize($params, &$smarty){
-		$result = unserialize( $params['value'] );
+		$result = unserialize( htmlspecialchars_decode( $params['value'] ) );
 		$this->tmpl->assign($params['result'], $result);
 	}
 
