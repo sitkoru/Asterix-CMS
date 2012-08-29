@@ -129,8 +129,29 @@ class templater{
 		$t               	= explode(' ', microtime());
 		$time_stop 	= $t[1] + $t[0];
 		$sql_stop = count( log::$sql );
-		if( model::$settings['show_stat'] == 'all' )
-			pr('Preload '.$params['module'].'->'.$params['data'].': ' . number_format($time_stop - $time_start, 5, '.', ' ') . ' секунд, '.($sql_stop-$sql_start).'<sub>/'.count(log::$sql).'</sub> запросов.');
+		if( model::$settings['show_stat'] == 'all' ){
+			$id = str_replace('.', '', 'log_'.microtime(true) );
+			$time = number_format($time_stop - $time_start, 5, '.','');
+			$s = $sql_stop-$sql_start;
+			$q = '';
+			for( $i=$sql_start; $i<$sql_stop; $i++ )
+				$q .= $i.': '.log::$sql[ $i ]['sql'].' <sub>'.number_format(log::$sql[ $i ]['time'], 5, '.', ' ').' секунд, '.log::$sql[ $i ]['result'].' найдено</sub><br />';
+			pr('
+				Preload '.$params['module'].'->'.$params['data'].': 
+				' . ($time>0.01?'<span style="color:red">':'') . $time . ' секунд' . ($time>0.01?'</span>':'') . ', 
+				<span style="'.($s>10?'color:red':'').'" OnClick="$(\'#'.$id.'\').toggle(\'fast\'); return false;">'.($s).'<sub>/'.count(log::$sql).'</sub> запросов</span>.
+				<div id="'.$id.'" style="
+					display:none;
+					white-space:nowrap;
+					position: absolute;
+					background: white; 
+					z-index:1000;
+					border-radius: 10px;
+					padding: 10px;
+					border: 2px solid grey;
+				">'.$q.'</div>
+			');
+		}
 
 	}
   
@@ -197,12 +218,26 @@ class templater{
   
 
 	public function addCSS($params, &$smarty){
-		$result = default_controller::addUserCSS( $params['val'] );
-		$this->tmpl->assign($params['result'], $result);
+		$val = explode("\n", $params['val']);
+		foreach($val as $i=>$value)
+			if( strlen( $value ) ){
+				$value = trim( $value );
+				default_controller::$add['css'][] = array(
+					'path' => $value,
+				);
+			}
+		$this->tmpl->assign('head_add', default_controller::$add);
 	}
 	public function addJS($params, &$smarty){
-		$result = default_controller::addUserJS( $params['val'] );
-		$this->tmpl->assign($params['result'], $result);
+		$val = explode("\n", $params['val']);
+		foreach($val as $i=>$value)
+			if( strlen( $value ) ){
+				$value = trim( $value );
+				default_controller::$add['js'][] = array(
+					'path' => $value,
+				);
+			}
+		$this->tmpl->assign('head_add', default_controller::$add);
 	}
 	public function unserialize($params, &$smarty){
 		$result = unserialize( htmlspecialchars_decode( $params['value'] ) );

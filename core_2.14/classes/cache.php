@@ -20,6 +20,7 @@
 class cache
 {
 	public static $config;
+	private static $sql_cache = array();
 
 	//Конструктор
 	public function __construct($config, $log)
@@ -41,6 +42,16 @@ class cache
 	public function readCache(){return false;}
 	public function makeCache(){return false;}
 	public function clearCache(){return false;}
+	
+	public static function readSqlCache( $sql ){
+		if( IsSet( self::$sql_cache[ $sql ] ) )
+			return self::$sql_cache[ $sql ];
+		else
+			return false;
+	}
+	public static function makeSqlCache( $sql, $result ){
+		self::$sql_cache[ $sql ] = $result;
+	}
 	
 }
 

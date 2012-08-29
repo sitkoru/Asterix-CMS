@@ -35,6 +35,7 @@ class model{
 		require_once($config['path']['core'] . '/classes/model_sql.php');
 		require_once($config['path']['core'] . '/classes/model_finder.php');
 		require_once($config['path']['core'] . '/classes/user.php');
+		require_once($config['path']['core'] . '/classes/default_module.php' );
 		require_once($config['path']['core'] . '/tests/compatibility.php');
 
 		$this->log        = 	$log;
@@ -42,8 +43,13 @@ class model{
 		$this->cache = $cache;
 
 		self::$config = 		ModelLoader::loadConfig( $config );
+		
 		self::$db = 			ModelLoader::loadDatabase( self::$db );
 		self::$types = 			ModelLoader::loadTypes();
+
+		// Локальная авторизация, возможна до инициализации модулей
+		user::authUser_fast();
+
 		self::$modules =     	ModelLoader::loadModules();
 		self::$extensions = 	ModelLoader::loadExtensions();
 		self::$settings = 		ModelLoader::loadSettings();
@@ -52,12 +58,15 @@ class model{
 
 		$this->unittest_modules();
 		$this->check_no_www();
-		$this->authUser();
+		
+		// Авторизация по OAuth возможна только после инициализации модулей
+		if( !user::is_authorized() )
+			user::authUser_long();
 
 		// Включаем все необходимые режимы совместимости
 		compatibility::init();
+		
 	}
-
 
 	//Подключение базы данных
 	public function authUser(){
@@ -316,9 +325,16 @@ class model{
 
 	//Получить SID модуля, установленный в системе, зная его прототип
 	public function getModuleSidByPrototype($prototype){
+		
+		// Фикс для обратной совместимости с версиями до 2.13
+		if( $prototype == 'false' )
+			$prototype = 'start';
+		
 		foreach (self::$modules as $module_sid => $module)
 			if ($module->info['prototype'] == $prototype)
 				return $module_sid;
+				
+		return $prototype;
 	}
 
 	//Получить SID модуля, установленный в системе, зная его прототип

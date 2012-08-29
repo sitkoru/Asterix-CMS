@@ -190,7 +190,6 @@ class ModelLoader{
 	//Подключение модулей
 	public static function loadModules(){
 		$modules = array();
-		require_once( model::$config['path']['core'] . '/classes/default_module.php' );
 		
 		//Подгружаем модули
 		$mods = model::execSql('select * from `modules` where `active`=1 order by `id`','getall');
@@ -222,6 +221,7 @@ class ModelLoader{
 				
 				$name = $module['prototype'] . '_module';
 				$modules[ $module['sid'] ] = new $name(NULL, $module);
+				model::$modules[ $module['sid'] ] = $modules[ $module['sid'] ];
 			}
 		}
 		
@@ -340,7 +340,8 @@ class ModelLoader{
 				return $settings;
 		
 		$needed_settings = array(
-			//Общие
+			
+			// Общие
 			'domain_title' => array( 
 				'group' => 'main', 
 				'title' => 'Название сайта', 
@@ -355,24 +356,23 @@ class ModelLoader{
 			),
 			'test_mode' => array( 
 				'group' => 'main', 
-				'title' => 'Режим тестирования - закрыть сайт для всех, кроме разрешённых IP-адресов', 
+				'title' => 'Режим разработки - закрыть сайт для всех, кроме разрешённых IP-адресов', 
 				'type' => 'check', 
 				'default_value' => true, 
 			),
 			'test_mode_text' => array( 
 				'group' => 'main', 
-				'title' => 'Название сайта', 
+				'title' => 'Текст для пользователя в режиме Разработки', 
 				'type' => 'textarea', 
 				'default_value' => 'Сайт находится в разработке, ориентировочная дата открытия: '.date("d.m.Y", strtotime("+1 month")), 
 			),
-			'bootstrap' => array( 
+			'date_start' => array( 
 				'group' => 'main', 
-				'title' => 'Использовать на сайте библиотеку bootstrap', 
-				'type' => 'check', 
-				'default_value' => false, 
+				'title' => 'Дата создания сайта', 
+				'type' => 'datetime', 
 			),
 			
-			//SEO
+			// SEO
 			'counter' => array( 
 				'group' => 'seo', 
 				'title' => 'Код счётчика', 
@@ -404,7 +404,7 @@ class ModelLoader{
 				'default_value' => '', 
 			),
 
-			//Оформление
+			// Оформление
 			'logo' => array( 
 				'group' => 'media', 
 				'title' => 'Логотип сайта', 
@@ -418,6 +418,19 @@ class ModelLoader{
 				'default_value' => 0, 
 			),
 			
+			// Конфигурация
+			'js_libraries' => array( 
+				'group' => 'config', 
+				'title' => 'Использовать JS-библиотеки', 
+				'type' => 'menum', 
+				'default_value' => '|lightbox|', 
+				'variants' => array(
+					'jquery-ui' => 'jQuery-UI',
+					'bootstrap' => 'Bootstrap',
+					'lightbox' => 'Lightbox',
+					'combosex' => 'Combosex',
+				),
+			),
 			'latin_url_only' => array( 
 				'group' => 'config', 
 				'title' => 'Ограничить URL`ы только латинскими буквами, цифрами, и знаком подчёркивания', 
@@ -533,6 +546,10 @@ class ModelLoader{
 				
 			}else{
 				model::execSql('update `settings` set 
+					`pos`="'.($i*10).'", 
+					`group`="'.mysql_real_escape_string( $set['group'] ).'",
+					`title`="'.mysql_real_escape_string( $set['title'] ).'", 
+					`type`="'.mysql_real_escape_string( $set['type'] ).'", 
 					`field`="'.mysql_real_escape_string( serialize( $set ) ).'"
 					where
 					`var`="'.mysql_real_escape_string( $key ).'" and

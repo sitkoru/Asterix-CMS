@@ -63,8 +63,7 @@ class field_type_default
 	
 	//Получить простое значение по умолчанию из настроек поля
 	public function getDefaultValue($settings = false){
-		
-		if (IsSet($settings['default']))
+		if( IsSet( $settings['default'] ) )
 			return $settings['default'];
 		else
 			return $this->default_settings['value'];

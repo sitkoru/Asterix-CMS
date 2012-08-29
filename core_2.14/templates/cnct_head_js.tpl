@@ -11,10 +11,12 @@
 	<script type="text/javascript" src="http://src.sitko.ru/3.0/j/lightbox.js"></script>
 	<script type="text/javascript" src="{$paths.public_javascript}/j.js"></script>
 
+{if IsSet( $settings.block_ie6 )}
 {if $settings.block_ie6 == true}
 	<!--[if IE 6]>
 	<script type="text/javascript">
 		location.replace("http://browser.yandex.ru/");
 	</script>
 	<![endif]-->
+{/if}
 {/if}

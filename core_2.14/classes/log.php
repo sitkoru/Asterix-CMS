@@ -61,12 +61,12 @@ class log
 	}
 	
 	//SQL-запрос
-	public static function sql($sql, $time = false, $result = false, $module = 'start', $function = false)
+	public static function sql($sql, $time = false, $result_count = false, $module = 'start', $function = false)
 	{
 		self::$sql[] = array(
 			'sql' => $sql,
-			'time' => $time,
-			'result' => count($result),
+			'time' => number_format($time, 5, '.', ''),
+			'result' => $result_count,
 			'module' => $module,
 			'function' => $function
 		);

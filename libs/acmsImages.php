@@ -15,6 +15,7 @@ class acmsImages{
 	
 		//Читаем размер рисунка
 		$size           = @getimagesize($src_path);
+		
 		$current_width  = $size[0];
 		$current_height = $size[1];
 		$type 			= $size['mime'];
@@ -63,6 +64,8 @@ class acmsImages{
 		
 		//Не нужно менять размер - просто копируем
 		}else{
+			$new_width = $current_width;
+			$new_height = $current_height;
 			copy( $src_path, $dest_path );
 			chmod( $dest_path, $chmod );
 		}
@@ -72,6 +75,7 @@ class acmsImages{
 			'width' 	=> $new_width,
 			'height' 	=> $new_height,
 			'size' 		=> filesize($dest_path),
+			'type' 		=> $type,
 		);
 		
 	}
@@ -235,6 +239,7 @@ class acmsImages{
 
 	//Поределяем финальные размеры изображения по заданным настройкам
 	private function newSize($current_width, $current_height, $resize_type, $resize_width, $resize_height){
+		
 		//inner
 		if ($resize_type == 'inner') {
 			//Нужно менять

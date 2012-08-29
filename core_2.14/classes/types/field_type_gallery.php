@@ -69,14 +69,15 @@ class field_type_gallery extends field_type_default
 			if( strlen($values[$value_sid]['tmp_name'][$i]) > 0 ){
 
 			//Создаём папку, если ещё нет
-			$created = acmsDirs::makeFolder( model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid );
+			$dir_path = model::$config['path']['public_images'] . '/' . $module_sid . '/' . $structure_sid. str_pad($values['id'], 6, '0', STR_PAD_LEFT).'/'.$value_sid;
+			$created = acmsDirs::makeFolder( model::$config['path']['www'] . $dir_path );
 			if( !$created )
-				log::stop('500 Internal Server Error', 'Нет доступа для создания папки', model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid );
+				log::stop('500 Internal Server Error', 'Нет доступа для создания папки', model::$config['path']['www'] . $dir_path );
 			
 			//Удаление фотки
 			if ($values[$value_sid . '_delete'][$i]) {
 				$old_path = substr( $values[ $value_sid.'_old_id' ][$i], 0, strpos( $values[ $value_sid.'_old_id' ][$i], '|' ) );
-				acmsFiles::delete(model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid . '/' . $old_path);
+				acmsFiles::delete(model::$config['path']['www'] . $dir_path . '/' . $old_path);
 				
 			//Файл передан
 			} elseif (strlen( $values[$value_sid]['tmp_name'][$i] ) ) {
@@ -84,12 +85,12 @@ class field_type_gallery extends field_type_default
 				//Обновление картинки
 				if( @$values[$value_sid . '_old_id'] ){
 					$old_path = substr( $values[ $value_sid.'_old_id' ][$i], 0, strpos( $values[ $value_sid.'_old_id' ][$i], '|' ) );
-					acmsFiles::delete(model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid . '' . $old_path);
+					acmsFiles::delete(model::$config['path']['www'] . $dir_path . '' . $old_path);
 					$image_id = 0;
 				}
 				
 				//Проверка уникальности имени файла
-				$name = acmsFiles::unique( $values[$value_sid]['name'][$i], model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid );
+				$name = acmsFiles::unique( $values[$value_sid]['name'][$i], model::$config['path']['www'] . $dir_path );
 				
 				//Проверка корректности имени файла
 				$name = acmsFiles::filename_filter( $name );
@@ -98,15 +99,14 @@ class field_type_gallery extends field_type_default
 				$ext = substr($name, strrpos($name, '.') + 1);
 				
 				//Загружаем файл
-				$filename = acmsFiles::upload( $values[$value_sid]['tmp_name'][$i], model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid . '/' . $name );
+				$filename = acmsFiles::upload( $values[$value_sid]['tmp_name'][$i], model::$config['path']['www'] . $dir_path . '/' . $name );
 				
 				//Ужимаем до нужного размера и перезаписываем
 				$acmsImages = new acmsImages;
 				$data = $acmsImages->resize( $filename, false, $settings['resize_type'], @$settings['resize_width'], @$settings['resize_height'] );
 				
 				//Доп.характеристики
-				$data['type'] = $values[$value_sid]['type'][$i];
-				$data['path'] = model::$config['path']['public_images'].'/'.$module_sid . '/'. $name;
+				$data['path'] = $dir_path . '/'. $name;
 				$data['title'] = strip_tags( $values[$value_sid . '_title'][$i] );
 				
 				//Определяем основные цвета картинки
@@ -116,7 +116,9 @@ class field_type_gallery extends field_type_default
 				if( IsSet( $settings['pre'] ) )
 					foreach( $settings['pre'] as $sid => $pre){
 						$pre_filename = str_replace( '.'.$ext, '_'.$sid.'.'.$ext, $filename );
-						$data[ $sid ] = model::$config['path']['public_images'].'/'.$module_sid . '/' . str_replace( '.'.$ext, '_'.$sid.'.'.$ext, basename($data['path']) );
+						$data[ $sid ] = $dir_path . '/' . str_replace( '.'.$ext, '_'.$sid.'.'.$ext, basename($data['path']) );
+						
+						// Размер картинки
 						$acmsImages->resize( $filename, $pre_filename, $pre['resize_type'], @$pre['resize_width'], @$pre['resize_height'] );
 						
 						//Фильтры - чёлно-белый
@@ -137,6 +139,12 @@ class field_type_gallery extends field_type_default
 			$images[] = $data;
 		}
 		
+		$dirs = new acmsDirs();
+		$dirs -> clearFolder( 
+			model::$config['path']['images'].'/users/rec'.str_pad(user::$info['id'], 6, '0', STR_PAD_LEFT).'/tmp',
+			array( 'thumb' )
+		);
+		
 		//Готово
 		if( count($images) )
 			return serialize( $images );
@@ -150,7 +158,6 @@ class field_type_gallery extends field_type_default
 	{
 		if( is_string($value) )
 			$result = unserialize( $value );
-		
 		
 		if(is_array($result))
 			$keys = array_keys($result);
@@ -180,7 +187,7 @@ class field_type_gallery extends field_type_default
 				}
 			}
 		}
-
+		
 		//Готово
 		return $result;
 	}

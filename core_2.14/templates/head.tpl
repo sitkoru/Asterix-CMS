@@ -6,22 +6,21 @@
 	<meta name="description" content="{if strlen($content.seo_description)}{$content.seo_description}{else}{$settings.meta_description}{/if}" />
 	<meta name="keywords" content="{if strlen($content.seo_keywords)}{$content.seo_keywords}{else}{$settings.meta_keywords}{/if}" />
 	<meta name="cms" content="Asterix CMS v{$config.version}">
-{if strlen($settings.meta_add)}    {$settings.meta_add}
-{/if}
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+{if strlen($settings.meta_add)}
+<!-- additional meta from settings -->
+{$settings.meta_add}{/if}
 
 
+	<!-- all js from core -->
+{foreach from=$head_add.js_core item=lib}	<script type="text/javascript" src="{$lib.path}"></script>
+{/foreach}
+
+	<!-- all js from templates -->
 {foreach from=$head_add.js item=lib}	<script type="text/javascript" src="{$lib.path}"></script>
 {/foreach}
-{if addjs}{addjs val=$addjs result=addUserJS}{/if}
-{foreach from=$addUserJS item=lib}	<script type="text/javascript" src="{$lib}"></script>
-{/foreach}
-	<script type="text/javascript" src="/j/j.js"></script>
-	
-{foreach from=$head_add.css item=lib}	<link rel="stylesheet" type="text/css" href="{$lib.path}"{if $lib.params.media} media="{$lib.params.media}"{/if} />
-{/foreach}
-{if addjs}{addcss val=$addcss result=addUserCSS}{/if}
-{foreach from=$addUserCSS item=lib}	<link rel="stylesheet" type="text/css" href="{$lib}" />
-{/foreach}	<link rel="stylesheet" type="text/css" href="/c/s.css" />
-
+{include file="`$paths.admin_templates`/cnct_head_css.tpl"}	
+	<link rel="icon" type="image/png" href="/favicon.ico" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 </head>

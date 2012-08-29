@@ -2,47 +2,48 @@
 
 class acmsDirs{
 
-	function get_dirs($path, $current_dir = false, $level = 0, $limit = 1000){
+	function get_dirs($path, $current_dir = false, $level = 0, $limit = 10000){
 		$files = array();
 		if($path[strlen($path)-1]!='/')
 			$path.='/';
 
 		$f = opendir($path);
 		$i=0;
-		while ( (($file = readdir($f)) !== false) and ($i<$limit) )
+		while ( (($file = readdir($f)) !== false) and ($i<$limit) ){
 			if( !in_array($file, array('.','..')) ){
 
-		//Тип записи
-		$type = filetype($path . $file);
+				//Тип записи
+				$type = filetype($path . $file);
 
-		//Если директория - рекурсивно читаем её
-		if($type == 'dir'){
-			//Добавляем
-			$files[] = array(
-				'file' => $file,
-				'dir' => $current_dir,
-				'path' => $path,
-			);
+				//Если директория - рекурсивно читаем её
+				if($type == 'dir'){
+					//Добавляем
+					$files[] = array(
+						'file' => $file,
+						'dir' => $current_dir,
+						'path' => $path,
+					);
 
-			//Рекурсия
-			$sub = $this->get_dirs($path.$file.'/', $file, $level+1, $limit);
-			//Добавляем
-			$files = array_merge($files, $sub);
-
-			$i++;
+					//Рекурсия
+					$sub = $this->get_dirs($path.$file.'/', $file, $level+1, $limit);
+					//Добавляем
+					$files = array_merge($files, $sub);
+				}
 			}
-		}
+			$i++;
+		}			
 
 		return $files;
 	}
 
-	function get_files($path, $current_dir = false, $level = 0, $limit = 1000){
+	function get_files($path, $current_dir = false, $level = 0, $limit = 10000){
 		$files = array();
 		
 		if($path[ strlen($path)-1 ] != '/')
 			$path.='/';
 
 		$f = opendir($path);
+		
 		$i=0;
 		while ( (($file = readdir($f)) !== false) and ($i<$limit) )
 		if( !in_array($file, array('.','..')) ){
@@ -102,13 +103,27 @@ class acmsDirs{
 	function copy($dir_from, $dir_to, $level = 100, $limit = 1000000){
 		@mkdir($dir_to, 0775, true);
 		$dirs = $this->get_dirs($dir_from, basename($dir_from), $level, $limit);
-		pr_r($dirs);
-		exit();
 		foreach($dirs as $dir){
 			@mkdir($dir_to.$dir['file'], 0775, true);
 			$files = $this->get_files($dir['path'].$dir['file'], $dir['file'], $level, $limit);
 		}
 	}
+	
+	//Рекурсивная очистка папки
+	function clearFolder( $path, $exclude = array(), $delete_master = false ){
+	
+		$files = $this->get_files( $path );
+		foreach( $files as $rec )
+			if( !in_array( $rec['file'], $exclude ) )
+				unlink( $rec['path'] . $rec['file'] );
+			
+		$dirs = $this->get_dirs( $path );
+		foreach( $dirs as $rec )
+			if( !in_array( $rec['file'], $exclude ) )
+				rmdir( $rec['path'] . $rec['file'] );
+	
+	}
+	
 }
 
 ?>

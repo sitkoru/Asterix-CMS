@@ -65,25 +65,42 @@ class controller_get extends default_controller
 		
 	//Выдать результат обычной HTML-страничкой
 	private function getHTML(){
+
 		//JavaScript
-		
-		$this->addJS('http://src.sitko.ru/3.0/j/jquery-1.7.1.min.js');
-		$this->addJS('http://src.sitko.ru/3.0/jquery-ui/js/jquery-ui-1.8.17.custom.min.js');
-		if( model::$settings['bootstrap'] ){
-			$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-alert.js');
-			$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-button.js');
-			$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-dropdown.js');
-			$this->addJS('http://src.sitko.ru/3.0/bootstrap/bootstrap-tab.js');
-		}
+		$this->addJS('https://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js');
+		$this->addJS('http://src.sitko.ru/3.0/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js');
 		$this->addJS('http://src.sitko.ru/3.0/j/panel.js');
 		$this->addJS('http://src.sitko.ru/3.0/j/j.js');
 
 		//Библиотеки для Администратора
-		if( model::$settings['bootstrap'] ){
-			$this->addCSS('http://twitter.github.com/bootstrap/assets/css/bootstrap.css');
-			$this->addCSS('http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css');
-		}
 		$this->addCSS('http://src.sitko.ru/3.0/c/panel.css');
+
+		// jQuery-UI
+		if( in_array('jquery-ui', model::$settings['js_libraries']) ){
+//			$this->addJS('http://src.sitko.ru/3.0/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js');
+			$this->addCSS('http://src.sitko.ru/3.0/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css');
+		}
+
+		// Bootstrap
+		if( in_array('bootstrap', model::$settings['js_libraries']) ){
+			$this->addJS('http://src.sitko.ru/3.0/bootstrap/js/bootstrap.min.js');
+			$this->addCSS('http://src.sitko.ru/3.0/bootstrap/css/bootstrap.min.css');
+			$this->addCSS('http://src.sitko.ru/3.0/bootstrap/css/bootstrap-responsive.min.css');
+		}
+
+		// Combosex
+		if( in_array('combosex', model::$settings['js_libraries']) ){
+			$this->addJS('http://src.sitko.ru/3.0/combosex/jquery.combosex.min.js');
+			$this->addCSS('http://src.sitko.ru/3.0/combosex/jquery.combosex.css');
+		}
+			
+		// Lightbox
+		if( in_array('lightbox', model::$settings['js_libraries']) ){
+			$this->addJS('http://src.sitko.ru/3.0/lightbox/lightbox.js');
+			$this->addCSS('http://src.sitko.ru/3.0/lightbox/lightbox.css');
+		}
+			
+		$this->addCSS(model::$config['path']['public_styles'].'/s.css');
 
 		//Подключаем шаблонизатор
 		require_once(model::$config['path']['core'] . '/classes/templates.php');

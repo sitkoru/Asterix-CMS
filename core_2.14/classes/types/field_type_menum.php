@@ -90,7 +90,6 @@ class field_type_menum extends field_type_default
 		}else{
 			foreach($value as $sid => $title)if($title){
 				if( is_array($title) ){
-					pr_r($title);
 					$res[] = array(
 						'value' => $title['value'],
 						'title' => '+'.$title['title'],

@@ -89,9 +89,16 @@ class field_type_domain extends field_type_default
 		//Указан домен
 		}else{
 			$arr  = explode('|', $value);
+			UnSet( $arr[ count($arr)-1 ] );
+			UnSet( $arr[0] );
+			$arr = array_values( $arr );
+			
 			$res  = array();
 			//Варианты значений
-			$recs = model::execSql('select `id`,`title`,`host` from `domains` where `id` in ("' . implode('", "', $arr) . '") and `active`=1 order by `pos`');
+			if( count( $arr )>1 )
+				$recs = model::execSql('select `id`,`title`,`host` from `domains` where `id` in ("' . implode('", "', $arr) . '") and `active`=1 order by `pos`');
+			else
+				$recs = model::execSql('select `id`,`title`,`host` from `domains` where `id`='.intval($arr[0]).' and `active`=1 order by `pos`');
 		}
 		
 		//Готово

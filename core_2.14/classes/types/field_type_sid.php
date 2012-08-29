@@ -98,7 +98,7 @@ class field_type_sid extends field_type_default
 		$values[$value_sid] = $this->correctValue($values[$value_sid]);
 
 		// Проверим на уникальность
-//		$values[$value_sid] = $this->makeUnique($module_sid, $structure_sid, $values[$value_sid], $values['id']);
+		$values[$value_sid] = $this->makeUnique($module_sid, $structure_sid, $values[$value_sid], $values['id']);
 		
 		return htmlspecialchars( $values[$value_sid] );
 	}

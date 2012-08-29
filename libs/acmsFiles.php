@@ -4,16 +4,30 @@ class acmsFiles{
 
 	//Загрузка изображения
 	public function upload($tmp, $path, $chmod = 0775){
+		
+		// Закаченный файл
 		if( is_uploaded_file( $tmp ) ){
 			if( move_uploaded_file($tmp, $path) ){
 				chmod($path, $chmod);
 				return $path;
 			}
+		
+		// Файл из интернета
+		}elseif( substr_count( $tmp, 'http://' ) ){
+			$content = file_get_contents( $tmp );
+			$f = fopen( $path, 'w' );
+			fwrite( $f, $content );
+			fclose( $f );
+			chmod($path, $chmod);
+			return $path;
+		
+		// Файл с локального сервера
 		}elseif( is_readable( $tmp ) ){
 			copy($tmp, $path);
 			chmod($path, $chmod);
 			return $path;
 		}
+		
 		return false;
 	}
 	

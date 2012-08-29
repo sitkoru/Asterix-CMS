@@ -36,7 +36,8 @@ class components{
 	
 	//Запуск подготовки данных в компоненте
 	public static function init( $module, $prepare, $params ){
-	
+		$result = false;
+		
 		if( IsSet( $module->prepares[$prepare] ) ){
 		
 			if( IsSet($module->prepares[ $prepare ]['function']) )
@@ -56,16 +57,22 @@ class components{
 /* Разобраться почему три разных метода */
 			
 			if( is_callable( array( $module, $function_name ) ) ){
-				return $module->$function_name($params);	
+				$result = $module->$function_name($params);	
 
 			}elseif( method_exists($module, $function_name) ){
-				return call_user_func( array($this, $function_name), $params);	
+				$result = call_user_func( array($this, $function_name), $params);	
 				
 			}elseif( method_exists( 'components', $funciton_name) ){
-				return components::$function_name($params);
+				$result = components::$function_name($params);
 			}
+			
+			// Если в компоненте указан шаблон, в который выводить, то сохранем эту отметку
+			if( $module->prepares[ $prepare ]['template'] )
+				$result['template'] = $module->prepares[ $prepare ]['template'];
+		
 		}
-		return false;
+		
+		return $result;
 	}
 
 	
@@ -446,7 +453,9 @@ class components{
 	public function prepareMap($params){
 
 		//Дерево
-		$recs=model::prepareShirtTree('start', 'rec', false,5,array('and'=>array('`shw`=1')));
+		if( !$params['module_sid'] )
+			$params['module_sid'] = 'start';
+		$recs=model::prepareShirtTree($params['module_sid'], 'rec', false,5,array('and'=>array('`shw`=1')));
 
 		//Раскрываем сложные поля
 		foreach($recs as $i=>$rec){
@@ -456,7 +465,7 @@ class components{
 		}
 
 		//Готово
-		return $rec;
+		return $recs;
 	}
 
 	//Список страниц
@@ -615,17 +624,37 @@ class components{
 						$where['and'][$var]='`'.$var.'`!="0"';
 					}elseif( $val === 'notempty' ){
 						$where['and'][$var]='`'.$var.'`!=""';
+						
+					//за Сегодня
+					}elseif( $val === 'today' ){
+						$where['and'][$var]='`'.$var.'`>"'.date("Y-m-d").'"';
+
+					//за Неделю
+					}elseif( $val === 'week' ){
+						$where['and'][$var]='`'.$var.'`>"'.date("Y-m-d", strtotime("-1 week")).'"';
+
+					//за Месяц
+					}elseif( $val === 'month' ){
+						$where['and'][$var]='`'.$var.'`>"'.date("Y-m-d", strtotime("-1 month")).'"';
+
+					//за Год
+					}elseif( $val === 'year' ){
+						$where['and'][$var]='`'.$var.'`>"'.date("Y-m-d", strtotime("-1 year")).'"';
+
 					}else{
 						if(is_array($val)){
 							foreach($val as $i=>$v)if(!strlen($v))UnSet($val[$i]);
 							if($val[0])
 								$where['and'][$var] = '((`'.$var.'`="'.implode('") or (`'.$var.'`="', $val).'") )';
-						}else{
+						}elseif( $val !== false ){
 							$where['and'][$var] = '`'.$var.'`="'.mysql_real_escape_string($val).'"';
 						}
 					}
 				//Прямая вставка SQL-запроса
 				}elseif( $var == 'sql' ){
+					$where['and'][] = $val;
+				//Прямая вставка SQL-запроса
+				}elseif( $var == 'where' ){
 					$where['and'][] = $val;
 				}
 			}

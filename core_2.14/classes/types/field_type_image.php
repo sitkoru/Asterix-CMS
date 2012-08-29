@@ -71,12 +71,13 @@ class field_type_image extends field_type_default
 			}
 			
 			//Создаём папку, если ещё нет
-			$created = acmsDirs::makeFolder( model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid );
+			$dir_path = model::$config['path']['public_images'] . '/' . $module_sid . '/' . $structure_sid. str_pad($values['id'], 6, '0', STR_PAD_LEFT);
+			$created = acmsDirs::makeFolder( model::$config['path']['www'] . $dir_path );
 			if( !$created )
-				log::stop('500 Internal Server Error', 'Нет доступа для создания папки', model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid );
+				log::stop('500 Internal Server Error', 'Нет доступа для создания папки', model::$config['path']['www'] . $dir_path );
 			
 			//Проверка уникальности имени файла
-			$name = acmsFiles::unique( $values[$value_sid]['name'], model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid );
+			$name = acmsFiles::unique( $values[$value_sid]['name'], model::$config['path']['www'] . $dir_path );
 			
 			//Проверка корректности имени файла
 			$name = acmsFiles::filename_filter( $name );
@@ -85,18 +86,17 @@ class field_type_image extends field_type_default
 			$ext = substr($name, strrpos($name, '.') + 1);
 			
 			//Загружаем файл
-			$filename = acmsFiles::upload( $values[$value_sid]['tmp_name'], model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid . '/' . $name );
+			$filename = acmsFiles::upload( $values[$value_sid]['tmp_name'], model::$config['path']['www'] . $dir_path . '/' . $name );
 			
 			//Ужимаем до нужного размера и перезаписываем
 			$acmsImages = new acmsImages;
 			$data = $acmsImages->resize( $filename, false, $settings['resize_type'], @$settings['resize_width'], @$settings['resize_height'] );
 			
 			//Доп.характеристики
-			$data['type'] = $values[$value_sid]['type'];
-			$data['path'] = model::$config['path']['public_images'].'/'.$module_sid . '/'. $name;
+			$data['path'] = $dir_path . '/'. $name;
 			$data['title'] = strip_tags( $values[$value_sid . '_title'] );
 			$data['date'] = date("Y-m-d H:i:s");
-			$data['size'] = filesize( model::$config['path']['www'] . model::$config['path']['public_images'].'/'.$module_sid . '/'. $name );
+//			$data['size'] = filesize( model::$config['path']['www'] . $dir_path . '/'. $name );
 			
 			//Определяем основные цвета картинки
 			$data['colors'] = $acmsImages->colors( $filename );
@@ -116,7 +116,7 @@ class field_type_image extends field_type_default
 			if( IsSet( $settings['pre'] ) )
 				foreach( $settings['pre'] as $sid => $pre){
 					$pre_filename = str_replace( '.'.$ext, '_'.$sid.'.'.$ext, $filename );
-					$data[ $sid ] = model::$config['path']['public_images'].'/'.$module_sid . '/' . str_replace( '.'.$ext, '_'.$sid.'.'.$ext, basename($data['path']) );
+					$data[ $sid ] = $dir_path . '/' . str_replace( '.'.$ext, '_'.$sid.'.'.$ext, basename($data['path']) );
 					$acmsImages->resize( $filename, $pre_filename, $pre['resize_type'], @$pre['resize_width'], @$pre['resize_height'] );
 					
 					//Фильтры - чёлно-белый

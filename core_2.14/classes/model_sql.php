@@ -8,6 +8,19 @@ class ModelSql{
 		$database = 'system', //нужная база данных.
 		$no_cache = false		//Не использовать кеш запроса
 		){
+		
+		if( !strlen( $sql ) )
+			return false;
+
+/*
+		// Запрос из кеша движка
+		if( !$no_cache ){
+			$result = cache::readSqlCache( $sql );
+			if( $result )
+				return $result;
+		}
+*/	
+	
 		//Засекаем время выполнения запроса
 		$t         = explode(' ', microtime());
 		$sql_start = $t[1] + $t[0];
@@ -19,21 +32,26 @@ class ModelSql{
             $result = model::$cache->load( $sql.'|'.$query_type, model::$config['cache']['cache_timeout'] );
         }
 
+		$result_count = 0;
+		
         //Если кеша не найдено - собираем все данные заново
         if($result === false){
 
 			// Получение одной записи
             if ($query_type == 'getrow') {
                 $result = model::$db[$database]->GetRow($sql);
+				$result_count = 1;
 
 			// Получение списка данных
             } elseif ($query_type == 'getall') {
                 $result = model::$db[$database]->GetAll($sql);
+				$result_count = count( $result );
 
 			// Вставка данных
             } elseif ( in_array($query_type, array('insert', 'replace', 'update', 'delete') ) ) {
 				model::check_demo();
 				$result = model::$db[$database]->Execute($sql);
+				$result_count = 0;
 			}
 
             //Используется кеширование - записываем результат
@@ -48,10 +66,15 @@ class ModelSql{
 		$time     = $sql_stop - $sql_start;
 
 		//Статистика
-		log::sql($sql, $time, $result, $query_type, $database);
+		log::sql($sql, $time, $result_count, $query_type, $database);
 
 		//Запоминаем последний запрос
 		model::$last_sql = $sql;
+		
+/*
+		// Запоминаем результат в кеше движка
+		cache::makeSqlCache( $sql, $result );
+*/		
 
 		//Готово
 		return $result;

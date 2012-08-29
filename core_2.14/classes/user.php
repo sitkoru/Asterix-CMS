@@ -120,7 +120,7 @@ class user
 		user::$info       			= $user;
 		user::$info['public_auth'] 	= md5($user['session_id']);
 		user::updateMyLoginDate(user::$info['id']);
-		user::$info = default_module::insertRecordUrlType(user::$info);
+		//user::$info = default_module::insertRecordUrlType(user::$info);
 
 		if(IsSet($_GET['login_oauth'])){
 			header('Location: /');
@@ -129,6 +129,21 @@ class user
 			
 	}
 	
+	public static function authUser_fast(){
+		self::authUser_localhost();
+	}
+	public static function authUser_long(){
+		if( 
+			IsSet($_GET['openid_assoc_handle']) and 
+			IsSet($_GET['openid_identity']) and 
+			IsSet($_GET['openid_mode']) and 
+			IsSet($_GET['openid_return_to']) and 
+			IsSet($_GET['openid_sig']) and 
+			IsSet($_GET['openid_signed'])
+		){
+			self::finish_OAuthUser();
+		}
+	}
 	//Выбор способа авторизации пользователя
 	public static function authUser(){
 	

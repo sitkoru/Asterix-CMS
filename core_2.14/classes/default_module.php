@@ -77,7 +77,7 @@ class default_module extends Dynamic{
 		require_once model::$config['path']['core'].'/classes/components.php';
 		require_once model::$config['path']['core'].'/classes/interfaces.php';
 		require_once model::$config['path']['core'].'/classes/acms_trees.php';
-		
+
 		$this->structure = 	structures::load( $this );
 		$this->prepares = 	components::load( $this );
 		$this->interfaces = interfaces::load( $this );
@@ -277,6 +277,7 @@ class default_module extends Dynamic{
 
 	//Вставка html или других окончаний для URL-ов записей
 	public function insertRecordUrlType($recs, $type='html', $insert_host = false){
+		require_once model::$config['path']['core'].'/classes/structures.php';
 		return structures::insertRecordUrlType($recs, $type='html', $insert_host = false);
 	}
 	
@@ -304,7 +305,7 @@ class default_module extends Dynamic{
 
 	//Следующий свободный ID в структуре
 	public function genNextId($structure_sid='rec'){
-		$last=model::execSql('select `id` from `'.$this->getCurrentTable($structure_sid).'` order by `id` desc','getrow');
+		$last=model::execSql('select `id` from `'.$this->getCurrentTable($structure_sid).'` order by `id` desc','getrow', 'system', true);
 		if(!IsSet($last['id']))$last['id']=1;
 		return $last['id']+1;
 	}

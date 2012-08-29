@@ -40,16 +40,18 @@ class default_controller
 	
 	//Добавить необходимую JS-библиотеку
 	public function addJS($path, $params = false){
-		self::$add['js'][] = array(
+		self::$add['js_core'][] = array(
 			'path' => $path,
 		);
+		return self::$add;
 	}
 
 	//Добавить необходимую JS-библиотеку
 	public function addCSS($path, $params = false){
-		self::$add['css'][] = array(
+		self::$add['css_core'][] = array(
 			'path' => $path,
 		);
+		return self::$add;
 	}
 	//Добавить необходимую JS-библиотеку
 	public function addUserJS($vals, $params = false){

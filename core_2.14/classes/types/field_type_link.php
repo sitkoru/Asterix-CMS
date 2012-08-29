@@ -51,17 +51,7 @@ class field_type_link extends field_type_default
 		//Варианты значений
 		if( IsSet(model::$modules[$settings['module']]) ){
 			if($value)
-				$rec = model::makeSql(array(
-					'tables' => array(
-						model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid'])
-					),
-					'where' => array(
-						'and' => array(
-							'`'.$this->link_field.'`="' . mysql_real_escape_string($value) . '"'
-						)
-					),
-					'order' => 'order by `title`'
-				), 'getrow');
+				$rec = model::execSql('select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'`=' . intval($value) . ' limit 1', 'getrow');
 			if ($rec){
 				$value = $rec;
 				$value = model::$modules[$settings['module']]->insertRecordUrlType($value);
@@ -108,18 +98,17 @@ class field_type_link extends field_type_default
 			'fields' => $fields,
 			'order' => $order
 		), 'getall');
-//		pr(model::$last_sql);
-		
 		
 		//Отмечаем в массиве выбранные элементы
 		foreach ($variants as $i => $variant)
-			if (strlen($variant['title']))
+			if ( strlen( $variant['title'] ) ){
 				$res[] = array(
 					'value' => $variant[$this->link_field],
 					'title' => $variant['title'],
 					'tree_level' => $variant['tree_level'],
-					'selected' => ($variant[$this->link_field] === $value)
+					'selected' => ( (string)$variant[$this->link_field] === (string)$value)
 				);
+			}
 		
 		//Готово
 		return $res;

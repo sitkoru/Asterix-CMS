@@ -184,6 +184,7 @@ class unitTests{
 			$record['is_link_to_module'] = $this->info['sid'];
 			$record['url_alias'] = '/'.$this->info['sid'];
 			$record['dep_path_parent'] = 'start';
+			UnSet( $record['id'] );
 			
 			model::addRecord('start', 'rec', $record);
 		}

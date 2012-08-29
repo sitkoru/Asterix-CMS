@@ -21,7 +21,8 @@ class field_type_password extends field_type_default
 {
 
 	private $algorithm = 'whirlpool';
-
+	private $users_table = 'users';
+	
 	public $default_settings = array('sid' => false, 'title' => 'Пароль', 'value' => '', 'width' => '100%');
 	
 	public $template_file = 'types/password.tpl';
@@ -45,12 +46,12 @@ class field_type_password extends field_type_default
 				
 				// Указан ID пользователя - сразу устанавливаем ему Соль в таблице `users`
 				if( IsSet( $record['id'] ) )
-					model::execSql('update `'.model::$modules[ $module_sid ]->getCurrentTable( $structure_sid ).'` set `salt`="'.mysql_real_escape_string( $record['salt'] ).'" where `id`='.intval( $record['id'] ).' limit 1','update');
+					model::execSql('update `'.$this->users_table.'` set `salt`="'.mysql_real_escape_string( $record['salt'] ).'" where `id`='.intval( $record['id'] ).' limit 1','update');
 				
 				// Пользователь пока не существует - 
 				else{
 					$record['id'] = model::$modules[ $module_sid ]->getNextId();
-					model::execSql('replace into `'.model::$modules[ $module_sid ]->getCurrentTable( $structure_sid ).'` set `id`='.$record['id'].', `salt`="'.mysql_real_escape_string( $record['salt'] ).'"', 'insert');
+					model::execSql('replace into `'.$this->users_table.'` set `id`='.$record['id'].', `salt`="'.mysql_real_escape_string( $record['salt'] ).'"', 'insert');
 				}
 			}
 			
@@ -85,16 +86,16 @@ class field_type_password extends field_type_default
 	//Проверяем, что поле имеет тим TEXT
 	private function correctFieldType($module_sid, $structure_sid, $field_sid){
 		if( $module_sid ){
-			$sql = 'select DATA_TYPE from information_schema.COLUMNS where TABLE_SCHEMA="'.model::$config['db']['system']['name'].'" and TABLE_NAME="'.model::$modules[ $module_sid ]->getCurrentTable($structure_sid).'" and COLUMN_NAME="'.$field_sid.'"';
+			$sql = 'select DATA_TYPE from information_schema.COLUMNS where TABLE_SCHEMA="'.model::$config['db']['system']['name'].'" and TABLE_NAME="'.$this->users_table.'" and COLUMN_NAME="'.$field_sid.'"';
 			$res = model::execSql($sql, 'getrow');
 			if( $res['DATA_TYPE'] != 'text' ){
 				
 				// Поле для пароля теперь должно быть типа TEXT
-				$sql = 'alter table `'.model::$modules[ $module_sid ]->getCurrentTable($structure_sid).'` modify '.$this->creatingString( $field_sid );
+				$sql = 'alter table `'.$this->users_table.'` modify '.$this->creatingString( $field_sid );
 				model::execSql($sql, 'update');
 				
 				// Соль для паролей
-				$sql = 'alter table `'.model::$modules[ $module_sid ]->getCurrentTable($structure_sid).'` add `salt` VARCHAR( 255 ) NOT NULL AFTER  `'.$field_sid.'`';
+				$sql = 'alter table `'.$this->users_table.'` add `salt` VARCHAR( 255 ) NOT NULL AFTER  `'.$field_sid.'`';
 				model::execSql($sql, 'update');
 				
 				// Таблица хешей
@@ -156,7 +157,7 @@ class field_type_password extends field_type_default
 
 			$this->correctFieldType('users', 'rec', 'password');
 
-			$recs = model::execSql('select * from `users` where `login`="'.mysql_real_escape_string( $value['login'] ).'" and `active`=1', 'getall');
+			$recs = model::execSql('select * from `'.$this->users_table.'` where `login`="'.mysql_real_escape_string( $value['login'] ).'" and `active`=1', 'getall');
 			
 			
 			foreach( $recs as $rec ){
@@ -177,7 +178,7 @@ class field_type_password extends field_type_default
 
 		// Авторизация по уже начатой сессии
 		}elseif( $type == 'session' ){
-			$user = model::execSql('select * from `users` where `session_id`="'.mysql_real_escape_string( $value ).'" and `active`=1 limit 1', 'getrow');
+			$user = model::execSql('select * from `'.$this->users_table.'` where `session_id`="'.mysql_real_escape_string( $value ).'" and `active`=1 limit 1', 'getrow');
 		}
 		
 		return $user;
@@ -190,7 +191,7 @@ class field_type_password extends field_type_default
 		$password = $value['password'];
 		$hash = $this->encrypt( $password, $salt );
 		
-		model::execSql('update `users` set `password`="'.mysql_real_escape_string( $hash ).'", `salt`="'.mysql_real_escape_string( $salt ).'" where `id`='.intval( $record['id'] ).' limit 1','update');
+		model::execSql('update `'.$this->users_table.'` set `password`="'.mysql_real_escape_string( $hash ).'", `salt`="'.mysql_real_escape_string( $salt ).'" where `id`='.intval( $record['id'] ).' limit 1','update');
 	
 	}
 	

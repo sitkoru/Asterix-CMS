@@ -213,9 +213,14 @@ class interfaces{
 			$name=$this->interfaces[$interface]['getfields'];
 			if( $name == 'getFields' ){
 				foreach($this->structure[ $structure_sid ]['fields'] as $field_sid=>$field)
-					if( (!$public or user::is_admin()) or ( $public && $field['public'] ) )
+					if( ( !$public or user::is_admin() ) or ( $public && $field['public'] ) )
 						$fields[$field_sid] = $field;
-			
+
+				// В интерфейсе добавления не должно быть ID
+				if( $interface == 'addRecord' )
+					if( IsSet( $fields['id'] ) )
+						UnSet( $fields['id'] );
+						
 			}else{
 //				$this->interfaces[$interface]['fields']=$fields;
 				$fields=$this->$name($interface);
@@ -255,6 +260,11 @@ class interfaces{
 					$field['value'] = model::$types[ $field['type'] ]->getAdmValueExplode( $field['value'], $field, $record);
 
 				$field['template_file'] = model::$types[ $field['type'] ]->template_file;
+				
+				//Пользовательский шаблон для поля
+				if( IsSet( model::$types[ $field['type'] ]->template_userfile ) )
+					$field['template_userfile'] = model::$types[ $field['type'] ]->template_userfile;
+					
 				$fields[ $field['sid'] ] = $field;
 			}
 		}
@@ -288,124 +298,76 @@ class interfaces{
 
 	//Добавление записи в структуру модуля
 	public function addRecord($values, $structure_sid = 'rec'){
+		
 		model::check_demo();
 
-		$what=array();
+	/*
+		1. Если есть ID - проверяем наличие записи
+		2. Иначе создаём ID
+		3. Вносим изменения через editRecord
+	*/
+	
+		// Замена записи, REPLACE
+		if( IsSet( $values['id'] ) ){
 
-		//Корректиуем SID
-		$values = model::$types['sid']->implodeValue('sid', $values, false, $this->structure[$structure_sid]['fields']['sid'], $this->info['sid'], $structure_sid);
-		$what['sid']='`sid`="'.mysql_real_escape_string( $values['sid'] ).'"';
-
-		//Обновляем дату добавления и дату последней модификации
-		if( !IsSet( $values['date_public'] ) )
-			$what['date_public'] = '`date_public`=NOW()';
-		$what['date_added']='`date_added`=NOW()';
-		$what['date_modify']='`date_modify`=NOW()';
+			/*
+				Сам REPLACE использовать нельзя, так как 
+				при выполнении REPLACE только с ID мы обнуляем другие поля
+				а позже при внесении изменений может возникнуть ситуация
+				что кол-во полей структуры не совпадают с полями в базе,
+				тогда данные этой записи будут безвозвратно потеряны.
+				
+				Такая ситуация может возникнуть, когда разработчик создал поле в структуре,
+				но не отразил это в базе, а unit-тесты оказались выключены.
+			*/
 		
-		//Автор записи
-		if( IsSet($this->structure[$structure_sid]['fields']['author']) )
-			if( class_exists(user) )
-				$values['author'] = user::$info['id'];
-		
-		//ID при создании не нужен
-		if( IsSet( $values['id'] ) )
-			UnSet( $values['id'] );
-
-		//Отображение на сайте
-		if( !IsSet( $values['shw']) )
-			$values['shw'] = model::$types['check']->getDefaultValue($this->structure[$structure_sid]['fields']['shw']);
-		
-		//Обработка присланных значений
-		$fields=$this->structure[$structure_sid]['fields'];
-		foreach( $fields as $field_sid => $field )
-			if( !IsSet( $what[ $field_sid ] ) and IsSet( $values[ $field_sid ] ) ){
-				//Значение
-				$values = model::$types[ $field['type'] ]->implodeValue($field_sid, $values, array(), $field, $this->info['sid'], $structure_sid);
-				//Запоминаем
-				if( IsSet( $values[ $field_sid ] ) )
-					$what[ $field_sid ]='`'.$field_sid.'`="' . mysql_real_escape_string( $values[ $field_sid ] ) . '"';
-			}
-		
-		//id - хардкод !!!!!!!!!!!!!!!!!!!!!!
-		if( IsSet( $values['id'] ) )
-			$what['id']='`id`="' . intval( $values['id'] ) . '"';
+			// Ищем запись
+			$rec = model::execSql('select `id` from `'.$this->getCurrentTable( $structure_sid ).'` where `id`='.intval( $values['id'] ).'', 'getrow');
+			if( !$rec )
+				model::execSql('insert into `'.$this->getCurrentTable( $structure_sid ).'` set `id`='.intval( $values['id'] ).', `author`='.intval( user::$info['id'] ).', `date_added`=NOW()', 'insert');
 			
-		//Зависимые структуры
-		if( $this->structure[ $structure_sid ]['dep_path']['structure'] ){
-			//Родитель
-			$parent_field_structure = $this->structure[ $structure_sid ]['dep_path']['structure'];
-			$parent_field_sid = 'dep_path_'.$parent_field_structure;
-			$parent_field_type = $this->structure[ $structure_sid ]['dep_path']['link_type'];
-
-		//Деревья
-		}elseif( $this->structure[ $structure_sid ]['type'] == 'tree' ){
-			//Родитель
-			$parent_field_structure = $structure_sid;
-			$parent_field_sid = 'dep_path_parent';
-			$parent_field_type = 'tree';
-
-		//Линейная структура
+		// Создание новой записи
 		}else{
-			$url = $this->info['url'].'/'.$values['sid'];
-		}
 		
-		//Получаем родителя
-		if( !$url ){
-			$parent=model::makeSql(
-				array(
-					'fields'=>array('id','url'),
-					'tables'=>array( $this->getCurrentTable( $parent_field_structure ) ),
-					'where'=>array(
-						'and'=>array(
-							'`'.model::$types[ $parent_field_type ]->link_field.'`="'.mysql_real_escape_string( $values[ $parent_field_sid ] ).'"'
-						)
-					)
-				),
-				'getrow'
-			);
-			$url = @$parent['url'].'/'.$values['sid'];
-			$what[ $parent_field_sid ]='`'.$parent_field_sid.'`="'.mysql_real_escape_string( $values[ $parent_field_sid ] ).'"';
-		}
-		
-		//Что записывать будем
-		$what['url']='`url`="'.mysql_real_escape_string( $url ).'"';
-
-		//Настройки автоматом не перезаписывать
-		UnSet($what['acms_settings']);
-
-		//Вставляем в дерево
-		if( $parent_field_type == 'tree' ){
-			//Если не установлен обработчик таблицы
-			if(!IsSet($this->structure[ $structure_sid ]['db_manager'])){
-				require_once(model::$config['path']['core'].'/classes/nestedsets.php');
-				$this->structure[ $structure_sid ]['db_manager']=new nested_sets($this->model,$this->getCurrentTable($structure_sid));
-			}
-			//Исключаем ошибку при доюавлении, когда родитель не найден
-			if(IsSet($parent['id'])){
-				$res=$this->structure[ $structure_sid ]['db_manager']->addChild($parent['id'], $what);
-			}
+			// Новый ID
+			$values['id'] = $this->genNextId( $structure_sid );
 			
-		//Вставляем просто так
-		}else{
-
-			//Вставляем запись
-			$res=model::makeSql(
-				array(
-					'fields'=>$what,
-					'tables'=>array( $this->getCurrentTable( $structure_sid ) ),
-				),
-				'replace'
-			);
+			// Древовидные структуры
+			if( $this->structure[ $structure_sid ]['type'] == 'tree' ){
+				
+				//Родитель
+				$parent = model::execSql('select `id`, `url` from `'.$this->getCurrentTable( $structure_sid ).'` where `'.model::$types['tree']->link_field.'`="'.mysql_real_escape_string( $values['dep_path_parent'] ).'" and '.model::pointDomain().'', 'getrow');
+				
+				// Если не установлен обработчик Nested Sets - подгружаем его
+				if( !IsSet( $this->structure[ $structure_sid ]['db_manager'] ) ){
+					require_once(model::$config['path']['core'].'/classes/nestedsets.php');
+					$this->structure[ $structure_sid ]['db_manager']=new nested_sets($this->model,$this->getCurrentTable($structure_sid));
+				}
+			
+				// Будем добавлять запись только с ID
+				$what = array(
+					'id' => '`id`='.intval( $values['id'] ),
+					'author' => '`author`='.intval( user::$info['id'] ),
+					'date_added' => '`date_added`=NOW()',
+				);
+				
+				// Добавляем
+				if( IsSet( $parent['id'] ) )
+					$res=$this->structure[ $structure_sid ]['db_manager']->addChild($parent['id'], $what);
+					
+			// Не древовидные структуры
+			}else
+				model::execSql('insert into `'.$this->getCurrentTable( $structure_sid ).'` set `id`='.intval( $values['id'] ).', `author`='.intval( user::$info['id'] ).', `date_added`=NOW()', 'insert');
 		}
-
-		//Сохраняем дополнительные настройки записи
-		if( model::$config['settings']['dock_interfaces_to_records'] )
-			interfaces::saveRecordSettings($structure_sid, $values);
-
-		return array(
-			'action' => 'redirect',
-			'url' => $url.'.html',
-		);
+		
+		// Заполняем пустые поля значениями по умолчанию
+		foreach( $this->structure[ $structure_sid ]['fields'] as $feild_sid=>$field)
+			if( !IsSet( $values[ $feild_sid ] ) )
+				if( !in_array($feild_sid, array('author', 'date_added')) )
+					$values[ $feild_sid ] = model::$types[ $field['type'] ]->getDefaultValue( $field );
+		
+		// Готово
+		return $this->editRecord($values, $structure_sid);
 	}
 
 	//Добавление записи в структуру модуля
@@ -432,17 +394,21 @@ class interfaces{
 			UnSet($values['dep_path_parent']);
 		}
 
+		$k=0;
+		
 		//Обработка присланных значений
 		$fields=$this->structure[$structure_sid]['fields'];
 		foreach( $fields as $field_sid => $field )
 			if( !IsSet( $what[ $field_sid ] ) and IsSet( $values[ $field_sid ] ) ){
+				
 				//Значение
 				$values = model::$types[ $field['type'] ]->implodeValue($field_sid, $values, $data_before, $field, $this->info['sid'], $structure_sid);
+				
 				//Запоминаем
 				if( IsSet( $values[ $field_sid ] ) )
 					$what[ $field_sid ]='`'.$field_sid.'`="' . mysql_real_escape_string( $values[ $field_sid ] ) . '"';
 			}
-	
+		
 		//Зависимые структуры
 		if( $this->structure[ $structure_sid ]['dep_path']['structure'] ){
 			//Родитель
@@ -789,45 +755,29 @@ class interfaces{
 			$res=$this->structure[$structure_sid]['db_manager']->moveTo($record_id,$after_id);
 
 		}else{
+
+			// Выравниваем порядковые номера в структуре
+			$recs = model::execSql('select `id`, `pos` from `'.$this->getCurrentTable($structure_sid).'` order by `pos`, `date_public`', 'getall');
+			foreach( $recs as $i => $rec ){
+				model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `pos`='.intval($i+1).' where `id`='.$rec['id'].' limit 1', 'update');
+			}
+		
+			// Переносимая запись, которую тащили мышкой
+			$first = model::execSql('select `id`, `pos`, `title` from `'.$this->getCurrentTable($structure_sid).'` where `id`='.intval($record_id).' limit 1', 'getrow');
+
+			// Вторая запись, за которой ставим первую
+			$second = model::execSql('select `id`, `pos`, `title` from `'.$this->getCurrentTable($structure_sid).'` where `id`='.intval($after_id).' limit 1', 'getrow');
+
+			$pos_min = intval( min( $first['pos'], $second['pos'] ) );
+			$pos_max = intval( max( $first['pos'], $second['pos'] ) );
+			$up = ($pos_max == $first['pos']);
 			
-			$record = $this->getRecordById('rec', $record_id);
-			$field_sid=false;
-			if($this->structure[$structure_sid]['dep_path']['structure'])$field_sid='dep_path_'.$this->structure[$structure_sid]['dep_path']['structure'];
-
-			//Условия выборки, учитываем родителя если указан
-			$where=array();
-			$where['and'][]='`id`='.intval($after_id).'';
-
-			//Выбираем вторую запись, с которой будем меняться местами
-			$other=model::makeSql(
-				array(
-					'fields'=>array('id','pos'),
-					'tables'=>array($this->getCurrentTable($structure_sid)),
-					'where'=>$where,
-					'order'=>'order by `pos`'
-				),
-				'getrow'
-			);
-
-			//Обновляем первую запись
-			model::makeSql(
-				array(
-					'fields'=>array('`pos`='.$other['pos'].''),
-					'tables'=>array($this->getCurrentTable($structure_sid)),
-					'where'=>array('and'=>array('`id`='.$record_id.''))
-				),
-				'update'
-			);
-
-			//Обновляем вторую запись
-			model::makeSql(
-				array(
-					'fields'=>array('`pos`='.$record['pos'].''),
-					'tables'=>array($this->getCurrentTable($structure_sid)),
-					'where'=>array('and'=>array('`id`='.$other['id'].''))
-				),
-				'update'
-			);
+			// Записи, которые смещаются между первой и второй записью
+			model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `pos`=(`pos`' . ($up?'+1':'-1') . ') where `pos`'.($up?'>':'>=').'>'.$pos_min.' and `pos`<='.$pos_max.' and `id`!='.$record_id.' order by `pos`, `date_public`', 'update');
+			
+			// Обновляем переносимую запись
+			model::execSql('update `'.$this->getCurrentTable($structure_sid).'` set `pos`='.$second['pos'].' where `id`='.$first['id'].' limit 1', 'update');
+			
 		}
 	}
 	
