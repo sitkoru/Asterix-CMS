@@ -12,7 +12,8 @@ class acms_updater{
 		$max_version_dev = file( 'http://src.opendev.ru/version_dev.txt' );
 		
 		// Требуется обновление
-		if( floatval( $current_version[0] ) < floatval( $max_version[0] ) ){
+//		if( floatval( $current_version[0] ) < floatval( $max_version[0] ) ){
+		if( floatval( $current_version[0] ) == floatval( $max_version_dev[0] ) ){
 
 			$result = array(
 				'version' => $max_version[0],
