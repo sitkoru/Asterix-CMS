@@ -57,7 +57,7 @@
 				{if $settings.date_start.day}<li>Создан: {$settings.date_start.day} {$settings.date_start.month_title} {$settings.date_start.year} года.</li>{/if}
 				<li>Asterix CMS, <a href="http://asterix.opendev.ru/about/news.html" class="out">версия {$config.version}</a></li>
 				<li>PHP {$config.phpversion}</li>
-				<li><a href="https://github.com/dekmabot/Asterix-CMS/commits/master" target="acms">Обновления ядра на GitHub</a></li>
+				<li><a href="https://github.com/dekmabot/Asterix-CMS/commits/master" target="_blank">Обновления ядра на GitHub</a></li>
 			</ul>
 		</li>
 		
@@ -69,7 +69,7 @@
 				<li>Ваша версия: {$config.version}</li>
 				<li>Стабильная версия: {$update.version}</li>
 				<li></li>
-				<li><a href="/admin.update.html">Обновить движок сайта</a></li>
+				<li><a href="/admin.update.html" target="acms">Обновить движок сайта</a></li>
 			</ul>
 		</li>
 	{/if}
