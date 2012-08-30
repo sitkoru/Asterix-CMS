@@ -256,6 +256,7 @@ ini_set("display_errors", "on");
 
 		print('[1]');
 		
+		include_once(model::$config['path']['core'] . '/controllers/admin.php');
 		$result = controller_admin::templateExec( $params );
 		$this->tmpl->assign($params['result'], $result);
 	}
