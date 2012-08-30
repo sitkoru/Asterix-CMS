@@ -31,7 +31,7 @@
 			{if $settings.test_mode}
 			<ul class="a_sub">
 	<!--
-				<li><a href="/admin/start.access.html" target="acms">Уловни доступа</a></li>
+				<li><a href="/admin/start.access.html" target="acms">Уровни доступа</a></li>
 	-->
 				<li><a href="/admin/start.css.html" target="acms">Стили</a></li>
 				<li><a href="/admin/start.js.html" target="acms">JavaScript</a></li>
@@ -54,7 +54,7 @@
 			<a rel="about" href="#">О сайте</a>
 			<ul class="a_sub">
 				<li>Сайт: {$settings.domain_title|cut:40}</li>
-				{if $domain.date_public.day}<li>Создан: {$domain.date_public.day} {$domain.date_public.month_title} {$domain.date_public.year} года.</li>{/if}
+				{if $settings.date_start.day}<li>Создан: {$settings.date_start.day} {$settings.date_start.month_title} {$settings.date_start.year} года.</li>{/if}
 				<li>Asterix CMS, <a href="http://asterix.opendev.ru/about/news.html" class="out">версия {$config.version}</a></li>
 				<li>PHP {$config.phpversion}</li>
 				<li><a href="https://github.com/dekmabot/Asterix-CMS/commits/master" target="_blank">Обновления ядра на GitHub</a></li>
