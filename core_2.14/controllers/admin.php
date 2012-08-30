@@ -457,10 +457,12 @@ class controller_admin extends default_controller{
 
 	public static function checkUpdate(){
 	
+		// Получаем версии пакетов
 		$current_version = file( model::$config['path']['core'].'/version.txt' );
 		$max_version = file( 'http://src.opendev.ru/version.txt' );
 		$max_version_dev = file( 'http://src.opendev.ru/version_dev.txt' );
 		
+		// Готово
 		return array(
 			'version' => $max_version[0],
 			'version_dev' => $max_version_dev[0],
