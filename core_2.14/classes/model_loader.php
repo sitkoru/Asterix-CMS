@@ -10,6 +10,10 @@ class ModelLoader{
 		if( !$config )
 			log::stop('500 Internal Server Error', 'Не загружен файл конфигурации');
 	
+		// Версия ядра
+		$t = file( $config['path']['core'].'/../version.txt' );
+		$config['version'] = $t[0];
+
 		//Совместимость с версиями до 2.14
 		$config['path']['libraries'] = 			$config['path']['core'].'/../libs';
 		$config['path']['admin_templates'] = 	$config['path']['core'].'/templates';
