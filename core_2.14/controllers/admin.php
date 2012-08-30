@@ -217,7 +217,7 @@ class controller_admin extends default_controller{
 			model::$ask->structure_sid = 'rec';
 			model::$ask->output_type = 'content';
 			$url = $this->updateSettings();
-			
+/*			
 		}elseif( $action == 'templates' ){
 			$file = model::$config['path']['templates'].'/'.str_replace('_tpl', '.tpl', $this->vars['id']);
 			file_put_contents($file, $this->vars['html']);
@@ -242,7 +242,7 @@ class controller_admin extends default_controller{
 		}elseif( $action == 'access' ){
 			pr_r($this->vars);
 			exit();
-			
+*/			
 		}else{
 			log::stop('404 Not Found');
 		}
@@ -381,152 +381,6 @@ class controller_admin extends default_controller{
 		return $fields;
 	}
 	
-	public function getTemplates(){
-		
-		//Достаём файлы
-		include_once( model::$config['path']['libraries'].'/acmsDirs.php' );
-		$files = acmsDirs::get_files(model::$config['path']['templates']);
-		$files = acmsDirs::select_ext('tpl', $files);
-		asort($files);
-		
-		//Какие шаблоны должны быть
-		$tmpl = array();
-		foreach(model::$modules as $module_sid=>$module){
-			$title = $module->info['title'].' - главная страница';
-			if( $module_sid == 'start' )
-				$title = 'Главная страница сайта';
-			$tmpl[ $module->info['id']*100+1 ] = array('title'=>$title, 'file'=>$module_sid.'_index.tpl');
-			$tmpl[ $module->info['id']*100+2 ] = array('title'=>$module->info['title'].' - страница записи', 'file'=>$module_sid.'_content.tpl');
-			if( count($module->structures)>1 )
-				$tmpl[ $module->info['id']*100+3 ] = array('title'=>$module->info['title'].' - список записей', 'file'=>$module_sid.'_list.tpl');
-		}
-		ksort($tmpl);
-		
-		foreach($tmpl as $i=>$t){
-			$t['type'] = 'html';
-			$t['value'] = false;
-			foreach($files as $j=>$file)
-				if(substr_count($file, $t['file'])){
-					$t['value'] = file_get_contents($file);
-					UnSet( $files[$j] );
-				}
-			$t['sid'] = $t['file'];
-			$t['group'] = 'main';
-			$t['url_clear'] = '/start.templates.'.$t['file'];
-			
-			$tmpl[$i] = $t;			
-		}
-		
-		foreach($files as $file)
-			$tmpl[] = array(
-				'title' => basename($file),
-				'sid' => basename($file),
-				'type' => 'html',
-				'value' => file_get_contents($file),
-				'group' => 'Дополнительные шаблоны',
-				'url_clear' => '/start.templates.'.basename($file),
-			);
-		return $tmpl;
-	}
-	public function getOneTemplate($file){
-		$fields[] = array(
-			'sid' => 'id',
-			'type' => 'id',
-			'value' => $file,
-			'group' => 'main',
-			'template_file' => model::$types[ 'id' ]->template_file,
-		);
-		$fields[] = array(
-			'sid' => 'html',
-			'title' => 'Шаблон '.basename($file),
-			'type' => 'html',
-			'value' => @file_get_contents(model::$config['path']['templates'].'/'.$file),
-			'group' => 'main',
-			'template_file' => model::$types[ 'html' ]->template_file,
-		);
-		return $fields;
-	}	
-	public function getCSS(){
-		//Достаём файлы
-		include_once( model::$config['path']['libraries'].'/acmsDirs.php' );
-		$files = acmsDirs::get_files(model::$config['path']['styles']);
-		$files = acmsDirs::select_ext('css', $files);
-		asort($files);
-
-		foreach($files as $file)
-			$tmpl[] = array(
-				'title' => basename($file),
-				'sid' => basename($file),
-				'type' => 'html',
-				'value' => file_get_contents($file),
-				'group' => 'main',
-				'url_clear' => '/start.css.'.basename($file),
-			);
-		
-		return $tmpl;
-	}
-	public function getOneCSS($file){
-		$fields[] = array(
-			'sid' => 'id',
-			'type' => 'id',
-			'value' => $file,
-			'group' => 'main',
-			'template_file' => model::$types[ 'id' ]->template_file,
-		);
-		$fields[] = array(
-			'sid' => 'html',
-			'title' => 'Файл стилей '.basename($file),
-			'type' => 'html',
-			'value' => @file_get_contents(model::$config['path']['styles'].'/'.$file),
-			'group' => 'main',
-			'template_file' => model::$types[ 'html' ]->template_file,
-		);
-		
-		return $fields;
-	}	
-	public function getJS(){
-		//Достаём файлы
-		include_once( model::$config['path']['libraries'].'/acmsDirs.php' );
-		$files = acmsDirs::get_files(model::$config['path']['javascript']);
-		$files = acmsDirs::select_ext('js', $files);
-		asort($files);
-
-		foreach($files as $file)
-			$tmpl[] = array(
-				'title' => basename($file),
-				'sid' => basename($file),
-				'type' => 'html',
-				'value' => file_get_contents($file),
-				'group' => 'main',
-				'url_clear' => '/start.js.'.basename($file),
-			);
-		
-		return $tmpl;
-	}
-	public function getOneJS($file){
-		$fields[] = array(
-			'sid' => 'id',
-			'type' => 'id',
-			'value' => $file,
-			'group' => 'main',
-			'template_file' => model::$types[ 'id' ]->template_file,
-		);
-		$fields[] = array(
-			'sid' => 'html',
-			'title' => 'Файл '.basename($file),
-			'type' => 'html',
-			'value' => @file_get_contents(model::$config['path']['javascript'].'/'.$file),
-			'group' => 'main',
-			'template_file' => model::$types[ 'html' ]->template_file,
-		);
-		
-		return $fields;
-	}	
-	public function getAccess(){
-		$fields = interfaces::getAllInterfaces();
-		return $fields;
-	}	
-	
 	public function sortFieldsToGroups($fields){
 		require_once ( model::$config['path']['libraries'].'/tree_sort.php');
 
@@ -600,6 +454,17 @@ class controller_admin extends default_controller{
 		
 		
 	}
+
+	public static function checkUpdate(){
+	
+		$current_version = file( model::$config['path']['core'].'/version.txt' );
+		$max_version = file( 'http://src.opendev.ru/version.txt' );
+		$max_version_dev = file( 'http://src.opendev.ru/version_dev.txt' );
+		
+		print('Текущая версия: '.$current_version[0].', доступна '.$max_version[0].' и '.$max_version_dev[0].'<br />');
+
+	}
+	
 }
 
 ?>

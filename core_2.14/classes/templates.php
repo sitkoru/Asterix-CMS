@@ -69,6 +69,11 @@ class templater{
 			'unserialize'
 		));
     
+		@$this->tmpl->register_function('admin', array(
+			$this,
+			'unserialize'
+		));
+    
 	}
   
 	//Функция, которая будет загружать наши данные
@@ -244,7 +249,10 @@ class templater{
 		$this->tmpl->assign($params['result'], $result);
 	}
 
-  
+	public function checkUpdate($params, &$smarty){
+		$result = controller_admin::checkUpdate();
+		$this->tmpl->assign($params['result'], $result);
+	}
   
   //Функция, которая будет загружать наши данные
   public function cache($params, &$smarty)

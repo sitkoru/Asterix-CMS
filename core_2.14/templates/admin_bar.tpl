@@ -60,6 +60,21 @@
 				<li><a href="https://github.com/dekmabot/Asterix-CMS/commits/master" target="_blank">Обновления ядра на GitHub</a></li>
 			</ul>
 		</li>
+		
+	{admin data=acms_update result=update}
+	{if $update}
+		<li class="a_narrow">
+			<a rel="update" href="#">Обновление</a>
+			<ul class="a_sub">
+				<li>Ваша версия: {$config.version}</li>
+				<li>Доступна новая версия: {$update.version}</li>
+				<li></li>
+				<li><a href="#">Провести проверку совместимости</a></li>
+				<li><a href="#">Обновить движок сайта</a></li>
+			</ul>
+		</li>
+	{/if}
+		
 		<li class="a_narrow">
 			<a href="/admin{$user.url_clear}.editRecord.html" target="acms">{$user.title}</a>
 			<ul class="a_sub">
