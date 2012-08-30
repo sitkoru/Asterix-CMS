@@ -251,11 +251,6 @@ class templater{
 
 	public function admin($params, &$smarty){
 		
-error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
-ini_set("display_errors", "on");
-
-		print('[1]');
-		
 		include_once(model::$config['path']['core'] . '/controllers/admin.php');
 		$result = controller_admin::templateExec( $params );
 		$this->tmpl->assign($params['result'], $result);
