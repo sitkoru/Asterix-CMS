@@ -67,7 +67,7 @@
 			<a rel="update" href="#">Обновление</a>
 			<ul class="a_sub">
 				<li>Ваша версия: {$config.version}</li>
-				<li>Доступна новая версия: {$update.version}</li>
+				<li>Стабильная версия: {$update.version}</li>
 				<li></li>
 				<li><a href="/admin.update.html">Обновить движок сайта</a></li>
 			</ul>
