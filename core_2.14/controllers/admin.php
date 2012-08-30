@@ -361,7 +361,7 @@ class controller_admin extends default_controller{
 				
 				$sortable = ( IsSet($structure['fields']['pos']) || ($structure['type'] == 'tree') );
 				$recs = $module->getModuleShirtTree(false, $structure_sid, 10);
-				
+	
 				if( is_array($recs) )				
 				foreach($recs as $i=>$rec){
 					$fields[ 1000*$module->info['id'] + 100*$j + $i ] = 

@@ -83,10 +83,14 @@ class components{
 		//Получаем условия
 		$where=components::convertParamsToWhere($params);
 
+		//Определяем структуру к которой обращается
+		$structure_sid='rec';
+		if(IsSet($params['structure_sid']))$structure_sid=$params['structure_sid'];
+
 		//Забираем запись
 		$rec=model::makeSql(
 			array(
-				'tables'=>array($this->getCurrentTable('rec')),
+				'tables'=>array($this->getCurrentTable( $structure_sid )),
 				'where'=>$where,
 				'order'=>'order by `date_public` desc',
 			),
@@ -94,7 +98,7 @@ class components{
 		);//pr(model::$last_sql);
 
 		//Раскрываем сложные поля
-		$rec=$this->explodeRecord($rec,'rec');
+		$rec=$this->explodeRecord($rec,$structure_sid);
 		$rec=$this->insertRecordUrlType($rec);
 
 		//Готово

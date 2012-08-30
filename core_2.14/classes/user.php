@@ -173,10 +173,6 @@ class user
 			UnSet($_POST['login']);
 			UnSet($_POST['password']);
 
-			// Только что вошёл
-			if (IsSet($user['id']))
-				$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
-
 		//Авторизация по GET-параметру
 		} elseif (IsSet($_GET['login']) && IsSet($_GET['auth'])) {
 			$user = model::$types['password'] -> tryAuth( 'auth',  $_POST );
@@ -186,11 +182,6 @@ class user
 		//Авторизация по сессии
 		} elseif (strlen(@$_SESSION['auth'])) {
 			$user = model::$types['password'] -> tryAuth( 'session',  $_SESSION['auth'] );
-
-			// Только что вошёл
-			if (IsSet($user['id']))
-				$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
-
 			
 		//Авторизация по Cookies
 		} elseif (strlen(@$_COOKIE['auth'])) {

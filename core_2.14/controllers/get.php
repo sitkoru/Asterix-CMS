@@ -176,7 +176,7 @@ class controller_get extends default_controller
 				
 		//Данные
 		$tmpl->assign('head_add', self::$add);
-		$tmpl->assign('mainmenu', $this->model->prepareMainMenu($levels));
+		$tmpl->assign('mainmenu', $this->model->prepareMainMenu( model::$settings['mainmenu_levels'] ));
 		$tmpl->assign('original_url', model::$ask->original_url);
 		$tmpl->assign('ask', model::$ask);
 		$tmpl->assign('paths', model::$config['path']);

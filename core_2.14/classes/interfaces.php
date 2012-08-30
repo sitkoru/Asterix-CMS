@@ -183,6 +183,15 @@ class interfaces{
 		$structure_sid=$this->interfaces[$interface]['structure_sid'];
 		if( !$structure_sid )$structure_sid = model::$ask->structure_sid;
 		
+		// Старый интерфейс login теперь не обрабатываем модулем
+		if( $interface === 'login' ){
+			if( substr_count($_SERVER['HTTP_REFERER'], 'users.') )
+				$this->answerInterface('login',array('result'=>'redirect', 'url'=>'/', 'close'=>true));
+			else
+				$this->answerInterface('login',array('result'=>'redirect', 'url'=>$_SERVER['HTTP_REFERER'], 'close'=>true));
+			exit();
+		}
+		
 		//Captcha checkout
 		if( $this->interfaces[ $interface ]['protection'] == 'captcha' )
 			if( @$_SESSION['form_captcha_code'] != $params['captcha'] )
@@ -749,7 +758,7 @@ class interfaces{
 			}
 			
 			//Условие для обновления деревьев
-			$conditions=array('and'=>array('domain'=> model::pointDomain() ));
+			$conditions = array( 'and' => array( 'domain' => model::pointDomain() ) );
 
 			//Вносим изменения
 			$res=$this->structure[$structure_sid]['db_manager']->moveTo($record_id,$after_id);

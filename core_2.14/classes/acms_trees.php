@@ -58,12 +58,12 @@ class acms_trees{
 			if($root_record_id){
 				$rec=$this->getRecordById($structure_sid,$root_record_id);
 				if($rec['tree_level']==1){
-					$where['and']['tree_level']='( (`tree_level`>='.intval($rec['tree_level']).') and (`tree_level`<'.($rec['tree_level']+$levels_to_show).') )';
+					$where['and']['tree_level']='( (`tree_level`>='.intval($rec['tree_level']).') and (`tree_level`<'.($rec['tree_level']+$levels_to_show+1).') )';
 				}else{
-					$where['and']['tree_level']='( (`tree_level`>'.intval($rec['tree_level']).') and (`tree_level`<='.($rec['tree_level']+$levels_to_show).') )';
+					$where['and']['tree_level']='( (`tree_level`>'.intval($rec['tree_level']).') and (`tree_level`<='.($rec['tree_level']+$levels_to_show+1).') )';
 				}
 			}else{
-				$where['and']['tree_level']='`tree_level`<='.$levels_to_show.'';
+				$where['and']['tree_level']='`tree_level`<='.($levels_to_show+1).'';
 			}
 		}
 		
@@ -149,21 +149,22 @@ class acms_trees{
 		foreach($recs as $i=>$rec){
 
 			//Вложенные модули
-			if($levels_to_show>2)
+			if($levels_to_show>1)
 			if(strlen($rec['is_link_to_module'])){
 
 				$recs[$i]['module']=$this->info['sid'];
 				$recs[$i]['structure_sid']=$structure_sid;
 
-				if(IsSet(model::$modules[$rec['is_link_to_module']])){
-					if(is_object(model::$modules[$rec['is_link_to_module']])){
+				if( IsSet( model::$modules[ $rec['is_link_to_module'] ] ) ){
+					if( is_object( model::$modules[ $rec['is_link_to_module'] ] ) ){
 
 						//Корневая структура зависимого модуля
 						$tree = model::$modules[$rec['is_link_to_module']]->getLevels('rec');
 						$dep_structure_sid = $tree[count($tree)-1];
 					
 						//Ищем записи вложеного модуля
-						$tmp=model::$modules[$rec['is_link_to_module']]->getModuleShirtTree(false,$dep_structure_sid,$levels_to_show-2,$conditions);
+						$tmp=model::$modules[ $rec['is_link_to_module'] ]->getModuleShirtTree(false,$dep_structure_sid,$levels_to_show-1,$conditions);
+						
 						//Нашли вложенные модули
 						if(count($tmp)){
 
@@ -319,7 +320,7 @@ class acms_trees{
 				if(is_array($conditions['and'])){
 					$where['and']=array_merge($where['and'],$conditions['and']);
 				}
-
+				
 				//Ищем потомков
 				if($search_children){
 					$children=acms_trees::getStructureShirtTree_typeSimple($root_record_id,$search_children,$levels_to_show-1,$where);
@@ -333,10 +334,10 @@ class acms_trees{
 		//Помним какая запись из какого модуля
 		if($recs)
 		foreach($recs as $i=>$rec){
-			if(!IsSet($recs[$i]['module'])){
-				$recs[$i]['module']=$this->info['sid'];
-				$recs[$i]['structure_sid']=$structure_sid;
-			}
+			if( !$recs[$i]['module'] )
+				$recs[$i]['module'] = $this->info['sid'];
+			if( !$recs[$i]['structure_sid'] )
+				$recs[$i]['structure_sid'] = $structure_sid;
 		}
 
 		//Готово
