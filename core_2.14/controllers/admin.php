@@ -460,32 +460,11 @@ class controller_admin extends default_controller{
 	// Обращения к контроллеру из шаблонов админки
 	public static function templateExec( $params ){
 	
-		if( $params['data'] == 'update' )
-			return self::checkUpdate( $params );
-	
-	}
-	
-	// Необходимо проверить наличие обновлений
-	public static function checkUpdate( $params ){
-		$result = false;
-		
-		// Получаем версии пакетов
-		$current_version = file( model::$config['path']['core'].'/version.txt' );
-		$max_version = file( 'http://src.opendev.ru/version.txt' );
-		$max_version_dev = file( 'http://src.opendev.ru/version_dev.txt' );
-		
-		// Требуется обновление
-		if( floatval( $current_version[0] ) < floatval( $max_version[0] ) ){
-
-			$result = array(
-				'version' => $max_version[0],
-				'version_dev' => $max_version_dev[0],
-			);
-		
+		if( $params['data'] == 'update' ){
+			include_once(model::$config['path']['core'] . '/classes/acms_updater.php');
+			return acms_updater::checkUpdate( $params );
 		}
-		
-		// Готово
-		return $result;
+	
 	}
 	
 }
