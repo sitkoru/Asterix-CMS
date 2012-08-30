@@ -135,6 +135,10 @@ class controller_admin extends default_controller{
 			model::$ask->module = 'start';
 			model::$ask->structure_sid = 'rec';
 			model::$ask->output_type = 'access';
+		}elseif( $action == 'update' ){
+			model::$ask->module = 'start';
+			model::$ask->structure_sid = 'rec';
+			model::$ask->output_type = 'update';
 		}else{
 			$action = 'tree';
 			model::$ask->output_type = $action;
