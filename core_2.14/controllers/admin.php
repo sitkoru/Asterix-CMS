@@ -482,7 +482,7 @@ class controller_admin extends default_controller{
 			'version_dev' => $max_version_dev[0],
 		);
 
-		print_r( )
+		print_r( $result );
 
 		// Готово
 		return $result;
