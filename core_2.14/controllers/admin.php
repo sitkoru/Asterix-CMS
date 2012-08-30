@@ -461,7 +461,10 @@ class controller_admin extends default_controller{
 		$max_version = file( 'http://src.opendev.ru/version.txt' );
 		$max_version_dev = file( 'http://src.opendev.ru/version_dev.txt' );
 		
-		print('Текущая версия: '.$current_version[0].', доступна '.$max_version[0].' и '.$max_version_dev[0].'<br />');
+		return array(
+			'version' => $max_version[0],
+			'version_dev' => $max_version_dev[0],
+		);
 
 	}
 	
