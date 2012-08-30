@@ -6,8 +6,8 @@
 
 		<h1>Мастер обновления<br />Asterix CMS</h3>
 		<p>Добро пожаловать в программу обновления системы управления вашего сайта.</p>
-		<button class="btn btn-large btn-info">Прочитать правила обновления</button><br />
-		<button class="btn btn-large btn-warning">Запустить обновление</button>
+		<p><button class="btn btn-large btn-info">Прочитать правила обновления</button></p>
+		<p><button class="btn btn-large btn-warning">Запустить обновление</button></p>
 
 	</div>
 		
