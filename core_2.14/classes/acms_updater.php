@@ -2,16 +2,16 @@
 
 class acms_updater{
 
-	// Необходимо проверить наличие обновлений
+	// РќРµРѕР±С…РѕРґРёРјРѕ РїСЂРѕРІРµСЂРёС‚СЊ РЅР°Р»РёС‡РёРµ РѕР±РЅРѕРІР»РµРЅРёР№
 	public static function checkUpdate( $params ){
 		$result = false;
 		
-		// Получаем версии пакетов
+		// РџРѕР»СѓС‡Р°РµРј РІРµСЂСЃРёРё РїР°РєРµС‚РѕРІ
 		$current_version = file( model::$config['path']['core'].'/version.txt' );
 		$max_version = file( 'http://src.opendev.ru/version.txt' );
 		$max_version_dev = file( 'http://src.opendev.ru/version_dev.txt' );
 		
-		// Требуется обновление
+		// РўСЂРµР±СѓРµС‚СЃСЏ РѕР±РЅРѕРІР»РµРЅРёРµ
 		if( floatval( $current_version[0] ) < floatval( $max_version[0] ) ){
 
 			$result = array(
@@ -21,7 +21,7 @@ class acms_updater{
 		
 		}
 		
-		// Готово
+		// Р“РѕС‚РѕРІРѕ
 		return $result;
 	}
 
