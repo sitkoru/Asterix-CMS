@@ -28,6 +28,7 @@
 		<li class="a_wide"><a href="/admin{$content.url_clear}.editRecord.html" target="acms">Изменить</a></li>
 		<li class="a_narrow">
 			<a href="/admin/start.settings.html" target="acms">Настройки</a>
+
 			{if $settings.test_mode}
 			<ul class="a_sub">
 	<!--
@@ -41,6 +42,7 @@
 				<li><a href="/admin/start.templates.html" target="acms">Шаблоны</a></li>
 			</ul>
 			{/if}
+			
 		</li>
 		<li class="a_narrow">
 			<a rel="help" href="#">Помощь</a>
