@@ -455,8 +455,18 @@ class controller_admin extends default_controller{
 		
 	}
 
-	public static function checkUpdate(){
 	
+	
+	// Обращения к контроллеру из шаблонов админки
+	public static function templateExec(){
+	
+		if( $params['data'] == 'update' )
+			return self::checkUpdate( $params );
+	
+	}
+	
+	// Необходимо проверить наличие обновлений
+	public static function checkUpdate( $params ){
 		// Получаем версии пакетов
 		$current_version = file( model::$config['path']['core'].'/version.txt' );
 		$max_version = file( 'http://src.opendev.ru/version.txt' );

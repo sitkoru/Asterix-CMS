@@ -61,7 +61,7 @@
 			</ul>
 		</li>
 		
-	{admin data=acms_update result=update}
+	{admin data=update result=update}
 	{if $update}
 		<li class="a_narrow">
 			<a rel="update" href="#">Обновление</a>

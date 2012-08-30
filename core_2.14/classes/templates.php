@@ -71,7 +71,7 @@ class templater{
     
 		@$this->tmpl->register_function('admin', array(
 			$this,
-			'unserialize'
+			'admin'
 		));
     
 	}
@@ -249,8 +249,8 @@ class templater{
 		$this->tmpl->assign($params['result'], $result);
 	}
 
-	public function checkUpdate($params, &$smarty){
-		$result = controller_admin::checkUpdate();
+	public function admin($params, &$smarty){
+		$result = controller_admin::templateExec( $params );
 		$this->tmpl->assign($params['result'], $result);
 	}
   
