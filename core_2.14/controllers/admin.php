@@ -458,8 +458,10 @@ class controller_admin extends default_controller{
 	
 	
 	// Обращения к контроллеру из шаблонов админки
-	public static function templateExec(){
+	public static function templateExec( $params ){
 	
+		print('[2]');
+		
 		if( $params['data'] == 'update' )
 			return self::checkUpdate( $params );
 	
@@ -467,17 +469,23 @@ class controller_admin extends default_controller{
 	
 	// Необходимо проверить наличие обновлений
 	public static function checkUpdate( $params ){
+
+		print('[3]');
+		
 		// Получаем версии пакетов
 		$current_version = file( model::$config['path']['core'].'/version.txt' );
 		$max_version = file( 'http://src.opendev.ru/version.txt' );
 		$max_version_dev = file( 'http://src.opendev.ru/version_dev.txt' );
 		
-		// Готово
-		return array(
+		$result = array(
 			'version' => $max_version[0],
 			'version_dev' => $max_version_dev[0],
 		);
 
+		print_r( )
+
+		// Готово
+		return $result;
 	}
 	
 }

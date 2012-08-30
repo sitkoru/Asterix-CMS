@@ -250,6 +250,9 @@ class templater{
 	}
 
 	public function admin($params, &$smarty){
+		
+		print('[1]');
+		
 		$result = controller_admin::templateExec( $params );
 		$this->tmpl->assign($params['result'], $result);
 	}
