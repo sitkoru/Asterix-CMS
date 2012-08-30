@@ -1,4 +1,5 @@
-{if $user.admin}{include file="`$paths.admin_templates`/admin_bar.tpl"}
+{if $user.admin}
+	{include file="`$paths.admin_templates`/admin_bar.tpl"}
 {else}
   <div id="acms_lb-background" class="acms_lb-background"></div>
   <div id="acms_lb-contentWrap" class="acms_lb-contentWrap">

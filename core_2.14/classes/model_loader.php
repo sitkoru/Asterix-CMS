@@ -358,7 +358,7 @@ class ModelLoader{
 				'group' => 'main', 
 				'title' => 'Режим разработки - закрыть сайт для всех, кроме разрешённых IP-адресов', 
 				'type' => 'check', 
-				'default_value' => true, 
+				'default_value' => 1, 
 			),
 			'test_mode_text' => array( 
 				'group' => 'main', 
