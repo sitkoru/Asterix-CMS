@@ -64,7 +64,7 @@
 	{admin data=update result=update}
 	{if $update}
 		<li class="a_narrow">
-			<a rel="update" href="#">Обновление</a>
+			<a rel="update" href="#" style="color:red;">Обновление</a>
 			<ul class="a_sub">
 				<li>Ваша версия: {$config.version}</li>
 				<li>Стабильная версия: {$update.version}</li>
