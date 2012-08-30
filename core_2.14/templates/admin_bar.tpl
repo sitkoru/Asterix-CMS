@@ -69,7 +69,7 @@
 				<li>Ваша версия: {$config.version}</li>
 				<li>Доступна новая версия: {$update.version}</li>
 				<li></li>
-				<li><a href="#">Обновить движок сайта</a></li>
+				<li><a href="/admin.update.html">Обновить движок сайта</a></li>
 			</ul>
 		</li>
 	{/if}
