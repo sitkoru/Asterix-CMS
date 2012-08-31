@@ -10,6 +10,8 @@ class acms_updater{
 	public static function checkUpdate( $params ){
 		$result = false;
 		
+		return false;
+		
 		// Получаем версии пакетов
 		self::$current_version = file( model::$config['path']['core'].'/version.txt' );
 		self::$max_version = file( 'http://src.opendev.ru/version.txt' );
