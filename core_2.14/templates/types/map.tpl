@@ -3,9 +3,10 @@
 	
 	<div id="admin_map_canvas_{$field_sid}" style="width: 600px; height: 300px; position:relative;"></div>
 	<script type="text/javascript">
+		
 		function fid_134672689744697311565(ymaps) {
 			
-			// Создаём объект карты
+			// РЎРѕР·РґР°С‘Рј РѕР±СЉРµРєС‚ РєР°СЂС‚С‹
 			var map = new ymaps.Map(
 				"admin_map_canvas_{$field_sid}", 
 				{
@@ -15,31 +16,32 @@
 				}
 			);
 
-			// Создаём коллекцию объектов
+			// РЎРѕР·РґР°С‘Рј РєРѕР»Р»РµРєС†РёСЋ РѕР±СЉРµРєС‚РѕРІ
 			myCollection = new ymaps.GeoObjectCollection({}, {
-				preset: 'twirl#redIcon', //все метки красные
-				draggable: true // и их можно перемещать
+				preset: 'twirl#redIcon', //РІСЃРµ РјРµС‚РєРё РєСЂР°СЃРЅС‹Рµ
+				draggable: true // Рё РёС… РјРѕР¶РЅРѕ РїРµСЂРµРјРµС‰Р°С‚СЊ
 			});
 
-			// Добавляем туда маркер
+			// Р”РѕР±Р°РІР»СЏРµРј С‚СѓРґР° РјР°СЂРєРµСЂ
 			myCollection.add(
 				new ymaps.Placemark( [{$field.value.x}, {$field.value.y}] )
 			);
 
-			// Добавляем коллекцию на карту
+			// Р”РѕР±Р°РІР»СЏРµРј РєРѕР»Р»РµРєС†РёСЋ РЅР° РєР°СЂС‚Сѓ
 			myMap.geoObjects.add(myCollection);
 
-			// Добавляем контроллер действия "тащить"
+			// Р”РѕР±Р°РІР»СЏРµРј РєРѕРЅС‚СЂРѕР»Р»РµСЂ РґРµР№СЃС‚РІРёСЏ "С‚Р°С‰РёС‚СЊ"
 			myCollection.getMap().events.add('drag', function() {
 				alert('drag');
 			});
 
-			// Добавляем элементы управления
+			// Р”РѕР±Р°РІР»СЏРµРј СЌР»РµРјРµРЅС‚С‹ СѓРїСЂР°РІР»РµРЅРёСЏ
 			map.controls
 				.add("zoomControl")
 				.add("mapTools")
 				.add(new ymaps.control.TypeSelector(["yandex#map", "yandex#satellite", "yandex#hybrid", "yandex#publicMap"]));
 		};
+		
 	</script>
 	<script type="text/javascript" src="http://api-maps.yandex.ru/2.0/?coordorder=longlat&load=package.full&wizard=constructor&lang=ru-RU&onload=fid_134672689744697311565"></script>
 
