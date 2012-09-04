@@ -482,7 +482,7 @@ class interfaces{
 			),
 			'update'
 		);
-		
+
 		//Обновляем элемент дерева вместе с переносом
 		if( ($parent_field_type == 'tree') and (@$values['dep_path_parent'] != @$data_before['dep_path_parent']) and ($values['sid'] != 'index') ){
 

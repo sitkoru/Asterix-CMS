@@ -12,7 +12,7 @@ class ModelLoader{
 	
 		// Версия ядра
 		$t = file( $config['path']['core'].'/version.txt' );
-		$config['settings']['version'] = $t[0];
+		$config['settings']['version'] = trim( $t[0] );
 
 		//Совместимость с версиями до 2.14
 		$config['path']['libraries'] = 			$config['path']['core'].'/../libs';
