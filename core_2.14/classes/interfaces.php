@@ -459,7 +459,7 @@ class interfaces{
 		}
 		
 		//Условия обновления
-		$where['id'] = '`id`="'.mysql_real_escape_string( $values['id'] ).'"';
+		$where['id'] = '`id`='.intval( $values['id'] ).'';
 		
 		//Настройки автоматом не перезаписывать
 		UnSet($what['acms_settings']);
@@ -506,6 +506,12 @@ class interfaces{
 		if( model::$config['settings']['dock_interfaces_to_records'] )
 			interfaces::saveRecordSettings($structure_sid, $values);
 
+	/*
+		НЕ ОТКРЫВАТЬ ДО 2.15
+	
+		// Готово
+		return $data_after;
+	*/
 		//Приписываем окончание для результирующего URL`а
 		if( $values['sid'] == 'start' )
 			$url = '';
@@ -519,6 +525,7 @@ class interfaces{
 			'action' => 'redirect',
 			'url' => $url.'.html',
 		);
+
 	}
 
 	//Удаление записи

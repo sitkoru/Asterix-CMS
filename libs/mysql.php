@@ -77,15 +77,24 @@ class mysql{
     return $row;
   }
   
-  public function Execute($sql){
-	$this->activate();
-		
-    $result=mysql_query($sql, $this->connection);
-    if(!$result)$this->error($sql);
+	public function Insert($sql){
+		$this->activate();
 
-    return $result;
-  }
-  
+		$result=mysql_query($sql, $this->connection);
+		if(!$result)$this->error($sql);
+
+		return mysql_insert_id();
+	}
+
+	public function Execute($sql){
+		$this->activate();
+
+		$result=mysql_query($sql, $this->connection);
+		if(!$result)$this->error($sql);
+
+		return $result;
+	}
+
 	public function error($sql){
 		if( property_exists('model', 'settings') )
 			if( in_array( 'sql', (array)model::$settings['errors'] ) )
