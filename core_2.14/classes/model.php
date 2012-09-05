@@ -64,7 +64,7 @@ class model{
 			user::authUser_long();
 
 		// Инициализация компонентов и интерфейсов
-		foreach( model::$modules as $module_sid => $module ){
+		foreach( self::modules as $module_sid => $module ){
 			$module->init();
 
 		// Включаем все необходимые режимы совместимости
