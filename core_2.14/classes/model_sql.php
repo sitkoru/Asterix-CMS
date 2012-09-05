@@ -52,7 +52,6 @@ class ModelSql{
 				model::check_demo();
 				$result = model::$db[$database]->Insert($sql);
 				$result_count = 0;
-			}
 			
 			// Изменение
             } elseif ( in_array($query_type, array('replace', 'update', 'delete') ) ) {
