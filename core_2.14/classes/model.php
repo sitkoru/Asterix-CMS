@@ -67,7 +67,7 @@ ini_set("display_errors", "on");
 			user::authUser_long();
 
 		// Инициализация компонентов и интерфейсов
-		foreach( self::modules as $module_sid => $module ){
+		foreach( self::modules as $module_sid => $module )
 			$module->init();
 
 		// Включаем все необходимые режимы совместимости
