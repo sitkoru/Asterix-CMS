@@ -42,9 +42,6 @@ class model{
 		$this->log->model = 	$this;
 		$this->cache = $cache;
 
-error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
-ini_set("display_errors", "on");
-
 		self::$config = 		ModelLoader::loadConfig( $config );
 		
 		self::$db = 			ModelLoader::loadDatabase( self::$db );
@@ -67,7 +64,7 @@ ini_set("display_errors", "on");
 			user::authUser_long();
 
 		// Инициализация компонентов и интерфейсов
-		foreach( self::modules as $module_sid => $module )
+		foreach( self::$modules as $module_sid => $module )
 			$module->init();
 
 		// Включаем все необходимые режимы совместимости
