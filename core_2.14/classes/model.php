@@ -63,6 +63,8 @@ class model{
 		if( !user::is_authorized() )
 			user::authUser_long();
 
+		self::$modules =     	ModelLoader::initModules( self::$modules );
+
 		// Включаем все необходимые режимы совместимости
 		compatibility::init();
 		
