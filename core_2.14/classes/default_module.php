@@ -85,10 +85,8 @@ class default_module extends Dynamic{
 	
 	// Инициализация компонентов и интерфейсов
 	public function init(){
-	
 		$this->prepares = 	components::load( $this );
 		$this->interfaces = interfaces::load( $this );
-		
 	}
 
 	//Инициализация структуры модуля

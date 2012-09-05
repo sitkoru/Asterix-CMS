@@ -232,17 +232,6 @@ class ModelLoader{
 		return $modules;
 	}
 
-	// Инициализация модулей
-	public static function initModules( $modules ){
-		foreach( $modules as $module_sid => $module ){
-		
-			$modules[ $module_sid ] = $module->init();
-			
-		}
-		
-		return $modules;
-	}
-	
 	//Подгрузка расширений к модулю
 	public static function loadExtensions(){
 

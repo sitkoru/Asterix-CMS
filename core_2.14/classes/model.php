@@ -63,7 +63,9 @@ class model{
 		if( !user::is_authorized() )
 			user::authUser_long();
 
-		self::$modules =     	ModelLoader::initModules( self::$modules );
+		// Инициализация компонентов и интерфейсов
+		foreach( model::$modules as $module_sid => $module ){
+			$module->init();
 
 		// Включаем все необходимые режимы совместимости
 		compatibility::init();
