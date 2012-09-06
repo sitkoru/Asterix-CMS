@@ -6,7 +6,7 @@ ini_set("display_errors", "on");
 
 session_start();
 
-ini_set('error_log', $config['path']['www'].'../error_'.$_SERVER['HTTP_HOST'].'.log');
+//ini_set('error_log', $config['path']['www'].'../error_'.$_SERVER['HTTP_HOST'].'.log');
 ini_set('include_path', implode(';',$config['path']));
 
 // Система контроля исключений работы системы
