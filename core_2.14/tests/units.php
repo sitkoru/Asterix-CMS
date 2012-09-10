@@ -167,7 +167,7 @@ class unitTests{
 						model::execSql($sql,'update');
 					
 					// Соблюдаем сортировку полей
-					}else{
+					}elseif( in_array( $this->info['sid'], array('posts', 'press') ) ) {
 						$sql = 'ALTER TABLE `'.$this->getCurrentTable($structure_sid).'` MODIFY '.model::$types[$field['type']]->creatingString($sid).($after?' AFTER `'.$after.'`':'');
 						model::execSql($sql,'update');
 					}
