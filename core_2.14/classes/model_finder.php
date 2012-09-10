@@ -5,7 +5,7 @@ class ModelFinder{
 	//Поиск записи в модели
 	public function getRecordByAsk($url, $prefered_module = 'start'){
 
-		//Сначала ищем в корневом модуле
+		// Сначала ищем в корневом модуле
 		if( is_object( model::$modules[ $prefered_module ] ) )
 		foreach( model::$modules[ $prefered_module ]->structure as $structure_sid=>$structure)
 			if( !$record ){
@@ -30,7 +30,7 @@ class ModelFinder{
 				);
 			}
 
-		//Нашли запись в стандартном модуле
+		// Нашли запись в стандартном модуле
 		if( $record ){
 			if( $record['is_link_to_module'] ){
 				model::$ask->module = $record['is_link_to_module'];
@@ -48,7 +48,7 @@ class ModelFinder{
 					model::$ask->output_type = 'content';
 			}
 			
-		//Не нашли, ищем глубже
+		// Не нашли, ищем глубже
 		}else{
 			for($i=0; $i<count($url); $i++)
 				if( !$record )
@@ -57,9 +57,10 @@ class ModelFinder{
 							$record = ModelFinder::getRecordByAsk($url, $url[$i]);
 		}
 		
-		//Вставляем окончание .html
+		// Вставляем окончание .html
 		$record = structures::insertRecordUrlType( $record );
 
+		// Готово
 		return $record;
 	}
 
