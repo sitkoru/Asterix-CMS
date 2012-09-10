@@ -483,6 +483,9 @@ class interfaces{
 			'update'
 		);
 		
+		print( model::$last_sql );
+		exit();
+
 		//Обновляем элемент дерева вместе с переносом
 		if( ($parent_field_type == 'tree') and (@$values['dep_path_parent'] != @$data_before['dep_path_parent']) and ($values['sid'] != 'index') ){
 
