@@ -23,6 +23,14 @@ class field_type_map extends field_type_default
 	
 	public $template_file = 'types/map.tpl';
 	
+	public $types = array(
+		'yandex#map', 
+		'yandex#satellite', 
+		'yandex#hybrid', 
+		'yandex#publicMap'
+	);
+
+	
 	//Поле участввует в поиске
 	public $searchable = false;
 	
@@ -40,7 +48,9 @@ class field_type_map extends field_type_default
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode($value, $settings = false, $record = array())
 	{
-		list($val['x'], $val['y'], $val['z']) = explode('|', $value);
+		list($val['x'], $val['y'], $val['z'], $val['type']) = explode('|', $value);
+		if( !$val['type'] )
+			$val['type'] = 'yandex#map';
 		return $val;
 	}
 	

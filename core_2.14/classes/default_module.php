@@ -69,16 +69,22 @@ class default_module extends Dynamic{
 ////////////////////////////
 
 	//Инициализация модуля
-	public function __construct($model, $module_info){
+	public function __construct($model, $info){
 		$this->model = $model;
-		$this->info = $module_info;
+		$this->info = $info;
 
 		require_once model::$config['path']['core'].'/classes/structures.php';
 		require_once model::$config['path']['core'].'/classes/components.php';
 		require_once model::$config['path']['core'].'/classes/interfaces.php';
 		require_once model::$config['path']['core'].'/classes/acms_trees.php';
 
+		model::$modules[ $info['sid'] ] = $this;
+		
 		$this->structure = 	structures::load( $this );
+	}
+	
+	// Инициализация компонентов и интерфейсов
+	public function init(){
 		$this->prepares = 	components::load( $this );
 		$this->interfaces = interfaces::load( $this );
 	}

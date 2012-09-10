@@ -48,7 +48,13 @@ class ModelSql{
 				$result_count = count( $result );
 
 			// Вставка данных
-            } elseif ( in_array($query_type, array('insert', 'replace', 'update', 'delete') ) ) {
+            } elseif ($query_type == 'insert') {
+				model::check_demo();
+				$result = model::$db[$database]->Insert($sql);
+				$result_count = 0;
+			
+			// Изменение
+            } elseif ( in_array($query_type, array('replace', 'update', 'delete') ) ) {
 				model::check_demo();
 				$result = model::$db[$database]->Execute($sql);
 				$result_count = 0;

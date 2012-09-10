@@ -8,6 +8,8 @@ class acmsDirs{
 			$path.='/';
 
 		$f = opendir($path);
+		
+		
 		$i=0;
 		while ( (($file = readdir($f)) !== false) and ($i<$limit) ){
 			if( !in_array($file, array('.','..')) ){
@@ -45,30 +47,31 @@ class acmsDirs{
 		$f = opendir($path);
 		
 		$i=0;
-		while ( (($file = readdir($f)) !== false) and ($i<$limit) )
-		if( !in_array($file, array('.','..')) ){
+		while ( (($file = readdir($f)) !== false) and ($i<$limit) ){
+			if( !in_array($file, array('.','..')) ){
 
-			//Тип записи
-			$type = filetype($path . $file);
+				//Тип записи
+				$type = filetype($path . $file);
 
-			$sub = false;
-			$ext = false;
+				$sub = false;
+				$ext = false;
 
-			//Если директория - рекурсивно читаем её
-			if($type != 'dir'){
+				//Если директория - рекурсивно читаем её
+				if($type != 'dir'){
 
-				$info = pathinfo($path.$file);
-				$ext = $info['extension'];
+					$info = pathinfo($path.$file);
+					$ext = $info['extension'];
 
-				//Добавляем
-				$files[] = array(
-					'file' => $file,
-					'dir' => $current_dir,
-					'path' => $path,
-					'ext' => $ext,
-				);
+					//Добавляем
+					$files[] = array(
+						'file' => $file,
+						'dir' => $current_dir,
+						'path' => $path,
+						'ext' => $ext,
+					);
+				}
+
 			}
-
 			$i++;
 		}
 

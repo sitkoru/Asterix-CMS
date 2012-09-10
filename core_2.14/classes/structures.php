@@ -172,7 +172,7 @@ class structures{
 	public function insertRecordUrlType($rec, $type='html', $insert_host = false){
 
 		//Передана одна запись
-		if(IsSet($rec['url'])){
+		if( IsSet($rec['url']) && !IsSet( $rec['url_clear'] ) ){
 			if( strlen($rec['url']) ){
 				if( !substr_count($rec['url'], '.'.$type) ){
 					$rec['url_print']=$rec['url'].'.print.'.$type;
@@ -193,7 +193,7 @@ class structures{
 				$rec = self::insertHostToUrl($rec);
 
 		//Несколько записей
-		}elseif( IsSet($rec[0]['url']) ){
+		}elseif( IsSet($rec[0]['url']) && !IsSet( $rec[0]['url_clear'] ) ){
 			foreach($rec as $i=>$record)
 				$rec[$i] = self::insertRecordUrlType($record, $type, $insert_host);
 		}

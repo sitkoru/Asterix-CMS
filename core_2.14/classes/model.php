@@ -42,6 +42,9 @@ class model{
 		$this->log->model = 	$this;
 		$this->cache = $cache;
 
+error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
+ini_set("display_errors", "on");
+
 		self::$config = 		ModelLoader::loadConfig( $config );
 		
 		self::$db = 			ModelLoader::loadDatabase( self::$db );
@@ -62,6 +65,10 @@ class model{
 		// Авторизация по OAuth возможна только после инициализации модулей
 		if( !user::is_authorized() )
 			user::authUser_long();
+
+		// Инициализация компонентов и интерфейсов
+		foreach( self::$modules as $module_sid => $module )
+			$module->init();
 
 		// Включаем все необходимые режимы совместимости
 		compatibility::init();

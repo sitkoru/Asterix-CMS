@@ -57,6 +57,9 @@ class ModelFinder{
 							$record = ModelFinder::getRecordByAsk($url, $url[$i]);
 		}
 		
+		//Вставляем окончание .html
+		$record = structures::insertRecordUrlType( $record );
+
 		return $record;
 	}
 
