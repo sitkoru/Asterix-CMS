@@ -169,7 +169,7 @@ class unitTests{
 					// Соблюдаем сортировку полей
 					}else{
 						$sql = 'ALTER TABLE `'.$this->getCurrentTable($structure_sid).'` MODIFY '.model::$types[$field['type']]->creatingString($sid).($after?' AFTER `'.$after.'`':'');
-//						model::execSql($sql,'update');
+						model::execSql($sql,'update');
 					}
 					
 					// Предыдущая колонка
