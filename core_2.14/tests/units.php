@@ -163,12 +163,12 @@ class unitTests{
 					
 					// Добавляем новое поле
 					if(!$flag and IsSet( model::$types[$field['type']] ) ){
-						$sql='ALTER TABLE `'.$this->getCurrentTable($structure_sid).'` ADD '.model::$types[$field['type']]->creatingString($sid).($after?' AFTER `'.$sid.'`':'');
+						$sql='ALTER TABLE `'.$this->getCurrentTable($structure_sid).'` ADD '.model::$types[$field['type']]->creatingString($sid).($after?' AFTER `'.$after.'`':'');
 						model::execSql($sql,'update');
 					
 					// Соблюдаем сортировку полей
 					}else{
-						$sql = 'ALTER TABLE `'.$this->getCurrentTable($structure_sid).'` MODIFY '.model::$types[$field['type']]->creatingString($sid).($after?' AFTER `'.$sid.'`':'');
+						$sql = 'ALTER TABLE `'.$this->getCurrentTable($structure_sid).'` MODIFY '.model::$types[$field['type']]->creatingString($sid).($after?' AFTER `'.$after.'`':'');
 						pr( $sql );
 //						model::execSql($sql,'update');
 					}
