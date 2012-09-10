@@ -151,15 +151,29 @@ class unitTests{
 				//Все имеющиеся поля
 				$table_fields=model::execSql('show columns from `'.$this->getCurrentTable($structure_sid).'`','getall');
 				
+				
+				
 				//Все поля
+				$after = false;
 				foreach($structure['fields'] as $sid=>$field){
 					$flag=false;
+
 					foreach($table_fields as $f)
 						if($f['Field']==$sid)$flag=true;
+					
+					// Добавляем новое поле
 					if(!$flag and IsSet( model::$types[$field['type']] ) ){
-						$sql='alter table `'.$this->getCurrentTable($structure_sid).'` add '.model::$types[$field['type']]->creatingString($sid);
+						$sql='ALTER TABLE `'.$this->getCurrentTable($structure_sid).'` ADD '.model::$types[$field['type']]->creatingString($sid).($after?' AFTER `'.$sid.'`':'');
+						model::execSql($sql,'update');
+					
+					// Соблюдаем сортировку полей
+					}else{
+						$sql = 'ALTER TABLE `'.$this->getCurrentTable($structure_sid).'` MODIFY '.model::$types[$field['type']]->creatingString($sid).($after?' AFTER `'.$sid.'`':'');
 						model::execSql($sql,'update');
 					}
+					
+					// Предыдущая колонка
+					$after = $sid;
 				}
 			}
 		}
