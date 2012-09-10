@@ -93,12 +93,12 @@ class ModelSql{
 		$database = 'system', 	//нужная база данных.
 		$no_cache = false		//Не использовать кеш запроса
 		){
-		
+/*		
 		if (model::$extensions)
 			foreach (model::$extensions as $ext)
 				if( method_exists ( $ext , 'onSql' ) )
 					list($sql_conditions['fields'], $sql_conditions['tables'], $sql_conditions['where'], $sql_conditions['group'], $sql_conditions['order'], $sql_conditions['limit']) = $ext->onSql($sql_conditions['fields'], $sql_conditions['tables'], $sql_conditions['where'], $sql_conditions['group'], $sql_conditions['order'], $sql_conditions['limit'], $query_type);
-
+*/
 		//Что запрашиваем
 		if ($query_type == 'getrow' or $query_type == 'getall') {
 			
