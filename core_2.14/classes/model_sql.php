@@ -2,18 +2,18 @@
 
 class ModelSql{
 
-	//Выполнить готовый запрос к базе данных
-	public static function execSql($sql, //готовый sql-запрос
-		$query_type = 'getall', //варианты: getraw, getall, insert, update, delete
-		$database = 'system', //нужная база данных.
-		$no_cache = false		//Не использовать кеш запроса
+	//Р’С‹РїРѕР»РЅРёС‚СЊ РіРѕС‚РѕРІС‹Р№ Р·Р°РїСЂРѕСЃ Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С…
+	public static function execSql($sql, //РіРѕС‚РѕРІС‹Р№ sql-Р·Р°РїСЂРѕСЃ
+		$query_type = 'getall', //РІР°СЂРёР°РЅС‚С‹: getraw, getall, insert, update, delete
+		$database = 'system', //РЅСѓР¶РЅР°СЏ Р±Р°Р·Р° РґР°РЅРЅС‹С….
+		$no_cache = false		//РќРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РєРµС€ Р·Р°РїСЂРѕСЃР°
 		){
 		
 		if( !strlen( $sql ) )
 			return false;
 
 /*
-		// Запрос из кеша движка
+		// Р—Р°РїСЂРѕСЃ РёР· РєРµС€Р° РґРІРёР¶РєР°
 		if( !$no_cache ){
 			$result = cache::readSqlCache( $sql );
 			if( $result )
@@ -21,11 +21,11 @@ class ModelSql{
 		}
 */	
 	
-		//Засекаем время выполнения запроса
+		//Р—Р°СЃРµРєР°РµРј РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ Р·Р°РїСЂРѕСЃР°
 		$t         = explode(' ', microtime());
 		$sql_start = $t[1] + $t[0];
 
-		//Используется кеширование - запрашиваем кеш
+		//РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РєРµС€РёСЂРѕРІР°РЅРёРµ - Р·Р°РїСЂР°С€РёРІР°РµРј РєРµС€
         $result = false;
 
         if( model::$config['cache'] and (!$no_cache) and in_array($query_type, array('getrow', 'getall') ) ){
@@ -34,64 +34,64 @@ class ModelSql{
 
 		$result_count = 0;
 		
-        //Если кеша не найдено - собираем все данные заново
+        //Р•СЃР»Рё РєРµС€Р° РЅРµ РЅР°Р№РґРµРЅРѕ - СЃРѕР±РёСЂР°РµРј РІСЃРµ РґР°РЅРЅС‹Рµ Р·Р°РЅРѕРІРѕ
         if($result === false){
 
-			// Получение одной записи
+			// РџРѕР»СѓС‡РµРЅРёРµ РѕРґРЅРѕР№ Р·Р°РїРёСЃРё
             if ($query_type == 'getrow') {
                 $result = model::$db[$database]->GetRow($sql);
 				$result_count = 1;
 
-			// Получение списка данных
+			// РџРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° РґР°РЅРЅС‹С…
             } elseif ($query_type == 'getall') {
                 $result = model::$db[$database]->GetAll($sql);
 				$result_count = count( $result );
 
-			// Вставка данных
+			// Р’СЃС‚Р°РІРєР° РґР°РЅРЅС‹С…
             } elseif ($query_type == 'insert') {
 				model::check_demo();
 				$result = model::$db[$database]->Insert($sql);
 				$result_count = 0;
 			
-			// Изменение
+			// РР·РјРµРЅРµРЅРёРµ
             } elseif ( in_array($query_type, array('replace', 'update', 'delete') ) ) {
 				model::check_demo();
 				$result = model::$db[$database]->Execute($sql);
 				$result_count = 0;
 			}
 
-            //Используется кеширование - записываем результат
+            //РСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РєРµС€РёСЂРѕРІР°РЅРёРµ - Р·Р°РїРёСЃС‹РІР°РµРј СЂРµР·СѓР»СЊС‚Р°С‚
             if( model::$config['cache'] and (!$no_cache) and in_array($query_type, array('getrow', 'getall') ) ){
                 model::$cache->save( $result, $sql.'|'.$query_type );
             }
 		}
 
-		//Сколько прошло
+		//РЎРєРѕР»СЊРєРѕ РїСЂРѕС€Р»Рѕ
 		$t        = explode(' ', microtime());
 		$sql_stop = $t[1] + $t[0];
 		$time     = $sql_stop - $sql_start;
 
-		//Статистика
+		//РЎС‚Р°С‚РёСЃС‚РёРєР°
 		log::sql($sql, $time, $result_count, $query_type, $database);
 
-		//Запоминаем последний запрос
+		//Р—Р°РїРѕРјРёРЅР°РµРј РїРѕСЃР»РµРґРЅРёР№ Р·Р°РїСЂРѕСЃ
 		model::$last_sql = $sql;
 		
 /*
-		// Запоминаем результат в кеше движка
+		// Р—Р°РїРѕРјРёРЅР°РµРј СЂРµР·СѓР»СЊС‚Р°С‚ РІ РєРµС€Рµ РґРІРёР¶РєР°
 		cache::makeSqlCache( $sql, $result );
 */		
 
-		//Готово
+		//Р“РѕС‚РѕРІРѕ
 		return $result;
 	}
 
-	//Подготовить запрос к базе данных на основе предоставленных характеристик
+	//РџРѕРґРіРѕС‚РѕРІРёС‚СЊ Р·Р°РїСЂРѕСЃ Рє Р±Р°Р·Рµ РґР°РЅРЅС‹С… РЅР° РѕСЃРЅРѕРІРµ РїСЂРµРґРѕСЃС‚Р°РІР»РµРЅРЅС‹С… С…Р°СЂР°РєС‚РµСЂРёСЃС‚РёРє
 	public static function makeSql(
-		$sql_conditions = array('fields' => array(), 'tables' => array(), 'where' => array(), 'group' => array(), 'order' => '', 'limit' => false), //массив условий для sql-запроса
-		$query_type = 'getall', //варианты: getrow, getall, insert, update, delete
-		$database = 'system', 	//нужная база данных.
-		$no_cache = false		//Не использовать кеш запроса
+		$sql_conditions = array('fields' => array(), 'tables' => array(), 'where' => array(), 'group' => array(), 'order' => '', 'limit' => false), //РјР°СЃСЃРёРІ СѓСЃР»РѕРІРёР№ РґР»СЏ sql-Р·Р°РїСЂРѕСЃР°
+		$query_type = 'getall', //РІР°СЂРёР°РЅС‚С‹: getrow, getall, insert, update, delete
+		$database = 'system', 	//РЅСѓР¶РЅР°СЏ Р±Р°Р·Р° РґР°РЅРЅС‹С….
+		$no_cache = false		//РќРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РєРµС€ Р·Р°РїСЂРѕСЃР°
 		){
 /*		
 		if (model::$extensions)
@@ -99,16 +99,16 @@ class ModelSql{
 				if( method_exists ( $ext , 'onSql' ) )
 					list($sql_conditions['fields'], $sql_conditions['tables'], $sql_conditions['where'], $sql_conditions['group'], $sql_conditions['order'], $sql_conditions['limit']) = $ext->onSql($sql_conditions['fields'], $sql_conditions['tables'], $sql_conditions['where'], $sql_conditions['group'], $sql_conditions['order'], $sql_conditions['limit'], $query_type);
 */
-		//Что запрашиваем
+		//Р§С‚Рѕ Р·Р°РїСЂР°С€РёРІР°РµРј
 		if ($query_type == 'getrow' or $query_type == 'getall') {
 			
-			//Не указано что запрашивать - забираем всё
+			//РќРµ СѓРєР°Р·Р°РЅРѕ С‡С‚Рѕ Р·Р°РїСЂР°С€РёРІР°С‚СЊ - Р·Р°Р±РёСЂР°РµРј РІСЃС‘
 			if( !is_array( $sql_conditions['fields'] ) ){
 				$fields = '*';
 			
-			//Указано что конкретно забирать			
+			//РЈРєР°Р·Р°РЅРѕ С‡С‚Рѕ РєРѕРЅРєСЂРµС‚РЅРѕ Р·Р°Р±РёСЂР°С‚СЊ			
 			}else{
-				//Склеиваем с ковычками
+				//РЎРєР»РµРёРІР°РµРј СЃ РєРѕРІС‹С‡РєР°РјРё
 				$fields = '';
 				foreach($sql_conditions['fields'] as $field){
 					if($fields != '')$fields .= ', ';
@@ -122,11 +122,11 @@ class ModelSql{
 			}
 
 		} elseif ( in_array($query_type, array('insert','update','replace') ) ) {
-			//Склеиваем без ковычек
+			//РЎРєР»РµРёРІР°РµРј Р±РµР· РєРѕРІС‹С‡РµРє
 			$fields = implode(', ', $sql_conditions['fields']);
 		}
 
-		//Условия
+		//РЈСЃР»РѕРІРёСЏ
 		if ($sql_conditions['where']) {
 			if (is_array($sql_conditions['where'])) {
 				$res = '';
@@ -147,56 +147,56 @@ class ModelSql{
 			}
 		}
 
-		//Таблицы
+		//РўР°Р±Р»РёС†С‹
 		$tables = '`'.implode('`, `', $sql_conditions['tables']).'`';
 
-		//Таблицы
+		//РўР°Р±Р»РёС†С‹
 		$order = $sql_conditions['order'];
 
-		//Ограничения
+		//РћРіСЂР°РЅРёС‡РµРЅРёСЏ
 		$limit = $sql_conditions['limit'];
 
-		//Получение одной записи
+		//РџРѕР»СѓС‡РµРЅРёРµ РѕРґРЅРѕР№ Р·Р°РїРёСЃРё
 		if ($query_type == 'getrow') {
 			$sql = 'select ' . $fields . ' from ' . $tables . '' . ($where ? ' where ' . $where : '') . ' ' . $group . ' ' . $order . ' limit 1';
 
-		//Получение списка данных
+		//РџРѕР»СѓС‡РµРЅРёРµ СЃРїРёСЃРєР° РґР°РЅРЅС‹С…
 		} elseif ($query_type == 'getall') {
 			$sql = 'select ' . $fields . ' from ' . $tables . '' . ($where ? ' where ' . $where : '') . ' ' . $group . ' ' . $order . ' ' . $limit . '';
 
-		//Обновление данных
+		//РћР±РЅРѕРІР»РµРЅРёРµ РґР°РЅРЅС‹С…
 		} elseif ($query_type == 'update') {
 			$sql = 'update ' . $tables . ' set ' . $fields . ' where ' . $where . ' ' . $limit . '';
 
-		//Вставка данных
+		//Р’СЃС‚Р°РІРєР° РґР°РЅРЅС‹С…
 		} elseif ($query_type == 'insert') {
 			$sql = 'insert into ' . $tables . ' set ' . $fields . '';
 
-		//Вставка данных
+		//Р’СЃС‚Р°РІРєР° РґР°РЅРЅС‹С…
 		} elseif ($query_type == 'replace') {
 			$sql = 'replace into ' . $tables . ' set ' . $fields . '';
 
-		//Удаление данных
+		//РЈРґР°Р»РµРЅРёРµ РґР°РЅРЅС‹С…
 		} elseif ($query_type == 'delete') {
 			$sql = 'delete from ' . $tables . ' where ' . $where . '';
 		}
 
-		//Режим демонстрации
+		//Р РµР¶РёРј РґРµРјРѕРЅСЃС‚СЂР°С†РёРё
 		if (model::$config['settings']['demo_mode'] and (in_array($query_type, array(
 			'update',
 			'insert',
 			'replace',
 			'delete'
 		)))) {
-			print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');
+			print('Р’ СЂРµР¶РёРјРµ РґРµРјРѕРЅСЃС‚СЂР°С†РёРё РІС‹ РЅРµ РјРѕР¶РµС‚Рµ РІРЅРѕСЃРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ РІ Р±Р°Р·Сѓ РґР°РЅРЅС‹С…. РќР°Р¶РјРёС‚Рµ "РќР°Р·Р°Рґ"');
 			exit();
 		} else {
 			
-			//Выполняем запрос
-			$result = model::execSql($sql, //готовый sql-запрос
-				$query_type, 	//варианты: getraw, getall, insert, update, delete
-				$database, 		//нужная база данных.
-				$no_cache		//Не использовать кеш запроса
+			//Р’С‹РїРѕР»РЅСЏРµРј Р·Р°РїСЂРѕСЃ
+			$result = model::execSql($sql, //РіРѕС‚РѕРІС‹Р№ sql-Р·Р°РїСЂРѕСЃ
+				$query_type, 	//РІР°СЂРёР°РЅС‚С‹: getraw, getall, insert, update, delete
+				$database, 		//РЅСѓР¶РЅР°СЏ Р±Р°Р·Р° РґР°РЅРЅС‹С….
+				$no_cache		//РќРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РєРµС€ Р·Р°РїСЂРѕСЃР°
 			);
 		}
 
