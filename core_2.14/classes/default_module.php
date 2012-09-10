@@ -81,6 +81,7 @@ class default_module extends Dynamic{
 		model::$modules[ $info['sid'] ] = $this;
 		
 		$this->structure = 	structures::load( $this );
+		
 	}
 	
 	// Инициализация компонентов и интерфейсов
