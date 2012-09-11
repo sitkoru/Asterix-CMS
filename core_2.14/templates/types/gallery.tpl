@@ -2,7 +2,8 @@
 		<label class="control-label" for="field_{$field.sid}">
 			{$field.title}
 			<br />
-			<a class="icon-th-large"></a> <a class="icon-list"></a>
+			<a href="#" class="label label-info"><i class="icon-th-large"></i></a> 
+			<a href="#" class=""><i class="icon-list"></i></a> 
 		</label>
 		
 		<div class="controls">
