@@ -2,8 +2,9 @@
 		<label class="control-label" for="field_{$field.sid}">
 			{$field.title}
 		</label>
-		<br />
-		<i class="icon-th-large"></i> <i class="icon-list"></i> 
+		<label class="control-label">
+			<i class="icon-th-large"></i> <i class="icon-list"></i> 
+		</label>
 		
 		<div class="controls">
 			<input type="file" name="{$field.sid}[]" id="field_{$field.sid}" multiple min="1" max="20" />
