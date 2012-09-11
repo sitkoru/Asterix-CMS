@@ -1,6 +1,17 @@
-.acms_gallery_as_list{
-	
+.acms_field_gallery a{
+	width: 20%;
+	height: 150px;
+	background-size: cover; 
+	border: 4px solid white;
 }
-.acms_gallery_as_list li{
+.acms_field_gallery textarea {
+	width: 150px;
+	height: 30px;
+}
+.acms_field_gallery_as_list li{
 	float: none;
+}
+.acms_field_gallery.acms_field_gallery_as_list textarea {
+	width: 75%;
+	height: 150px;
 }

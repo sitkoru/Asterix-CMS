@@ -3,21 +3,24 @@
 			{$field.title}
 		</label>
 		<label class="control-label" style="clear: both;">
-			<a class="icon-th-large" 	OnClick="$('#{$field.sid}_list').removeClass('acms_gallery_as_list');"></a> 
+			<a class="icon-th-large" 	OnClick="
+	$('#{$field.sid}_list').removeClass('acms_gallery_as_list').find('a').removeClass('thumbnail');
+	$('#{$field.sid}_list').removeClass('acms_gallery_as_list').find('a').addClass('thumbnail');
+			"></a> 
 			<a class="icon-list" 		OnClick="$('#{$field.sid}_list').addClass('acms_gallery_as_list');"></a> 
 		</label>
 		
 		<div class="controls">
 			<input type="file" name="{$field.sid}[]" id="field_{$field.sid}" multiple min="1" max="20" />
 		{if $field.value}
-			<ul class="thumbnails sortable" id="{$field.sid}_list">
+			<ul class="thumbnails sortable acms_field_gallery" id="{$field.sid}_list">
 			{foreach from=$field.value item=rec key=key}
 				<li>
-					<a href="#" class="thumbnail" style="width:150px; height:150px; background:url('{$rec.path}') center center no-repeat; background-size:cover; border:4px solid white;">
+					<a href="#" class="thumbnail" style="background:url('{$rec.path}') center center no-repeat;">
 						<span class="label label-important acms_gallery_delete">Удалить</span>
 					</a>
 					<input type="hidden" name="{$field.sid}_old_id[{$key}]" value="{$field.value.old|escape}" />
-					<input type="text" name="{$field.sid}_title[{$key}]" value="{$rec.title|escape}" style="width:150px;" />
+					<textarea name="{$field.sid}_title[{$key}]" />{$rec.title|escape}</textarea>
 				</li>
 			{/foreach}
 			</ul>
