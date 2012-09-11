@@ -1,3 +1,6 @@
 .acms_gallery_as_list{
 	
 }
+.acms_gallery_as_list li{
+	float: none;
+}
