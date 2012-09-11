@@ -1,9 +1,11 @@
 .acms_field_gallery a{
-	display: inline-block;
 	width: 20%;
 	height: 150px;
 	background-size: cover; 
 	border: 4px solid white;
+}
+.acms_field_gallery.acms_field_gallery_as_list a{
+	display: inline-block;
 }
 .acms_field_gallery textarea {
 	width: 150px;
