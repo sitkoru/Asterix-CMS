@@ -1,6 +1,7 @@
 	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}">
 		<label class="control-label" for="field_{$field.sid}">
 			{$field.title}
+			<br />
 			<a class="icon-th-large"></a> <a class="icon-list"></a>
 		</label>
 		
