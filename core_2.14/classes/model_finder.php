@@ -58,7 +58,7 @@ class ModelFinder{
 		}
 		
 		// Вставляем окончание .html
-//		$record = structures::insertRecordUrlType( $record );
+		$record = structures::insertRecordUrlType( $record );
 
 		// Готово
 		return $record;
