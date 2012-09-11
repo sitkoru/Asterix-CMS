@@ -508,6 +508,12 @@ class ModelLoader{
 					'HTML 5',
 				),
 			),
+			'resort_fields' => array( 
+				'group' => 'config', 
+				'title' => 'Пересортировать колонки в таблицах согласно структуре (работает в режиме разработки, сильно тормозит загрузку)', 
+				'type' => 'check', 
+				'default_value' => false,
+			),
 			'oauth_openid' => array( 
 				'group' => 'OAuth', 
 				'title' => 'Разрешённые Openid/OAuth провайдеры', 
