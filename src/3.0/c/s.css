@@ -1,4 +1,5 @@
 .acms_field_gallery a{
+	display: inline-block;
 	width: 20%;
 	height: 150px;
 	background-size: cover; 
