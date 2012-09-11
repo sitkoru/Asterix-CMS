@@ -4,11 +4,11 @@
 		</label>
 		<label class="control-label" style="clear: both;">
 			<a class="icon-th-large" 	OnClick="
-	$('#{$field.sid}_list').removeClass('acms_gallery_as_list')
+	$('#{$field.sid}_list').removeClass('acms_field_gallery_as_list')
 	$('#{$field.sid}_list a').addClass('thumbnail');
 			"></a> 
 			<a class="icon-list" 		OnClick="
-	$('#{$field.sid}_list').addClass('acms_gallery_as_list');
+	$('#{$field.sid}_list').addClass('acms_field_gallery_as_list');
 	$('#{$field.sid}_list a').removeClass('thumbnail');
 			"></a> 
 		</label>
