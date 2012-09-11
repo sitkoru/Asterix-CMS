@@ -1,9 +1,9 @@
 	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}">
 		<label class="control-label" for="field_{$field.sid}">
 			{$field.title}
-			<br />
-			<i class="icon-th-large"></i> <i class="icon-list"></i> 
 		</label>
+		<br />
+		<i class="icon-th-large"></i> <i class="icon-list"></i> 
 		
 		<div class="controls">
 			<input type="file" name="{$field.sid}[]" id="field_{$field.sid}" multiple min="1" max="20" />
