@@ -135,7 +135,7 @@ class field_type_datetime extends field_type_default
 		} elseif (date("Y", strtotime($value)) == date("Y") - 1) {
 			$res['text'] = 'в прошлом году';
 		} else {
-			$res['text'] = 'много лет назад';
+			$res['text'] = 'в '.date("Y", strtotime($value)).' году';
 		}
 
 		return $res;
