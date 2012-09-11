@@ -2,7 +2,7 @@
 		<label class="control-label" for="field_{$field.sid}">
 			{$field.title}
 		</label>
-		<label class="control-label">
+		<label class="control-label" style="clear: both;">
 			<i class="icon-th-large"></i> <i class="icon-list"></i> 
 		</label>
 		
