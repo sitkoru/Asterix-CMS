@@ -23,7 +23,7 @@
 						<span class="label label-important acms_gallery_delete">Удалить</span>
 					</a>
 					<input type="hidden" name="{$field.sid}_old_id[{$key}]" value="{$field.value.old|escape}" />
-					<textarea name="{$field.sid}_title[{$key}]" />{$rec.title|escape}</textarea>
+					<textarea name="{$field.sid}_title[{$key}]" placeholder="Описание картинки" />{$rec.title|escape}</textarea>
 				</li>
 			{/foreach}
 			</ul>
