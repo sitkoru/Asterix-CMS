@@ -59,6 +59,9 @@ class field_type_image extends field_type_default
 		if ($values[$value_sid . '_delete']) {
 			$old_data = $this->getValueExplode( $values[$value_sid . '_old_id'] );
 			acmsFiles::delete(model::$config['path']['images'] . $old_data['path']);
+		}elseif ($_POST[$value_sid . '_delete']) {
+			$old_data = $this->getValueExplode( $_POST[$value_sid . '_old_id'] );
+			acmsFiles::delete(model::$config['path']['images'] . $old_data['path']);
 			
 		//Файл передан
 		} elseif ( strlen( $values[$value_sid]['tmp_name'] )>1 ) {
