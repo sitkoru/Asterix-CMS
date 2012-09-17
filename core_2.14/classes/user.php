@@ -679,7 +679,7 @@ class user
 	
 	
 	public static function is_authorized(){
-		return intval( self::$info['id'] );		
+		return !!self::$info['id'];		
 	}
 	public static function is_admin(){
 		return self::$info['admin'];		

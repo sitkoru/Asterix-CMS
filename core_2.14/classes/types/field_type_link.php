@@ -45,9 +45,10 @@ class field_type_link extends field_type_default
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode($value, $settings = false, $record = array())
 	{
+/*
 		if( !IsSet( model::$modules[ $settings['module'] ] ) )
 			return false;
-		
+*/		
 		//Варианты значений
 		if( IsSet(model::$modules[$settings['module']]) ){
 			if($value)
