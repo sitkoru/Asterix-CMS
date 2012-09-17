@@ -514,6 +514,12 @@ class ModelLoader{
 				'type' => 'check', 
 				'default_value' => false,
 			),
+			'viewport' => array(
+				'group' => 'config',
+				'title' => 'Тег Meta Viewport',
+				'type' => 'text',
+				'default_value' => 'width=device-width, initial-scale=1.0',
+			),
 			'oauth_openid' => array( 
 				'group' => 'OAuth', 
 				'title' => 'Разрешённые Openid/OAuth провайдеры', 
