@@ -27,4 +27,5 @@
 {include file="`$paths.admin_templates`/cnct_head_css.tpl"}	
 	<link rel="icon" type="image/png" href="/favicon.ico" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+	<link rel="search" href="/search.php" title="Поиск по нашему сайту" />
 </head>
