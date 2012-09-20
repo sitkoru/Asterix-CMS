@@ -307,7 +307,7 @@ class controller_manager
 	<Image height="16" width="16" type="image/x-icon">http://'.$_SERVER['HTTP_HOST'].'/favicon.ico</Image>
 	<Url type="text/html" method="get" template="http://'.$_SERVER['HTTP_HOST'].$rec['url'].'.html?q={searchTerms}" />
 	<Url type="application/x-suggestions+json" method="get" template="http://'.$_SERVER['HTTP_HOST'].$rec['url'].'.html?q={searchTerms}" />
-	<Url type="application/x-suggestions+xml" method="get" template="http://'.$_SERVER['HTTP_HOST'].$rec['url'].'/search.html?format=xml&amp;q={searchTerms}" />
+	<Url type="application/x-suggestions+xml" method="get" template="http://'.$_SERVER['HTTP_HOST'].$rec['url'].'.html?format=xml&amp;q={searchTerms}" />
 	<moz:SearchForm>http://'.$_SERVER['HTTP_HOST'].$rec['url'].'.html</moz:SearchForm>
 </OpenSearchDescription>';
 					header("HTTP/1.0 200 Ok");
