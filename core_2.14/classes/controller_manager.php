@@ -309,7 +309,7 @@ class controller_manager
 	<moz:SearchForm>http://'.$_SERVER['HTTP_HOST'].'/search.html</moz:SearchForm>
 </OpenSearchDescription>';
 				header("HTTP/1.0 200 Ok");
-				header('Content-Type: text/plain; charset=utf-8');
+				header('Content-Type: text/xml; charset=utf-8');
 				print( $data );
 				exit();
 			}
