@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 	<meta name="description" content="{if strlen($content.seo_description)}{$content.seo_description}{else}{$settings.meta_description}{/if}" />
 	<meta name="keywords" content="{if strlen($content.seo_keywords)}{$content.seo_keywords}{else}{$settings.meta_keywords}{/if}" />
-	<meta name="cms" content="Asterix CMS v{$config.version}" />
+	<meta name="application-name" content="Asterix CMS v{$config.version}" />
 {if $settings.viewport}	<meta name="viewport" content="{$settings.viewport}" />
 {/if}
 {if $canonical}	<link rel="canonical" href="http://{$ask->host}{$content.url}" />
