@@ -281,7 +281,7 @@ class components{
 				'from'		=>	$current_page*$items_per_page,					//Номер первой записи на странице
 				'till'		=>	($current_page+1)*$items_per_page,				//Номер последней записи на странице
 				'limit'		=>	$items_per_page,								//Количество записей на странице
-				'count'		=>	$num_of_records,		//Общее количество страниц
+				'count'		=>	$num_of_recordss,		//Общее количество страниц
 				'recs'		=>	$recs,											//Все записи на странице
 				'pages'		=>	$pages,											//Страницы
 			);
