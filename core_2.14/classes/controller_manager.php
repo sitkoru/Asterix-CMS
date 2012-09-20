@@ -293,6 +293,26 @@ class controller_manager
 				header("HTTP/1.0 404 Not Found");
 			}
 			exit();
+		}elseif( $path == '/opensearch_desc.xml' ){
+			if( IsSet( model::$modules['search'] ) ){
+				$data = '<?xml version="1.0"?>
+<OpenSearchDescription 
+	xmlns="http://a9.com/-/spec/opensearch/1.1/" 
+	xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+	
+	<ShortName>Поиск по сайту</ShortName>
+	<Description>Поиск по сайту</Description>
+	<Image height="16" width="16" type="image/x-icon">http://'.$_SERVER['HTTP_HOST'].'/favicon.ico</Image>
+	<Url type="text/html" method="get" template="http://'.$_SERVER['HTTP_HOST'].'/search.html?q={searchTerms}" />
+	<Url type="application/x-suggestions+json" method="get" template="http://'.$_SERVER['HTTP_HOST'].'/search.html?q={searchTerms}" />
+	<Url type="application/x-suggestions+xml" method="get" template="http://'.$_SERVER['HTTP_HOST'].'/search.html?format=xml&amp;q={searchTerms}" />
+	<moz:SearchForm>http://'.$_SERVER['HTTP_HOST'].'/search.html</moz:SearchForm>
+</OpenSearchDescription>';
+				header("HTTP/1.0 200 Ok");
+				header('Content-Type: text/plain; charset=utf-8');
+				print( $data );
+				exit();
+			}
 		}
 		
 	}
