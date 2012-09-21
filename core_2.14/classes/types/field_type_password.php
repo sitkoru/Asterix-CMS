@@ -101,6 +101,15 @@ class field_type_password extends field_type_default
 				// Таблица хешей
 				model::execSql('CREATE TABLE IF NOT EXISTS `pass` (`hash` text NOT NULL)', 'update');
 			}
+			
+			$sql = 'select DATA_TYPE from information_schema.COLUMNS where TABLE_SCHEMA="'.model::$config['db']['system']['name'].'" and TABLE_NAME="'.$this->users_table.'" and COLUMN_NAME="salt"';
+			if( $res['DATA_TYPE'] != 'VARCHAR(255)' ){
+			
+				// Поле для пароля теперь должно быть типа VARCHAR(255)
+				$sql = 'alter table `'.$this->users_table.'` modify `salt` VARCHAR(255) NOT NULL';
+				model::execSql($sql, 'update');
+			
+			}
 /*			
 			$sql = 'select DATA_TYPE, CHARACTER_MAXIMUM_LENGTH from information_schema.COLUMNS where TABLE_SCHEMA="'.model::$config['db']['system']['name'].'" and TABLE_NAME="'.model::$modules[ $module_sid ]->getCurrentTable($structure_sid).'" and COLUMN_NAME="salt"';
 			$res = model::execSql($sql, 'getrow');
