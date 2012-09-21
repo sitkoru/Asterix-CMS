@@ -34,6 +34,8 @@ class field_type_sid extends field_type_default
 
 	//Проверка уникальности значения SID
 	public function checkUnique($module, $structure_sid, $value, $id = false){
+		if( !IsSet( model::$modules[$module] ) )
+			return true;
 		
 		$repeats = model::makeSql(array(
 			'tables' => array(
