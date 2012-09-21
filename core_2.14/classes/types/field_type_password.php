@@ -110,6 +110,21 @@ class field_type_password extends field_type_default
 				$sql = 'alter table `'.$this->users_table.'` modify `salt` VARCHAR(255) NOT NULL';
 				model::execSql($sql, 'update');
 			
+			/*
+				Если мы делаем такое преобразование, то значит находимся на старом сайте
+				Тогда за одно проверим существование SID и URL у пользователей
+			*/
+				$recs = model::execSql('select * from `users` where `sid`="" or `url`=""', 'getall');
+				foreach( $recs as $rec ){
+					if( strlen( $rec['sid'] ) )
+						$sid = $rec['sid'];
+					else
+						$sid = $rec['login'];
+					$sid = model::$types['sid']->correctValue( $sid );
+					$url = '/users/'.$sid;
+					model::execSql('update `users` set `sid`="'.mysql_real_escape_string( $sid ).'", `url`="'.mysql_real_escape_string( $url ).'" where `id`='.intval($rec['id']).' limit 1', 'update');
+				}
+					
 			}
 /*			
 			$sql = 'select DATA_TYPE, CHARACTER_MAXIMUM_LENGTH from information_schema.COLUMNS where TABLE_SCHEMA="'.model::$config['db']['system']['name'].'" and TABLE_NAME="'.model::$modules[ $module_sid ]->getCurrentTable($structure_sid).'" and COLUMN_NAME="salt"';
