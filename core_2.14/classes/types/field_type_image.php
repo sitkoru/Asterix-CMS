@@ -160,8 +160,8 @@ class field_type_image extends field_type_default
 			if( (substr_count($value, '|')>5) && (!substr_count($value, '{')) )
 				$value = $this->old2new($value, $settings);
 		if( !is_array($value) ){
-			$rec_old = $value;
-			$rec = unserialize( htmlspecialchars_decode( $value ) );
+			$rec_old = stripslashes( $value );
+			$rec = unserialize( htmlspecialchars_decode( stripslashes( $value ) ) );
 			$rec['old'] = $rec_old;
 //			$rec['pre'] = $settings['pre'];
 		}

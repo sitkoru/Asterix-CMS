@@ -163,7 +163,7 @@ class field_type_gallery extends field_type_default
 	public function getValueExplode($value, $settings = false, $record = array())
 	{
 		if( is_string($value) )
-			$result = unserialize( $value );
+			$result = unserialize( stripslashes( $value ) );
 		
 		if(is_array($result))
 			$keys = array_keys($result);
