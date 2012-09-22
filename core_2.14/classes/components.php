@@ -219,7 +219,7 @@ class components{
 					'limit'=>'limit '.($current_page*$items_per_page).', '.$items_per_page,
 				),
 				'getall'
-			);pr(model::$last_sql);
+			);//pr(model::$last_sql);
 
 			//Раскрываем сложные поля
 			if($recs)
@@ -270,7 +270,7 @@ class components{
 			}
 
 			//Заказанные наименования
-			if( IsSet(model::$modules['basket']) )
+			if( IsSet(model::$modules['basket']) && ($structure_sid == 'rec') )
 				if( method_exists( model::$modules['basket'], 'insertOrdered' ) ){
 					$recs = model::$modules['basket']->insertOrdered($recs);
 				}
@@ -323,7 +323,7 @@ class components{
 			}
 			
 			//Заказанные наименования
-			if( IsSet(model::$modules['basket']) )
+			if( IsSet(model::$modules['basket']) && ($structure_sid == 'rec') )
 				if( method_exists( model::$modules['basket'], 'insertOrdered' ) ){
 					$recs = model::$modules['basket']->insertOrdered($recs);
 				}
