@@ -286,6 +286,8 @@ class components{
 				'pages'		=>	$pages,											//Страницы
 			);
 			
+			pr_r($result);
+			
 			if(!count($recs)){
 				$result['recs'] = false;
 				$result['pages'] = false;
