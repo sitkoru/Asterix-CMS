@@ -291,8 +291,6 @@ class components{
 				$result['pages'] = false;
 			}
 			
-			pr_r($result);
-			
 			//Готово
 			return $result;
 
