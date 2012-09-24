@@ -47,6 +47,12 @@ class field_type_gallery extends field_type_default
 		//Коррекция типа данных
 		$this->correctFieldType($module_sid, $structure_sid, $value_sid);
 		
+	/*
+		Название папки будет строиться на основании прототипа модуля, 
+		так как модуль может называться кириллицей что плохо для файловой системы Linux
+	*/
+		$module_prototype = model::$modules[ $module_sid ]->info['prototype'];
+		
 		require_once model::$config['path']['core'] . '/../libs/acmsDirs.php';
 		require_once model::$config['path']['core'] . '/../libs/acmsFiles.php';
 		require_once model::$config['path']['core'] . '/../libs/acmsImages.php';
@@ -69,7 +75,7 @@ class field_type_gallery extends field_type_default
 			if( strlen($values[$value_sid]['tmp_name'][$i]) > 0 ){
 
 			//Создаём папку, если ещё нет
-			$dir_path = model::$config['path']['public_images'] . '/' . $module_sid . '/' . $structure_sid. str_pad($values['id'], 6, '0', STR_PAD_LEFT).'/'.$value_sid;
+			$dir_path = model::$config['path']['public_images'] . '/' . $module_prototype . '/' . $structure_sid. str_pad($values['id'], 6, '0', STR_PAD_LEFT).'/'.$value_sid;
 			$created = acmsDirs::makeFolder( model::$config['path']['www'] . $dir_path );
 			if( !$created )
 				log::stop('500 Internal Server Error', 'Нет доступа для создания папки', model::$config['path']['www'] . $dir_path );
@@ -157,7 +163,7 @@ class field_type_gallery extends field_type_default
 	public function getValueExplode($value, $settings = false, $record = array())
 	{
 		if( is_string($value) )
-			$result = unserialize( $value );
+			$result = unserialize( stripslashes( $value ) );
 		
 		if(is_array($result))
 			$keys = array_keys($result);

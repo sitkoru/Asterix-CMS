@@ -41,7 +41,7 @@
 #acms_content .marked{color:red;}
 
 .acms_close{
-	color: black;
+	color: black !important;
 	font-size: 20px;
 	font-weight: bold;
 	line-height: 13.5px;

@@ -101,6 +101,31 @@ class field_type_password extends field_type_default
 				// Таблица хешей
 				model::execSql('CREATE TABLE IF NOT EXISTS `pass` (`hash` text NOT NULL)', 'update');
 			}
+			
+			$sql = 'select * from information_schema.COLUMNS where TABLE_SCHEMA="'.model::$config['db']['system']['name'].'" and TABLE_NAME="'.$this->users_table.'" and COLUMN_NAME="salt"';
+			$res = model::execSql($sql, 'getrow');
+			if( $res['CHARACTER_MAXIMUM_LENGTH'] != 255 ){
+			
+				// Поле для пароля теперь должно быть типа VARCHAR(255)
+				$sql = 'alter table `'.$this->users_table.'` modify `salt` VARCHAR(255) NOT NULL';
+				model::execSql($sql, 'update');
+			
+			/*
+				Если мы делаем такое преобразование, то значит находимся на старом сайте
+				Тогда за одно проверим существование SID и URL у пользователей
+			*/
+				$recs = model::execSql('select * from `users` where `sid`="" or `url`=""', 'getall');
+				foreach( $recs as $rec ){
+					if( strlen( $rec['sid'] ) )
+						$sid = $rec['sid'];
+					else
+						$sid = $rec['login'];
+					$sid = model::$types['sid']->correctValue( $sid );
+					$url = '/users/'.$sid;
+					model::execSql('update `users` set `sid`="'.mysql_real_escape_string( $sid ).'", `url`="'.mysql_real_escape_string( $url ).'" where `id`='.intval($rec['id']).' limit 1', 'update');
+				}
+					
+			}
 /*			
 			$sql = 'select DATA_TYPE, CHARACTER_MAXIMUM_LENGTH from information_schema.COLUMNS where TABLE_SCHEMA="'.model::$config['db']['system']['name'].'" and TABLE_NAME="'.model::$modules[ $module_sid ]->getCurrentTable($structure_sid).'" and COLUMN_NAME="salt"';
 			$res = model::execSql($sql, 'getrow');

@@ -129,7 +129,7 @@ class model{
 						if (IsSet($rec['sub']))
 							$recs[$i]['sub'] = setOpenAndActiveStatus($rec['sub'], $current_user_url);
 
-						//Пользователь в подразделе текущей записи
+					//Пользователь в подразделе текущей записи
 					} elseif (substr_count($current_user_url, $url)) {
 						$recs[$i]['show_subs'] = true;
 						$recs[$i]['show_link'] = true;
@@ -137,7 +137,7 @@ class model{
 						if (IsSet($rec['sub']))
 							$recs[$i]['sub'] = setOpenAndActiveStatus($rec['sub'], $current_user_url);
 
-						//Обычный пункт меню
+					//Обычный пункт меню
 					} else {
 						$recs[$i]['show_subs'] = false;
 						$recs[$i]['show_link'] = true;

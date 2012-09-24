@@ -293,6 +293,29 @@ class controller_manager
 				header("HTTP/1.0 404 Not Found");
 			}
 			exit();
+		}elseif( $path == '/opensearch_desc.xml' ){
+			if( IsSet( model::$modules['search'] ) ){
+				$rec = model::execSql('select `url` from `start_rec` where `is_link_to_module`="search" limit 1', 'getrow');
+				if( IsSet( $rec['url'] ) ){
+					$data = '<?xml version="1.0"?>
+<OpenSearchDescription 
+	xmlns="http://a9.com/-/spec/opensearch/1.1/" 
+	xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+	
+	<ShortName>Поиск по сайту</ShortName>
+	<Description>Поиск по сайту</Description>
+	<Image height="16" width="16" type="image/x-icon">http://'.$_SERVER['HTTP_HOST'].'/favicon.ico</Image>
+	<Url type="text/html" method="get" template="http://'.$_SERVER['HTTP_HOST'].$rec['url'].'.html?q={searchTerms}" />
+	<Url type="application/x-suggestions+json" method="get" template="http://'.$_SERVER['HTTP_HOST'].$rec['url'].'.html?q={searchTerms}" />
+	<Url type="application/x-suggestions+xml" method="get" template="http://'.$_SERVER['HTTP_HOST'].$rec['url'].'.html?format=xml&amp;q={searchTerms}" />
+	<moz:SearchForm>http://'.$_SERVER['HTTP_HOST'].$rec['url'].'.html</moz:SearchForm>
+</OpenSearchDescription>';
+					header("HTTP/1.0 200 Ok");
+					header('Content-Type: text/xml; charset=utf-8');
+					print( $data );
+					exit();
+				}
+			}
 		}
 		
 	}

@@ -2,13 +2,13 @@
 <head>
 	<title>{if strlen($content.seo_title)}{$content.seo_title}{else}{if isset($content.title) and ($content.sid neq 'start') }{$content.title|strip_tags} - {/if}{$settings.domain_title|strip_tags}{/if}</title>
 	
-	<meta http-equiv="Content-type" value="text/html; charset=utf-8" />
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
 	<meta name="description" content="{if strlen($content.seo_description)}{$content.seo_description}{else}{$settings.meta_description}{/if}" />
 	<meta name="keywords" content="{if strlen($content.seo_keywords)}{$content.seo_keywords}{else}{$settings.meta_keywords}{/if}" />
-	<meta name="cms" content="Asterix CMS v{$config.version}">
-{if $settings.viewport}	<meta name="viewport" content="{$settings.viewport}">
+	<meta name="application-name" content="Asterix CMS v{$config.version}" />
+{if $settings.viewport}	<meta name="viewport" content="{$settings.viewport}" />
 {/if}
-{if $canonical}	<link rel="canonical" href="http://{$ask->host}{$content.url}"/>
+{if $canonical}	<link rel="canonical" href="http://{$ask->host}{$content.url}" />
 {/if}
 
 	
@@ -27,4 +27,5 @@
 {include file="`$paths.admin_templates`/cnct_head_css.tpl"}	
 	<link rel="icon" type="image/png" href="/favicon.ico" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+	<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.xml" title="Википедия (ru)" />
 </head>
