@@ -14,5 +14,8 @@
 				</option>
 			{/foreach}
 			</select>
+			<span class="help-block">
+				Чтобы выбрать несколько наименований, используйте клавишу Ctrl
+			</span>
 		</div>
 	</div>
