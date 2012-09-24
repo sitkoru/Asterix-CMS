@@ -6,7 +6,7 @@
 				<option value="0">- пусто -</option>
 			{/if}
 			{foreach from=$field.value item=value}
-				<option{if !$field.required} size=8{/if} value="{$value.value}"{if $value.selected eq 1} selected="selected"{/if}>
+				<option value="{$value.value}"{if $value.selected eq 1} selected="selected"{/if}>
 					{section name=pre start=1 loop=$value.tree_level max=$value.tree_level}
 						&nbsp;&nbsp;&nbsp;&nbsp;|
 					{/section}
