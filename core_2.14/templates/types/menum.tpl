@@ -6,7 +6,7 @@
 				<option value="0">- пусто -</option>
 			{/if}
 			{foreach from=$field.value item=val}
-				<option{if !$field.required} size=8{/if} value="{$val.value}"{if $val.selected} selected="selected"{/if}>{$val.title}{if !strlen($val.title)}[пусто]{/if}</option>
+				<option value="{$val.value}"{if $val.selected} selected="selected"{/if}>{$val.title}{if !strlen($val.title)}[пусто]{/if}</option>
 			{/foreach}
 			</select>
 			<span class="help-block">
