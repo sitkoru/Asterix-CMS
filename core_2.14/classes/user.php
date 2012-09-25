@@ -35,8 +35,6 @@ class user
 			exit();
 		}
 
-		pr_r( $_GET );
-		
 		//Авторизация
 		if (IsSet($_SESSION['auth'])) {
 			self::authUser();
@@ -236,6 +234,8 @@ class user
 	private static function start_OAuthUser(){
 		$provider = $_GET['login_oauth'];
 
+		pr_r( $provider );
+		
 		if( in_array($provider, array('vk.com','vk') ) ){
 			if( IsSet($_GET['error']))
 				return false;
