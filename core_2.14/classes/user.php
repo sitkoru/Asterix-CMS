@@ -234,8 +234,6 @@ class user
 	private static function start_OAuthUser(){
 		$provider = $_GET['login_oauth'];
 
-		pr_r( $provider );
-		
 		if( in_array($provider, array('vk.com','vk') ) ){
 			if( IsSet($_GET['error']))
 				return false;
@@ -535,6 +533,9 @@ class user
 
 
 		}elseif( $provider == 'yandex.ru' ){
+
+			pr_r( 'Yandex: ' . $provider );
+		
 			$url = 'http://openid.yandex.ru/trusted_request/
 				?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0
 				&openid.mode=checkid_setup
@@ -550,6 +551,9 @@ class user
 				&openid.ax.type.email=http://axschema.org/contact/email
 				&openid.ax.type.language=http://axschema.org/pref/language
 			';
+			
+			pr( $url );
+			
 			$url = str_replace("\n",'', $url);
 			$url = str_replace("	",'', $url);
 			header('Location: '.$url);
