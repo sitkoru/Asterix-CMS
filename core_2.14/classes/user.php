@@ -552,8 +552,8 @@ class user
 			
 			$url = str_replace("\n",'', $url);
 			$url = str_replace("	",'', $url);
+			$url = str_replace(" ",'', $url);
 
-			pr( $url );
 			header('Location: '.$url);
 			exit();
 			
@@ -578,6 +578,8 @@ class user
 				';
 			$url = str_replace("\n",'', $url);
 			$url = str_replace("	",'', $url);
+			$url = str_replace(" ",'', $url);
+
 			header('Location: '.$url);
 			exit();
 		}
