@@ -35,6 +35,8 @@ class user
 			exit();
 		}
 
+		pr_r( $_GET );
+		
 		//Авторизация
 		if (IsSet($_SESSION['auth'])) {
 			self::authUser();
