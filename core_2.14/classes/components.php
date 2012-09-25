@@ -633,6 +633,10 @@ class components{
 					}elseif( $val === 'today' ){
 						$where['and'][$var]='`'.$var.'`>"'.date("Y-m-d").'"';
 
+					//за Сегодня
+					}elseif( $val === 'yesterday' ){
+						$where['and'][$var]='TO_DAYS(`'.$var.'`) = TO_DAYS("'.date("Y-m-d", strtotime("-1 day")).'")';
+
 					//за Неделю
 					}elseif( $val === 'week' ){
 						$where['and'][$var]='`'.$var.'`>"'.date("Y-m-d", strtotime("-1 week")).'"';
