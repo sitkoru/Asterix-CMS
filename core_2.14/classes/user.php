@@ -553,8 +553,8 @@ class user
 			$url = str_replace("\n",'', $url);
 			$url = str_replace("	",'', $url);
 
+			pr( $url );
 			header('Location: '.$url);
-			print('ok');
 			exit();
 			
 			
