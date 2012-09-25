@@ -534,8 +534,6 @@ class user
 
 		}elseif( $provider == 'yandex.ru' ){
 
-			pr_r( 'Yandex: ' . $provider );
-		
 			$url = 'http://openid.yandex.ru/trusted_request/
 				?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0
 				&openid.mode=checkid_setup
@@ -555,9 +553,8 @@ class user
 			$url = str_replace("\n",'', $url);
 			$url = str_replace("	",'', $url);
 
-			pr( $url );
-			
 			header('Location: '.$url);
+			print('ok');
 			exit();
 			
 			
