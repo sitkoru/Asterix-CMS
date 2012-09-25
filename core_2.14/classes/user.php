@@ -533,6 +533,7 @@ class user
 
 
 		}elseif( $provider == 'yandex.ru' ){
+
 			$url = 'http://openid.yandex.ru/trusted_request/
 				?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0
 				&openid.mode=checkid_setup
@@ -548,8 +549,13 @@ class user
 				&openid.ax.type.email=http://axschema.org/contact/email
 				&openid.ax.type.language=http://axschema.org/pref/language
 			';
+			
 			$url = str_replace("\n",'', $url);
 			$url = str_replace("	",'', $url);
+			$url = str_replace(" ",'', $url);
+
+			pr( $url );
+			
 			header('Location: '.$url);
 			exit();
 			
@@ -574,6 +580,8 @@ class user
 				';
 			$url = str_replace("\n",'', $url);
 			$url = str_replace("	",'', $url);
+			$url = str_replace(" ",'', $url);
+
 			header('Location: '.$url);
 			exit();
 		}
