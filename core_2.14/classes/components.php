@@ -633,6 +633,10 @@ class components{
 					}elseif( $val === 'today' ){
 						$where['and'][$var]='`'.$var.'`>"'.date("Y-m-d").'"';
 
+					//за 24 часа
+					}elseif( $val === 'day' ){
+						$where['and'][$var]='`'.$var.'`>"'.date("Y-m-d H:i:s", strtotime("-24 hours")).'"';
+
 					//за Сегодня
 					}elseif( $val === 'yesterday' ){
 						$where['and'][$var]='TO_DAYS(`'.$var.'`) = TO_DAYS("'.date("Y-m-d", strtotime("-1 day")).'")';
