@@ -123,7 +123,7 @@ class field_type_linkm extends field_type_default
 		
 		}
 			
-		
+		pr_r( $recs );
 		
 		//Готово
 		return $recs;
