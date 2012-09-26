@@ -103,7 +103,7 @@ class structures{
 				if(IsSet(model::$types[ $field_settings['type'] ]))
 
 				//Разворачиваем ненулевые значения
-				if($value){
+				if($value || 1){
 				
 					if( $use_admin_explode )
 						$rec[$sid]=model::$types[ $field_settings['type'] ]->getAdmValueExplode($value, $this->structure[$structure_sid]['fields'][$sid], $rec);
