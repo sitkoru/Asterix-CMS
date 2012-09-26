@@ -48,81 +48,72 @@ class field_type_linkm extends field_type_default
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode($value, $settings = false, $record = array())
 	{
-		if( strlen( $value ) ){
+		$arr  = explode('|', $value);
+		$res  = array();
+		UnSet( $arr[ count($arr)-1 ] );
+		UnSet( $arr[0] );
+		$arr = array_values( $arr );
 		
-			// Разбираем значения
-			$arr  = explode('|', $value);
-			$res  = array();
-			UnSet( $arr[ count($arr)-1 ] );
-			UnSet( $arr[0] );
-			$arr = array_values( $arr );
+		$fields = array(
+			$this->link_field,
+			'title',
+			'url'
+		);
+		if( IsSet( $record['img'] ) )
+			$fields[] = 'img';
 			
-			$fields = array(
-				$this->link_field,
-				'title',
-				'url'
-			);
-			if( IsSet( $record['img'] ) )
-				$fields[] = 'img';
-				
-			//Варианты значений
-			$this->structure = model::$modules[$settings['module']]->structure[$settings['structure_sid']];
-			if( $this->structure['type'] == 'simple' )
-				$order = 'order by `title`';
-			else{
-				$order = 'order by `left_key`';
-				$fields[] = 'tree_level';
-			}
-			if( isset($this->structure['fields']['pos']) )
-				$order = 'order by `pos` asc';
-			
-			
-			/*
-				Тестовый вариант запроса записей поштучно а не единым запросом.
-				
-				На больших сайтах, когда одни и те же записи достаются из базы в различных комбинациях
-				такой вид единичных запросов лучше кешируется, что позвоняет
-				не тянуть одни и те же записи несколько раз
-			*/
-			$test = false;
-			if( $test ){
-			
-				if( !count($arr) )
-					return false;
-				
-				$recs = array();
-				foreach( $arr as $id )
-					if( $id ){
-						$sql = 'select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'`='.intval( $id ).''.(IsSet( $settings['where'] )?' and '.$settings['where']:'').' limit 1';
-						$rec = model::execSql($sql, 'getrow');
-						if( $rec )
-							$recs[] = $rec;
-					}
-			}else{
-			
-				if( count( $arr )>1 ){
-					$recs = model::execSql('select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'` in ('.implode(',', $arr).')'.(IsSet( $settings['where'] )?' and '.$settings['where']:'').' '.$order, 'getall');
-				}else{
-					if( !intval( $arr[0] ) )
-						return false;
-					$rec = model::execSql('select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'`='.intval( $arr[0] ).''.(IsSet( $settings['where'] )?' and '.$settings['where']:'').' '.$order.' limit 1', 'getrow');
-					$recs = array( $rec );
-				}
-				
-			}
-			
-			foreach($recs as $i=>$rec){
-				if( IsSet( $rec['img']) )
-					$rec['img'] = model::$types['image']->getValueExplode($rec['img'], $modules[ $settings['module'] ]->structure[ $settings['structure_sid'] ]['fields']['img'], $record );
-				$recs[$i]=model::$modules['start']->insertRecordUrlType($rec);
-			}
-			
-		}else{
-		
-			$recs = array();
-		
+		//Варианты значений
+		$this->structure = model::$modules[$settings['module']]->structure[$settings['structure_sid']];
+		if( $this->structure['type'] == 'simple' )
+			$order = 'order by `title`';
+		else{
+			$order = 'order by `left_key`';
+			$fields[] = 'tree_level';
 		}
-			
+		if( isset($this->structure['fields']['pos']) )
+			$order = 'order by `pos` asc';
+		
+		
+	/*
+		Тестовый вариант запроса записей поштучно а не единым запросом.
+		
+		На больших сайтах, когда одни и те же записи достаются из базы в различных комбинациях
+		такой вид единичных запросов лучше кешируется, что позвоняет
+		не тянуть одни и те же записи несколько раз
+	*/
+	$test = false;
+	if( $test ){
+	
+		if( !count($arr) )
+			return false;
+		
+		$recs = array();
+		foreach( $arr as $id )
+			if( $id ){
+				$sql = 'select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'`='.intval( $id ).''.(IsSet( $settings['where'] )?' and '.$settings['where']:'').' limit 1';
+				$rec = model::execSql($sql, 'getrow');
+				if( $rec )
+					$recs[] = $rec;
+			}
+	}else{
+	
+		if( count( $arr )>1 ){
+			$recs = model::execSql('select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'` in ('.implode(',', $arr).')'.(IsSet( $settings['where'] )?' and '.$settings['where']:'').' '.$order, 'getall');
+		}else{
+			if( !intval( $arr[0] ) )
+				return false;
+			$rec = model::execSql('select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'`='.intval( $arr[0] ).''.(IsSet( $settings['where'] )?' and '.$settings['where']:'').' '.$order.' limit 1', 'getrow');
+			$recs = array( $rec );
+		}
+		
+	}
+		
+		foreach($recs as $i=>$rec){
+			if( IsSet( $rec['img']) )
+				$rec['img'] = model::$types['image']->getValueExplode($rec['img'], $modules[ $settings['module'] ]->structure[ $settings['structure_sid'] ]['fields']['img'], $record );
+			$recs[$i]=model::$modules['start']->insertRecordUrlType($rec);
+		}
+		
 		//Готово
 		return $recs;
 	}
