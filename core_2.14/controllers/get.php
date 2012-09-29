@@ -100,7 +100,7 @@ class controller_get extends default_controller
 			$this->addCSS('http://src.sitko.ru/3.0/lightbox/lightbox.css');
 		}
 			
-		$this->addCSS(model::$config['path']['public_styles'].'/s.css');
+		$this->addCSS(model::$config['path']['public_styles'].'/s.css', array('media'=>'screen,projection'));
 
 		//Подключаем шаблонизатор
 		require_once(model::$config['path']['core'] . '/classes/templates.php');
