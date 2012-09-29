@@ -101,6 +101,7 @@ class controller_get extends default_controller
 		}
 			
 		$this->addCSS(model::$config['path']['public_styles'].'/s.css', array('media'=>'screen,projection'));
+		$this->addCSS(model::$config['path']['public_styles'].'/print.css', array('media'=>'print'));
 
 		//Подключаем шаблонизатор
 		require_once(model::$config['path']['core'] . '/classes/templates.php');
