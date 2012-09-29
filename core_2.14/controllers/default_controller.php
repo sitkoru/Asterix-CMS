@@ -42,6 +42,7 @@ class default_controller
 	public function addJS($path, $params = false){
 		self::$add['js_core'][] = array(
 			'path' => $path,
+			'params' => $params,
 		);
 		return self::$add;
 	}
@@ -50,6 +51,7 @@ class default_controller
 	public function addCSS($path, $params = false){
 		self::$add['css_core'][] = array(
 			'path' => $path,
+			'params' => $params,
 		);
 		return self::$add;
 	}
