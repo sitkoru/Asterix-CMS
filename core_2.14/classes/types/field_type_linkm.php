@@ -117,8 +117,7 @@ class field_type_linkm extends field_type_default
 				$recs[$i]=model::$modules['start']->insertRecordUrlType($rec);
 			}
 			
-		}else{
-		
+		}elseif( !is_array( $value ) ){
 			$recs = array();
 		
 		}
