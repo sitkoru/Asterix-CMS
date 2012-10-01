@@ -108,6 +108,7 @@ class field_type_linkm extends field_type_default
 			
 				if( count( $arr )>1 ){
 					$recs = model::execSql('select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'` in ('.implode(',', $arr).')'.(IsSet( $settings['where'] )?' and '.$settings['where']:'').' '.$order, 'getall');
+					
 				}else{
 /*
 	Нужная строка для разворачинвания нулевых значений
@@ -131,7 +132,6 @@ class field_type_linkm extends field_type_default
 			}
 			
 		}elseif( !is_array( $value ) ){
-			pr('clearing');
 			$recs = array();
 		
 		}
@@ -139,6 +139,7 @@ class field_type_linkm extends field_type_default
 		
 		if( $record['id'] == 22004 ){
 			pr('2');
+			pr( model::$last_sql );
 			pr_r( $recs );
 		}
 		
