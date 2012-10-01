@@ -48,6 +48,13 @@ class field_type_linkm extends field_type_default
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode($value, $settings = false, $record = array())
 	{
+
+		if( $record['id'] == 22004 ){
+			pr( $value );
+			pr_r( $value );
+			pr_r( $record );
+		}
+		
 		if( strlen( $value ) ){
 		
 			// Разбираем значения
