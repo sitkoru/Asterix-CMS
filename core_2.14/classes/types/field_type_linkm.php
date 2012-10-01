@@ -49,11 +49,6 @@ class field_type_linkm extends field_type_default
 	public function getValueExplode($value, $settings = false, $record = array())
 	{
 
-		if( $record['id'] == 22004 ){
-			pr('1');
-			pr( $value );
-		}
-		
 		if( strlen( $value ) ){
 		
 			// Разбираем значения
@@ -139,13 +134,6 @@ class field_type_linkm extends field_type_default
 		
 		}
 			
-		
-		if( $record['id'] == 22004 ){
-			pr('2');
-			pr( model::$last_sql );
-			pr_r( $recs );
-		}
-		
 		//Готово
 		return $recs;
 	}
