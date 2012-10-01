@@ -56,9 +56,12 @@ class field_type_linkm extends field_type_default
 			$res  = array();
 			UnSet( $arr[ count($arr)-1 ] );
 			UnSet( $arr[0] );
+			
+			// fix misprint values like "||8|57|"
 			foreach( $arr as $i => $arri )
 				if( !strlen( $arri ) )
 					UnSet( $arr[ $i ] );
+			
 			$arr = array_values( $arr );
 			
 			$fields = array(
