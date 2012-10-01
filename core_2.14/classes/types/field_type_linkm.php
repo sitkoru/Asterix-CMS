@@ -51,8 +51,6 @@ class field_type_linkm extends field_type_default
 
 		if( $record['id'] == 22004 ){
 			pr( $value );
-			pr_r( $value );
-			pr_r( $record );
 		}
 		
 		if( strlen( $value ) ){
@@ -129,6 +127,11 @@ class field_type_linkm extends field_type_default
 		
 		}
 			
+		
+		if( $record['id'] == 22004 ){
+			pr( $recs );
+		}
+		
 		//Готово
 		return $recs;
 	}
