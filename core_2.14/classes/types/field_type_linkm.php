@@ -50,6 +50,7 @@ class field_type_linkm extends field_type_default
 	{
 
 		if( $record['id'] == 22004 ){
+			pr('1');
 			pr( $value );
 		}
 		
@@ -129,7 +130,8 @@ class field_type_linkm extends field_type_default
 			
 		
 		if( $record['id'] == 22004 ){
-			pr( $recs );
+			pr('2');
+			pr_r( $recs );
 		}
 		
 		//Готово
