@@ -30,7 +30,7 @@ var init_ckeditor = function() {
 		language:'ru',
 		/*removePlugins:'scayt,menubutton,contextmenu',*/
 		filebrowserUploadUrl:'/admin/',
-		extraPlugins:'iframedialog,typograf'
+		extraPlugins:'iframedialog,typograf,onchange'
 	});
 }
 
