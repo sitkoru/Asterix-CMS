@@ -275,7 +275,7 @@ class components{
 						$pages['items'][$i]['hide'] = false;
 					
 					// Отмечаем пограничные страницы как страницы с троеточием
-					if( $i && ( $pages['items'][$i-1]['hide'] != $pages['items'][$i]['hide'] ) )
+					if( $i && $pages['items'][$i-1]['hide'] && !$pages['items'][$i]['hide'] )
 						$pages['items'][$i]['ellipsis'] = true;
 					
 				}
