@@ -344,8 +344,6 @@ class controller_manager
 			)
 		));
 		
-		print('3');
-
 		function toLine($tree)
 		{
 			$recs = array();
@@ -376,8 +374,6 @@ class controller_manager
 		//Получаем данные
 		$recs = toLine($tree);
 		
-		print('4');
-
 		//Форматируем данные
 		foreach ($recs as $i => $rec){
 
@@ -394,8 +390,6 @@ class controller_manager
 			}
 		}
 		
-		print('5');
-
 		return $recs;
 	}
 
