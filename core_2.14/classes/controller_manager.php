@@ -394,7 +394,9 @@ class controller_manager
 				if( substr_count($recs[$i]['url'], $fi) )
 					$flag = false;
 		
-			if( $flag ){
+			if( !$flag )
+				UnSet( $recs[$i] ); 
+			else{
 				//Дописываем Url
 				$recs[$i]['url']         = 'http://' . $_SERVER['HTTP_HOST'] . $recs[$i]['url'];
 				//Форматируем дату
