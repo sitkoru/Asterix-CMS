@@ -271,23 +271,15 @@ class controller_manager
 		
 		// sitemap.xml
 		}elseif( $path == '/sitemap.xml' ){
-			print('[sitemap]');
 			require(model::$config['path']['core'].'/classes/templates.php');
-		print('1');
 			$tmpl=new templater($model);
-		print('2');
 			$recs=$this->siteMap();
-		print('3');
 			$tmpl->assign('recs',$recs);
-		print('4');
 			header("HTTP/1.0 200 Ok");
 			header('Content-Type:text/xml');
 			$current_template_file=model::$config['path']['admin_templates'].'/sitemap.tpl';
-		print('5');
 			$ready_html=$tmpl->fetch($current_template_file);
-		print('6');
 			print($ready_html);
-			print('[/sitemap]');
 			exit();
 			
 		// robots.txt
@@ -332,6 +324,8 @@ class controller_manager
 	private function siteMap()
 	{
 
+		print('1');
+
 		// Фильтровать подобные адреса, и не показывать их в карте сайта
 		$filter = array();
 		
@@ -345,6 +339,8 @@ class controller_manager
 			}
 				
 		
+		print('2');
+
 		// Получаем дерево
 		$tree = model::prepareShirtTree('start', 'rec', false, 10, $conditions = array(
 			'and' => array(
@@ -352,6 +348,8 @@ class controller_manager
 			)
 		));
 		
+		print('3');
+
 		function toLine($tree)
 		{
 			$recs = array();
@@ -382,6 +380,8 @@ class controller_manager
 		//Получаем данные
 		$recs = toLine($tree);
 		
+		print('4');
+
 		//Форматируем данные
 		foreach ($recs as $i => $rec){
 
@@ -398,6 +398,8 @@ class controller_manager
 			}
 		}
 		
+		print('5');
+
 		return $recs;
 	}
 
