@@ -102,8 +102,6 @@ class ModelSql{
 		//Что запрашиваем
 		if ($query_type == 'getrow' or $query_type == 'getall') {
 			
-print('1');
-
 			//Не указано что запрашивать - забираем всё
 			if( !is_array( $sql_conditions['fields'] ) ){
 				$fields = '*';
@@ -128,8 +126,6 @@ print('1');
 			$fields = implode(', ', $sql_conditions['fields']);
 		}
 
-print('2');
-
 		//Условия
 		if ($sql_conditions['where']) {
 			if (is_array($sql_conditions['where'])) {
@@ -150,8 +146,6 @@ print('2');
 				$where = $res;
 			}
 		}
-
-print('3');
 
 		//Таблицы
 		$tables = '`'.implode('`, `', $sql_conditions['tables']).'`';
