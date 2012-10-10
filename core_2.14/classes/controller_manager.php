@@ -271,6 +271,7 @@ class controller_manager
 		
 		// sitemap.xml
 		}elseif( $path == '/sitemap.xml' ){
+			print('[sitemap]');
 			require(model::$config['path']['core'].'/classes/templates.php');
 			$tmpl=new templater($model);
 			$recs=$this->siteMap();
@@ -280,7 +281,7 @@ class controller_manager
 			$current_template_file=model::$config['path']['admin_templates'].'/sitemap.tpl';
 			$ready_html=$tmpl->fetch($current_template_file);
 			print($ready_html);
-			print('[sitemap]');
+			print('[/sitemap]');
 			exit();
 			
 		// robots.txt
