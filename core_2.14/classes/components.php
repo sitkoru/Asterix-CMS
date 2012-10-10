@@ -54,11 +54,6 @@ class components{
 			if( IsSet( $module->prepares[ $prepare ]['params'] ) )
 				$params = array_merge( @$module->prepares[ $prepare ]['params'], $params );
 			
-			// Переопределение модуля, к которому обращаемся
-			if( IsSet( $params['module'] ) )
-				if( is_object( model::$modules[ $params['module'] ] ) )
-					$module = model::$modules[ $params['module'] ];
-			
 /* TODO: Разобраться почему три разных метода */
 			
 			if( is_callable( array( $module, $function_name ) ) ){
