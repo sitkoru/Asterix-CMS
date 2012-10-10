@@ -182,7 +182,7 @@ class ModelSql{
 		}
 
 print('4');
-
+/*
 		//Режим демонстрации
 		if (model::$config['settings']['demo_mode'] and (in_array($query_type, array(
 			'update',
@@ -193,14 +193,14 @@ print('4');
 			print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');
 			exit();
 		} else {
-			
+*/			
 			//Выполняем запрос
 			$result = model::execSql($sql, //готовый sql-запрос
 				$query_type, 	//варианты: getraw, getall, insert, update, delete
 				$database, 		//нужная база данных.
 				$no_cache		//Не использовать кеш запроса
 			);
-		}
+//		}
 
 print('5');
 
