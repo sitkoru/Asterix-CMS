@@ -169,7 +169,14 @@ class user
 		
 		//Авторизация по логину/паролю
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
+			
+			pr_r( $_POST );
+			
 			$user = model::$types['password'] -> tryAuth( 'login',  $_POST );
+			
+			pr_r( $user );
+			exit();
+			
 			UnSet($_POST['login']);
 			UnSet($_POST['password']);
 
