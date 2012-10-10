@@ -75,8 +75,11 @@ class email{
 		
 		//Plain
 		if($type=='plain'){
-			$message=iconv('utf-8', 'koi8-r//IGNORE', $message);
-		
+			//$message=iconv('utf-8', 'koi8-r//IGNORE', $message);
+			$message = str_replace( "?", "[question_mark]", $message );
+			$message = mb_convert_encoding($message, 'KOI8-R', 'UTF8'); 
+			$message = str_replace( "?", "", $message );
+			$message = str_replace( "[question_mark]", "?", $message );
 		//HTML
 		}elseif($type=='html'){
 			
@@ -84,7 +87,13 @@ class email{
 			if(is_array($files))
 				foreach($files as $file)$attachment .= $this->addAttachment($file);
 		
-			$message=iconv('utf-8', 'koi8-r//IGNORE', $message);
+			//$message=iconv('utf-8', 'koi8-r//IGNORE', $message);
+			$message = str_replace( "?", "[question_mark]", $message );
+			$message = mb_convert_encoding($message, 'KOI8-R', 'UTF8'); 
+			$message = str_replace( "?", "", $message );
+			$message = str_replace( "[question_mark]", "?", $message );
+			
+			
 			$message='--'.md5(1).'
 Content-Type: multipart/alternative; boundary="'.md5(2).'"
 

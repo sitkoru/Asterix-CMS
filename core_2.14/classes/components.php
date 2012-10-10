@@ -264,8 +264,20 @@ class components{
 				$pages['next']['num'] = $next;
 
 				//Другие страницы
+				$hide_flag = false;
 				for($i=0;$i<$num_of_pages;$i++){
 					$pages['items'][$i]['url']=model::$ask->rec['url'].$modifiers.'.'.$i.'.'.model::$ask->output_format.($get_vars?'?'.implode('&', $get_vars):'');
+					
+					// Скрываем большие списки страниц
+					if( (abs($i-$current_page) > 5) && ($i>0) && ($i+1<$num_of_pages) )
+						$pages['items'][$i]['hide'] = true;
+					else
+						$pages['items'][$i]['hide'] = false;
+					
+					// Отмечаем пограничные страницы как страницы с троеточием
+					if( $i && $pages['items'][$i-1]['hide'] && !$pages['items'][$i]['hide'] )
+						$pages['items'][$i]['dots'] = true;
+					
 				}
 			}
 
