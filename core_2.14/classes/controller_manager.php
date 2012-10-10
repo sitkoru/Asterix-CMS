@@ -398,7 +398,7 @@ class controller_manager
 				UnSet( $recs[$i] ); 
 			else{
 				//Дописываем Url
-				$rec['url']         = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'];
+				$rec['url']         = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . '.html';
 				//Форматируем дату
 				$rec['date_public'] = @date("c", strtotime($rec['date_public']));
 				
