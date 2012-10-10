@@ -231,7 +231,7 @@ class acms_trees{
 	public function getStructureShirtTree_typeSimple($root_record_id,$structure_sid,$levels_to_show,$where=false,$conditions=false){
 
 		if($root_record_id){
-			pr('-> '.$this->info['sid'].'_'.$structure_sid.' ['.$root_record_id.']');
+//			pr('-> '.$this->info['sid'].'_'.$structure_sid.' ['.$root_record_id.']');
 
 			// Сначала смотрим зависимые структуры
 			// потом к ним будем вызывать рекурсии
@@ -267,6 +267,7 @@ class acms_trees{
 
 		//Смотрим всю структуру
 		}else{
+			pr('-> '.$this->info['sid'].'_'.$structure_sid.' ['.$root_record_id.']');
 
 			//Учитываем переданные в функцию условия
 			if(is_array($conditions['and']) && is_array($where) ){
