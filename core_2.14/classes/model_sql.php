@@ -102,6 +102,8 @@ class ModelSql{
 		//Что запрашиваем
 		if ($query_type == 'getrow' or $query_type == 'getall') {
 			
+print('1');
+
 			//Не указано что запрашивать - забираем всё
 			if( !is_array( $sql_conditions['fields'] ) ){
 				$fields = '*';
@@ -126,6 +128,8 @@ class ModelSql{
 			$fields = implode(', ', $sql_conditions['fields']);
 		}
 
+print('2');
+
 		//Условия
 		if ($sql_conditions['where']) {
 			if (is_array($sql_conditions['where'])) {
@@ -146,6 +150,8 @@ class ModelSql{
 				$where = $res;
 			}
 		}
+
+print('3');
 
 		//Таблицы
 		$tables = '`'.implode('`, `', $sql_conditions['tables']).'`';
@@ -181,6 +187,8 @@ class ModelSql{
 			$sql = 'delete from ' . $tables . ' where ' . $where . '';
 		}
 
+print('4');
+
 		//Режим демонстрации
 		if (model::$config['settings']['demo_mode'] and (in_array($query_type, array(
 			'update',
@@ -199,6 +207,8 @@ class ModelSql{
 				$no_cache		//Не использовать кеш запроса
 			);
 		}
+
+print('5');
 
 		return $result;
 	}
