@@ -357,10 +357,14 @@ class controller_manager
 			$recs[$i] = $rec;
 
 			foreach( $filter as $fi )
-				if( substr_count($rec['url'], $fi) )
+				if( substr_count($rec['url'], $fi) ){
+					print('delete '.$rec['url'].' on filter '.$fi.'<br />');
 					UnSet( $recs[$i] ); 
+				}
 		
 		}
+		
+		exit();
 		
 		return $recs;
 	}
