@@ -267,7 +267,6 @@ class acms_trees{
 
 		//Смотрим всю структуру
 		}else{
-			pr('1');
 
 			//Учитываем переданные в функцию условия
 			if(is_array($conditions['and']) && is_array($where) ){
@@ -276,8 +275,6 @@ class acms_trees{
 				$where=$conditions;
 			}
 
-			pr('2');
-			
 			// Сначала смотрим зависимые структуры
 			// потом к ним будем вызывать рекурсии
 			$search_children=false;
@@ -295,6 +292,8 @@ class acms_trees{
 			//иначе сортируем по публичной дате, в обратном порядке
 			$order=IsSet($this->structure[$structure_sid]['fields']['pos'])?'order by `pos`':'order by `date_public` desc';
 
+		pr( $order );
+			
 			//Получаем записи
 			if($levels_to_show > 0){
 				$recs=model::makeSql(
@@ -338,8 +337,6 @@ class acms_trees{
 		//Вставляем окончание .html
 		$recs=$this->insertRecordUrlType($recs);
 		
-			pr('5');
-			
 		//Помним какая запись из какого модуля
 		if($recs)
 		foreach($recs as $i=>$rec){
@@ -349,8 +346,6 @@ class acms_trees{
 				$recs[$i]['structure_sid'] = $structure_sid;
 		}
 
-			pr('6');
-			
 		//Готово
 		if(count($recs))
 			return $recs;
