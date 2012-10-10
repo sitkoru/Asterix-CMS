@@ -290,8 +290,6 @@ class acms_trees{
 			//иначе сортируем по публичной дате, в обратном порядке
 			$order=IsSet($this->structure[$structure_sid]['fields']['pos'])?'order by `pos`':'order by `date_public` desc';
 
-		pr( $order );
-			
 			//Получаем записи
 			if($levels_to_show > 0){
 				$recs=model::makeSql(
@@ -303,8 +301,6 @@ class acms_trees{
 					'getall'
 				);
 			}//pr(model::$last_sql);
-			
-			pr('4');
 			
 			//Вставляем завиcимые записи если нужно
 			if(is_array($recs))
