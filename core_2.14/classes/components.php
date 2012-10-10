@@ -54,7 +54,12 @@ class components{
 			if( IsSet( $module->prepares[ $prepare ]['params'] ) )
 				$params = array_merge( @$module->prepares[ $prepare ]['params'], $params );
 			
-/* Разобраться почему три разных метода */
+			// Переопределение модуля, к которому обращаемся
+			if( IsSet( $params['module'] ) )
+				if( is_object( model::$modules[ $params['module'] ] ) )
+					$module = model::$modules[ $params['module'] ];
+			
+/* TODO: Разобраться почему три разных метода */
 			
 			if( is_callable( array( $module, $function_name ) ) ){
 				$result = $module->$function_name($params);	
@@ -192,6 +197,8 @@ class components{
 		else
 			$order=components::getOrderBy($structure_sid);
 
+		pr_r( $params );
+			
 		//Требуется разбивка на страницы
 		if( $params['chop_to_pages'] ){
 
