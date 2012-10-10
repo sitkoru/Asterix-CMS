@@ -175,6 +175,25 @@ class user
 			UnSet($_POST['login']);
 			UnSet($_POST['password']);
 
+			//Залогинелся
+			if ( $user ) {
+				$result = array(
+					'result' => 'redirect',
+					'url' => $_SERVER['HTTP_REFERER'],
+					'close' => true,
+				);
+			//Не подошло
+			} else {
+				user::deleteCookie('auth');
+				$result = array(
+					'result' => 'message',
+					'message' => 'Не получилось, попробуйте ещё',
+					'close' => false,
+				);
+			}
+			//Ответ
+			model::$modules['users']->answerInterface('login', $result);
+
 		//Авторизация по GET-параметру
 		} elseif (IsSet($_GET['login']) && IsSet($_GET['auth'])) {
 			$user = model::$types['password'] -> tryAuth( 'auth',  $_POST );
