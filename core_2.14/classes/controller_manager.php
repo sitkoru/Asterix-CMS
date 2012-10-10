@@ -336,7 +336,18 @@ class controller_manager
 				$filter[] = $path;
 			}
 				
-		
+		$recs = array();
+		foreach( model::$modules as $module_sid => $module )
+			if( IsSet( $module->structure ) )
+				if( !$module->structure['rec']['hide_in_tree'] ){
+				
+					$fields = '`url`,`date_public`';
+					if( IsSet( model::$extensions['seo'] ) )
+						$fields .= ',`seo_changefreq`,`seo_priority`';
+					$current = model::execSql('select '.$fields.' from `'.$module->getCurrentTable('rec').'` where `shw`=1');
+					$recs = array_merge( $recs, (array)$current );
+				}
+/*		
 		// Получаем дерево
 		$tree = model::prepareShirtTree('start', 'rec', false, 10, $conditions = array(
 			'and' => array(
@@ -373,6 +384,7 @@ class controller_manager
 		
 		//Получаем данные
 		$recs = toLine($tree);
+*/
 		
 		//Форматируем данные
 		foreach ($recs as $i => $rec){
