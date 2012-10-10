@@ -197,8 +197,6 @@ class components{
 		else
 			$order=components::getOrderBy($structure_sid);
 
-		pr_r( $params );
-			
 		//Требуется разбивка на страницы
 		if( $params['chop_to_pages'] ){
 
