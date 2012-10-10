@@ -44,7 +44,8 @@ class ModelSql{
 
 			// Получение списка данных
             } elseif ($query_type == 'getall') {
-                $result = model::$db[$database]->GetAll($sql);
+                print('<!-- '.$sql.' -->');
+				$result = model::$db[$database]->GetAll($sql);
 				$result_count = count( $result );
 
 			// Вставка данных
