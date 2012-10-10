@@ -181,7 +181,6 @@ class ModelSql{
 			$sql = 'delete from ' . $tables . ' where ' . $where . '';
 		}
 
-print('4');
 /*
 		//Режим демонстрации
 		if (model::$config['settings']['demo_mode'] and (in_array($query_type, array(
@@ -201,8 +200,6 @@ print('4');
 				$no_cache		//Не использовать кеш запроса
 			);
 //		}
-
-print('5');
 
 		return $result;
 	}
