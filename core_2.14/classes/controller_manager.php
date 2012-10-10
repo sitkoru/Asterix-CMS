@@ -335,6 +335,9 @@ class controller_manager
 				$path = str_replace('*', '', $path);
 				$filter[] = $path;
 			}
+			
+		print_r($filter);
+		exit();
 				
 		$recs = array();
 		foreach( model::$modules as $module_sid => $module )
