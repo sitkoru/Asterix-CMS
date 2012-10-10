@@ -351,7 +351,8 @@ class controller_manager
 		
 		//Форматируем данные
 		foreach ($recs as $i => $rec){
-
+			print('.');
+		
 			$rec['url']         = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . '.html';
 			$rec['date_public'] = @date("c", strtotime($rec['date_public']));
 			$recs[$i] = $rec;
@@ -364,6 +365,7 @@ class controller_manager
 		
 		}
 		
+		print('ok!');
 		exit();
 		
 		return $recs;
