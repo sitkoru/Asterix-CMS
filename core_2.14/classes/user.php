@@ -192,7 +192,8 @@ class user
 				);
 			}
 			//Ответ
-			model::$modules['users']->answerInterface('login', $result);
+			print( json_encode( $result ) );
+			exit();
 
 		//Авторизация по GET-параметру
 		} elseif (IsSet($_GET['login']) && IsSet($_GET['auth'])) {
