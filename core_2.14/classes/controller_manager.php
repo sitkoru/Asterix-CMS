@@ -337,8 +337,6 @@ class controller_manager
 				$filter[] = trim( $path );
 			}
 		
-pr_r( $filter );
-		
 		$recs = array();
 		foreach( model::$modules as $module_sid => $module )
 			if( IsSet( $module->structure ) )
@@ -353,7 +351,6 @@ pr_r( $filter );
 		
 		//Форматируем данные
 		foreach ($recs as $i => $rec){
-			print('.');
 		
 			$rec['url']         = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . '.html';
 			$rec['date_public'] = @date("c", strtotime($rec['date_public']));
@@ -366,9 +363,6 @@ pr_r( $filter );
 				}
 		
 		}
-		
-		print('<br />ok!');
-		exit();
 		
 		return $recs;
 	}
