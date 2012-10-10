@@ -219,7 +219,7 @@ class components{
 					'limit'=>'limit '.($current_page*$items_per_page).', '.$items_per_page,
 				),
 				'getall'
-			);pr(model::$last_sql);
+			);pr('1: ' . model::$last_sql);
 
 			//Раскрываем сложные поля
 			if($recs)
@@ -324,7 +324,7 @@ class components{
 					'order'=>$order,
 				),
 				'getall'
-			);//pr(model::$last_sql);
+			);pr('2: ' . model::$last_sql);
 
 			//Раскрываем сложные поля
 			if($recs)
