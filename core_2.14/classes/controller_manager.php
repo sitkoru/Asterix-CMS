@@ -280,6 +280,7 @@ class controller_manager
 			$current_template_file=model::$config['path']['admin_templates'].'/sitemap.tpl';
 			$ready_html=$tmpl->fetch($current_template_file);
 			print($ready_html);
+			print('[sitemap]');
 			exit();
 			
 		// robots.txt
