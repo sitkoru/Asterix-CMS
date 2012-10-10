@@ -333,7 +333,7 @@ class controller_manager
 			if( substr_count( $fi, 'Disallow') ){
 				$path = substr( $fi, strpos($fi, ' ')+1 );
 				if( substr_count( $fi, '*' ) )
-					$path = substr( $fi, 0, strrpos( $path, '*' ) );
+					$path = substr( $path, 0, strrpos( $path, '*' ) );
 				$filter[] = $path;
 			}
 		
