@@ -334,7 +334,7 @@ class controller_manager
 				$path = substr( $fi, strpos($fi, ' ')+1 );
 				if( substr_count( $fi, '*' ) )
 					$path = substr( $path, 0, strrpos( $path, '*' ) );
-				$filter[] = $path;
+				$filter[] = trim( $path );
 			}
 		
 pr_r( $filter );
