@@ -337,9 +337,6 @@ class controller_manager
 				$filter[] = $path;
 			}
 			
-		print_r($filter);
-		exit();
-				
 		$recs = array();
 		foreach( model::$modules as $module_sid => $module )
 			if( IsSet( $module->structure ) )
