@@ -175,6 +175,10 @@ class user
 			UnSet($_POST['login']);
 			UnSet($_POST['password']);
 
+			self::setCookie('auth', $user['session_id']);
+			self::all_ok($user);
+			$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
+		
 			//Залогинелся
 			if ( $user ) {
 				$result = array(
