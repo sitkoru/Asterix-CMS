@@ -187,7 +187,6 @@ class field_type_password extends field_type_default
 			foreach( $recs as $rec ){
 				$hash = $this->encrypt( $value['password'], $rec['salt'] );
 				
-				print( $rec['password'] .' == '. $hash .'<br />');
 				if( $rec['password'] == $hash ){
 					$user = $rec;
 

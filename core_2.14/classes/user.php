@@ -172,9 +172,6 @@ class user
 			
 			$user = model::$types['password'] -> tryAuth( 'login',  $_POST );
 			
-			pr_r( $user );
-			exit();
-			
 			UnSet($_POST['login']);
 			UnSet($_POST['password']);
 
