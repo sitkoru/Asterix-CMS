@@ -363,7 +363,6 @@ class controller_manager
 				if( substr_count($rec['url'], $fi) )
 					UnSet( $recs[$i] ); 
 		
-			}
 		}
 		
 		return $recs;
