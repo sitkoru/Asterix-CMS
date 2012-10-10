@@ -332,7 +332,8 @@ class controller_manager
 		foreach( $f as $fi )
 			if( substr_count( $fi, 'Disallow') ){
 				$path = substr( $fi, strpos($fi, ' ')+1 );
-				$path = str_replace('*', '', $path);
+				if( substr_count( $fi, '*' ) )
+					$path = substr( $fi, 0, strrpos( $path, '*' ) );
 				$filter[] = $path;
 			}
 			
@@ -350,62 +351,18 @@ class controller_manager
 					$current = model::execSql('select '.$fields.' from `'.$module->getCurrentTable('rec').'` where `shw`=1');
 					$recs = array_merge( $recs, (array)$current );
 				}
-/*		
-		// Получаем дерево
-		$tree = model::prepareShirtTree('start', 'rec', false, 10, $conditions = array(
-			'and' => array(
-				'`shw`=1'
-			)
-		));
-		
-		function toLine($tree)
-		{
-			$recs = array();
-			$i    = 0;
-			
-			//Перебираем дерево
-			foreach ($tree as $i => $t) {
-				$i = count($recs) + 1;
-				
-				//Сама запись
-				$recs[$i] = $t;
-				
-				//Если есть подразделы
-				if (@$recs[$i]['sub'])
-					if (count($recs[$i]['sub'])) {
-						//Делаем из них список
-						$subs = toLine($recs[$i]['sub']);
-						//Убираем список подразделов у текущей записи
-						UnSet($recs[$i]['sub']);
-						//Вставляем список подразделов следом
-						$recs = array_merge($recs, $subs);
-					}
-			}
-			
-			return $recs;
-		}
-		
-		//Получаем данные
-		$recs = toLine($tree);
-*/
 		
 		//Форматируем данные
 		foreach ($recs as $i => $rec){
 
-			$flag = true;
+			$rec['url']         = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . '.html';
+			$rec['date_public'] = @date("c", strtotime($rec['date_public']));
+			$recs[$i] = $rec;
+
 			foreach( $filter as $fi )
-				if( substr_count($recs[$i]['url'], $fi) )
-					$flag = false;
+				if( substr_count($rec['url'], $fi) )
+					UnSet( $recs[$i] ); 
 		
-			if( !$flag )
-				UnSet( $recs[$i] ); 
-			else{
-				//Дописываем Url
-				$rec['url']         = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . '.html';
-				//Форматируем дату
-				$rec['date_public'] = @date("c", strtotime($rec['date_public']));
-				
-				$recs[$i] = $rec;
 			}
 		}
 		
