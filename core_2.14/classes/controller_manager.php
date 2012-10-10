@@ -324,8 +324,6 @@ class controller_manager
 	private function siteMap()
 	{
 
-		print('1');
-
 		// Фильтровать подобные адреса, и не показывать их в карте сайта
 		$filter = array();
 		
@@ -339,8 +337,6 @@ class controller_manager
 			}
 				
 		
-		print('2');
-
 		// Получаем дерево
 		$tree = model::prepareShirtTree('start', 'rec', false, 10, $conditions = array(
 			'and' => array(
