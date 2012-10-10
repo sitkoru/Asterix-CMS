@@ -16,6 +16,7 @@ class acms_trees{
 	//Показать краткое дерево сруктуры
 	public function getStructureShirtTree($root_record_id,$structure_sid,$levels_to_show,$conditions){
 		//Некоторые структуры скрываются из деревьев
+		pr( $this->title );
 		if(!$this->structure[$structure_sid]['hide_in_tree']){
 			//Древовидные структуры
 			if($this->structure[$structure_sid]['type']=='tree'){
