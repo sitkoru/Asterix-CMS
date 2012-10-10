@@ -167,8 +167,6 @@ class user
 	//Авторизация пользователя по локальной базе пользователей
 	private static function authUser_localhost(){
 		
-		pr_r( $_POST );
-			
 		//Авторизация по логину/паролю
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
 			

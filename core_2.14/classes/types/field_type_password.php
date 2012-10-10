@@ -183,11 +183,11 @@ class field_type_password extends field_type_default
 			$this->correctFieldType('users', 'rec', 'password');
 
 			$recs = model::execSql('select * from `'.$this->users_table.'` where `login`="'.mysql_real_escape_string( $value['login'] ).'" and `active`=1', 'getall');
-			pr( model::$last_sql );
 			
 			foreach( $recs as $rec ){
 				$hash = $this->encrypt( $value['password'], $rec['salt'] );
 				
+				print( $rec['password'] .' == '. $hash .'<br />');
 				if( $rec['password'] == $hash ){
 					$user = $rec;
 
