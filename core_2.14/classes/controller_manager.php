@@ -336,7 +336,9 @@ class controller_manager
 					$path = substr( $fi, 0, strrpos( $path, '*' ) );
 				$filter[] = $path;
 			}
-			
+		
+pr_r( $filter );
+		
 		$recs = array();
 		foreach( model::$modules as $module_sid => $module )
 			if( IsSet( $module->structure ) )
@@ -358,14 +360,14 @@ class controller_manager
 			$recs[$i] = $rec;
 
 			foreach( $filter as $fi )
-				if( substr_count($rec['url'], $fi) ){
+				if( substr_count( $rec['url'], $fi ) ){
 					print('delete '.$rec['url'].' on filter '.$fi.'<br />');
 					UnSet( $recs[$i] ); 
 				}
 		
 		}
 		
-		print('ok!');
+		print('<br />ok!');
 		exit();
 		
 		return $recs;
