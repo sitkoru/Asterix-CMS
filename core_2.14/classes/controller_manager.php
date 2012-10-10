@@ -273,13 +273,19 @@ class controller_manager
 		}elseif( $path == '/sitemap.xml' ){
 			print('[sitemap]');
 			require(model::$config['path']['core'].'/classes/templates.php');
+		print('1');
 			$tmpl=new templater($model);
+		print('2');
 			$recs=$this->siteMap();
+		print('3');
 			$tmpl->assign('recs',$recs);
+		print('4');
 			header("HTTP/1.0 200 Ok");
 			header('Content-Type:text/xml');
 			$current_template_file=model::$config['path']['admin_templates'].'/sitemap.tpl';
+		print('5');
 			$ready_html=$tmpl->fetch($current_template_file);
+		print('6');
 			print($ready_html);
 			print('[/sitemap]');
 			exit();
