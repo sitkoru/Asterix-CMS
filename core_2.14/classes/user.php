@@ -318,6 +318,8 @@ class user
 			self::authUser_localhost();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
 								
+pr_r( self::$info );
+				
 			//Регистрируем
 			if( !self::$info['id'] ){
 
@@ -352,10 +354,10 @@ pr_r( self::$info );
 				self::$authUser_localhost();
 
 pr_r( self::$info );
-exit();
 			
 			}
 		
+exit();
 			//На главную
 			header('Location: '.$_SESSION['oauth_referer']);
 			UnSet( $_SESSION['oauth_referer'] );
