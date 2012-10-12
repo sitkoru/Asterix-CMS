@@ -352,10 +352,10 @@ class user
 			$my_url = 'http://'.model::$ask->host.'/?login_oauth=facebook';
 			
 			session_start();
-			$code = $_REQUEST["code"];
+			$code = $_REQUEST["access_token"];
 				
 			//получаем код доступа
-			if(empty($code)) {
+			if( empty( $code ) ) {
 				$_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
 				$dialog_url = 'https://www.facebook.com/dialog/oauth?client_id='.$app_id.'&redirect_uri='.urlencode($my_url).'&scope=email&response_type=token';
 				//$dialog_url = "http://www.facebook.com/dialog/oauth?client_id=".$app_id."&redirect_uri=".urlencode($my_url)."&scope=email&state=".$_SESSION['state'];
@@ -363,17 +363,23 @@ class user
 			}
 				
 			//получаем токен
-			if($_REQUEST['state'] == $_SESSION['state']) {
+			if( IsSet( $_REQUEST['access_token'] ) ) {
+//			if( $_GET['access_token'] )
+				
+				
+	/*			
 				$token_url = "https://graph.facebook.com/oauth/access_token?"."client_id=".$app_id."&redirect_uri=".urlencode($my_url)."&client_secret=".$app_secret."&code=".$code;
 				$response = @file_get_contents($token_url);
 				$params = null;
 				parse_str($response, $params);
-		
+	*/	
 				$graph_url = "https://graph.facebook.com/me?access_token=".$params['access_token'];
 
 				//получаем данные пользователя с помощью токена
 				$datas = json_decode(@file_get_contents($graph_url));
 				$datas=(array)$datas;
+
+pr_r( $datas );
 				
 				self::$info = array(
 					'login' => 'facebook'.$datas['id'],
@@ -385,6 +391,8 @@ class user
 					'email' => $datas['email'],
 					'session_id' => session_id(),
 				);
+
+pr_r( self::$info );
 				
 				$_POST['login'] = self::$info['login'];
 				$_POST['password'] = self::$info['password'];
@@ -411,6 +419,9 @@ class user
 					self::authUser_localhost();
 				}
 
+pr_r( self::$info );
+exit();
+				
 				header('Location: /');
 				exit();
 				
