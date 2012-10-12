@@ -196,9 +196,14 @@ class user
 					'close' => false,
 				);
 			}
+			
 			//Ответ
-			print( json_encode( $result ) );
-			exit();
+			if( IsSet($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ){
+				print( json_encode( $result ) );
+				exit();
+			}else{
+			
+			}
 
 		//Авторизация по GET-параметру
 		} elseif (IsSet($_GET['login']) && IsSet($_GET['auth'])) {
@@ -260,7 +265,9 @@ class user
 	//Старт авторизации по OAuth - запрос в сторону провайдера
 	private static function start_OAuthUser(){
 		$provider = $_GET['login_oauth'];
-
+		if( !IsSet( $_SESSION['oauth_referer'] ) )
+			$_SESSION['oauth_referer'] = $_SERVER['HTTP_REFERER'];
+		
 		if( in_array($provider, array('vk.com','vk') ) ){
 			if( IsSet($_GET['error']))
 				return false;
@@ -331,7 +338,8 @@ class user
 			}
 		
 			//На главную
-			header('Location: /');
+			header('Location: '.$_SESSION['oauth_referer']);
+			UnSet( $_SESSION['oauth_referer'] );
 			exit();
 		
 		
@@ -403,7 +411,8 @@ class user
 					self::authUser_localhost();
 				}
 
-				header('Location: /');
+				header('Location: '.$_SESSION['oauth_referer']);
+				UnSet( $_SESSION['oauth_referer'] );
 				exit();
 				
 			}else
@@ -555,7 +564,8 @@ class user
 				}
 			}
 			
-			header('Location: /');
+			header('Location: '.$_SESSION['oauth_referer']);
+			UnSet( $_SESSION['oauth_referer'] );
 			exit();
 
 
@@ -583,7 +593,8 @@ class user
 
 			pr( $url );
 			
-			header('Location: '.$url);
+			header('Location: '.$_SESSION['oauth_referer']);
+			UnSet( $_SESSION['oauth_referer'] );
 			exit();
 			
 			
@@ -609,7 +620,8 @@ class user
 			$url = str_replace("	",'', $url);
 			$url = str_replace(" ",'', $url);
 
-			header('Location: '.$url);
+			header('Location: '.$_SESSION['oauth_referer']);
+			UnSet( $_SESSION['oauth_referer'] );
 			exit();
 		}
 	}
