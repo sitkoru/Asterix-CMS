@@ -588,9 +588,10 @@ class user
 			$url = str_replace("	",'', $url);
 			$url = str_replace(" ",'', $url);
 
-			pr( $url );
+			//pr( $url );
 			
-			header('Location: '.$url);
+			header('Location: '.$_SESSION['oauth_referer']);
+			UnSet( $_SESSION['oauth_referer'] );
 			exit();
 			
 			
@@ -703,6 +704,7 @@ class user
 							}
 							
 							header('Location: '.$_SESSION['oauth_referer']);
+							UnSet( $_SESSION['oauth_referer'] );
 							exit();
 						}
 					}else{echo "Ошибка передачи данных";}
