@@ -526,7 +526,7 @@ pr_r( $result );
 				
 				$user_id = $result['user_id'];
 
-				$url = 'http://twitter.com/users/show.json?user_id='.$user_id;
+				$url = 'https://api.twitter.com/1/users/show.json?user_id='.$result['user_id'].'&screen_name='.$result['screen_name'].'&include_entities=true';
 				$response = @file_get_contents($url);
 
 pr( $response );
