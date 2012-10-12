@@ -335,6 +335,8 @@ class user
 					'session_id' => session_id(),
 				);
 
+pr_r( self::$info );
+				
 				// Есть поле для хранения OpenID-данных - записываем
 				if( IsSet( model::$modules['users']->structure['rec']['fields']['openid_data'] ) )
 					self::$info['openid_data'] = json_encode( $datas );
@@ -348,6 +350,10 @@ class user
 				
 				model::addRecord('users', 'rec', self::$info);
 				self::$authUser_localhost();
+
+pr_r( self::$info );
+exit();
+			
 			}
 		
 			//На главную
