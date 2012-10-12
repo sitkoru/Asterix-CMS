@@ -304,7 +304,6 @@ pr_r( $token );
 	
 pr( $url2 );
 pr_r( $datas );
-exit();
 
 			if( !IsSet( $datas['response'] ) )
 				return false;
