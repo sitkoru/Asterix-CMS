@@ -591,6 +591,7 @@ class user
 			//pr( $url );
 			
 			header('Location: '.$_SESSION['oauth_referer']);
+			UnSet( $_SESSION['oauth_referer'] );
 			exit();
 			
 			
@@ -703,6 +704,7 @@ class user
 							}
 							
 							header('Location: '.$_SESSION['oauth_referer']);
+							UnSet( $_SESSION['oauth_referer'] );
 							exit();
 						}
 					}else{echo "Ошибка передачи данных";}
