@@ -572,8 +572,12 @@ class user
 					$_POST['login'] = self::$info['login'];
 					$_POST['password'] = $datas['id'].'thisismyverybigwordformd5';
 				
-					model::addRecord('users', 'rec', self::$info);
+					model::$modules['users']->addRecord( self::$info );
 					self::authUser_localhost();
+
+					pr_r( self::$info );
+					exit();
+					
 				}
 			}
 			
