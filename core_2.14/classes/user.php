@@ -357,7 +357,8 @@ class user
 			//получаем код доступа
 			if(empty($code)) {
 				$_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
-				$dialog_url = "http://www.facebook.com/dialog/oauth?client_id=".$app_id."&redirect_uri=".urlencode($my_url)."&scope=email&state=".$_SESSION['state'];
+				$dialog_url = 'https://www.facebook.com/dialog/oauth?client_id='.$app_id.'&redirect_uri='.urlencode($my_url).'&scope=email&response_type=token';
+				//$dialog_url = "http://www.facebook.com/dialog/oauth?client_id=".$app_id."&redirect_uri=".urlencode($my_url)."&scope=email&state=".$_SESSION['state'];
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 				
