@@ -700,10 +700,6 @@ class user
 								self::authUser_localhost();
 							}
 							
-							pr('stop');
-							pr( $_SESSION['oauth_referer'] );
-							exit();
-							
 							header('Location: '.$_SESSION['oauth_referer']);
 							UnSet( $_SESSION['oauth_referer'] );
 							exit();
