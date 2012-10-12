@@ -530,7 +530,7 @@ class user
 
 				self::$info = array(
 					'login' => 'twitter'.$datas['id'],
-					'password' => md5($datas['id'].'thisismyverybigwordformd5'),
+					'password' => $datas['id'].'thisismyverybigwordformd5',
 					'admin' => false,
 					'title' => $datas['name'],
 					'avatar'=> $datas['profile_image_url'],
@@ -539,7 +539,7 @@ class user
 				);
 					
 				$_POST['login'] = self::$info['login'];
-				$_POST['password'] = $datas['id'].'thisismyverybigwordformd5';
+				$_POST['password'] = self::$info['password'];
 									
 				//Авторизуем
 				self::authUser_localhost();
@@ -572,6 +572,9 @@ class user
 					$_POST['login'] = self::$info['login'];
 					$_POST['password'] = self::$info['password'];
 				
+					pr_r( self::$info );
+					pr_r( $_POST );
+					
 					model::$modules['users']->addRecord( self::$info );
 					self::authUser_localhost();
 
