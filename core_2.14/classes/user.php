@@ -317,7 +317,8 @@ class user
 			//Авторизуем
 			self::authUser_localhost();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
-								
+	
+pr( '1' );	
 pr_r( self::$info );
 				
 			//Регистрируем
