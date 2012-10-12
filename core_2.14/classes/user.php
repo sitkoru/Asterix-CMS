@@ -295,11 +295,12 @@ pr( $access_token );
 			//Получаем Token
 			$token_url = 'https://oauth.vk.com/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			
-pr( $token_url );
 			
 			$f = @file_get_contents($token_url);
 			$token = (array)json_decode( $f );
 
+pr( $token_url );
+pr( $f );
 pr_r( $token );
 
 			//Запрос данных
