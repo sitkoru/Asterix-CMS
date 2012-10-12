@@ -297,10 +297,6 @@ pr_r( $_SESSION );
 
 			$access_token = $_REQUEST['access_token'];
 
-pr( $access_token );				
-pr_r( $_REQUEST );
-pr_r( $_SESSION );
-exit();
 			//Получаем Token
 			$token_url = 'https://oauth.vkontakte.ru/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			
@@ -311,6 +307,7 @@ pr( $token_url );
 
 pr( $f );
 pr_r( $token );
+exit();
 
 			//Запрос данных
 			$url2="https://api.vkontakte.ru/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
