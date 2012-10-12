@@ -302,7 +302,7 @@ pr( $token_url );
 			
 			$f = @file_get_contents($token_url);
 			$token = (array)json_decode( $f );
-*/
+
 pr( $f );
 pr_r( $token );
 
