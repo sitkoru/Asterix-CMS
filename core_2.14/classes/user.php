@@ -287,7 +287,8 @@ class user
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 
-pr_r( self::$info );
+pr_r( $_SESSION );
+pr_r( $_REQUEST );
 exit();
 				
 			//Получаем Token
