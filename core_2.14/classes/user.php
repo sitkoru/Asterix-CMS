@@ -517,6 +517,9 @@ class user
 				$url .= '&oauth_version=1.0';
 
 				$response = @file_get_contents($url);
+				
+pr( $response );
+
 				parse_str($response, $result);
 				
 				$user_id = $result['user_id'];
