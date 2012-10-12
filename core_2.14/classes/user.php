@@ -295,16 +295,11 @@ class user
 			$f = @file_get_contents( $token_url );
 			$token = (array)json_decode( $f );
 
-pr_r( $token );
-
 			//Запрос данных
 			$url2="https://api.vk.com/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
 			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
 	
-pr( $url2 );
-pr_r( $datas );
-
 			if( !IsSet( $datas['response'] ) )
 				return false;
 
@@ -326,8 +321,6 @@ pr_r( $datas );
 			self::authUser_localhost();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
 	
-pr_r( self::$info );
-				
 			//Регистрируем
 			if( !self::$info['id'] ){
 
@@ -345,8 +338,6 @@ pr_r( self::$info );
 					'session_id' => session_id(),
 				);
 
-pr_r( self::$info );
-				
 				// Есть поле для хранения OpenID-данных - записываем
 				if( IsSet( model::$modules['users']->structure['rec']['fields']['openid_data'] ) )
 					self::$info['openid_data'] = json_encode( $datas );
@@ -361,12 +352,8 @@ pr_r( self::$info );
 				model::addRecord('users', 'rec', self::$info);
 				self::$authUser_localhost();
 
-pr_r( self::$info );
-			
 			}
 		
-exit();
-
 			//На главную
 			header('Location: '.$_SESSION['oauth_referer']);
 			UnSet( $_SESSION['oauth_referer'] );
