@@ -297,6 +297,13 @@ pr_r( $_SESSION );
 
 			$access_token = $_REQUEST['access_token'];
 
+			
+			
+pr_r( $_GET );
+pr_r( $_SERVER );
+			
+			
+			
 			//Получаем Token
 			$token_url = 'https://oauth.vk.com/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			
