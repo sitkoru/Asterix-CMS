@@ -588,10 +588,10 @@ class user
 			$url = str_replace("	",'', $url);
 			$url = str_replace(" ",'', $url);
 
-			//pr( $url );
+			pr( $url );
+			exit();
 			
-			header('Location: '.$_SESSION['oauth_referer']);
-			UnSet( $_SESSION['oauth_referer'] );
+			header('Location: '.$url);
 			exit();
 			
 			
