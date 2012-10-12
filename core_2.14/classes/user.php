@@ -295,7 +295,7 @@ pr_r( $_SESSION );
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 
-			$access_token = $_REQUEST['access_token'];
+			$access_token = $_COOKIE['oauth_token_secret'];
 
 			
 pr_r( $_GET );
@@ -304,26 +304,17 @@ pr_r( $_REQUEST );
 pr_r( $_SESSION );
 pr_r( $_COOKIE );
 			
-			
-			
-			//Получаем Token
-			$token_url = 'https://oauth.vk.com/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
-			
-pr( $token_url );
-			
-			$f = @file_get_contents($token_url);
-			$token = (array)json_decode( $f );
-
-pr( $f );
-pr_r( $token );
-exit();
-
 			//Запрос данных
 			$url2="https://api.vkontakte.ru/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
-			$datas = json_decode(@file_get_contents($url2));
+			$f = @file_get_contents($url2);
+			$datas = json_decode( $f );
 			$datas=(array)$datas;
 	
+pr( $url2 );	
+pr( $f );	
 pr_r( $datas );
+
+exit();
 
 			if( !IsSet( $datas['response'] ) )
 				return false;
