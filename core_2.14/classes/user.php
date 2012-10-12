@@ -321,10 +321,21 @@ class user
 								
 			//Регистрируем
 			if( !self::$info['id'] ){
-				self::$info['sid'] = $login;
-				self::$info['shw'] = true;
-				self::$info['admin'] = intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' );
-				self::$info['session_id'] = session_id();
+
+				self::$info = array(
+					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['id'] ),
+					'shw' => true,
+					'active' => true,
+					'admin' => intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' ),
+					'session_id' => session_id(),
+					'login' => 'vk'.$datas['id'],
+					'password' => $datas['id'].'thisismyverybigwordformd5',
+					'admin' => false,
+					'title' => $datas['name'],
+					'avatar'=> $datas['profile_image_url'],
+					'photo' => $datas['profile_image_url'],
+					'session_id' => session_id(),
+				);
 
 				//Первый пользователь в системе всегда становится админом
 				if( self::ifFirstThenAdmin() )
