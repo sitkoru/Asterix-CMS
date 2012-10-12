@@ -265,6 +265,7 @@ class user
 	//Старт авторизации по OAuth - запрос в сторону провайдера
 	private static function start_OAuthUser(){
 		$provider = $_GET['login_oauth'];
+		
 		if( !IsSet( $_SESSION['oauth_referer'] ) )
 			$_SESSION['oauth_referer'] = $_SERVER['HTTP_REFERER'];
 
