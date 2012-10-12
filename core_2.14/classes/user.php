@@ -518,24 +518,15 @@ class user
 
 				$response = @file_get_contents($url);
 				
-pr( $response );
-
 				parse_str($response, $result);
-				
-pr_r( $result );
 				
 				$user_id = $result['user_id'];
 
 				$url = 'https://api.twitter.com/1/users/show.json?user_id='.$result['user_id'].'&screen_name='.$result['screen_name'].'&include_entities=true';
 				$response = @file_get_contents($url);
 
-pr( $response );
-
 				$datas = json_decode($response);
 				$datas=(array)$datas;
-	
-pr_r( $datas );
-exit();
 	
 				self::$info = array(
 					'login' => 'twitter'.$datas['id'],
