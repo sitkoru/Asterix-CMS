@@ -267,7 +267,7 @@ class user
 		$provider = $_GET['login_oauth'];
 		if( !IsSet( $_SESSION['oauth_referer'] ) )
 			$_SESSION['oauth_referer'] = $_SERVER['HTTP_REFERER'];
-		
+
 		if( in_array($provider, array('vk.com','vk') ) ){
 			if( IsSet($_GET['error']))
 				return false;
@@ -338,8 +338,7 @@ class user
 			}
 		
 			//На главную
-			header('Location: '.$_SESSION['oauth_referer']);
-			UnSet( $_SESSION['oauth_referer'] );
+			header('Location: /');
 			exit();
 		
 		
@@ -411,8 +410,7 @@ class user
 					self::authUser_localhost();
 				}
 
-				header('Location: '.$_SESSION['oauth_referer']);
-				UnSet( $_SESSION['oauth_referer'] );
+				header('Location: /');
 				exit();
 				
 			}else
@@ -564,8 +562,7 @@ class user
 				}
 			}
 			
-			header('Location: '.$_SESSION['oauth_referer']);
-			UnSet( $_SESSION['oauth_referer'] );
+			header('Location: /');
 			exit();
 
 
@@ -593,8 +590,7 @@ class user
 
 			pr( $url );
 			
-			header('Location: '.$_SESSION['oauth_referer']);
-			UnSet( $_SESSION['oauth_referer'] );
+			header('Location: '.$url);
 			exit();
 			
 			
@@ -620,8 +616,7 @@ class user
 			$url = str_replace("	",'', $url);
 			$url = str_replace(" ",'', $url);
 
-			header('Location: '.$_SESSION['oauth_referer']);
-			UnSet( $_SESSION['oauth_referer'] );
+			header('Location: '.$url);
 			exit();
 		}
 	}
@@ -707,7 +702,7 @@ class user
 								self::authUser_localhost();
 							}
 							
-							header('Location: /');
+							header('Location: '.$_SESSION['oauth_referer']);
 							exit();
 						}
 					}else{echo "Ошибка передачи данных";}
