@@ -525,7 +525,10 @@ class user
 				$response = @file_get_contents($url);
 				$datas = json_decode($response);
 				$datas=(array)$datas;
-					
+	
+pr_r( $datas );
+exit();
+	
 				self::$info = array(
 					'login' => 'twitter'.$datas['id'],
 					'password' => md5($datas['id'].'thisismyverybigwordformd5'),
