@@ -588,9 +588,9 @@ class user
 			$url = str_replace("	",'', $url);
 			$url = str_replace(" ",'', $url);
 
-			pr( $url );
+			//pr( $url );
 			
-			header('Location: '.$url);
+			header('Location: '.$_SESSION['oauth_referer']);
 			exit();
 			
 			
