@@ -354,10 +354,6 @@ class user
 			session_start();
 			$code = $_REQUEST["access_token"];
 				
-			pr_r( $_REQUEST );
-			pr_r( $_SESSION );
-			exit();
-				
 			//получаем код доступа
 			if( empty( $code ) ) {
 				$_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
@@ -366,9 +362,12 @@ class user
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 				
+			pr_r( $_REQUEST );
+			pr_r( $_SESSION );
+			exit();
+				
 			//получаем токен
-			if( IsSet( $_REQUEST['access_token'] ) ) {
-//			if( $_GET['access_token'] )
+			if( $_REQUEST['state'] == $_SESSION['state'] ) {
 				
 				
 	/*			
