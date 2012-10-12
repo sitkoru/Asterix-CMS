@@ -290,6 +290,9 @@ pr_r( $_SESSION );
 				$_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
 				$dialog_url = 'https://oauth.vk.com/authorize?client_id='.$app_id.'&scope=notify,friends,photos,status,groups,offline&display=page&response_type=token&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
 				//$dialog_url = 'http://api.vk.com/oauth/authorize?client_id='.$app_id.'&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
+
+exit();
+
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 
