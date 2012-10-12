@@ -279,16 +279,15 @@ class user
 			$my_url = 'http://'.model::$ask->host.'/?login_oauth=vk';
 
 			session_start();
-			$code = $_REQUEST["code"];
-			$access_token = $_REQUEST['access_token'];
+//			$code = $_REQUEST["code"];
+			$step = $_REQUEST['step'];
 			
 pr_r( $_REQUEST );
 pr_r( $_SESSION );
 
-pr( $access_token );				
 				
 			//получаем код доступа
-			if( empty( $code ) ) {
+			if( empty( $step ) ) {
 				$_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
 				$dialog_url = 'https://oauth.vk.com/authorize?client_id='.$app_id.'&scope=notify,friends,photos,status,groups,offline&display=page&response_type=token&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk%26step=2';
 				//$dialog_url = 'http://api.vk.com/oauth/authorize?client_id='.$app_id.'&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
@@ -296,6 +295,9 @@ pr( $access_token );
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 
+			$access_token = $_REQUEST['access_token'];
+
+pr( $access_token );				
 pr_r( $_REQUEST );
 pr_r( $_SESSION );
 exit();
