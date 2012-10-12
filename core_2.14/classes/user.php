@@ -588,9 +588,6 @@ class user
 			$url = str_replace("	",'', $url);
 			$url = str_replace(" ",'', $url);
 
-			pr( $url );
-			exit();
-			
 			header('Location: '.$url);
 			exit();
 			
@@ -702,6 +699,10 @@ class user
 								model::addRecord('users', 'rec', self::$info);
 								self::authUser_localhost();
 							}
+							
+							pr('stop');
+							pr( $_SESSION['oauth_referer'] );
+							exit();
 							
 							header('Location: '.$_SESSION['oauth_referer']);
 							UnSet( $_SESSION['oauth_referer'] );
