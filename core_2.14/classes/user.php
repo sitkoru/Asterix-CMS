@@ -293,7 +293,7 @@ pr( $access_token );
 			}
 
 			//Получаем Token
-			$token_url = 'https://oauth.vkontakte.ru/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
+			$token_url = 'https://oauth.vk.com/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			
 pr( $token_url );
 			
@@ -303,7 +303,7 @@ pr( $token_url );
 pr_r( $token );
 
 			//Запрос данных
-			$url2="https://api.vkontakte.ru/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
+			$url2="https://api.vk.com/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
 			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
 	
