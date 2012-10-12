@@ -539,7 +539,7 @@ class user
 				);
 					
 				$_POST['login'] = self::$info['login'];
-				$_POST['password'] = self::$info['password'];
+				$_POST['password'] = $datas['id'].'thisismyverybigwordformd5';
 									
 				//Авторизуем
 				self::authUser_localhost();
@@ -570,7 +570,10 @@ class user
 						self::$info['admin'] = true;
 						
 					$_POST['login'] = self::$info['login'];
-					$_POST['password'] = self::$info['password'];
+					$_POST['password'] = $datas['id'].'thisismyverybigwordformd5';
+				
+				pr_r( self::$info );
+				exit();
 				
 					model::addRecord('users', 'rec', self::$info);
 					self::authUser_localhost();
