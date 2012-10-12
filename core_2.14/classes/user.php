@@ -298,7 +298,7 @@ pr_r( $_SESSION );
 			$access_token = $_REQUEST['access_token'];
 
 			//Получаем Token
-			$token_url = 'https://oauth.vkontakte.ru/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
+			$token_url = 'https://oauth.vk.com/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			
 pr( $token_url );
 			
