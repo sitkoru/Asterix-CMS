@@ -550,7 +550,7 @@ pr_r( $datas );
 				if( !self::$info['id'] ){
 
 					self::$info = array(
-						'sid' => model::$types['sid']->correctValue( self::$info['login'] ),
+						'sid' => model::$types['sid']->correctValue( 'twitter'.$datas['id'] ),
 						'shw' => true,
 						'admin' => intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' ),
 						'session_id' => session_id(),
