@@ -292,9 +292,6 @@ pr( $access_token );
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 
-pr_r( $_REQUEST );
-pr_r( $_SESSION );
-exit();
 			//Получаем Token
 			$token_url = 'https://oauth.vkontakte.ru/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			
@@ -331,7 +328,6 @@ pr_r( $datas );
 			self::authUser_localhost();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
 	
-pr( '1' );	
 pr_r( self::$info );
 				
 			//Регистрируем
