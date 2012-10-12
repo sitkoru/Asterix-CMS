@@ -300,6 +300,8 @@ pr_r( $_SESSION );
 			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
 	
+pr_r( $datas );
+
 			if( !IsSet( $datas['response'] ) )
 				return false;
 
