@@ -298,9 +298,10 @@ pr_r( $_SESSION );
 			$access_token = $_REQUEST['access_token'];
 
 			
-			
 pr_r( $_GET );
 pr_r( $_SERVER );
+pr_r( $_REQUEST );
+pr_r( $_SESSION );
 			
 			
 			
