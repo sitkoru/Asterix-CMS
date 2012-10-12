@@ -528,8 +528,6 @@ class user
 				$datas = json_decode($response);
 				$datas=(array)$datas;
 
-pr_r( $datas );
-				
 				self::$info = array(
 					'login' => 'twitter'.$datas['id'],
 					'password' => md5($datas['id'].'thisismyverybigwordformd5'),
@@ -562,6 +560,10 @@ pr_r( $datas );
 						'photo' => $datas['profile_image_url'],
 						'session_id' => session_id(),
 					);
+					
+					// Есть поле для хранения OpenID-данных - записываем
+					if( IsSet( model::$modules['users']->structure['rec']['fields']['openid_data'] ) )
+						self::$info['openid_data'] = json_encode( $datas );
 
 					//Первый пользователь в системе всегда становится админом
 					if( self::ifFirstThenAdmin() )
@@ -570,18 +572,8 @@ pr_r( $datas );
 					$_POST['login'] = self::$info['login'];
 					$_POST['password'] = self::$info['password'];
 				
-				pr('1');
-				pr_r( self::$info );
-				exit();				
-				
 					model::addRecord('users', 'rec', self::$info);
 					self::authUser_localhost();
-				}else{
-				
-				pr('2');
-				pr_r( self::$info );
-				exit();				
-				
 				}
 			}
 			
