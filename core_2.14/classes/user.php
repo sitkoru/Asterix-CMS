@@ -322,7 +322,6 @@ exit();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
 								
 pr_r( self::$info );
-exit();
 				
 			//Регистрируем
 			if( !self::$info['id'] ){
