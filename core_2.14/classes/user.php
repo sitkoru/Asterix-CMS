@@ -352,7 +352,7 @@ class user
 			$my_url = 'http://'.model::$ask->host.'/?login_oauth=facebook';
 			
 			session_start();
-			$code = $_REQUEST["access_token"];
+			$code = $_REQUEST["code"];
 				
 			pr_r( $_REQUEST );
 			pr_r( $_SESSION );
