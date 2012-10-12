@@ -522,10 +522,15 @@ pr( $response );
 
 				parse_str($response, $result);
 				
+pr_r( $result );
+				
 				$user_id = $result['user_id'];
 
 				$url = 'http://twitter.com/users/show.json?user_id='.$user_id;
 				$response = @file_get_contents($url);
+
+pr( $response );
+
 				$datas = json_decode($response);
 				$datas=(array)$datas;
 	
