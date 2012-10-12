@@ -265,6 +265,7 @@ class user
 	//Старт авторизации по OAuth - запрос в сторону провайдера
 	private static function start_OAuthUser(){
 		$provider = $_GET['login_oauth'];
+		
 		if( !IsSet( $_SESSION['oauth_referer'] ) )
 			$_SESSION['oauth_referer'] = $_SERVER['HTTP_REFERER'];
 
@@ -287,7 +288,8 @@ class user
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 
-pr_r( self::$info );
+pr_r( $_SESSION );
+pr_r( $_REQUEST );
 exit();
 				
 			//Получаем Token
@@ -321,7 +323,6 @@ exit();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
 								
 pr_r( self::$info );
-exit();
 				
 			//Регистрируем
 			if( !self::$info['id'] ){
