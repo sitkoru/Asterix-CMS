@@ -553,7 +553,7 @@ class user
 						'admin' => intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' ),
 						'session_id' => session_id(),
 						'login' => 'twitter'.$datas['id'],
-						'password' => md5($datas['id'].'thisismyverybigwordformd5'),
+						'password' => $datas['id'].'thisismyverybigwordformd5',
 						'admin' => false,
 						'title' => $datas['name'],
 						'avatar'=> $datas['profile_image_url'],
@@ -570,7 +570,7 @@ class user
 						self::$info['admin'] = true;
 						
 					$_POST['login'] = self::$info['login'];
-					$_POST['password'] = $datas['id'].'thisismyverybigwordformd5';
+					$_POST['password'] = self::$info['password'];
 				
 					model::$modules['users']->addRecord( self::$info );
 					self::authUser_localhost();
