@@ -332,13 +332,13 @@ pr_r( self::$info );
 			if( !self::$info['id'] ){
 
 				self::$info = array(
-					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['id'] ),
+					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['uid'] ),
 					'shw' => true,
 					'active' => true,
 					'admin' => intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' ),
 					'session_id' => session_id(),
-					'login' => 'vk'.$datas['id'],
-					'password' => $datas['id'].'thisismyverybigwordformd5',
+					'login' => 'vk'.$datas['uid'],
+					'password' => $datas['uid'].'thisismyverybigwordformd5',
 					'admin' => false,
 					'title' => $datas['first_name'].' '.$datas['last_name'],
 					'img' => $datas['photo_big'],
