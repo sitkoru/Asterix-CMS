@@ -367,7 +367,6 @@ class user
 				
 			pr_r( $_REQUEST );
 			pr_r( $_SESSION );
-			exit();
 				
 			//получаем токен
 			if( $_REQUEST['state'] == $_SESSION['state'] ) {
