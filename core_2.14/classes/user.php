@@ -354,6 +354,9 @@ class user
 			session_start();
 			$code = $_REQUEST["access_token"];
 				
+			pr_r( $_REQUEST );
+			pr_r( $_SESSION );
+
 			//получаем код доступа
 			if( empty( $code ) ) {
 				$_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
