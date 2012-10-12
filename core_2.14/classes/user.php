@@ -282,6 +282,9 @@ class user
 			$code = $_REQUEST["code"];
 			$access_token = $_REQUEST['access_token'];
 			
+pr_r( $_REQUEST );
+pr_r( $_SESSION );
+				
 			//получаем код доступа
 			if( empty( $access_token ) ) {
 				$_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
