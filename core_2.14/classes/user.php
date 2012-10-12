@@ -300,11 +300,14 @@ pr( $token_url );
 			$f = @file_get_contents($token_url);
 			$token = (array)json_decode( $f );
 
+pr_r( $token );
+
 			//Запрос данных
 			$url2="https://api.vkontakte.ru/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
 			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
 	
+pr( $url2 );
 pr_r( $datas );
 
 			if( !IsSet( $datas['response'] ) )
