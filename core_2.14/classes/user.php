@@ -279,7 +279,6 @@ class user
 
 			session_start();
 			$code = $_REQUEST["code"];
-
 				
 			//получаем код доступа
 			if(empty($code)) {
@@ -288,6 +287,9 @@ class user
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 
+pr_r( self::$info );
+exit();
+				
 			//Получаем Token
 			$token_url = 'https://oauth.vkontakte.ru/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			$token = (array)json_decode(@file_get_contents($token_url));
@@ -319,6 +321,7 @@ class user
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
 								
 pr_r( self::$info );
+exit();
 				
 			//Регистрируем
 			if( !self::$info['id'] ){
@@ -358,6 +361,7 @@ pr_r( self::$info );
 			}
 		
 exit();
+
 			//На главную
 			header('Location: '.$_SESSION['oauth_referer']);
 			UnSet( $_SESSION['oauth_referer'] );
@@ -387,8 +391,6 @@ exit();
 			//получаем токен
 			if( $_REQUEST['state'] == $_SESSION['state'] ) {
 				
-				
-			
 				$token_url = "https://graph.facebook.com/oauth/access_token?"."client_id=".$app_id."&redirect_uri=".urlencode($my_url)."&client_secret=".$app_secret."&code=".$code;
 				$response = @file_get_contents($token_url);
 				$params = null;
