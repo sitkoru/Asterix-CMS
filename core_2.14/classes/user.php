@@ -561,11 +561,18 @@ pr_r( $datas );
 					$_POST['login'] = self::$info['login'];
 					$_POST['password'] = self::$info['password'];
 				
+				pr('1');
 				pr_r( self::$info );
 				exit();				
 				
 					model::addRecord('users', 'rec', self::$info);
 					self::authUser_localhost();
+				}else{
+				
+				pr('2');
+				pr_r( self::$info );
+				exit();				
+				
 				}
 			}
 			
