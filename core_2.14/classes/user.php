@@ -280,9 +280,6 @@ class user
 
 			session_start();
 			$code = $_REQUEST["code"];
-			$access_token = $_REQUEST['access_token'];
-			
-pr( $access_token );
 				
 			//получаем код доступа
 			if( empty( $code ) ) {
