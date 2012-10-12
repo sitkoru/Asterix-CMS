@@ -549,10 +549,19 @@ pr_r( $datas );
 				//Регистрируем
 				if( !self::$info['id'] ){
 
-					self::$info['sid'] = model::$types['sid']->correctValue( self::$info['login'] );
-					self::$info['shw'] = true;
-					self::$info['admin'] = intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' );
-					self::$info['session_id'] = session_id();
+					self::$info = array(
+						'sid' => model::$types['sid']->correctValue( self::$info['login'] ),
+						'shw' => true,
+						'admin' => intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' ),
+						'session_id' => session_id(),
+						'login' => 'twitter'.$datas['id'],
+						'password' => md5($datas['id'].'thisismyverybigwordformd5'),
+						'admin' => false,
+						'title' => $datas['name'],
+						'avatar'=> $datas['profile_image_url'],
+						'photo' => $datas['profile_image_url'],
+						'session_id' => session_id(),
+					);
 
 					//Первый пользователь в системе всегда становится админом
 					if( self::ifFirstThenAdmin() )
