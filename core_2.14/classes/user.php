@@ -284,13 +284,14 @@ class user
 			//получаем код доступа
 			if(empty($code)) {
 				$_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
-				$dialog_url = 'http://api.vk.com/oauth/authorize?client_id='.$app_id.'&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
+				$dialog_url = 'https://oauth.vk.com/authorize?client_id='.$app_id.'&scope=&redirect_uri=http://'.model::$ask->host.'&display=page&response_type=token';
+				//$dialog_url = 'http://api.vk.com/oauth/authorize?client_id='.$app_id.'&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 
 pr_r( $_REQUEST );
 pr_r( $_SESSION );
-
+exit();
 			//Получаем Token
 			$token_url = 'https://oauth.vkontakte.ru/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			
