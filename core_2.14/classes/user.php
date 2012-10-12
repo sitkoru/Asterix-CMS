@@ -304,11 +304,10 @@ class user
 
 			self::$info = array(
 				'login' => 'vk'.$datas['uid'],
-				'password' => md5($datas['uid'].'thisismyverybigwordformd5'),
+				'password' => $datas['uid'].'thisismyverybigwordformd5',
 				'admin' => false,
 				'title' => $datas['first_name'].' '.$datas['last_name'],
-				'avatar'=> $datas['photo_big'],
-				'photo' => $datas['photo_big'],
+				'img' => $datas['photo_big'],
 				'session_id' => session_id(),
 			);
 				
@@ -331,11 +330,14 @@ class user
 					'login' => 'vk'.$datas['id'],
 					'password' => $datas['id'].'thisismyverybigwordformd5',
 					'admin' => false,
-					'title' => $datas['name'],
-					'avatar'=> $datas['profile_image_url'],
-					'photo' => $datas['profile_image_url'],
+					'title' => $datas['first_name'].' '.$datas['last_name'],
+					'img' => $datas['photo_big'],
 					'session_id' => session_id(),
 				);
+
+				// Есть поле для хранения OpenID-данных - записываем
+				if( IsSet( model::$modules['users']->structure['rec']['fields']['openid_data'] ) )
+					self::$info['openid_data'] = json_encode( $datas );
 
 				//Первый пользователь в системе всегда становится админом
 				if( self::ifFirstThenAdmin() )
@@ -349,7 +351,8 @@ class user
 			}
 		
 			//На главную
-			header('Location: /');
+			header('Location: '.$_SESSION['oauth_referer']);
+			UnSet( $_SESSION['oauth_referer'] );
 			exit();
 		
 		
@@ -420,10 +423,13 @@ class user
 						'password' => $datas['id'].'thisismyverybigwordformd5',
 						'admin' => false,
 						'title' => $datas['name'],
-						'avatar'=> $datas['profile_image_url'],
-						'photo' => $datas['profile_image_url'],
+						'img' => $datas['profile_image_url'],
 						'session_id' => session_id(),
 					);
+
+					// Есть поле для хранения OpenID-данных - записываем
+					if( IsSet( model::$modules['users']->structure['rec']['fields']['openid_data'] ) )
+						self::$info['openid_data'] = json_encode( $datas );
 
 					//Первый пользователь в системе всегда становится админом
 					if( self::ifFirstThenAdmin() )
@@ -584,8 +590,7 @@ class user
 						'password' => $datas['id'].'thisismyverybigwordformd5',
 						'admin' => false,
 						'title' => $datas['name'],
-						'avatar'=> $datas['profile_image_url'],
-						'photo' => $datas['profile_image_url'],
+						'img' => $datas['profile_image_url'],
 						'session_id' => session_id(),
 					);
 					
