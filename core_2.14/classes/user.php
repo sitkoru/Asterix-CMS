@@ -279,42 +279,39 @@ class user
 			$my_url = 'http://'.model::$ask->host.'/?login_oauth=vk';
 
 			session_start();
-//			$code = $_REQUEST["code"];
-			$step = $_REQUEST['step'];
+			$code = $_REQUEST["code"];
+			$access_token = $_REQUEST['access_token'];
 			
-pr_r( $_REQUEST );
-pr_r( $_SESSION );
-
+pr( $access_token );
 				
 			//получаем код доступа
-			if( empty( $step ) ) {
+			if( empty( $code ) ) {
 				$_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
-				$dialog_url = 'https://oauth.vk.com/authorize?client_id='.$app_id.'&scope=notify,friends,photos,status,groups,offline&display=page&response_type=token&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk%26step=2';
+				$dialog_url = 'https://oauth.vk.com/authorize?client_id='.$app_id.'&scope=notify,friends,photos,status,groups,offline&display=page&response_type=code&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk%26step=2';
 				//$dialog_url = 'http://api.vk.com/oauth/authorize?client_id='.$app_id.'&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
-
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
 
-			$access_token = $_COOKIE['oauth_token_secret'];
-
-			
-pr_r( $_GET );
-pr_r( $_SERVER );
 pr_r( $_REQUEST );
 pr_r( $_SESSION );
-pr_r( $_COOKIE );
+exit();
+			//Получаем Token
+			$token_url = 'https://oauth.vkontakte.ru/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			
+pr( $token_url );
+			
+			$f = @file_get_contents($token_url);
+			$token = (array)json_decode( $f );
+*/
+pr( $f );
+pr_r( $token );
+
 			//Запрос данных
 			$url2="https://api.vkontakte.ru/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
-			$f = @file_get_contents($url2);
-			$datas = json_decode( $f );
+			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
 	
-pr( $url2 );	
-pr( $f );	
 pr_r( $datas );
-
-exit();
 
 			if( !IsSet( $datas['response'] ) )
 				return false;
