@@ -550,6 +550,7 @@ class user
 					self::$info = array(
 						'sid' => model::$types['sid']->correctValue( 'twitter'.$datas['id'] ),
 						'shw' => true,
+						'active' => true,
 						'admin' => intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' ),
 						'session_id' => session_id(),
 						'login' => 'twitter'.$datas['id'],
