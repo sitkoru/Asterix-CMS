@@ -302,6 +302,7 @@ pr_r( $_GET );
 pr_r( $_SERVER );
 pr_r( $_REQUEST );
 pr_r( $_SESSION );
+pr_r( $_COOKIE );
 			
 			
 			
