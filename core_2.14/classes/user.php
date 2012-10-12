@@ -527,7 +527,9 @@ class user
 
 				$datas = json_decode($response);
 				$datas=(array)$datas;
-	
+
+pr_r( $datas );
+				
 				self::$info = array(
 					'login' => 'twitter'.$datas['id'],
 					'password' => md5($datas['id'].'thisismyverybigwordformd5'),
@@ -543,11 +545,11 @@ class user
 									
 				//Авторизуем
 				self::authUser_localhost();
-				$login = model::$types['sid']->correctValue( self::$info['login'] );
 									
 				//Регистрируем
 				if( !self::$info['id'] ){
-					self::$info['sid'] = $login;
+
+					self::$info['sid'] = model::$types['sid']->correctValue( self::$info['login'] );
 					self::$info['shw'] = true;
 					self::$info['admin'] = intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' );
 					self::$info['session_id'] = session_id();
@@ -558,6 +560,9 @@ class user
 						
 					$_POST['login'] = self::$info['login'];
 					$_POST['password'] = self::$info['password'];
+				
+				pr_r( self::$info );
+				exit();				
 				
 					model::addRecord('users', 'rec', self::$info);
 					self::authUser_localhost();
