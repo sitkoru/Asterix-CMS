@@ -405,7 +405,7 @@ class user
 						'active' => true,
 						'admin' => intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' ),
 						'session_id' => session_id(),
-						'login' => 'twitter'.$datas['id'],
+						'login' => 'facebook'.$datas['id'],
 						'password' => $datas['id'].'thisismyverybigwordformd5',
 						'admin' => false,
 						'title' => $datas['name'],
