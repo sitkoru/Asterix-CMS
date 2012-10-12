@@ -354,9 +354,6 @@ class user
 			session_start();
 			$code = $_REQUEST["code"];
 				
-			pr_r( $_REQUEST );
-			pr_r( $_SESSION );
-
 			//получаем код доступа
 			if( empty( $code ) ) {
 				$_SESSION['state'] = md5(uniqid(rand(), TRUE)); //CSRF protection
@@ -364,9 +361,6 @@ class user
 				$dialog_url = "http://www.facebook.com/dialog/oauth?client_id=".$app_id."&redirect_uri=".urlencode($my_url)."&scope=email&state=".$_SESSION['state'];
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
 			}
-				
-			pr_r( $_REQUEST );
-			pr_r( $_SESSION );
 				
 			//получаем токен
 			if( $_REQUEST['state'] == $_SESSION['state'] ) {
@@ -378,16 +372,12 @@ class user
 				$params = null;
 				parse_str($response, $params);
 	
-pr_r( $params );
-
 				$graph_url = "https://graph.facebook.com/me?access_token=".$params['access_token'];
 
 				//получаем данные пользователя с помощью токена
 				$datas = json_decode(@file_get_contents($graph_url));
 				$datas=(array)$datas;
 
-pr_r( $datas );
-				
 				self::$info = array(
 					'login' => 'facebook'.$datas['id'],
 					'password' => $datas['id'].'thisismyverybigwordformd5',
@@ -399,8 +389,6 @@ pr_r( $datas );
 					'session_id' => session_id(),
 				);
 
-pr_r( self::$info );
-				
 				$_POST['login'] = self::$info['login'];
 				$_POST['password'] = self::$info['password'];
 					
@@ -437,10 +425,8 @@ pr_r( self::$info );
 					self::authUser_localhost();
 				}
 
-pr_r( self::$info );
-exit();
-				
-				header('Location: /');
+				header('Location: '.$_SESSION['oauth_referer']);
+				UnSet( $_SESSION['oauth_referer'] );
 				exit();
 				
 			}else
@@ -603,19 +589,16 @@ exit();
 					$_POST['login'] = self::$info['login'];
 					$_POST['password'] = self::$info['password'];
 				
-					pr_r( self::$info );
-					pr_r( $_POST );
-					
 					model::$modules['users']->addRecord( self::$info );
 					self::authUser_localhost();
 
-					pr_r( self::$info );
 					exit();
 					
 				}
 			}
 			
-			header('Location: /');
+			header('Location: '.$_SESSION['oauth_referer']);
+			UnSet( $_SESSION['oauth_referer'] );
 			exit();
 
 
