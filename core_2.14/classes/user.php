@@ -295,13 +295,13 @@ pr( $access_token );
 			//Получаем Token
 			$token_url = 'https://oauth.vk.com/access_token?client_id='.$app_id.'&client_secret='.$app_secret.'&code='.$code;
 			
-			
-			$f = @file_get_contents($token_url);
+			$f = @file_get_contents( $token_url );
 			$token = (array)json_decode( $f );
 
 pr( $token_url );
 pr( $f );
 pr_r( $token );
+exit();
 
 			//Запрос данных
 			$url2="https://api.vk.com/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
