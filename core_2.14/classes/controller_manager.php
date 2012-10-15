@@ -357,9 +357,8 @@ class controller_manager
 			$recs[$i] = $rec;
 
 			foreach( $filter as $fi )
-				if( substr_count( $rec['url'], $fi ) ){
+				if( substr_count( $rec['url'], $fi ) )
 					UnSet( $recs[$i] ); 
-				}
 		
 		}
 		
