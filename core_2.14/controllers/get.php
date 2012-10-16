@@ -45,7 +45,7 @@ class controller_get extends default_controller
 			'url' => 'http://'.model::$ask->host.model::$ask->rec['url'],
 			'module_sid' => model::$ask->module,
 			'structure_sid' => model::$ask->structure_sid,
-			'data' => model::$ask->rec,
+			'data' => false,//model::$ask->rec,
 		);
 		
 		if( model::$ask->mode[0] ){
