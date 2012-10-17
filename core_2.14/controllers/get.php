@@ -121,7 +121,7 @@ class controller_get extends default_controller
 		$tmpl->assign('content', $content);
 
 		//Кодировка
-		header('Content-Type: text/xml; charset=utf-8');
+		header('Content-Type: text/html; charset=utf-8');
 
 		//Файл шаблона
 		$current_template_file=model::$config['path']['admin_templates'].'/xml/rss.tpl';
