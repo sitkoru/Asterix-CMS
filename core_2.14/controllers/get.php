@@ -90,6 +90,8 @@ class controller_get extends default_controller
 			foreach( $recs as $i => $rec ){
 				$rec=model::$modules[ model::$ask->module ]->explodeRecord( $rec );
 				$rec=model::$modules[ model::$ask->module ]->insertRecordUrlType( $rec );
+				$rec['text']=str_replace( "\n",'', strip_tags( $rec['text'] ) );
+				$rec['text']=trim( str_replace( "\r",'',$rec['text'] ) );
 				$recs[$i]=$rec;
 			}
 		
