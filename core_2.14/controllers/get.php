@@ -28,6 +28,9 @@ class controller_get extends default_controller
 		elseif( model::$ask->output_format == 'json' ) 
 			$this->getJSON();
 			
+		elseif( model::$ask->output_format == 'xml' ) 
+			$this->getXML();
+			
 		elseif( model::$ask->output_format == 'tpl' ) 
 			$this->getHTML();
 	}
@@ -60,6 +63,74 @@ class controller_get extends default_controller
 		}
 
 		print json_encode( $result );
+		exit();
+	}
+		
+	//Выдать результат в формате JSON
+	private function getXML(){
+
+		// Список записей
+		if( model::$ask->output_type == 'index' ){
+			$table = model::$modules[ model::$ask->module ]->getCurrentTable();
+			$recs = model::execSql('select * from `'.$table.'` where `shw`=1 order by `date_public` desc limit 30', 'getall');
+			foreach( $recs as $i => $rec ){
+				$rec=model::$modules[ model::$ask->module ]->explodeRecord( $rec );
+				$rec=model::$modules[ model::$ask->module ]->insertRecordUrlType( $rec );
+				$recs[$i]=$rec;
+			}
+			
+		// Записи текущего раздела
+		}elseif( model::$ask->output_type == 'list' ){
+			$table = model::$modules[ model::$ask->module ]->getCurrentTable();
+			if( IsSet(model::$modules[ model::$ask->module ]->structure['rec']['dep_path']['structure']) )
+				$dir_field = 'dep_path_' . model::$modules[ model::$ask->module ]->structure['rec']['dep_path']['structure'];
+			else	
+				$dir_field = 'dep_path_parent';
+			$recs = model::execSql('select * from `'.$table.'` where `'.$dir_field.'`="'.mysql_real_escape_string( model::$ask->rec['sid'] ).'" and `shw`=1 order by `date_public` desc limit 30', 'getall');
+			foreach( $recs as $i => $rec ){
+				$rec=model::$modules[ model::$ask->module ]->explodeRecord( $rec );
+				$rec=model::$modules[ model::$ask->module ]->insertRecordUrlType( $rec );
+				$recs[$i]=$rec;
+			}
+		
+		// Текущая запись
+		}elseif( model::$ask->output_type == 'content' ){
+			header("HTTP/1.0 404 Not Found");
+			exit();
+		}
+		
+		//Другие данные канала
+		$content=array(
+			'title'=>model::$settings['domain_title'].' :: '.model::$ask->rec['title'],
+			'url'=>'http://'.$_SERVER['HTTP_HOST'].strip_tags($_SERVER['REQUEST_URI']),
+			'preview'=>'',
+			'date'=>date("r"),
+			'recs'=>$recs,
+		);
+
+		if (!headers_sent()){
+			header('Content-Type: text/html; charset=utf-8');
+			header("HTTP/1.0 200 Ok");
+		}
+		
+		//Подключаем шаблонизатор
+		require(model::$config['path']['core'].'/classes/templates.php');
+		$tmpl = new templater();
+
+		//Пишем данные в шаблонизатор
+		$tmpl->assign('content', $content);
+
+		//Кодировка
+		header('Content-Type: text/xml; charset=utf-8');
+
+		//Файл шаблона
+		$current_template_file=model::$config['path']['admin_templates'].'/xml/rss.tpl';
+
+		//Готовим HTML
+		$ready_html=$tmpl->fetch($current_template_file);
+
+		//Выводим сожержимое
+		print($ready_html);
 		exit();
 	}
 		
