@@ -9,8 +9,9 @@
 {foreach from=$content.recs item=rec}
     <item>
       <title>{$rec.title}</title>
-      <link>http://yamobi.ru{$rec.url}</link>
-      <description>{$rec.text|cut:300|escape:html}</description>
+      <link>{$rec.url}</link>
+{if strlen($rec.img.path) > 0}      <enclosure url="http://{$host}{$rec.img.path}" type="image/jpeg"/>
+{/if}      <description>{$rec.text|cut:300|escape:html}</description>
       <pubDate>{$rec.date_public.r}</pubDate>
     </item>
 {/foreach}
