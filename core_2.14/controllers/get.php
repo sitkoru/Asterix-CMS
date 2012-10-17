@@ -108,6 +108,7 @@ class controller_get extends default_controller
 			'title'=>model::$settings['domain_title'].' :: '.model::$ask->rec['title'],
 			'url'=>'http://'.$_SERVER['HTTP_HOST'].strip_tags($_SERVER['REQUEST_URI']),
 			'preview'=>'',
+			'host'=>$_SERVER['HTTP_HOST'],
 			'date'=>date("r"),
 			'recs'=>$recs,
 		);
