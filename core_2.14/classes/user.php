@@ -256,7 +256,7 @@ class user
 		$time   = time() - 3600;
 		$path   = '/';
 		$domain = '.' . $_SERVER['HTTP_HOST'];
-		setcookie($name, $value, $time, $path, $domain);
+		setcookie($name, '', $time, $path, $domain);
 	}
 	
 	
