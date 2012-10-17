@@ -10,7 +10,7 @@
     <item>
       <title>{$rec.title}</title>
       <link>{$rec.url}</link>
-{if strlen($rec.img.path) > 0}      <enclosure url="http://{$host}{$rec.img.path}" type="image/jpeg"/>
+{if strlen($rec.img.path) > 0}      <enclosure url="http://{$content.host}{$rec.img.path}" type="image/jpeg"/>
 {/if}      <description>{$rec.text|cut:300|escape:html}</description>
       <pubDate>{$rec.date_public.r}</pubDate>
     </item>
