@@ -69,6 +69,8 @@ class controller_get extends default_controller
 	//Выдать результат в формате JSON
 	private function getXML(){
 
+		$ref = $_SERVER['HTTP_REFERER'];
+		
 		// Список записей
 		if( model::$ask->output_type == 'index' ){
 			$table = model::$modules[ model::$ask->module ]->getCurrentTable();
@@ -78,6 +80,8 @@ class controller_get extends default_controller
 				$rec=model::$modules[ model::$ask->module ]->insertRecordUrlType( $rec );
 				$rec['text']=str_replace( "\n",'', strip_tags( $rec['text'] ) );
 				$rec['text']=trim( str_replace( "\r",'',$rec['text'] ) );
+				if( $ref )
+					$rec['url'] .= '?from='.urlencode($rec);
 				$recs[$i]=$rec;
 			}
 			
@@ -94,6 +98,8 @@ class controller_get extends default_controller
 				$rec=model::$modules[ model::$ask->module ]->insertRecordUrlType( $rec );
 				$rec['text']=str_replace( "\n",'', strip_tags( $rec['text'] ) );
 				$rec['text']=trim( str_replace( "\r",'',$rec['text'] ) );
+				if( $ref )
+					$rec['url'] .= '?from='.urlencode($rec);
 				$recs[$i]=$rec;
 			}
 		
