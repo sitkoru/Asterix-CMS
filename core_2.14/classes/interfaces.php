@@ -483,6 +483,11 @@ class interfaces{
 			'update'
 		);
 		
+		if( substr_count( model::$last_sql, '`users`' ) ){
+			pr( model::$last_sql );
+			exit();
+		}
+		
 		//Обновляем элемент дерева вместе с переносом
 		if( ($parent_field_type == 'tree') and (@$values['dep_path_parent'] != @$data_before['dep_path_parent']) and ($values['sid'] != 'index') ){
 
