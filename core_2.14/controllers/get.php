@@ -69,13 +69,13 @@ class controller_get extends default_controller
 	//Выдать результат в формате JSON
 	private function getXML(){
 
-		print('=)');
-	
 error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
 ini_set("display_errors", "on");
 
 		$ref = $_SERVER['HTTP_REFERER'];
-		
+	
+pr_r( model::$ask );
+	
 		// Список записей
 		if( model::$ask->output_type == 'index' ){
 			$table = model::$modules[ model::$ask->module ]->getCurrentTable();
