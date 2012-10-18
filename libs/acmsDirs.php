@@ -79,13 +79,14 @@ class acmsDirs{
 	}
 
 	function makeFolder($path, $chmod = 0775){
+		print( '['.$path.']' );
 		clearstatcache();
 		$dirs = explode('/', $path);
 		$t = false;
 		foreach($dirs as $dir)
 			if( strlen($dir) ){
 				$t .= '/'.$dir;
-				if( !@file_exists($t) ){
+				if( !file_exists($t) ){
 					mkdir( $t, $chmod );
 					chmod( $t, $chmod );
 				}
