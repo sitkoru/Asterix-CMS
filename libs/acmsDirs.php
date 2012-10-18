@@ -86,8 +86,8 @@ class acmsDirs{
 			if( strlen($dir) ){
 				$t .= '/'.$dir;
 				if( !@file_exists($t) ){
-					@mkdir( $t, $chmod );
-					@chmod( $t, $chmod );
+					mkdir( $t, $chmod );
+					chmod( $t, $chmod );
 				}
 			}
 		return file_exists($path);
