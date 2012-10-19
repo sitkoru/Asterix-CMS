@@ -89,18 +89,6 @@ class controller_manager
 		if( model::$ask->url[0] == 'admin' ){
 			return 'admin';
 		
-		
-/*		
-		if (IsSet($this->vars['action'])) {
-			if (IsSet($this->controllers[$this->vars['action']])) {
-				$controller = $this->vars['action'];
-				return $controller;
-			} else {
-				$controller = 'admin';
-				return $controller;
-			}
-*/
-			
 		//Обычный контроллер
 		} else {
 			if ($_SERVER['REQUEST_METHOD'] == 'GET')
