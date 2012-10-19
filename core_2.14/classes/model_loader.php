@@ -299,6 +299,13 @@ class ModelLoader{
 					
 					if( in_array( end( $ask->tree[ $i ]['mode'] ), $formats ) )
 						$ask->output_format = array_pop( $ask->tree[ $i ]['mode'] );
+					
+					// Формат не указан, скорее всего ошибка, перенаправляем на адрес с .html
+					else{
+						header('Location: '.$ask->original_url.'.html');
+						exit();
+					}
+						
 
 					//Модификаторы
 					$ask->mode = $ask->tree[ $i ]['mode'];
