@@ -281,7 +281,7 @@ class ModelLoader{
 		$ask->protocol = substr($_SERVER['SERVER_PROTOCOL'], 0, strpos($_SERVER['SERVER_PROTOCOL'], '/'));
 		$ask->host = $_SERVER['HTTP_HOST'];
 		$ask->output_type = '404';
-		$ask->output_format = 'html';
+		$ask->output_format = false;
 
 		if($ask->original_url != '/'){
 			$ask->url = array_values( explode('/', substr($ask->original_url, 1) ) );
@@ -299,13 +299,6 @@ class ModelLoader{
 					
 					if( in_array( end( $ask->tree[ $i ]['mode'] ), $formats ) )
 						$ask->output_format = array_pop( $ask->tree[ $i ]['mode'] );
-					
-					// Формат не указан, скорее всего ошибка, перенаправляем на адрес с .html
-					else{
-						header('Location: '.$ask->original_url.'.html');
-						exit();
-					}
-						
 
 					//Модификаторы
 					$ask->mode = $ask->tree[ $i ]['mode'];
@@ -323,6 +316,12 @@ class ModelLoader{
 			}
 		}else{
 			$ask->output_format = 'html';
+		}
+		
+		// Формат не указан, скорее всего ошибка, перенаправляем на адрес с .html
+		if( !$ask->output_format ){
+			header('Location: '.$ask->original_url.'.html');
+			exit();
 		}
 		
 		//Панель управления - адреса типа "/admin/..."
