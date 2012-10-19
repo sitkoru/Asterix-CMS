@@ -22,7 +22,7 @@ class controller_manager
 	public static $config;
 	public $vars = array();
 	
-	public static $output_formats = array('html','json','xml','tpl','txt');
+	public static $output_formats = array('html','json','xml','tpl','txt','php');
 	
 	//Все стандартные контроллеры
 	public $controllers = array(
