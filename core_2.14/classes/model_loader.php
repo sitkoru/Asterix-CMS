@@ -295,7 +295,7 @@ class ModelLoader{
 					if( class_exists( 'controller_manager' ) )
 						$formats = controller_manager::$output_formats;
 					else
-						$formats = array('html','json','xml','tpl');
+						$formats = array('html','json','xml','tpl','txt','php');
 					
 					if( in_array( end( $ask->tree[ $i ]['mode'] ), $formats ) )
 						$ask->output_format = array_pop( $ask->tree[ $i ]['mode'] );
