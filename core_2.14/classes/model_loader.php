@@ -317,12 +317,14 @@ class ModelLoader{
 		}else{
 			$ask->output_format = 'html';
 		}
-		
+
+/*		
 		// Формат не указан, скорее всего ошибка, перенаправляем на адрес с .html
 		if( !$ask->output_format ){
 			header('Location: '.$ask->original_url.'.html');
 			exit();
 		}
+*/
 		
 		//Панель управления - адреса типа "/admin/..."
 		if( $ask->url[0] == 'admin' ){
