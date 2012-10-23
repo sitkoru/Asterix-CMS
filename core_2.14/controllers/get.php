@@ -243,6 +243,12 @@ class controller_get extends default_controller
 			if( !copy(model::$config['path']['templates'].'/start_content.tpl', $template_file_path) )
 				log::stop('500 Internal Server Error', 'Шаблон "' . $current_template_file . '" не установлен на домене.');
 
+		// Запись скрыта
+		if( !model::$ask->rec['shw'] && !user::is_admin() ){
+			header("HTTP/1.0 404 Not Found");
+			exit();
+		}
+				
 		//Основная запись
 		$main_record = model::$modules[ model::$ask->module ]->explodeRecord(model::$ask->rec, model::$ask->structure_sid);
 		$main_record = model::$modules[ model::$ask->module ]->insertRecordUrlType($main_record, model::$ask->output_format);
