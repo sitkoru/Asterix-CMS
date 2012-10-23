@@ -246,6 +246,7 @@ class controller_get extends default_controller
 		// Запись скрыта
 		if( !model::$ask->rec['shw'] && !user::is_admin() ){
 			header("HTTP/1.0 404 Not Found");
+			pr( 'Запись скрыта автором или администратором.' );
 			exit();
 		}
 				
