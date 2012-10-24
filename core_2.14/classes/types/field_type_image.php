@@ -138,10 +138,6 @@ class field_type_image extends field_type_default
 					
 				}
 				
-			pr_r( $data );
-			exit();
-				
-		
 		//Файл не передан, просто обновление Alt
 		} elseif (strlen( $_POST[$value_sid . '_old_id'])) {
 			$data = $this->getValueExplode( $_POST[$value_sid . '_old_id'] );
