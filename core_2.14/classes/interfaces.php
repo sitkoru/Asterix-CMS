@@ -408,6 +408,7 @@ class interfaces{
 		//Обработка присланных значений
 		$fields=$this->structure[$structure_sid]['fields'];
 		foreach( $fields as $field_sid => $field )
+			if( IsSet( model::$types[ $field['type'] ] ) )
 			if( !IsSet( $what[ $field_sid ] ) and IsSet( $values[ $field_sid ] ) ){
 				
 				//Значение
