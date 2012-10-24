@@ -96,11 +96,6 @@ class field_type_image extends field_type_default
 			
 			//Расширение файла
 			$ext = substr($name, strrpos($name, '.') + 1);
-			if( !$ext ){
-				pr_r( $values[$value_sid] );
-				pr( $ext );
-				exit();
-			}
 			
 			//Загружаем файл
 			$filename = acmsFiles::upload( $values[$value_sid]['tmp_name'], model::$config['path']['www'] . $dir_path . '/' . $name );
@@ -142,6 +137,10 @@ class field_type_image extends field_type_default
 						$acmsImages->filter_bw($pre_filename);
 					
 				}
+				
+			pr_r( $data );
+			exit();
+				
 		
 		//Файл не передан, просто обновление Alt
 		} elseif (strlen( $_POST[$value_sid . '_old_id'])) {
