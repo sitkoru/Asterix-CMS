@@ -72,6 +72,9 @@ class field_type_image extends field_type_default
 		//Файл передан
 		} elseif ( strlen( $values[$value_sid]['tmp_name'] )>1 ) {
 			
+			if( !IsSet( $values[$value_sid]['name'] ) )
+				$values[$value_sid]['name'] = basename( $values[$value_sid]['tmp_name'] );
+			
 			//Обновление картинки
 			if( @$values[$value_sid . '_old_id'] ){
 				$old_data = $this->getValueExplode( $values[$value_sid . '_old_id'] );
