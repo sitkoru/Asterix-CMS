@@ -163,7 +163,9 @@ class acms_trees{
 						$dep_structure_sid = $tree[count($tree)-1];
 					
 						//Ищем записи вложеного модуля
+						pr( $rec['is_link_to_module'] );
 						$tmp=model::$modules[ $rec['is_link_to_module'] ]->getModuleShirtTree(false,$dep_structure_sid,$levels_to_show-1,$conditions);
+						pr('ok');
 						
 						//Нашли вложенные модули
 						if(count($tmp)){
