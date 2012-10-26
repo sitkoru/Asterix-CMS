@@ -16,6 +16,7 @@ class structures{
 			'shw'=>					array('sid'=>'shw',				'group'=>'show',		'public'=>true, 	'type'=>'check', 		'title'=>'Показывать на сайте', 				'default'=>true),
 			'url'=>					array('sid'=>'url',				'group'=>'system',		'public'=>false, 	'type'=>'text', 		'title'=>'Адрес записи', 						'default'=>''),
 			'author'=>				array('sid'=>'author',			'group'=>'system',		'public'=>false, 	'type'=>'user', 		'title'=>'Автор записи',						'default'=>false),
+			'edit_history'=>		array('sid'=>'edit_history',	'group'=>'system',		'public'=>false, 	'type'=>'hidden', 		'title'=>'Авторы, изменяющие запись'),
 		);
 	
 		//Подгружаем заданную структуру модуля
