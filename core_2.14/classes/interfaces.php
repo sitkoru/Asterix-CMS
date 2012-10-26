@@ -462,6 +462,9 @@ class interfaces{
 		//Условия обновления
 		$where['id'] = '`id`='.intval( $values['id'] ).'';
 		
+		// История редактирования записи
+		model::execSql('update `'.$this->getCurrentTable( $structure_sid ).'` set `edit_history`=CONCAT(`edit_history`, ",'.user::$info['id'].'") where '.$where['id'].' limit 1', 'update');
+		
 		//Настройки автоматом не перезаписывать
 		UnSet($what['acms_settings']);
 		UnSet($what['settings']);
