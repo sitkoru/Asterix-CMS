@@ -167,7 +167,7 @@ class acms_trees{
 						if( !model::$modules[ $rec['is_link_to_module'] ]->structure[ $dep_structure_sid ]['hide_in_tree'] ){
 
 							//Ищем записи вложеного модуля
-							pr( $rec['is_link_to_module'].', '.$levels_to_show );
+							pr( $rec['is_link_to_module'].', '.$levels_to_show.', '.$rec['is_link_to_module'].'_'.$dep_structure_sid );
 							$tmp=model::$modules[ $rec['is_link_to_module'] ]->getModuleShirtTree(false,$dep_structure_sid,$levels_to_show-1,$conditions);
 							pr('ok');
 							
