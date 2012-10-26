@@ -679,9 +679,11 @@ class components{
 				}elseif( ($var == 'sql') || ($var == 'where') ){
 					$where['and'][$var] = $val;
 				
+				}
+				
 				// Гео-привязка
 				// Работает только при установленном модуле городов с доступным методом "myCity"
-				}elseif( ($var == 'city') && ($val == 'current') ){
+				if( ($var == 'city') && ($val == 'current') ){
 					pr( 'city' );
 					if( IsSet( model::$modules['city']) ){
 						$city = model::$modules['city']->myCity();
