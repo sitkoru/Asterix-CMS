@@ -157,31 +157,33 @@ class acms_trees{
 				$recs[$i]['module']=$this->info['sid'];
 				$recs[$i]['structure_sid']=$structure_sid;
 
-				if( IsSet( model::$modules[ $rec['is_link_to_module'] ] ) ){
+				if( IsSet( model::$modules[ $rec['is_link_to_module'] ] ) )
 					if( is_object( model::$modules[ $rec['is_link_to_module'] ] ) ){
-
+						
 						//Корневая структура зависимого модуля
 						$tree = model::$modules[$rec['is_link_to_module']]->getLevels('rec');
 						$dep_structure_sid = $tree[count($tree)-1];
-					
-						//Ищем записи вложеного модуля
-						pr( $rec['is_link_to_module'].', '.$levels_to_show );
-						$tmp=model::$modules[ $rec['is_link_to_module'] ]->getModuleShirtTree(false,$dep_structure_sid,$levels_to_show-1,$conditions);
-						pr('ok');
 						
-						//Нашли вложенные модули
-						if(count($tmp)){
+						if( !model::$modules[ $rec['is_link_to_module'] ]->structure[ $dep_structure_sid ]['hide_in_tree'] ){
 
-							//Если вложенные записи есть на ряду с вложенными модулями - суммируем
-							if(IsSet($recs[$i]['sub'])){
-								$recs[$i]['sub']=array_merge($recs[$i]['sub'],$tmp);
-							//Отсутствуют вложенные записи, только вложенные модули
-							}else{
-								$recs[$i]['sub']=$tmp;
+							//Ищем записи вложеного модуля
+							pr( $rec['is_link_to_module'].', '.$levels_to_show );
+							$tmp=model::$modules[ $rec['is_link_to_module'] ]->getModuleShirtTree(false,$dep_structure_sid,$levels_to_show-1,$conditions);
+							pr('ok');
+							
+							//Нашли вложенные модули
+							if(count($tmp)){
+
+								//Если вложенные записи есть на ряду с вложенными модулями - суммируем
+								if(IsSet($recs[$i]['sub'])){
+									$recs[$i]['sub']=array_merge($recs[$i]['sub'],$tmp);
+								//Отсутствуют вложенные записи, только вложенные модули
+								}else{
+									$recs[$i]['sub']=$tmp;
+								}
 							}
 						}
 					}
-				}
 			}
 
 			//Вложенные структуры в пределах этого модуля
