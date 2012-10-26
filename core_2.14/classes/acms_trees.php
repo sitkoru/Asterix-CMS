@@ -32,6 +32,8 @@ class acms_trees{
 	//Поиск краткого дерева в древовидной структуре
 	public function getStructureShirtTree_typeTree($root_record_id,$structure_sid,$levels_to_show,$conditions){
 
+	pr('tree 1');
+	
 		//Если не установлен обработчик таблицы деревьев - устанавливаем
 		if( !IsSet($this->structure[$structure_sid]['db_manager']) ){
 			require_once(model::$config['path']['core'].'/classes/nestedsets.php');
