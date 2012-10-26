@@ -464,6 +464,8 @@ class interfaces{
 		
 		// История редактирования записи
 		model::execSql('update `'.$this->getCurrentTable( $structure_sid ).'` set `edit_history`=CONCAT(`edit_history`, ",'.user::$info['id'].'") where '.$where['id'].' limit 1', 'update');
+		pr( model::$last_sql );
+		exit();
 		
 		//Настройки автоматом не перезаписывать
 		UnSet($what['acms_settings']);
