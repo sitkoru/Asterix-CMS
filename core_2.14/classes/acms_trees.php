@@ -32,7 +32,7 @@ class acms_trees{
 	//Поиск краткого дерева в древовидной структуре
 	public function getStructureShirtTree_typeTree($root_record_id,$structure_sid,$levels_to_show,$conditions){
 
-	pr('tree 1');
+	pr('tree 1')
 	
 		//Если не установлен обработчик таблицы деревьев - устанавливаем
 		if( !IsSet($this->structure[$structure_sid]['db_manager']) ){
@@ -165,7 +165,7 @@ class acms_trees{
 						$dep_structure_sid = $tree[count($tree)-1];
 					
 						//Ищем записи вложеного модуля
-						pr( $rec['is_link_to_module'] );
+						pr( $rec['is_link_to_module'].', '.$levels_to_show );
 						$tmp=model::$modules[ $rec['is_link_to_module'] ]->getModuleShirtTree(false,$dep_structure_sid,$levels_to_show-1,$conditions);
 						pr('ok');
 						
