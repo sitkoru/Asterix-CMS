@@ -19,7 +19,7 @@
 			</ul>
 		{/if}
 			<input type="hidden" name="{$field.sid}_old_id" value="{$field.value.old|escape}" />
-			<input type="text" name="{$field.sid}[name]" value="{$field.value.title|escape}" placeholder="Альтернативный текст" />
+			<input type="text" name="{$field.sid}[name]" value="{$field.value.title|escape}" placeholder="Альтернативный текст" /><br />
 			<input type="file" name="{$field.sid}" id="{$field.sid}_id"{if $field.required} required="required"{/if} OnChange="
 
 function onChangeImagefile( image_field_id, image_id ){
