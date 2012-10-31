@@ -60,7 +60,7 @@ class field_type_password extends field_type_default
 			return $record;
 		}
 		
-		$record[ $field_sid ] = false;	
+		unset($record[ $field_sid ]);
 		return $record;
 	}
 	
