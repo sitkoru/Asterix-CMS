@@ -687,7 +687,6 @@ class components{
 					if( IsSet( model::$modules['city']) ){
 						$city = model::$modules['city']->myCity();
 						$where['and']['city'] = '( (`city` LIKE "%|'.mysql_real_escape_string( $city['id'] ).'|%") || (`region` LIKE "%|'.mysql_real_escape_string( $city['region'] ).'|%") || (`macroregion` LIKE "%|'.mysql_real_escape_string( $city['macroregion'] ).'|%") || (`city`="" && `region`="" && `macroregion`="")  || (`city`="||" && `region`="||" && `macroregion`="||") )';
-						print( '<!-- ' . $where['and']['city'] . ' -->' );
 					}
 				}
 			}
