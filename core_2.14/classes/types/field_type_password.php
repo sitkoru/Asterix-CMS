@@ -59,8 +59,9 @@ class field_type_password extends field_type_default
 			$record[ $field_sid ] = $this->encrypt( $record[ $field_sid ], $record['salt'] );
 			return $record;
 		}
-			
-		return false;
+		
+		$record[ $field_sid ] = false;	
+		return $record;
 	}
 	
 
