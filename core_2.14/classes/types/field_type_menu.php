@@ -103,8 +103,6 @@ class field_type_menu extends field_type_default
 			}
 		}
 		
-		pr_r( $variants );
-		
 		//Готово
 		return $variants;
 	}
