@@ -5,9 +5,9 @@
 
 		<div class="tabbable tabs-left">
 			<ul class="nav nav-tabs" style="width:140px; text-align:right;">
-				<li class="active"><label class="control-label" for="field_{$field.sid}" href="#lA" data-toggle="tab">{$field.title}</label></li>
-				<li class=""><span href="#lB" data-toggle="tab">+ фильтры</span></li>
-				<li class=""><span href="#lC" data-toggle="tab">Section 3</span></li>
+				<li class="active"><a href="#lA" data-toggle="tab">{$field.title}</a></li>
+				<li class=""><a href="#lB" data-toggle="tab">фильтры</a></li>
+				<li class=""><a href="#lC" data-toggle="tab">маски</a></li>
 			</ul>
 			<div class="tab-content">
 				<div class="tab-pane active" id="lA">
@@ -67,10 +67,10 @@
 					
 				</div>
 				<div class="tab-pane" id="lB">
-					<p>Howdy, I'm in Section B.</p>
+					<p>Фильтры для обработки изображения</p>
 				</div>
 				<div class="tab-pane" id="lC">
-					<p>What up girl, this is Section C.</p>
+					<p>Маски для наложения</p>
 				</div>
 			</div>
 		</div>	
