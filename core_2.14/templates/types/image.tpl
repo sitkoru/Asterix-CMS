@@ -9,30 +9,32 @@
 				<li class=""><a href="#lB" data-toggle="tab" style="color:black">фильтры</a></li>
 				<li class=""><a href="#lC" data-toggle="tab" style="color:black">маски</a></li>
 			</ul>
+
+			{if $field.value.path}
+				<ul class="thumbnails">
+					<li>
+						<a href="#" id="{$field.sid}_first" class="thumbnail" style="width:auto; height:auto; min-width:150px; min-height:100px; background-size:contain;">
+							<img src="{$field.value.path}" alt="" style="max-width:200px; max-height:100px;">
+						</a>
+					</li>
+				{foreach from=$field.value.pre item=pre key=key}
+					<li>
+						<a href="#" class="thumbnail">
+							{assign var=$val value=$field.value}
+							<img src="{$field.value.$key}" alt="" style="max-height:100px;" />
+						</a>
+					</li>
+				{/foreach}
+				</ul>
+			{/if}
+				<input type="hidden" name="{$field.sid}_old_id" value="{$field.value.old|escape}" />
+				<input type="text" name="{$field.sid}_title" value="{$field.value.title|escape}" placeholder="Альтернативный текст" /><br />
+
 			<div class="tab-content">
 				<div class="tab-pane active" id="lA">
 
 				
 					<div class="controls">
-					{if $field.value.path}
-						<ul class="thumbnails">
-							<li>
-								<a href="#" id="{$field.sid}_first" class="thumbnail" style="width:auto; height:auto; min-width:150px; min-height:100px; background-size:contain;">
-									<img src="{$field.value.path}" alt="" style="max-width:200px; max-height:100px;">
-								</a>
-							</li>
-						{foreach from=$field.value.pre item=pre key=key}
-							<li>
-								<a href="#" class="thumbnail">
-									{assign var=$val value=$field.value}
-									<img src="{$field.value.$key}" alt="" style="max-height:100px;" />
-								</a>
-							</li>
-						{/foreach}
-						</ul>
-					{/if}
-						<input type="hidden" name="{$field.sid}_old_id" value="{$field.value.old|escape}" />
-						<input type="text" name="{$field.sid}_title" value="{$field.value.title|escape}" placeholder="Альтернативный текст" /><br />
 						<input type="file" name="{$field.sid}" id="{$field.sid}_id"{if $field.required} required="required"{/if} OnChange="
 
 			function onChangeImagefile( image_field_id, image_id ){
