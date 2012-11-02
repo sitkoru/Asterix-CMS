@@ -4,6 +4,10 @@
 error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE ^ E_STRICT);
 ini_set("display_errors", "on");
 
+// Багфикс для серверов, не поддерживающих команду error_reporting
+if( error_reporting() != 22519 )
+	ini_set("display_errors", "off");
+
 session_start();
 
 //ini_set('error_log', $config['path']['www'].'../error_'.$_SERVER['HTTP_HOST'].'.log');
