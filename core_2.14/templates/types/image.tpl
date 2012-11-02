@@ -5,9 +5,9 @@
 
 
 		<div class="tabbable tabs-left">
-			<ul class="nav nav-tabs">
-				<li class="active"><a href="#lA" data-toggle="tab">Section 1</a></li>
-				<li class=""><a href="#lB" data-toggle="tab">Section 2</a></li>
+			<ul class="nav nav-tabs" style="width:140px; text-align:right;">
+				<li class="active"><a href="#lA" data-toggle="tab">{$field.title}</a></li>
+				<li class=""><a href="#lB" data-toggle="tab">+ фильтры</a></li>
 				<li class=""><a href="#lC" data-toggle="tab">Section 3</a></li>
 			</ul>
 			<div class="tab-content">
