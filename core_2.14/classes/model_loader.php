@@ -498,9 +498,10 @@ class ModelLoader{
 			),
 			'block_ie6' => array(
 				'group' => 'config', 
-				'title' => 'Перенаправлять владельцев браузера IE6 на страницу обновления браузера', 
-				'type' => 'check', 
+				'title' => 'Перенаправлять владельцев следующих устаревших браузеров на http://browsehappy.com/', 
+				'type' => 'menu', 
 				'default_value' => 0,
+				'variants' => array('Internet Explorer 6', 'Internet Explorer 7', 'Internet Explorer 8'),
 			),
 			'doctype' => array( 
 				'group' => 'config', 
