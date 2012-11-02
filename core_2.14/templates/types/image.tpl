@@ -1,4 +1,29 @@
+	
+	
+	
 	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}">
+
+
+		<div class="tabbable tabs-left">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#lA" data-toggle="tab">Section 1</a></li>
+				<li class=""><a href="#lB" data-toggle="tab">Section 2</a></li>
+				<li class=""><a href="#lC" data-toggle="tab">Section 3</a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane active" id="lA">
+					<p>I'm in Section A.</p>
+				</div>
+				<div class="tab-pane" id="lB">
+					<p>Howdy, I'm in Section B.</p>
+				</div>
+				<div class="tab-pane" id="lC">
+					<p>What up girl, this is Section C.</p>
+				</div>
+			</div>
+		</div>	
+	
+	
 		<label class="control-label" for="field_{$field.sid}">{$field.title}</label>
 		<div class="controls">
 		{if $field.value.path}
