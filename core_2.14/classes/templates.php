@@ -184,42 +184,43 @@ class templater{
     return $params['form5'];
   }
   
-  //Функция, которая будет обрезать текст до нужной длины
-  public function cutData($value, $length, $right = false)
-  {
-    mb_internal_encoding('utf-8');
-    
-    //Обрезаем
-    if (mb_strlen($value) > $length) {
-      
-      //Убираем теги
-      $value=strip_tags($value);
-      
-      //Разбиваем относительно заданной границы
-      $left_part  = mb_substr($value, 0, $length);
-      $right_part = mb_substr($value, $length);
-      
-      //Урезаем в большую сторону
-      if ($right) {
-        $right_part = mb_substr($right_part, 0, mb_strpos($right_part, ' '));
-        
-        //Урезаем в меньшую сторону
-      } else {
-        $left_part  = mb_substr($left_part, 0, mb_strrpos($left_part, ' ') + 1);
-        $right_part = '';
-      }
-      
-      //Склеиваем
-      $new_value = $left_part . $right_part;
-      
-      //...
-      $new_value .= '...';
-      
-      //Готово
-      return $new_value;
-    } else
-      return $value;
-  }
+	//Функция, которая будет обрезать текст до нужной длины
+	public function cutData($value, $length, $right = false){
+		
+		mb_internal_encoding('utf-8');
+
+		//Обрезаем
+		if (mb_strlen($value) > $length){
+
+			//Убираем теги
+			$value=trim( strip_tags($value) );
+
+			//Разбиваем относительно заданной границы
+			$left_part  = mb_substr($value, 0, $length);
+			$right_part = mb_substr($value, $length);
+
+			//Урезаем в большую сторону
+			if ($right) {
+				$right_part = mb_substr($right_part, 0, mb_strpos($right_part, ' '));
+
+			//Урезаем в меньшую сторону
+			} else {
+				$left_part  = mb_substr($left_part, 0, mb_strrpos($left_part, ' ') + 1);
+				$right_part = '';
+			}
+
+			//Склеиваем
+			$new_value = $left_part . $right_part;
+
+			//...
+			$new_value .= '...';
+
+			//Готово
+			return $new_value;
+			
+		} else
+			return $value;
+	}
   
 
 	public function addCSS($params, &$smarty){
