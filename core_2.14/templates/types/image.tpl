@@ -67,11 +67,20 @@
 					
 				</div>
 				<div class="tab-pane" id="lB">
-					<p>Фильтры для обработки изображения</p>
+					
+					
+					<div class="controls">
+						<label>
+							<input id="field_{$field.sid}_yes" type="radio" name="{$field.sid}_filter[bw]" value="1" />
+							<span>Сделать изображение чёрно-белым</span>
+						</label>
+					</div>
 					<p>
 						<span class="label label-warning">Обратите внимание</span><br />
 						Фильтры применяются к изображению только в момент загрузки фотографии. К уже загруженной фотографии фильтры не применяются.
 					</p>
+					
+					
 				</div>
 				<div class="tab-pane" id="lC">
 					<p>Маски для наложения</p>
