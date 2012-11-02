@@ -193,7 +193,7 @@ class templater{
 		if (mb_strlen($value) > $length){
 
 			//Убираем теги
-			$value=trim( strip_tags($value) );
+			$value=trim( strip_tags( htmlspecialchars_decode( $value ) ) );
 
 			//Разбиваем относительно заданной границы
 			$left_part  = mb_substr($value, 0, $length);
