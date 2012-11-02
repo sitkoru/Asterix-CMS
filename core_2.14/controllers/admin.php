@@ -159,7 +159,7 @@ class controller_admin extends default_controller{
 		$tmpl = new templater();
 
 		//Данные
-		$action_result['title']					= $this->actions[ $action ] .' '. model::$modules[ model::$ask->module ]->structure[$structure_sid]['title'];
+		$action_result['title']					= $this->actions[ $action ];
 		$action_result['module']				= model::$ask->module;
 		$action_result['structure_sid']			= model::$ask->structure_sid;
 		$action_result['form_action']			= $action;
