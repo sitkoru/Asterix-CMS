@@ -15,7 +15,7 @@
 {if $settings.block_ie6 == true}
 	<!--[if IE 6]>
 	<script type="text/javascript">
-		location.replace("http://browser.yandex.ru/");
+		location.replace("http://browsehappy.com/");
 	</script>
 	<![endif]-->
 {/if}
