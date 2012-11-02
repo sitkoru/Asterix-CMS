@@ -20,7 +20,7 @@
 		{/foreach}
 
 			<fieldset>
-				<legend>{$action.title}</legend>
+				<legend>{$action.title}{if $action.form_action == 'editRecord'}: {$content.title}{/if}</legend>
 
 		<div class="tab-content">
 			{assign var=group_key value=0}
