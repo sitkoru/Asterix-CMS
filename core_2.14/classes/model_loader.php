@@ -501,7 +501,7 @@ class ModelLoader{
 				'title' => 'Перенаправлять владельцев следующих устаревших браузеров на http://browsehappy.com/', 
 				'type' => 'menum', 
 				'default_value' => 0,
-				'variants' => array('Internet Explorer 6', 'Internet Explorer 7', 'Internet Explorer 8'),
+				'variants' => array('ie6'=>'Internet Explorer 6', 'ie7'=>'Internet Explorer 7', 'ie8'=>'Internet Explorer 8'),
 			),
 			'doctype' => array( 
 				'group' => 'config', 
