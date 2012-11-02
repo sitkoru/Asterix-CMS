@@ -20,7 +20,7 @@
 		{/foreach}
 
 			<fieldset>
-				<legend>{$action.title}: {$group.fields.title.value}</legend>
+				<legend>{$action.title}: {$action.groups.0.fields.title.value}</legend>
 
 		<div class="tab-content">
 			{assign var=group_key value=0}
