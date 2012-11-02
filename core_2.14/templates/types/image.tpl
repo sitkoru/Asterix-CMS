@@ -5,7 +5,7 @@
 			<ul class="thumbnails">
 				<li>
 					<a href="#" id="{$field.sid}_first" class="thumbnail" style="width:auto; height:auto; min-width:150px; min-height:100px; background-size:contain;">
-						<img src="{$field.value.path}" alt="" style="max-width:200px; max-height:100px;">
+						<img src="{$field.value.path}" alt="" style="max-width:200px; max-height:100px;" title="Оригинальное изображение">
 					</a>
 				</li>
 			{foreach from=$field.pre item=pre key=key}
