@@ -5,7 +5,7 @@
 
 		<div class="tabbable tabs-left">
 			<ul class="nav nav-tabs" style="width:140px; text-align:right;">
-				<li class="active"><a href="#lA" data-toggle="tab">{$field.title}</a></li>
+				<li class="active"><a href="#lA" data-toggle="tab"><strong>{$field.title}</strong></a></li>
 				<li class=""><a href="#lB" data-toggle="tab">фильтры</a></li>
 				<li class=""><a href="#lC" data-toggle="tab">маски</a></li>
 			</ul>
