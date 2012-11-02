@@ -68,10 +68,10 @@
 				</div>
 				<div class="tab-pane" id="lB">
 					<p>Фильтры для обработки изображения</p>
-					<span class="badge badge-warning">
-						<strong>Обратите внимание:</strong><br />
+					<p class="well">
+						<span class="label label-warning">Обратите внимание</span>
 						фильтры применяются к изображению только в момент загрузки фотографии. К уже загруженной фотографии фильтры не применяются.
-					</span>
+					</p>
 				</div>
 				<div class="tab-pane" id="lC">
 					<p>Маски для наложения</p>
