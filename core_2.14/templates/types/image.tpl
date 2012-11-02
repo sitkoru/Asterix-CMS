@@ -12,11 +12,11 @@
 				<li>
 					<a href="#" class="thumbnail">
 						{assign var=$val value=$field.value}
-						{if $pre.resize_type == 'inner'}{assign var=size_hint value="Изображение не более $pre.resize_width x $pre.resize_height px"}
-						{elseif $pre.resize_type == 'outer'}{assign var=size_hint value="Изображение не менее $pre.resize_width x $pre.resize_height px"}
-						{elseif $pre.resize_type == 'width'}{assign var=size_hint value="Изображение шириной $pre.resize_width px"}
-						{elseif $pre.resize_type == 'height'}{assign var=size_hint value="Изображение высотой $pre.resize_height px"}
-						{elseif $pre.resize_type == 'exec'}{assign var=size_hint value="Изображение с точным размером размером $pre.resize_width x $pre.resize_height px"}
+						{if $pre.resize_type == 'inner'}{assign var=size_hint value="Изображение не более `$pre.resize_width` x `$pre.resize_height` px"}
+						{elseif $pre.resize_type == 'outer'}{assign var=size_hint value="Изображение не менее `$pre.resize_width` x `$pre.resize_height` px"}
+						{elseif $pre.resize_type == 'width'}{assign var=size_hint value="Изображение шириной `$pre.resize_width` px"}
+						{elseif $pre.resize_type == 'height'}{assign var=size_hint value="Изображение высотой `$pre.resize_height` px"}
+						{elseif $pre.resize_type == 'exec'}{assign var=size_hint value="Изображение с точным размером размером `$pre.resize_width` x `$pre.resize_height` px"}
 						{/if}
 						<img src="{$field.value.$key}" alt="" style="max-height:100px;" title="{$size_hint}" />
 					</a>
