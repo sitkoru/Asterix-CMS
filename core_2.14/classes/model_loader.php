@@ -499,7 +499,7 @@ class ModelLoader{
 			'block_ie6' => array(
 				'group' => 'config', 
 				'title' => 'Перенаправлять владельцев следующих устаревших браузеров на http://browsehappy.com/', 
-				'type' => 'menu', 
+				'type' => 'menum', 
 				'default_value' => 0,
 				'variants' => array('Internet Explorer 6', 'Internet Explorer 7', 'Internet Explorer 8'),
 			),
