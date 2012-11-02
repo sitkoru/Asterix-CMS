@@ -4,13 +4,13 @@
 		{if $field.value.path}
 			<ul class="thumbnails">
 				<li>
-					<a href="#" id="{$field.sid}_first" class="thumbnail" style="width:auto; height:auto; min-width:150px; min-height:100px; background-size:contain;">
+					<a href="{$field.value.path}" id="{$field.sid}_first" class="thumbnail" style="width:auto; height:auto; min-width:150px; min-height:100px; background-size:contain;">
 						<img src="{$field.value.path}" alt="" style="max-width:200px; max-height:100px;" title="Оригинальное изображение">
 					</a>
 				</li>
 			{foreach from=$field.pre item=pre key=key}
 				<li>
-					<a href="#" class="thumbnail">
+					<a href="{$field.value.$key}" class="thumbnail">
 						{assign var=$val value=$field.value}
 						{if $pre.resize_type == 'inner'}{assign var=size_hint value="Изображение не более `$pre.resize_width` x `$pre.resize_height` px"}
 						{elseif $pre.resize_type == 'outer'}{assign var=size_hint value="Изображение не менее `$pre.resize_width` x `$pre.resize_height` px"}
