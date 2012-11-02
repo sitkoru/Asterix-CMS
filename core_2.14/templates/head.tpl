@@ -19,19 +19,22 @@
 {if $block_ie6.ie6}
 	<!--[if IE 6]>
 	<script type="text/javascript">
-		location.replace("http://browsehappy.com/");
+		if( confirm('Сайт не предназначен для упросмотра на устаревшем браузере Internet Explorer 6, обновить браузер?') )
+			location.replace("http://browsehappy.com/");
 	</script>
 	<![endif]-->
 {/if}{if $block_ie6.ie7}
 	<!--[if IE 7]>
 	<script type="text/javascript">
-		location.replace("http://browsehappy.com/");
+		if( confirm('Сайт не предназначен для упросмотра на устаревшем браузере Internet Explorer 7, обновить браузер?') )
+			location.replace("http://browsehappy.com/");
 	</script>
 	<![endif]-->
 {/if}{if $block_ie6.ie8}
 	<!--[if IE 8]>
 	<script type="text/javascript">
-		location.replace("http://browsehappy.com/");
+		if( confirm('Сайт не предназначен для упросмотра на устаревшем браузере Internet Explorer 8, обновить браузер?') )
+			location.replace("http://browsehappy.com/");
 	</script>
 	<![endif]-->
 {/if}
