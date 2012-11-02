@@ -71,7 +71,7 @@
 					
 					<div class="controls">
 						<label>
-							<input id="field_{$field.sid}_yes" type="radio" name="{$field.sid}_filter[bw]" value="1" />
+							<input id="field_{$field.sid}_yes" type="checkbox" name="{$field.sid}_filter[bw]" value="1" />
 							<span>Сделать изображение чёрно-белым</span>
 						</label>
 					</div>
