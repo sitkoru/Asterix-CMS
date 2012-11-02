@@ -281,6 +281,13 @@ class controller_get extends default_controller
 		$tmpl->assign('path_admin_templates', 	model::$config['path']['admin_templates']);
 		$tmpl->assign('content', $main_record);
 
+		// Данные настройки о блокировании старых браузеров
+		$block_ie6 = false;
+		foreach( ModelLoader::$block_ie6 as $ver => $title )
+			if( in_array( $ver, model::$settings['block_ie6'] ) )
+				$block_ie6[ $ver ] = true;
+		$tmpl->assign('block_ie6', $block_ie6);
+		
 		//Компилируем
 		try {
 			$ready_html = $tmpl->fetch($template_file_path);

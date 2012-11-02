@@ -16,6 +16,25 @@
 <!-- additional meta from settings -->
 {$settings.meta_add}{/if}
 
+{if $block_ie6.ie6}
+	<!--[if IE 6]>
+	<script type="text/javascript">
+		location.replace("http://browsehappy.com/");
+	</script>
+	<![endif]-->
+{/if}{if $block_ie6.ie7}
+	<!--[if IE 7]>
+	<script type="text/javascript">
+		location.replace("http://browsehappy.com/");
+	</script>
+	<![endif]-->
+{/if}{if $block_ie6.ie8}
+	<!--[if IE 8]>
+	<script type="text/javascript">
+		location.replace("http://browsehappy.com/");
+	</script>
+	<![endif]-->
+{/if}
 
 	<!-- all js from core -->
 {foreach from=$head_add.js_core item=lib}	<script type="text/javascript" src="{$lib.path}"></script>
