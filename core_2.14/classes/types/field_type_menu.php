@@ -94,6 +94,7 @@ class field_type_menu extends field_type_default
 					$variants[$i]['selected'] = ($variant['sid'] == $value);
 				}
 			}
+			
 			if(!$variants){
 				$variants[] = array(
 					'value' => $value,
@@ -102,8 +103,6 @@ class field_type_menu extends field_type_default
 				);
 			}
 		}
-		
-		pr_r( $variants );
 		
 		//Готово
 		return $variants;
