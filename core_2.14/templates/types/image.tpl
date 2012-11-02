@@ -8,7 +8,7 @@
 						<img src="{$field.value.path}" alt="" style="max-width:200px; max-height:100px;">
 					</a>
 				</li>
-			{foreach from=$field.value.pre item=pre key=key}
+			{foreach from=$field.pre item=pre key=key}
 				<li>
 					<a href="#" class="thumbnail">
 						{assign var=$val value=$field.value}
