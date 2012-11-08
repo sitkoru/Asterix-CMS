@@ -340,7 +340,7 @@ class controller_manager
 		//Форматируем данные
 		foreach ($recs as $i => $rec){
 		
-			$rec['url']         = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'];
+			$rec['url']         = 'http://' . $_SERVER['HTTP_HOST'] . ( strlen($rec['url']) > 2 ? $rec['url'] . '.html' );
 			$rec['date_public'] = @date("c", strtotime($rec['date_public']));
 			$recs[$i] = $rec;
 
