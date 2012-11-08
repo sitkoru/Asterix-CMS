@@ -341,6 +341,11 @@ class controller_manager
 		foreach ($recs as $i => $rec){
 		
 			$rec['url']         = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . ( strlen($rec['url']) > 2 ? '.html' : '' );
+			
+
+			if( @date("U", strtotime($rec['date_public'])) < date("U", strtotime("1995-01-01")) )
+				$rec['date_public'] = '2000-01-01 00:00:00';
+				
 			$rec['date_public'] = @date("c", strtotime($rec['date_public']));
 			$recs[$i] = $rec;
 
