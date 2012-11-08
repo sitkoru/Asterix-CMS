@@ -333,7 +333,7 @@ class controller_manager
 					$fields = '`url`,`date_public`';
 					if( IsSet( model::$extensions['seo'] ) )
 						$fields .= ',`seo_changefreq`,`seo_priority`';
-					$current = model::execSql('select '.$fields.' from `'.$module->getCurrentTable('rec').'` where `shw`=1');
+					$current = model::execSql('select '.$fields.' from `'.$module->getCurrentTable('rec').'` where `shw`=1', 'getall');
 					$recs = array_merge( $recs, (array)$current );
 				}
 		
