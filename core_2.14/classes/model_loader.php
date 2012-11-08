@@ -325,6 +325,10 @@ class ModelLoader{
 			$ask->output_format = 'html';
 		}
 
+		
+		// TODO: убрать этот костыль и сделать перенаправление на верный URL, что закомментирован ниже
+		if( !$ask->output_format )		
+			$ask->output_format = 'html';		
 /*		
 		// Формат не указан, скорее всего ошибка, перенаправляем на адрес с .html
 		if( !$ask->output_format ){
