@@ -501,7 +501,7 @@ class components{
 		else $items_per_page=10;
 
 		//Текущая страница
-		$page=intval(model::$ask->rec['page']);//current_page;
+		$page = model::$ask->current_page;//current_page;
 
 		//Сюда будем складывать страницы
 		$pages=array();
