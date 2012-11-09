@@ -536,16 +536,16 @@ class components{
 				if($page<$pages['count']-1)$next=$page+1;else $next=0;
 
 				//Предыдущая страница
-				$pages['prev']['url'] = model::$ask->rec['url'].$modifiers.'.'.$prev.'.'.model::$ask->output.($get_vars?'?'.implode('&', $get_vars):'');
+				$pages['prev']['url'] = model::$ask->rec['url'].$modifiers.'.'.$prev.'.'.model::$ask->output_format.($get_vars?'?'.implode('&', $get_vars):'');
 				$pages['prev']['num'] = $prev;
 
 				//Следующая страница
-				$pages['next']['url'] = model::$ask->rec['url'].$modifiers.'.'.$next.'.'.model::$ask->output.($get_vars?'?'.implode('&', $get_vars):'');
+				$pages['next']['url'] = model::$ask->rec['url'].$modifiers.'.'.$next.'.'.model::$ask->output_format.($get_vars?'?'.implode('&', $get_vars):'');
 				$pages['next']['num'] = $next;
 
 				//Другие страницы
 				for($i=0;$i<$pages['count'];$i++){
-					$pages['items'][$i]['url']=model::$ask->rec['url'].$modifiers.'.'.$i.'.'.model::$ask->output.($get_vars?'?'.implode('&', $get_vars):'');
+					$pages['items'][$i]['url']=model::$ask->rec['url'].$modifiers.'.'.$i.'.'.model::$ask->output_format.($get_vars?'?'.implode('&', $get_vars):'');
 				}
 			}
 		}
