@@ -114,7 +114,7 @@ class structures{
 					либо это поле всегда разворачивается
 				
 				*/
-				if( $value && ( ($explode_fields === true) || in_array($sid, (array)$explode_fields) || in_array($sid, $second_level_explodable_fields) ) ){
+				if( $value && ( ($explode_fields === true) || in_array($sid, (array)$explode_fields) || in_array($field_settings['type'], $second_level_explodable_fields) ) ){
 				
 					$rec[$sid]=model::$types[ $field_settings['type'] ]->getValueExplode($value, $this->structure[$structure_sid]['fields'][$sid], $rec);
 
