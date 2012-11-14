@@ -173,9 +173,6 @@ class components{
 		if( !IsSet( $params['explode'] ) )
 			$params['explode'] = true;
 	
-		pr( '[explode=' . $params['explode'] . ']' );
-	
-	
 		//Получаем условия
 		$where=components::convertParamsToWhere($params);
 		

@@ -94,8 +94,7 @@ class structures{
 
 		$second_level_explodable_fields=array('image','gallery');
 
-		if( $explode_fields !== true )
-			pr( '$explode_fields = [' . $explode_fields . ']' );
+		pr( '$explode_fields = [' . $explode_fields . ']' );
 		
 		if(is_array($rec))
 		foreach($rec as $sid=>$value){
