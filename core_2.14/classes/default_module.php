@@ -350,16 +350,6 @@ class default_module extends Dynamic{
 /// СОВМЕСТИМОСТЬ С 2.13 ///
 ////////////////////////////
 
-/*
-	public function execSql($sql, $query_type = 'getall', $database = 'system', $no_cache = false){
-		return model::execSql($sql, $query_type, $database, $no_cache);
-	}
-	
-	public function makeSql($sql_conditions, $query_type = 'getall', $database = 'system', $no_cache = false){
-		return model::makeSql($sql_conditions, $query_type, $database, $no_cache);
-	}
-*/
-
 	public function updateRecord($record, $structure_sid = 'rec', $conditions=false){
 		return $this->editRecord($record, $structure_sid, $conditions);
 	}
