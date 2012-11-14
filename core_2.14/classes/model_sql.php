@@ -12,14 +12,12 @@ class ModelSql{
 		if( !strlen( $sql ) )
 			return false;
 
-/*
 		// Запрос из кеша движка
 		if( !$no_cache ){
 			$result = cache::readSqlCache( $sql );
 			if( $result )
 				return $result;
 		}
-*/	
 	
 		//Засекаем время выполнения запроса
 		$t         = explode(' ', microtime());
@@ -77,10 +75,9 @@ class ModelSql{
 		//Запоминаем последний запрос
 		model::$last_sql = $sql;
 		
-/*
 		// Запоминаем результат в кеше движка
-		cache::makeSqlCache( $sql, $result );
-*/		
+		if( !$no_cache )
+			cache::makeSqlCache( $sql, $result );		
 
 		//Готово
 		return $result;
