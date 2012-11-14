@@ -90,7 +90,7 @@ class structures{
 	}
 
 	//Разворачиваем значения полей перед выводом в браузер
-	public function explodeRecord($rec, $structure_sid='rec', $explode_fields = true){
+	public function explodeRecord( $rec, $structure_sid='rec', $explode_fields = true ){
 
 		$second_level_explodable_fields=array('image','gallery');
 
