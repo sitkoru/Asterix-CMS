@@ -173,8 +173,7 @@ class components{
 		if( !IsSet( $params['explode'] ) )
 			$params['explode'] = true;
 	
-		if( $params['explode'] !== true )
-			pr( '[' . $params['explode'] . ']' );
+		pr( '[explode=' . $params['explode'] . ']' );
 	
 	
 		//Получаем условия
