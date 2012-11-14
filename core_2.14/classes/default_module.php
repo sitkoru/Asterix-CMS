@@ -359,6 +359,7 @@ class default_module extends Dynamic{
 		return model::makeSql($sql_conditions, $query_type, $database, $no_cache);
 	}
 */
+
 	public function updateRecord($record, $structure_sid = 'rec', $conditions=false){
 		return $this->editRecord($record, $structure_sid, $conditions);
 	}
