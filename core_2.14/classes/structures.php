@@ -92,6 +92,9 @@ class structures{
 	//Разворачиваем значения полей перед выводом в браузер
 	public function explodeRecord( $rec, $structure_sid='rec', $explode_fields = true ){
 
+		if( $explode_fields && ( $explode_fields !== true ) )
+			$explode_fields = array_values( explode(',', $explode_fields) );
+	
 		$second_level_explodable_fields=array('image','gallery');
 
 		if(is_array($rec))
