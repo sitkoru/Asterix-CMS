@@ -226,8 +226,8 @@ class components{
 			//Раскрываем сложные поля
 			if($recs)
 			foreach($recs as $i=>$rec){
-				$rec=$this->explodeRecord( $rec, $structure_sid,  );
-				$rec=$this->insertRecordUrlType($rec, 'html', $params['insert_host']);
+				$rec=$this->explodeRecord( $rec, $structure_sid, $params['explode'] );
+				$rec=$this->insertRecordUrlType( $rec, 'html', $params['insert_host'] );
 				$recs[$i]=$rec;
 			}
 
@@ -326,13 +326,13 @@ class components{
 					'order'=>$order,
 				),
 				'getall'
-			);//pr('2: ' . model::$last_sql);
+			); //pr('2: ' . model::$last_sql);
 
 			//Раскрываем сложные поля
 			if($recs)
 			foreach($recs as $i=>$rec){
-				$rec=$this->explodeRecord($rec,$structure_sid);
-				$rec=$this->insertRecordUrlType($rec, 'html', $params['insert_host']);
+				$rec=$this->explodeRecord( $rec, $structure_sid, $params['explode'] );
+				$rec=$this->insertRecordUrlType( $rec, 'html', $params['insert_host'] );
 				$recs[$i]=$rec;
 			}
 			
