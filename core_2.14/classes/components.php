@@ -326,7 +326,7 @@ class components{
 					'order'=>$order,
 				),
 				'getall'
-			);//pr('2: ' . model::$last_sql);
+			); //pr('2: ' . model::$last_sql);
 
 			//Раскрываем сложные поля
 			if($recs)
