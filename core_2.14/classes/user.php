@@ -31,7 +31,7 @@ class user
 		if (IsSet($_GET['logout'])) {
 			self::logout();
 			
-			header('Location: ?');
+			header('Location: '.$_SERVER['HTTP_REFERER']);
 			exit();
 		}
 
@@ -264,10 +264,14 @@ class user
 	
 	//Старт авторизации по OAuth - запрос в сторону провайдера
 	private static function start_OAuthUser(){
+		
 		$provider = $_GET['login_oauth'];
 		
-		if( !IsSet( $_SESSION['oauth_referer'] ) )
+		if( !IsSet( $_SESSION['oauth_referer'] ) ){
 			$_SESSION['oauth_referer'] = $_SERVER['HTTP_REFERER'];
+			if( IsSet( $_GET['anchor'] ) )
+				$_SESSION['oauth_referer'] .= '#'.$_GET['anchor'];
+		}
 
 		if( in_array($provider, array('vk.com','vk') ) ){
 			if( IsSet($_GET['error']))
