@@ -189,11 +189,9 @@ class templater{
     return $params['form5'];
   }
 
-	public function showLinks( $params, &$smarty ){
-		$result = preg_replace( '((http\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $params['value'] );
-		pr_r( $result );
-		
-		return $params['value'];
+	public function showLinks( $value ){
+		preg_replace( '((http\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
+		return $value;
 	}
 
   
