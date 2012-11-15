@@ -31,7 +31,7 @@ class user
 		if (IsSet($_GET['logout'])) {
 			self::logout();
 			
-			header('Location: ?');
+			header('Location: '.$_SERVER['HTTP_REFERER']);
 			exit();
 		}
 
