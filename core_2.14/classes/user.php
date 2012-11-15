@@ -123,8 +123,8 @@ class user
 		//user::$info = default_module::insertRecordUrlType(user::$info);
 
 		if(IsSet($_GET['login']) || IsSet($_GET['openid']) || IsSet($_GET['openid.ns'])){
-			header('Location: /');
-			exit();
+//			header('Location: /');
+//			exit();
 		}
 			
 	}
