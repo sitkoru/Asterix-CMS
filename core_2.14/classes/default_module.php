@@ -277,8 +277,8 @@ class default_module extends Dynamic{
 	}
 
 	//Разворачиваем значения полей перед выводом в браузер
-	public function explodeRecord($rec,$structure_sid='rec'){
-		return structures::explodeRecord($rec,$structure_sid);
+	public function explodeRecord( $rec, $structure_sid='rec', $explode_fields = true ){
+		return structures::explodeRecord( $rec, $structure_sid='rec', $explode_fields );
 	}
 
 	//Вставка html или других окончаний для URL-ов записей
@@ -349,20 +349,11 @@ class default_module extends Dynamic{
 ////////////////////////////
 /// СОВМЕСТИМОСТЬ С 2.13 ///
 ////////////////////////////
-/*
-	public function execSql($sql, $query_type = 'getall', $database = 'system', $no_cache = false){
-		return model::execSql($sql, $query_type, $database, $no_cache);
-	}
-	
-	public function makeSql($sql_conditions, $query_type = 'getall', $database = 'system', $no_cache = false){
-		return model::makeSql($sql_conditions, $query_type, $database, $no_cache);
-	}
-*/
+
 	public function updateRecord($record, $structure_sid = 'rec', $conditions=false){
 		return $this->editRecord($record, $structure_sid, $conditions);
 	}
 	
 }
-
 
 ?>

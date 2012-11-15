@@ -91,7 +91,7 @@ class field_type_linkm extends field_type_default
 				такой вид единичных запросов лучше кешируется, что позвоняет
 				не тянуть одни и те же записи несколько раз
 			*/
-			$test = false;
+			$test = true;
 			if( $test ){
 			
 				if( !count($arr) )

@@ -100,6 +100,7 @@ class log
 			pr('Уникальные запросы');
 			pr_r($unique);
 			pr('Суммарное время запросов: ' . $time . ' секунд.');
+			pr('Генерация заняла ' . number_format(self::$time_stop - self::$time_start, 5, '.', ' ') . ' секунд, использовано ' . number_format(self::$memory_total, 2, '.', ' ') . ' мегабайт памяти, сделано ' . count(self::$sql) . ' запросов, кеширование '.(model::$config['cache']?'включено ('.model::$config['cache']['type'].')':'отключено').''.($xhprof?$xhprof:'').'.');
 		}
 		
 	}

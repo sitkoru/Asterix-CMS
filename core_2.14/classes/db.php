@@ -41,7 +41,7 @@ class database
 	
 	public function activate()
 	{
-		mysql_select_db($this->name, $this->connection);
+//		mysql_select_db($this->name, $this->connection);
 		$this->active_database = $this->name;
 	}
 	

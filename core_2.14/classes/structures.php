@@ -90,26 +90,33 @@ class structures{
 	}
 
 	//Разворачиваем значения полей перед выводом в браузер
-	public function explodeRecord($rec,$structure_sid='rec', $use_admin_explode = false){
+	public function explodeRecord( $rec, $structure_sid='rec', $explode_fields = true ){
 
+		if( $explode_fields && ( $explode_fields !== true ) )
+			$explode_fields = array_values( explode(',', $explode_fields) );
+	
 		$second_level_explodable_fields=array('image','gallery');
 
 		if(is_array($rec))
 		foreach($rec as $sid=>$value){
-			//Настройки поля в структуре модуля
+			
+			// Настройки поля в структуре модуля
 			$field_settings=$this->structure[$structure_sid]['fields'][$sid];
 
-			//Разворачиваем значение
+			// Разворачиваем значение
 			if($field_settings['type']){
 				if(IsSet(model::$types[ $field_settings['type'] ]))
 
-				//Разворачиваем ненулевые значения
-				if($value || 1){
+				/*
+					Разворачиваем ненулевые значения
+					только если разрешено разворачивать все
+					либо разрешено разворачивать конкретно это поле
+					либо это поле всегда разворачивается
 				
-					if( $use_admin_explode )
-						$rec[$sid]=model::$types[ $field_settings['type'] ]->getAdmValueExplode($value, $this->structure[$structure_sid]['fields'][$sid], $rec);
-					else
-						$rec[$sid]=model::$types[ $field_settings['type'] ]->getValueExplode($value, $this->structure[$structure_sid]['fields'][$sid], $rec);
+				*/
+				if( $value && ( ($explode_fields === true) || in_array($sid, (array)$explode_fields) || in_array($field_settings['type'], $second_level_explodable_fields) ) ){
+				
+					$rec[$sid]=model::$types[ $field_settings['type'] ]->getValueExplode($value, $this->structure[$structure_sid]['fields'][$sid], $rec);
 
 					//Разварачиваем картинки у связанных записей
 					if( $field_settings['type'] == 'link' ){
