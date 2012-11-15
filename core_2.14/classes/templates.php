@@ -69,7 +69,7 @@ class templater{
 			'unserialize'
 		));
     
-		@$this->tmpl->register_function('links', array(
+		@$this->tmpl->register_modifier('links', array(
 			$this,
 			'showLinks'
 		));
