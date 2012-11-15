@@ -350,6 +350,11 @@ class ModelLoader{
 	public static function getCurrentUrl(){
 		if( $_SERVER['REDIRECT_URL'][0] == '/' )
 			$_SERVER['REDIRECT_URL'] = $_SERVER['REQUEST_URI'];
+			
+		// Фикс для некоторых серверов nginx
+		if( !IsSet( $_SERVER['REDIRECT_URL'] ) )
+			$_SERVER['REDIRECT_URL'] = $_SERVER['REQUEST_URI'];
+			
 		$original_url = urldecode($_SERVER['REDIRECT_URL']);
 		if(substr_count($original_url, '?'))
 			$original_url = substr($original_url, 0, strpos($original_url, '?'));
