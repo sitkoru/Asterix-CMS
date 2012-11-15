@@ -190,13 +190,7 @@ class templater{
   }
 
 	public function showLinks( $value ){
-		
-		$result = preg_replace( '((http\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
-		
-		pr_r( $value );
-		pr_r( $result );
-		
-		return $value;
+		return preg_replace( '((http\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
 	}
 
   
