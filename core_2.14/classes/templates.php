@@ -190,8 +190,7 @@ class templater{
   }
 
 	public function showLinks( $params, &$smarty ){
-		$result = preg_replace( '((http\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $params['value'] );
-		$this->tmpl->assign($params['result'], $result);
+		return preg_replace( '((http\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $params['value'] );
 	}
 
   
