@@ -69,6 +69,11 @@ class templater{
 			'unserialize'
 		));
     
+		@$this->tmpl->register_modifier('links', array(
+			$this,
+			'showLinks'
+		));
+    
 		@$this->tmpl->register_function('admin', array(
 			$this,
 			'admin'
@@ -183,6 +188,12 @@ class templater{
     if ($n1 == 1) return $params['form1'];
     return $params['form5'];
   }
+
+	public function showLinks( $value ){
+		$value = str_replace('<br', ' <br', $value);
+		return preg_replace( '((http\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
+	}
+
   
 	//Функция, которая будет обрезать текст до нужной длины
 	public function cutData($value, $length, $right = false){

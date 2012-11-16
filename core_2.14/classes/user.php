@@ -122,9 +122,10 @@ class user
 		user::updateMyLoginDate(user::$info['id']);
 		//user::$info = default_module::insertRecordUrlType(user::$info);
 
-		if(IsSet($_GET['login']) || IsSet($_GET['openid']) || IsSet($_GET['openid.ns'])){
-//			header('Location: /');
-//			exit();
+		if(IsSet($_GET['login']) || IsSet($_GET['openid']) || IsSet($_GET['openid.ns']))
+		if( !IsSet( $_SESSION['oauth_referer'] ) ){
+			header('Location: /');
+			exit();
 		}
 			
 	}
@@ -303,7 +304,7 @@ class user
 			$url2="https://api.vk.com/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
 			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
-	
+			
 			if( !IsSet( $datas['response'] ) )
 				return false;
 
