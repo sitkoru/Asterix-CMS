@@ -194,7 +194,7 @@ class templater{
 		$v = $value;
 		
 		$value = str_replace('<br', ' <br', $value);
-		$value = preg_replace( '(( http\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
+		$value = preg_replace( '((\shttp\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
 		
 		pr( $v );
 		pr( $value );
