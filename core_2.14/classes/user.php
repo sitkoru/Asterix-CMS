@@ -342,6 +342,17 @@ class user
 					'img' => array( 'tmp_name' => $datas['photo_big'] ),
 					'session_id' => session_id(),
 				);
+				
+				// День рождения, если требуется
+				if( IsSet( model::$modules['users']->structure['rec']['fields']['birthday'] ) ){
+					$bdate = explode( '.', $datas->bdate );
+					$bdate = date( "Y-m-d", strtotime( $bdate[2] . '-' . $bdate[1] . '-' . $bdate[0] ) );
+					self::$info['birthday'] = array( 'date' => $bdate );
+				}
+				
+				// Страница на ВК
+				if( IsSet( model::$modules['users']->structure['rec']['fields']['web'] ) )
+					self::$info['web'] = 'http://vk.com/id' . $datas->uid;
 
 				// Есть поле для хранения OpenID-данных - записываем
 				if( IsSet( model::$modules['users']->structure['rec']['fields']['openid_data'] ) )
