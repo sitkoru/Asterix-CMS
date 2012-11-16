@@ -339,7 +339,7 @@ class user
 					'password' => $datas['uid'].'thisismyverybigwordformd5',
 					'admin' => false,
 					'title' => $datas['first_name'].' '.$datas['last_name'],
-					'img' => $datas['photo_big'],
+					'img' => array( 'tmp_name' => $datas['photo_big'] ),
 					'session_id' => session_id(),
 				);
 
@@ -597,7 +597,7 @@ class user
 						'password' => $datas['id'].'thisismyverybigwordformd5',
 						'admin' => false,
 						'title' => $datas['name'],
-						'img' => $datas['profile_image_url'],
+						'img' => array( 'tmp_name' => $datas['profile_image_url'] ),
 						'session_id' => session_id(),
 					);
 					
