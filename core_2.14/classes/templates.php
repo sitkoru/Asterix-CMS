@@ -190,11 +190,8 @@ class templater{
   }
 
 	public function showLinks( $value ){
-		$value = str_replace('<br>', "\n", $value);
-		$value = str_replace('<br />', "\n", $value);
-		$value = strip_tags( $value );
-		$value = preg_replace( '((http\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
-		return nl2br( $value );
+		$value = str_replace('<br', ' <br', $value);
+		return preg_replace( '(( http\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
 	}
 
   
