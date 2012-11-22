@@ -10,7 +10,7 @@ class structures{
 			'id'=>					array('sid'=>'id',				'group'=>'system',		'public'=>true, 	'type'=>'id', 			'title'=>'ID'),
 			'sid'=>					array('sid'=>'sid',				'group'=>'system',		'public'=>false, 	'type'=>'sid', 			'title'=>'Системное имя'),
 			'date_public'=>			array('sid'=>'date_public',		'group'=>'main',		'public'=>false, 	'type'=>'datetime', 	'title'=>'Публичная дата'),
-			'date_added'=>			array('sid'=>'date_added',		'group'=>'system',		'public'=>false, 	'type'=>'datetime', 	'title'=>'Дата создания записи'),
+			'date_added'=>			array('sid'=>'date_added',		'group'=>'system',		'public'=>false, 	'type'=>'datetime', 	'title'=>'Дата создания записи (публиковать не ранее)'),
 			'date_modify'=>			array('sid'=>'date_modify',		'group'=>'system',		'public'=>false, 	'type'=>'datetime', 	'title'=>'Дата последнего изменения записи'),
 			'title'=>				array('sid'=>'title',			'group'=>'main',		'public'=>true, 	'type'=>'text', 		'title'=>'Название'),
 			'shw'=>					array('sid'=>'shw',				'group'=>'show',		'public'=>true, 	'type'=>'check', 		'title'=>'Показывать на сайте', 				'default'=>true),
