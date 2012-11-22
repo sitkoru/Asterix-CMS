@@ -244,7 +244,7 @@ class controller_get extends default_controller
 				log::stop('500 Internal Server Error', 'Шаблон "' . $current_template_file . '" не установлен на домене.');
 
 		// Запись скрыта
-		if( !model::$ask->rec['shw'] && !user::is_admin() ){
+		if( IsSet( model::$ask->rec['shw'] ) && !model::$ask->rec['shw'] && !user::is_admin() ){
 			header("HTTP/1.0 404 Not Found");
 			pr( 'Запись скрыта автором или администратором.' );
 			exit();
