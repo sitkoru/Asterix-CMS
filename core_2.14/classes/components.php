@@ -602,7 +602,7 @@ class components{
 					$where['and']['id']='(not(`id`="'.mysql_real_escape_string($val).'"))';
 
 				//dir - ограничить записи указанным родительским разделом, чей ID указан
-				}elseif( ($var=='dir') and ($val !== false) ){
+				}elseif( ($var=='dir') and ($val !== false) and (count($this->structure) > 1) ){
 					//Простые структуры
 					if($this->structure[$structure_sid]['type']=='simple')
 						$field_name='dep_path_'.$this->structure[$structure_sid]['dep_path']['structure'];
