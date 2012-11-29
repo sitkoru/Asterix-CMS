@@ -51,7 +51,7 @@
 
 					</select>
 					<input type="text" id="field_{$field.sid}_fields_title_{$key}" name="{$field.sid}[fields][title][]" placeholder="Заголовок поля" value="{$feedback_field.title}" />
-					<input type="text" id="field_{$field.sid}_fields_default_vals_{$key}" name="{$field.sid}[fields][default_vals][]" placeholder="По-умолчанию" value="{$feedback_field.default_vals}" style="margin-left: 4px;" />
+					<input type="text" id="field_{$field.sid}_fields_default_vals_{$key}" name="{$field.sid}[fields][default_vals][]" placeholder="По-умолчанию" value="{$feedback_field.default_vals}"/>
 					<input type="checkbox" id="field_{$field.sid}_fields_required_{$key}" name="{$field.sid}[fields][required][]" class="required_field" value="{$feedback_field.required}" title="Обязательное поле" style="margin-left: 20px;" {if $feedback_field.required} checked{/if}>
 <!--					
 					<span class="required{if $feedback_field.required} badge badge-warning{/if}" style="padding: 1px 9px 2px;">Обязательное</span>
@@ -73,7 +73,7 @@
 -->
 					</select>
 					<input type="text" id="field_{$field.sid}_fields_title_0" name="{$field.sid}[fields][title][]" placeholder="Заголовок поля" value="{$feedback_field.title}" />
-					<input type="text" id="field_{$field.sid}_fields_default_vals_0" name="{$field.sid}[fields][default_vals][]" placeholder="По-умолчанию" value="{$feedback_field.default_vals}" style="margin-left: 4px;" />
+					<input type="text" id="field_{$field.sid}_fields_default_vals_0" name="{$field.sid}[fields][default_vals][]" placeholder="По-умолчанию" value="{$feedback_field.default_vals}"/>
 					<input type="checkbox" id="field_{$field.sid}_fields_required_0" name="{$field.sid}[fields][required][]" class="required_field" value="{$feedback_field.required}" title="Обязательное поле" style="margin-left: 20px;">
 <!--	
 					<span class="required{if $feedback_field.required} badge badge-warning{/if}" style="padding: 1px 9px 2px;">Обязательное</span>
