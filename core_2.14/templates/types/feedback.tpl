@@ -50,7 +50,7 @@
 
 					</select>
 					<input type="text" id="field_{$field.sid}_fields_title_{$key}" name="{$field.sid}[fields][title][]" placeholder="Заголовок поля" value="{$feedback_field.title}" />
-					<input type="hidden" id="field_{$field.sid}_fields_required_{$key}" name="{$field.sid}[fields][required][]" class="required_field" value="{$feedback_field.required}" title="Обязательное поле">
+					<input type="checkbox" id="field_{$field.sid}_fields_required_{$key}" name="{$field.sid}[fields][required][]" class="required_field" value="{$feedback_field.required}" title="Обязательное поле" {if $feedback_field.required} checked{/if}>
 					<span class="required{if $feedback_field.required} badge badge-warning{/if}" style="padding: 1px 9px 2px;">Обязательное</span>
 				</li>
 			{/foreach}
