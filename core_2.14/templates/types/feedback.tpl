@@ -30,7 +30,8 @@
 			<div>
 				<span style="display:inline-block; margin-left:40px; width:200px;">Тип поля</span>
 				<span style="display:inline-block; margin-left:20px; width:200px;">Заголовок поля</span>
-				<span style="margin-left:20px;">Обязательное поле</span>
+				<span style="display:inline-block; margin-left:20px; width:200px;">По-умолчанию</span>
+				<span style="margin-left:0px;">Обязательное</span>
 			</div>
 			<hr />
 			<ul id="field_{$field.sid}_params" class="unstyled sortable">
@@ -43,16 +44,19 @@
 						<option value="text"{if $feedback_field.type == 'text'} selected="selected"{/if}>Текстовое поле</option>
 						<option value="textarea"{if $feedback_field.type == 'textarea'} selected="selected"{/if}>Многострочный текст</option>
 						<option value="check"{if $feedback_field.type == 'check'} selected="selected"{/if}>Галочка да/нет</option>
-<!--
+
 						<option value="menu"{if $feedback_field.type == 'menu'} selected="selected"{/if}>Выбор из списка</option>
--->
+
 						<option value="file"{if $feedback_field.type == 'file'} selected="selected"{/if}>Прикрепить файл</option>
 
 					</select>
 					<input type="text" id="field_{$field.sid}_fields_title_{$key}" name="{$field.sid}[fields][title][]" placeholder="Заголовок поля" value="{$feedback_field.title}" />
-					<input type="checkbox" id="field_{$field.sid}_fields_required_{$key}" name="{$field.sid}[fields][required][]" class="required_field" value="{$feedback_field.required}" title="Обязательное поле" {if $feedback_field.required} checked{/if}>
+					<input type="text" id="field_{$field.sid}_fields_default_vals_{$key}" name="{$field.sid}[fields][default_vals][]" placeholder="По-умолчанию" value="{$feedback_field.default_vals}" style="margin-left: 4px;" />
+					<input type="checkbox" id="field_{$field.sid}_fields_required_{$key}" name="{$field.sid}[fields][required][]" class="required_field" value="{$feedback_field.required}" title="Обязательное поле" style="margin-left: 20px;" {if $feedback_field.required} checked{/if}>
+<!--					
 					<span class="required{if $feedback_field.required} badge badge-warning{/if}" style="padding: 1px 9px 2px;">Обязательное</span>
-				</li>
+-->
+					</li>
 			{/foreach}
 		{else}
 				<li>
@@ -62,15 +66,19 @@
 						<option value="text"{if $feedback_field.type == 'text'} selected="selected"{/if}>Текстовое поле</option>
 						<option value="textarea"{if $feedback_field.type == 'textarea'} selected="selected"{/if}>Многострочный текст</option>
 						<option value="check"{if $feedback_field.type == 'check'} selected="selected"{/if}>Галочка да/нет</option>
-<!--
+
 						<option value="menu"{if $feedback_field.type == 'menu'} selected="selected"{/if}>Выбор из списка</option>
+<!--					
 						<option value="file"{if $feedback_field.type == 'file'} selected="selected"{/if}>Прикрепить файл</option>
 -->
 					</select>
 					<input type="text" id="field_{$field.sid}_fields_title_0" name="{$field.sid}[fields][title][]" placeholder="Заголовок поля" value="{$feedback_field.title}" />
-					<input type="checkbox" id="field_{$field.sid}_fields_required_0" name="{$field.sid}[fields][required][]" class="required_field" value="{$feedback_field.required}" title="Обязательное поле">
+					<input type="text" id="field_{$field.sid}_fields_default_vals_0" name="{$field.sid}[fields][default_vals][]" placeholder="По-умолчанию" value="{$feedback_field.default_vals}" style="margin-left: 4px;" />
+					<input type="checkbox" id="field_{$field.sid}_fields_required_0" name="{$field.sid}[fields][required][]" class="required_field" value="{$feedback_field.required}" title="Обязательное поле" style="margin-left: 20px;">
+<!--	
 					<span class="required{if $feedback_field.required} badge badge-warning{/if}" style="padding: 1px 9px 2px;">Обязательное</span>
-				</li>
+-->
+					</li>
 		{/if}
 			</ul>
 			<a class="btn add"><i class="icon-plus-sign"></i> Добавить ещё поле</a>

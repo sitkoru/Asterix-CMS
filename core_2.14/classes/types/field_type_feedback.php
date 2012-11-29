@@ -64,7 +64,7 @@ class field_type_feedback extends field_type_default
 		//Разделяем варианты для списковых полей
 		if($value['fields'])
 		foreach($value['fields'] as $i => $field)
-			if( in_array($field['type'], array('radiolist','checklist')) )
+			if( in_array($field['type'], array('menu','radiolist','checklist')) )
 				$value['fields'][$i]['default_vals'] = explode(',', $field['default']);
 		
 		//Captcha
