@@ -6,7 +6,7 @@
 				<span class="badge badge-warning">Показать форму на сайте</span>
 			</label>
 			<label class="checkbox">
-				<input type="checkbox" id="field_{$field.sid}_captcha" name="{$field.sid}[captcha]" value="1"{if $field.value.captcha} checked="checked"{/if} />
+				<input type="checkbox" id="field_{$field.sid}_protection" name="{$field.sid}[protection]" value="captcha"{if $field.value.protection} checked="checked"{/if} />
 				Включить защиту от ботов (Captcha)
 			</label>
 		</div>
