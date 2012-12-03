@@ -55,7 +55,7 @@ class field_type_datetime extends field_type_default
 	//Получить простое значение по умолчанию из настроек поля
 	public function getDefaultValue($settings = false){
 		if( IsSet($settings['default']) )
-			return 'NOW()';//$settings['default'];
+			return $settings['default'];
 		else
 			return date("Y-m-d H:i:s");
 	}

@@ -317,6 +317,8 @@ class components{
 			elseif( is_string($params['limit']) )
 				$limit = mysql_real_escape_string($params['limit']);
 
+			pr_r( $where );
+				
 			//Забираем записи
 			$recs=model::makeSql(
 				array(
