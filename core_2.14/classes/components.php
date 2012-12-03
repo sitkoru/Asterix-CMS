@@ -317,8 +317,6 @@ class components{
 			elseif( is_string($params['limit']) )
 				$limit = mysql_real_escape_string($params['limit']);
 
-			pr_r( $where );
-				
 			//Забираем записи
 			$recs=model::makeSql(
 				array(
@@ -695,11 +693,13 @@ class components{
 				}
 			}
 		}
+
 /*		
 		// Отложенная печать материалов
 		if( !IsSet( $where['and']['date_added'] ) )
 			$where['and']['date_added'] = '`date_added`<NOW()';
 */
+
 		//Готово
 		return $where;
 	}
