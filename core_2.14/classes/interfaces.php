@@ -372,8 +372,17 @@ class interfaces{
 		// Заполняем пустые поля значениями по умолчанию
 		foreach( $this->structure[ $structure_sid ]['fields'] as $feild_sid=>$field)
 			if( !IsSet( $values[ $feild_sid ] ) )
-				if( !in_array($feild_sid, array('author', 'date_added')) )
-					$values[ $feild_sid ] = model::$types[ $field['type'] ]->getDefaultValue( $field );
+				if( !in_array($feild_sid, array('author', 'date_added')) ){
+					
+					if( is_object( model::$types[ $field['type'] ] ) )
+						$values[ $feild_sid ] = model::$types[ $field['type'] ]->getDefaultValue( $field );
+					else
+						log::stop(
+							'500 Internal Server Error', 
+							'Запрашиваемый тип данных "'.$field['type'].'" не существует в структуре "'.$structure_sid.'" модуля "'.$this->info['sid'].'".', 
+							$this->structure[ $structure_sid ]['fields']
+						);
+				}
 		
 		// Готово
 		return $this->editRecord($values, $structure_sid);
