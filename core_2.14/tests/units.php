@@ -168,8 +168,11 @@ class unitTests{
 					
 					// Соблюдаем сортировку полей
 					}elseif( model::$settings['resort_fields'] and user::is_admin() ) {
+					
+						// Сразу выключаем пересортировку, одного прохода достаточно
+						model::execSql('update `settings` set `value`=0 where `var`="resort_fields" limit 1', 'update');
+					
 						$sql = 'ALTER TABLE `'.$this->getCurrentTable($structure_sid).'` MODIFY '.model::$types[$field['type']]->creatingString($sid).($after?' AFTER `'.$after.'`':'');
-						pr( $sql );
 						model::execSql($sql,'update');
 					}
 					

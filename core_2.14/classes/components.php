@@ -326,7 +326,7 @@ class components{
 					'order'=>$order,
 				),
 				'getall'
-			); //pr('2: ' . model::$last_sql);
+			);//pr('2: ' . model::$last_sql);
 
 			//Раскрываем сложные поля
 			if($recs)
@@ -503,7 +503,7 @@ class components{
 		else $items_per_page=10;
 
 		//Текущая страница
-		$page=intval(model::$ask->rec['page']);//current_page;
+		$page = model::$ask->current_page;//current_page;
 
 		//Сюда будем складывать страницы
 		$pages=array();
@@ -538,16 +538,16 @@ class components{
 				if($page<$pages['count']-1)$next=$page+1;else $next=0;
 
 				//Предыдущая страница
-				$pages['prev']['url'] = model::$ask->rec['url'].$modifiers.'.'.$prev.'.'.model::$ask->output.($get_vars?'?'.implode('&', $get_vars):'');
+				$pages['prev']['url'] = model::$ask->rec['url'].$modifiers.'.'.$prev.'.'.model::$ask->output_format.($get_vars?'?'.implode('&', $get_vars):'');
 				$pages['prev']['num'] = $prev;
 
 				//Следующая страница
-				$pages['next']['url'] = model::$ask->rec['url'].$modifiers.'.'.$next.'.'.model::$ask->output.($get_vars?'?'.implode('&', $get_vars):'');
+				$pages['next']['url'] = model::$ask->rec['url'].$modifiers.'.'.$next.'.'.model::$ask->output_format.($get_vars?'?'.implode('&', $get_vars):'');
 				$pages['next']['num'] = $next;
 
 				//Другие страницы
 				for($i=0;$i<$pages['count'];$i++){
-					$pages['items'][$i]['url']=model::$ask->rec['url'].$modifiers.'.'.$i.'.'.model::$ask->output.($get_vars?'?'.implode('&', $get_vars):'');
+					$pages['items'][$i]['url']=model::$ask->rec['url'].$modifiers.'.'.$i.'.'.model::$ask->output_format.($get_vars?'?'.implode('&', $get_vars):'');
 				}
 			}
 		}
@@ -602,7 +602,7 @@ class components{
 					$where['and']['id']='(not(`id`="'.mysql_real_escape_string($val).'"))';
 
 				//dir - ограничить записи указанным родительским разделом, чей ID указан
-				}elseif( ($var=='dir') and ($val !== false) ){
+				}elseif( ($var=='dir') and ($val !== false) and ( count($this->structure)>1 || ($this->structure[$structure_sid]['type']=='tree') ) ){
 					//Простые структуры
 					if($this->structure[$structure_sid]['type']=='simple')
 						$field_name='dep_path_'.$this->structure[$structure_sid]['dep_path']['structure'];
@@ -693,10 +693,12 @@ class components{
 				}
 			}
 		}
-		
+
+/*		
 		// Отложенная печать материалов
 		if( !IsSet( $where['and']['date_added'] ) )
 			$where['and']['date_added'] = '`date_added`<NOW()';
+*/
 
 		//Готово
 		return $where;
