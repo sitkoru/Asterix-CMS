@@ -10,7 +10,7 @@
 		{if !$sub.sub.0.module || $sub.sub.0.module == 'start'}
 			{if count( $sub.sub )>3 }
 				<br />
-				<span OnClick="$('#sub{$sub.id}_{$field.module}_{$field.structure_sid}').toggle('fast');" style="cursor:pointer; font-weight:bold; font-size:1.4em;">➥ …</span>
+				<span OnClick="$('#sub{$sub.id}_{$field.module}_{$field.structure_sid}').toggle('fast');" style="cursor:pointer; font-weight:bold; font-size:1.2em;">➥ …</span>
 				<div id="sub{$sub.id}_{$field.module}_{$field.structure_sid}" style="display:none;">
 			{/if}
 			{include file="$path_admin_templates/forms/sub.tpl" rec=$sub}
