@@ -4,7 +4,7 @@
 			<div style="margin-bottom: 3px;">
 				<span class="label label-info" style="display:inline-block; width:28%; margin-left:20px;">Характеристика</span>
 				<span class="label label-info" style="display:inline-block; width:15%; margin-left:5px;">Значение</span>
-				<span class="label label-info" style="display:inline-block; width:10%; margin-left:5px;">Ед.изм.</span>
+				<span class="label label-info" style="display:inline-block; width:7%; margin-left:5px;">Ед.изм.</span>
 				<span class="label label-info" style="display:inline-block; width:15%; margin-left:5px;">Тип поля</span>
 				<span class="label label-info" style="display:inline-block; width:10%; margin-left:5px;">Группа</span>
 			</div>
@@ -15,7 +15,7 @@
 					<input type="text" name="{$field.sid}[title][]" id="field_{$field.sid}_{$key}_title" value="{$param.title}" style="width:28%;" />
 					<input type="hidden" name="{$field.sid}[header][]" id="field_{$field.sid}_{$key}_header" value="0" />
 					<input type="text" name="{$field.sid}[value][]" id="field_{$field.sid}_{$key}_value" value="{$param.value}" style="width:15%;{if $param.header} display:none;{/if}" />
-					<input type="text" name="{$field.sid}[ed][]" id="field_{$field.sid}_{$key}_ed" value="{$param.ed}" style="width:10%;{if $param.header} display:none;{/if}" />
+					<input type="text" name="{$field.sid}[ed][]" id="field_{$field.sid}_{$key}_ed" value="{$param.ed}" style="width:7%;{if $param.header} display:none;{/if}" />
 					<select name="{$field.sid}[type][]" id="field_{$field.sid}_{$key}_type" style="width:17%;{if $param.header} display:none;{/if}">
 						<option value="string"{if $param.type == 'string'} selected="selected"{/if}>Тип поля: строка</option>
 						<option value="int"{if $param.type == 'int'} selected="selected"{/if}>Тип поля: целое число</option>
@@ -32,7 +32,7 @@
 					<input type="text" name="{$field.sid}[title][]" id="field_{$field.sid}_{$key+1}_title" value="" style="width:28%;" />
 					<input type="hidden" name="{$field.sid}[header][]" id="field_{$field.sid}_{$key+1}_header" value="0" />
 					<input type="text" name="{$field.sid}[value][]" id="field_{$field.sid}_{$key+1}_value" value="" style="width:15%;" />
-					<input type="text" name="{$field.sid}[ed][]" id="field_{$field.sid}_{$key+1}_ed" value="" style="width:10%;" />
+					<input type="text" name="{$field.sid}[ed][]" id="field_{$field.sid}_{$key+1}_ed" value="" style="width:7%;" />
 					<select name="{$field.sid}[type][]" id="field_{$field.sid}_{$key}_type" style="width:17%;">
 						<option value="string">Тип поля: строка</option>
 						<option value="int">Тип поля: целое число</option>
