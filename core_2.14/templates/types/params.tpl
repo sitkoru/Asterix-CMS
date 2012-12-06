@@ -13,7 +13,7 @@
 				<li id="field_{$field.sid}_{$key}" class="dont_check{if $param.header} well{/if}">
 					<i class="icon-resize-vertical"></i> 
 					<input type="text" name="{$field.sid}[title][]" id="field_{$field.sid}_{$key}_title" value="{$param.title}" style="width:28%;" />
-					<input type="hidden" name="{$field.sid}[header][]" id="field_{$field.sid}_{$key}_header" value="0" />
+					<input type="hidden" name="{$field.sid}[header][]" id="field_{$field.sid}_{$key}_header" value="{$param.header}" />
 					<input type="text" name="{$field.sid}[value][]" id="field_{$field.sid}_{$key}_value" value="{$param.value}" style="width:15%;{if $param.header} display:none;{/if}" />
 					<input type="text" name="{$field.sid}[ed][]" id="field_{$field.sid}_{$key}_ed" value="{$param.ed}" style="width:7%;{if $param.header} display:none;{/if}" />
 					<select name="{$field.sid}[type][]" id="field_{$field.sid}_{$key}_type" style="width:17%;{if $param.header} display:none;{/if}">
