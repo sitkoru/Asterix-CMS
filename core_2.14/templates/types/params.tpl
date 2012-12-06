@@ -17,10 +17,10 @@
 					<input type="text" name="{$field.sid}[value][]" id="field_{$field.sid}_{$key}_value" value="{$param.value}" style="width:15%;{if $param.header} display:none;{/if}" />
 					<input type="text" name="{$field.sid}[ed][]" id="field_{$field.sid}_{$key}_ed" value="{$param.ed}" style="width:7%;{if $param.header} display:none;{/if}" />
 					<select name="{$field.sid}[type][]" id="field_{$field.sid}_{$key}_type" style="width:17%;{if $param.header} display:none;{/if}">
-						<option value="string"{if $param.type == 'string'} selected="selected"{/if}>Тип поля: строка</option>
-						<option value="int"{if $param.type == 'int'} selected="selected"{/if}>Тип поля: целое число</option>
-						<option value="float"{if $param.type == 'float'} selected="selected"{/if}>Тип поля: дробное число</option>
-						<option value="boolean"{if $param.type == 'boolean'} selected="selected"{/if}>Тип поля: да/нет</option>
+						<option value="string"{if $param.type == 'string'} selected="selected"{/if}>строка</option>
+						<option value="int"{if $param.type == 'int'} selected="selected"{/if}>целое число</option>
+						<option value="float"{if $param.type == 'float'} selected="selected"{/if}>дробное число</option>
+						<option value="boolean"{if $param.type == 'boolean'} selected="selected"{/if}>да/нет</option>
 					</select>
 					<input type="text" name="{$field.sid}[group][]" id="field_{$field.sid}_{$key}_group" value="{$param.group}" style="width:10%;{if $param.header} display:none;{/if}" />
 					<a href="" class="delete"><i class="icon-remove-sign"></i></a>
@@ -34,10 +34,10 @@
 					<input type="text" name="{$field.sid}[value][]" id="field_{$field.sid}_{$key+1}_value" value="" style="width:15%;" />
 					<input type="text" name="{$field.sid}[ed][]" id="field_{$field.sid}_{$key+1}_ed" value="" style="width:7%;" />
 					<select name="{$field.sid}[type][]" id="field_{$field.sid}_{$key}_type" style="width:17%;">
-						<option value="string">Тип поля: строка</option>
-						<option value="int">Тип поля: целое число</option>
-						<option value="float">Тип поля: дробное число</option>
-						<option value="boolean">Тип поля: да/нет</option>
+						<option value="string">строка</option>
+						<option value="int">целое число</option>
+						<option value="float">дробное число</option>
+						<option value="boolean">да/нет</option>
 					</select>
 					<input type="text" name="{$field.sid}[group][]" id="field_{$field.sid}_{$key+1}_group" value="" style="width:10%;" />
 					<a href="" class="delete"><i class="icon-remove-sign"></i></a>
