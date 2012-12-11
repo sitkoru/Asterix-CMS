@@ -459,6 +459,11 @@ class ModelLoader{
 					'combosex' => 'Combosex',
 				),
 			),
+			'css_main' => array( 
+				'group' => 'config', 
+				'title' => 'Путь к основному файлу CSS-стилей', 
+				'type' => 'text', 
+			),
 			'latin_url_only' => array( 
 				'group' => 'config', 
 				'title' => 'Ограничить URL`ы только латинскими буквами, цифрами, и знаком подчёркивания', 

@@ -183,7 +183,12 @@ class controller_get extends default_controller
 		}
 			
 		// Стандартные стили
-		$this->addCSS(model::$config['path']['public_styles'].'/s.css', array('media'=>'screen,projection'));
+		if( !strlen( model::$settings['css_main'] ) )
+			$this->addCSS(model::$config['path']['public_styles'].'/s.css', array('media'=>'screen,projection'));
+		else
+			$this->addCSS(model::$settings['css_main'], array('media'=>'screen,projection'));
+			
+		// Стили версии для печати
 		$this->addCSS(model::$config['path']['public_styles'].'/print.css', array('media'=>'print'));
 
 		//Подключаем шаблонизатор
