@@ -36,7 +36,14 @@ class field_type_menum extends field_type_default
 	
 	//Подготавливаем значение для SQL-запроса
 	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
-		return '|'.implode('|', $values[$value_sid]).'|';
+		$vals = array();
+		foreach( $values[$value_sid] as $val )
+			if( $val )
+				$vals[] = $val;
+		if( !count( $vals ) )
+			return '';
+		
+		return '|'.implode('|', $vals).'|';
 	}
 	
 	//Получить развёрнутое значение из простого значения

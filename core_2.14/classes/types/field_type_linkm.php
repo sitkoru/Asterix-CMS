@@ -39,10 +39,14 @@ class field_type_linkm extends field_type_default
 	
 	//Подготавливаем значение для SQL-запроса
 	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
-		if (IsSet($values[$value_sid]))
-			return htmlspecialchars('|' . implode('|', $values[$value_sid]) . '|');
+		$vals = array();
+		foreach( $values[$value_sid] as $val )
+			if( $val )
+				$vals[] = $val;
+		if( !count( $vals ) )
+			return 0;
 		else
-			return false;
+			return htmlspecialchars('|' . implode('|', $vals) . '|');
 	}
 	
 	//Получить развёрнутое значение из простого значения
