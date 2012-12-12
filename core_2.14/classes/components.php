@@ -693,7 +693,7 @@ class components{
 								( 
 									(`city` LIKE "%|'.mysql_real_escape_string( $city['id'] ).'|%") || 
 									(`region` LIKE "%|'.mysql_real_escape_string( $city['region'] ).'|%") || 
-									( (`city`="" || `city`="||") && `macroregion` LIKE "%|'.mysql_real_escape_string( $city['macroregion'] ).'|%") || 
+									( (`city`=0 || `city`="" || `city`="||") && `macroregion` LIKE "%|'.mysql_real_escape_string( $city['macroregion'] ).'|%") || 
 									(`city`=0 && `region`="" && `macroregion`="") || 
 									(`city`="||" && `region`="||" && `macroregion`="||") 
 								)';
