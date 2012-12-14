@@ -308,6 +308,9 @@ class interfaces{
 	//Добавление записи в структуру модуля
 	public function addRecord($values, $structure_sid = 'rec'){
 		
+		pr_r( $values );
+		exit();
+		
 		model::check_demo();
 
 	/*
@@ -368,9 +371,6 @@ class interfaces{
 			}else
 				model::execSql('insert into `'.$this->getCurrentTable( $structure_sid ).'` set `id`='.intval( $values['id'] ).', `author`='.intval( user::$info['id'] ).', `date_added`=NOW()', 'insert');
 		}
-		
-		pr( model::$last_sql )
-		exit();
 		
 		// Заполняем пустые поля значениями по умолчанию
 		foreach( $this->structure[ $structure_sid ]['fields'] as $feild_sid=>$field)
