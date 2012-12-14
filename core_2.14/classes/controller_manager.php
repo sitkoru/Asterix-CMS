@@ -79,27 +79,19 @@ class controller_manager
 	//Определение контроллера
 	private function defineController(){
 
-	pr( 'defineController start' );
-
-	//Админка определяется раньше, до разбора URL
+		//Админка определяется раньше, до разбора URL
 		if( IsSet(model::$ask->controller) )
 			return model::$ask->controller;
 		//если контроллер уже определёт (Admin)
 		if( IsSet( $this->activeController ) )
 			return $this->activeController;
 
-	pr( 'defineController ok' );
-			
 		//Admin
 		if( model::$ask->url[0] == 'admin' ){
 			return 'admin';
 		
 		//Обычный контроллер
 		} else {
-		
-			pr( $_SERVER['REQUEST_METHOD'] );
-			pr_r( model::$ask->mode );
-			pr_r( $this->vars );
 		
 			if ($_SERVER['REQUEST_METHOD'] == 'GET')
 				return 'get';

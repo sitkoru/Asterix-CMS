@@ -198,6 +198,8 @@ class controller_admin extends default_controller{
 		if( user::is_admin() && IsSet($_FILES['upload']) && !count($_POST) )
 			$this->ckeditorUpload($_FILES['upload']);
 		
+		pr( $action );
+		
 		if( $action == 'addRecord' ){
 			$this->checkRestBeforeAdd();
 			$url = model::addRecord(model::$ask->module, model::$ask->structure_sid, $this->vars);
