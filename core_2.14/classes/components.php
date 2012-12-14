@@ -714,11 +714,20 @@ class components{
 	//Сортировка по умолчанию
 	public function getOrderBy($structure_sid){
 		//Сортировка деревьев
-		if($this->structure[$structure_sid]['type']=='tree')return 'order by `left_key`';
+		if($this->structure[$structure_sid]['type']=='tree')
+			return 'order by `left_key`';
+		
 		//Сортирвка по POS
-		elseif(IsSet($this->structure[$structure_sid]['fields']['pos']))return 'order by `pos`,`title`';
+		elseif(IsSet($this->structure[$structure_sid]['fields']['pos']))
+			return 'order by `pos`,`title`';
+		
+		//Сортирвка по Lock_up
+		elseif(IsSet($this->structure[$structure_sid]['fields']['lock_up']))
+			return 'order by `lock_up` desc, `date_public` desc';
+		
 		//Сортировка по публичной дате
-		else return 'order by `date_public` desc,`title`';
+		else
+			return 'order by `date_public` desc,`title`';
 	}
 
 	
