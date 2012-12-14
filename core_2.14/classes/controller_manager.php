@@ -37,24 +37,38 @@ class controller_manager
 		$this->log    = $log;
 		$this->cache  = $cache;
 		
+pr('3');
+
 		//Подгружаем все переданные параметры
 		$this->loadData();
 		
+pr('4');
+
 		//Загружаем модель
 		$this->loadModel();
 		
+pr('5');
+
 		// Обрабатываем стандартные пути, вроде favicon/sitemap/robots/etc...
 		$this->ansverDefinedPaths();		
 		
+pr('6');
+
 		//Если сайт работает в режиме тестирования - проверяем можно ли показывать
 		$this->checkTestMode();
+
+pr('7');
 
 		//Определение контроллера
 		$this->activeController = $this->defineController();
 
+pr('8');
+
 		//Записываем контроллер
 		model::$ask->controller = $this->activeController;
 		
+pr('9');
+
 		//Инициализация контроллера
 		$result = $this->execController($this->activeController);
 		
