@@ -85,6 +85,8 @@ class controller_manager
 		if( IsSet( $this->activeController ) )
 			return $this->activeController;
 
+	pr( 'defineController ok' );
+			
 		//Admin
 		if( model::$ask->url[0] == 'admin' ){
 			return 'admin';
