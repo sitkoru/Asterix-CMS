@@ -369,9 +369,6 @@ class interfaces{
 				model::execSql('insert into `'.$this->getCurrentTable( $structure_sid ).'` set `id`='.intval( $values['id'] ).', `author`='.intval( user::$info['id'] ).', `date_added`=NOW()', 'insert');
 		}
 		
-		pr( model::$last_sql );
-		exit();
-		
 		// Заполняем пустые поля значениями по умолчанию
 		foreach( $this->structure[ $structure_sid ]['fields'] as $feild_sid=>$field)
 			if( !IsSet( $values[ $feild_sid ] ) )
