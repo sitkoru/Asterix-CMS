@@ -206,6 +206,8 @@ class interfaces{
 
 		$function_name = $this->interfaces[$interface]['control'];
 		
+		pr( $function_name );
+		
 		if( is_callable(array($this, $function_name)) )
 			$this->answerInterface( $interface, $this->$function_name( $params, $structure_sid ) );
 		else
