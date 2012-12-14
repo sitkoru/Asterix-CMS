@@ -37,38 +37,24 @@ class controller_manager
 		$this->log    = $log;
 		$this->cache  = $cache;
 		
-pr('3');
-
 		//Подгружаем все переданные параметры
 		$this->loadData();
 		
-pr('4');
-
 		//Загружаем модель
 		$this->loadModel();
 		
-pr('5');
-
 		// Обрабатываем стандартные пути, вроде favicon/sitemap/robots/etc...
 		$this->ansverDefinedPaths();		
 		
-pr('6');
-
 		//Если сайт работает в режиме тестирования - проверяем можно ли показывать
 		$this->checkTestMode();
-
-pr('7');
 
 		//Определение контроллера
 		$this->activeController = $this->defineController();
 
-pr('8');
-
 		//Записываем контроллер
 		model::$ask->controller = $this->activeController;
 		
-pr('9');
-
 		//Инициализация контроллера
 		$result = $this->execController($this->activeController);
 		
@@ -105,6 +91,11 @@ pr('9');
 		
 		//Обычный контроллер
 		} else {
+		
+			pr( $_SERVER['REQUEST_METHOD'] );
+			pr_r( model::$ask->mode );
+			pr_r( $this->vars );
+		
 			if ($_SERVER['REQUEST_METHOD'] == 'GET')
 				return 'get';
 			elseif( ($_SERVER['REQUEST_METHOD'] == 'POST') && ( IsSet(model::$ask->mode[0]) || IsSet($this->vars['interface']) ) ){
