@@ -78,7 +78,10 @@ class controller_manager
 	
 	//Определение контроллера
 	private function defineController(){
-		//Админка определяется раньше, до разбора URL
+
+	pr( 'defineController start' );
+
+	//Админка определяется раньше, до разбора URL
 		if( IsSet(model::$ask->controller) )
 			return model::$ask->controller;
 		//если контроллер уже определёт (Admin)
