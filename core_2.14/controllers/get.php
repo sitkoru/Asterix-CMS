@@ -165,9 +165,9 @@ class controller_get extends default_controller
 
 		// Bootstrap
 		if( in_array('bootstrap', model::$settings['js_libraries']) ){
-			$this->addJS('http://src.sitko.ru/3.0/bootstrap/js/bootstrap.min.js');
-			$this->addCSS('http://src.sitko.ru/3.0/bootstrap/css/bootstrap.min.css');
-			$this->addCSS('http://src.sitko.ru/3.0/bootstrap/css/bootstrap-responsive.min.css');
+			$this->addJS('http://src.sitko.ru/3.0/bootstrap/2.2.2/js/bootstrap.min.js');
+			$this->addCSS('http://src.sitko.ru/3.0/bootstrap/2.2.2/css/bootstrap.min.css');
+			$this->addCSS('http://src.sitko.ru/3.0/bootstrap/2.2.2/css/bootstrap-responsive.min.css');
 		}
 
 		// Combosex
