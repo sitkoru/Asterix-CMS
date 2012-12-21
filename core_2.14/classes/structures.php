@@ -65,13 +65,14 @@ class structures{
 
 		//Если модуль Start - будем клеить поле-ссылку
 		if($module->info['sid'] == 'start'){
-			$module->structure['rec']['fields']['is_link_to_module']=	array('sid'=>'is_link_to_module','type'=>'module','group'=>'system','title'=>'Раздел является ссылкой на модуль','variants'=>$all_modules);
-			$module->structure['rec']['fields']['url_alias']=			array('sid'=>'url_alias','group'=>'system','public'=>false,'type'=>'text','title'=>'Виртуальный адрес записи','default'=>'');
+			$module->structure['rec']['fields']['is_link_to_module']	= array('sid'=>'is_link_to_module','type'=>'module','group'=>'system','title'=>'Раздел является ссылкой на модуль','variants'=>$all_modules);
+			$module->structure['rec']['fields']['url_alias']			= array('sid'=>'url_alias','group'=>'system','public'=>false,'type'=>'text','title'=>'Виртуальный адрес записи','default'=>'');
 		}
 		//Если модуль Start - будем клеить поле-ссылку
 		if($module->info['sid'] == 'users'){
-			$module->structure['rec']['fields']['is_link_to']=		array('sid'=>'is_link_to','type'=>'user','group'=>'system','title'=>'Этот модуль является ссылкой на модуль');
-			$module->structure['rec']['fields']['salt']=			array('sid'=>'salt','type'=>'hidden','group'=>'system','title'=>'Соль для пароля');
+			$module->structure['rec']['fields']['is_link_to']			= array('sid'=>'is_link_to','type'=>'user','group'=>'system','title'=>'Этот модуль является ссылкой на модуль');
+			$module->structure['rec']['fields']['salt']					= array('sid'=>'salt','type'=>'hidden','group'=>'system','title'=>'Соль для пароля');
+//			$module->structure['rec']['fields']['personal_settings']	= array('sid'=>'personal_settings','type'=>'array','group'=>'system','title'=>'Персональные настройки пользователя');
 		}
 		
 		return $module->structure;

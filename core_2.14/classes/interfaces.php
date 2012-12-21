@@ -308,8 +308,6 @@ class interfaces{
 	//Добавление записи в структуру модуля
 	public function addRecord($values, $structure_sid = 'rec'){
 		
-	pr_r( $values );
-		
 		model::check_demo();
 
 	/*

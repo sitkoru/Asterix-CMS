@@ -13,7 +13,7 @@
 /*	Email: dekmabot@gmail.com								*/
 /*	WWW: http://mishinoleg.ru								*/
 /*	Создан: 10 февраля 2009	года							*/
-/*	Модифицирован: 25 сентября 2009 года					*/
+/*	Модифицирован: 20 декабря 2012 года						*/
 /*															*/
 /************************************************************/
 
@@ -88,13 +88,9 @@ class user
 
 	//Запоминаем пользователя после удачной авторизации
 	public static function all_ok($user){
-/*
-		if( IsSet(model::$modules['users']) )
-			$user = model::$modules['users']->explodeRecord($user,'rec');
-*/
+
 		//Аккаунт-ссылка на основной аккаунт
 		if( $user['is_link_to'] ){
-			//Поиск по базе
 			$user = model::makeSql(array(
 				'tables' => array(
 					self::$table_name
