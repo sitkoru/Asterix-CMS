@@ -106,7 +106,7 @@ class log
 	}
 	
 	public static function pr($a){
-		if( $_SERVER['REMOTE_ADDR'] == '176.56.12.2' ){
+		if( user::is_admin() ){
 			if (!headers_sent())
 				header('Content-Type: text/html; charset=utf-8');
 			print('
@@ -118,7 +118,7 @@ class log
 	}
 	
 	public static function pr_r($a){
-		if( $_SERVER['REMOTE_ADDR'] == '176.56.12.2' ){
+		if( user::is_admin() ){
 			if (!headers_sent())
 				header('Content-Type: text/html; charset=utf-8');
 			print('
