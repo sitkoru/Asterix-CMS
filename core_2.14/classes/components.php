@@ -411,10 +411,10 @@ class components{
 		//Забираем запись
 		$recs=model::makeSql(
 			array(
-				'tables'=>array($this->getCurrentTable('rec')),
-				'where'=>$where,
-				'order'=>'order by RAND()',
-				'limit'=>$limit,
+				'tables' => array($this->getCurrentTable('rec')),
+				'where'  => $where,
+				'order'  => 'order by RAND()',
+				'limit'  => $params['limit'],
 			),
 			'getall'
 		);pr(model::$last_sql);
