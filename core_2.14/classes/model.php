@@ -293,7 +293,7 @@ class model{
 			'where' => array(
 				'and' => $where,
 			)
-		), 'getall');
+		), 'getall', 'system', true);
 		
 		//Уникальные поля этих записей
 		$update = array();
