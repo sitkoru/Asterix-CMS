@@ -414,10 +414,10 @@ class components{
 				'tables'=>array($this->getCurrentTable('rec')),
 				'where'=>$where,
 				'order'=>'order by RAND()',
-				'limit'=>(isSet($params['limit'])?'limit '.(IsSet($params['start'])?intval($params['start']).', ':'').intval($params['limit']):''),
+				'limit'=>$limit,
 			),
 			'getall'
-		);
+		);pr(model::$last_sql);
 
 		//Раскрываем сложные поля
 		foreach($recs as $i=>$rec){
