@@ -417,7 +417,7 @@ class components{
 				'limit'  => $params['limit'],
 			),
 			'getall'
-		);pr(model::$last_sql);
+		);//pr(model::$last_sql);
 
 		//Раскрываем сложные поля
 		foreach($recs as $i=>$rec){
