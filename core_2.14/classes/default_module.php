@@ -278,7 +278,7 @@ class default_module extends Dynamic{
 
 	//Разворачиваем значения полей перед выводом в браузер
 	public function explodeRecord( $rec, $structure_sid='rec', $explode_fields = true ){
-		return structures::explodeRecord( $rec, $structure_sid='rec', $explode_fields );
+		return structures::explodeRecord( $rec, $structure_sid, $explode_fields );
 	}
 
 	//Вставка html или других окончаний для URL-ов записей
