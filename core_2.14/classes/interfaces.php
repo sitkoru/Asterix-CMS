@@ -537,7 +537,7 @@ class interfaces{
 		//Возвращаем URL, на который будет переброшен пользователь
 		return array(
 			'action' => 'redirect',
-			'url' => $url.'.html',
+			'url' => $url,
 		);
 
 	}
