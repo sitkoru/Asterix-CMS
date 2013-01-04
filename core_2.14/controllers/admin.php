@@ -198,7 +198,7 @@ class controller_admin extends default_controller{
 		if( user::is_admin() && IsSet($_FILES['upload']) && !count($_POST) )
 			$this->ckeditorUpload($_FILES['upload']);
 		
-		pr( $action );
+//		pr( $action );
 		
 		if( $action == 'addRecord' ){
 			$this->checkRestBeforeAdd();
