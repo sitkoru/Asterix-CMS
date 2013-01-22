@@ -118,7 +118,7 @@ class user
 		user::updateMyLoginDate(user::$info['id']);
 		//user::$info = default_module::insertRecordUrlType(user::$info);
 
-		if( IsSet($_GET['login']) || IsSet($_GET['openid']) || IsSet($_GET['openid.ns']) || IsSet( $_GET['oauth_verifier'] ) )
+		if( IsSet($_GET['login']) || IsSet($_GET['openid']) || IsSet($_GET['openid.ns']) )
 		if( !IsSet( $_SESSION['oauth_referer'] ) ){
 			header('Location: /');
 			exit();
