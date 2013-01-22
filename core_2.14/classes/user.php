@@ -648,9 +648,6 @@ class user
 			$url = str_replace("	",'', $url);
 			$url = str_replace(" ",'', $url);
 
-			print( $url );
-			exit();
-			
 			header('Location: '.$url);
 			exit();
 			
