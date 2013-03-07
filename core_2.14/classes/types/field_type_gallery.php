@@ -162,7 +162,7 @@ class field_type_gallery extends field_type_default
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode($value, $settings = false, $record = array())
 	{
-		if( is_string($value) and $value)
+		if( is_string($value) and $value!="0")
 			$result = unserialize( stripslashes( $value ) );
 		
 		if(is_array($result))
