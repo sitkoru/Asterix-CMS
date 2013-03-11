@@ -28,6 +28,7 @@ class model{
 	public static $ask;
 	public static $last_sql;
 	public static $active_database = 'system';
+    public static $cache;
 	
 	function __construct($config, $log, $cache = false){
 
@@ -40,7 +41,7 @@ class model{
 
 		$this->log        = 	$log;
 		$this->log->model = 	$this;
-		$this->cache = $cache;
+		self::$cache = $cache->cache;
 
 		self::$config = 		ModelLoader::loadConfig( $config );
 		
