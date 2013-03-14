@@ -192,8 +192,14 @@ class templater{
 	public function showLinks( $value ){
 		
 		if( $value == strip_tags( $value) ){
+			$regex = "((https?|ftp)\:\/\/)?"; // SCHEME
+			$regex .= "([a-zA-Z0-9-.]*)\.([a-zA-Z]{2,3})"; // Host or IP
+			$regex .= "(\/([a-zA-Z0-9+\$_-]\.?)+)*\/?"; // Path
+			$regex .= "(\?[a-zA-Z+&\$_.-][a-zA-Z0-9;:@&%=+\/\$_.-]*)?"; // GET Query
+			$regex .= "(#[a-zA-Z_.-][a-zA-Z0-9+\$_.-]*)?"; // Anchor
+			$regex = '/'.$regex.'/';
 			$value = str_replace('<br', ' <br', $value);
-			$value = preg_replace( '((\shttp\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)','<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
+			$value = preg_replace( $regex,'<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
 		}
 		
 		return $value;
