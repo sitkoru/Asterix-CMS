@@ -1,6 +1,6 @@
 <?php
 
-$root_host = 'https://github.com/dekmabot';
+$root_host = 'https://github.com/sitkoru';
 
 header("HTTP/1.0 200 Ok");
 header('Content-Type: text/html; charset=utf-8');
