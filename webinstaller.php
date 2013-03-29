@@ -43,7 +43,7 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 	}
 
 	//Проверка прав на назначение прав на файлы
-	if( file_get_contents('https://raw.github.com/dekmabot/Asterix-CMS/master/core.txt') ){
+	if( file_get_contents('https://raw.github.com/sitkoru/Asterix-CMS/master/core.txt') ){
 		$check_web_access = true;
 	}else{
 		$check_web_access = false;
@@ -87,7 +87,7 @@ if(!IsSet($_GET['step']) and !IsSet($_POST['step'])){
 	}
 	print('Все необходимые доступы имеются, вы можете продолжить установку Asterix CMS<br />');
 
-	$versions = file('https://raw.github.com/dekmabot/Asterix-CMS/master/core.txt');
+	$versions = file('https://raw.github.com/sitkoru/Asterix-CMS/master/core.txt');
 	$versions_int = file('/home/www/tools/core.txt');
 	print('<form action="" method="get"><input type="hidden" name="step" value="2" />');
 	print('<h3>Выберите версию ядра для установки</h3><form action="" method="get"><input type="hidden" name="step" value="2" /><ol>');
