@@ -70,7 +70,9 @@ class ModelSql
         $t = explode(' ', microtime());
         $sql_stop = $t[1] + $t[0];
         $time = $sql_stop - $sql_start;
-
+        if (defined("SQL_DEBUG_LOG") && defined("SQL_DEBUG_LOG_HANDLE")) {
+            fwrite(SQL_DEBUG_LOG_HANDLE, $sql . " - " . $time);
+        }
         //Статистика
         if (!$cache) log::sql($sql, $time, $result_count, $query_type, $database);
 
