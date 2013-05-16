@@ -19,7 +19,7 @@
 
 class field_type_map extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Точка на карте', 'value' => '55.160632|61.398726|14', 'width' => '100%');
+	public $default_settings = array('sid' => false, 'title' => 'Точка на карте', 'value' => '61.398726|55.160632|16', 'width' => '100%');
 	
 	public $template_file = 'types/map.tpl';
 	

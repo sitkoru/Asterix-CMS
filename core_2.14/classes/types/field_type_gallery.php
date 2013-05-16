@@ -69,7 +69,18 @@ class field_type_gallery extends field_type_default
 						$old_values[$value_sid][$i]['title'] = strip_tags( $_POST[$value_sid . '_title'][$i] );
 					$images[] = $old_values[$value_sid][$i];
 				}
-				
+		
+		else if( IsSet($values[$value_sid . '_old_id']) )
+		foreach( $values[$value_sid . '_old_id'] as $i => $value)
+			if( !$values[$value_sid . '_delete'][$i] )
+				if( strlen($old_values[$value_sid][$i]['path']) ){
+					//Обновляем заголовок
+					$old_values[$value_sid][$i]['title'] = strip_tags( $values[$value_sid . '_title'][$i] );
+					if( IsSet( $values[$value_sid . '_title'][$i] ) )
+						$old_values[$value_sid][$i]['title'] = strip_tags( $values[$value_sid . '_title'][$i] );
+					$images[] = $old_values[$value_sid][$i];
+				}
+
 		//Новые
 		foreach( $values[$value_sid]['name'] as $i => $value)
 			if( strlen($values[$value_sid]['tmp_name'][$i]) > 0 ){
