@@ -309,6 +309,22 @@ class controller_get extends default_controller
         //Показать статистику
         log::showStat();
 
+        if(isset($_GET['xhprof'])){
+            if (extension_loaded('xhprof')) {
+                $profiler_namespace = 'yamobi'; // namespace for your application
+                $xhprof_data = xhprof_disable();
+                $xhprof_runs = new XHProfRuns_Default();
+//var_dump($xhprof_data);
+                $run_id = $xhprof_runs->save_run($xhprof_data, $profiler_namespace);
+                var_dump($run_id);
+// url to the XHProf UI libraries (change the host name and path)
+                $profiler_url = sprintf('http://prof.my/index.php?run=%s&source=%s', $run_id, $profiler_namespace);
+                echo <<<OUT
+Profiler output {$profiler_url}
+OUT;
+            }
+        }
+
     }
 
     //Укажите модуль, в который будет добавлена запись
