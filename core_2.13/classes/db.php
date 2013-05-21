@@ -68,7 +68,7 @@ foreach ($config['db'] as $name => $one) {
 			$db[$name] = new $n($model);
 		}
 		
-		$db[$name]->PConnect($one['host'], $one['user'], $one['password'], $one['name']);
+		$db[$name]->Connect($one['host'], $one['user'], $one['password'], $one['name']);
 		if( !$db[$name]->connection ){
 			print('Ошибка соединения с базой данных.');
 			exit();
