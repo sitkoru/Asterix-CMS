@@ -116,8 +116,12 @@ class field_type_file extends field_type_default
 			$data = $this->getValueExplode( $_POST[$value_sid . '_old_id'] );
 			UnSet( $data['old'] );
 			$data['title'] = strip_tags( $_POST[$value_sid . '_title'] );
+			
+		}elseif (!strlen($values[$value_sid]['tmp_name'])) {
+			if( $values[$value_sid . '_old_id'] ){
+				$data = $values[$value_sid . '_old_id'];
+			}
 		}
-
 		//Готово
 		if( $data )
 			return serialize( $data );
