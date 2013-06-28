@@ -156,7 +156,11 @@ Content-Transfer-Encoding: base64
 	//Прикрепить файл к сообщению
 	function addAttachment($file){ 
 		//Имя файла
-		$fname = substr(strrchr($file['file'], "/"), 1); 		$type=$file['type'];
+		if($file['name'])
+			$fname = $file['name']; 
+		else
+			$fname = substr(strrchr($file['file'], "/"), 1); 		
+		$type=$file['type'];
 		//Содержимое		
 		$content_type='Content-Type: '.$type;
 		$data = file_get_contents($file['file']); 
