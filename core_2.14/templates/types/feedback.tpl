@@ -52,7 +52,10 @@
 					</select>
 					<input type="text" id="field_{$field.sid}_fields_title_{$key}" name="{$field.sid}[fields][title][]" placeholder="Заголовок поля" value="{$feedback_field.title}" />
 					<input type="text" id="field_{$field.sid}_fields_default_{$key}" name="{$field.sid}[fields][default][]" value="{$feedback_field.default}"/>
-					<input type="checkbox" id="field_{$field.sid}_fields_required_{$key}" name="{$field.sid}[fields][required][]" class="required_field" value="1" title="Обязательное поле" style="margin-left: 20px;" {if $feedback_field.required} checked{/if}>
+					<select style="width: 70px;" id="field_{$field.sid}_fields_required_{$key}" name="{$field.sid}[fields][required][]">
+						<option value="0">Нет</option>
+						<option value="1"{if $feedback_field.required} selected="selected"{/if}>Да</option>
+					</select>
 <!--					
 					<span class="required{if $feedback_field.required} badge badge-warning{/if}" style="padding: 1px 9px 2px;">Обязательное</span>
 -->
@@ -68,13 +71,15 @@
 						<option value="check"{if $feedback_field.type == 'check'} selected="selected"{/if}>Галочка да/нет</option>
 
 						<option value="menu"{if $feedback_field.type == 'menu'} selected="selected"{/if}>Выбор из списка</option>
-<!--					
+						
 						<option value="file"{if $feedback_field.type == 'file'} selected="selected"{/if}>Прикрепить файл</option>
--->
 					</select>
 					<input type="text" id="field_{$field.sid}_fields_title_0" name="{$field.sid}[fields][title][]" placeholder="Заголовок поля" value="{$feedback_field.title}" />
 					<input type="text" id="field_{$field.sid}_fields_default_0" name="{$field.sid}[fields][default][]" value="{$feedback_field.default}"/>
-					<input type="checkbox" id="field_{$field.sid}_fields_required_0" name="{$field.sid}[fields][required][]" class="required_field" value="1" title="Обязательное поле" style="margin-left: 20px;">
+					<select style="width: 70px;" id="field_{$field.sid}_fields_required_0" name="{$field.sid}[fields][required][]">
+						<option value="0">Нет</option>
+						<option value="1">Да</option>
+					</select>
 <!--	
 					<span class="required{if $feedback_field.required} badge badge-warning{/if}" style="padding: 1px 9px 2px;">Обязательное</span>
 -->
