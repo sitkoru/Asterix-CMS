@@ -17,9 +17,9 @@
 					<span id="amcs_js_companySelector-chosen" class="acms_companySelector-chosen">{$domain.title|cut:35}</span><span class="acms_companySelector-link" id="amcs_js_companySelector-link">...</span>
                
 					<ul class="acms_companySelector-list" style="display:none;">
-						<li class="acms_companySelector-list-item" rel="localhost" data-type="localhost">{$domain.title|cut:35}</li>
+						<li class="acms_companySelector-list-item" data-name="localhost" data-type="localhost">{$domain.title|cut:35}</li>
 					{foreach from=$openid item=access key=dom}{if $access == admin}
-						<li class="acms_companySelector-list-item" rel="openid" data-type="{$dom}">Аккаунт «{$dom}»</li>
+						<li class="acms_companySelector-list-item" data-name="openid" data-type="{$dom}">Аккаунт «{$dom}»</li>
 					{/if}{/foreach}
 					</ul>
 				
