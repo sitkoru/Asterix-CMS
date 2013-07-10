@@ -47,21 +47,21 @@
 				document.location.href='\
 					https://www.google.com/accounts/o8/ud\
 						?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0\
-						&openid.mode=checkid_setup\
-						&openid.return_to=http://{$domain.current_host}/?login\
-						&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select\
-						&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select\
-						&openid.realm=http://{$domain.current_host}/\
-						&openid.ui.ns=http://specs.openid.net/extensions/ui/1.0\
-						&openid.ui.icon=true\
-						&hd=sitko.ru\
-						&openid.ns.ax=http://openid.net/srv/ax/1.0\
-						&openid.ax.mode=fetch_request\
-						&openid.ax.required=firstname,lastname,email,language\
-						&openid.ax.type.firstname=http://axschema.org/namePerson/first\
-						&openid.ax.type.lastname=http://axschema.org/namePerson/last\
-						&openid.ax.type.email=http://axschema.org/contact/email\
-						&openid.ax.type.language=http://axschema.org/pref/language\
+						&amp;openid.mode=checkid_setup\
+						&amp;openid.return_to=http://{$domain.current_host}/?login\
+						&amp;openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select\
+						&amp;openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select\
+						&amp;openid.realm=http://{$domain.current_host}/\
+						&amp;openid.ui.ns=http://specs.openid.net/extensions/ui/1.0\
+						&amp;openid.ui.icon=true\
+						&amp;hd=sitko.ru\
+						&amp;openid.ns.ax=http://openid.net/srv/ax/1.0\
+						&amp;openid.ax.mode=fetch_request\
+						&amp;openid.ax.required=firstname,lastname,email,language\
+						&amp;openid.ax.type.firstname=http://axschema.org/namePerson/first\
+						&amp;openid.ax.type.lastname=http://axschema.org/namePerson/last\
+						&amp;openid.ax.type.email=http://axschema.org/contact/email\
+						&amp;openid.ax.type.language=http://axschema.org/pref/language\
 						';
 			  " /></td>
             </tr>
