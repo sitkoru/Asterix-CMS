@@ -30,7 +30,7 @@ jQuery(document).ready(function(){
   $('.acms_companySelector-list-item').click(function(){
     $('#amcs_js_companySelector-chosen').text( $(this).text() );
     $('#acms_login_host').val( $(this).attr('rel') );
-    $('#acms_login_openid').val( $(this).attr('alt') );
+    $('#acms_login_openid').val( $(this).attr('data-type') );
     $('.acms_companySelector-list').fadeOut('fast');
     if( $('#acms_login_host').val() == 'localhost' ){
       $('.acms_lb-content-form_openid').hide();
