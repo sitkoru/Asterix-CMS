@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /************************************************************/
 /*															*/
@@ -466,6 +466,9 @@ class user
 		
 		
 		}elseif( in_array($provider, array('twitter.com','twitter') ) ){
+			
+			echo("Авторизация через twitter временно не доступна. Пожалуйста, используйте аккаунты других соц. сетей для входа на сайт.");
+			exit();
 			
 			//Дефолтные настройки
 			$TWITTER_CONSUMER_KEY=model::$settings['oauth_twitter_id'];
