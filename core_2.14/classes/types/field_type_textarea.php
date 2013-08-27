@@ -19,28 +19,30 @@
 
 class field_type_textarea extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Многострочный текст', 'value' => '', 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Многострочный текст', 'value' => '', 'width' => '100%' );
+
 	public $template_file = 'types/textarea.tpl';
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` TEXT NOT NULL';
 	}
-	
+
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
-		if (IsSet($values[$value_sid])) {
-			return htmlspecialchars($values[$value_sid]);
+	public function toValue( $value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false )
+	{
+		if( IsSet($values[$value_sid]) ) {
+			return htmlspecialchars( $values[$value_sid] );
 		} else
 			return false;
 	}
+
 	//Получить развёрнутое значение из простого значения
-	public function getValueExplode($value, $settings = false, $record = array())
+	public function getValueExplode( $value, $settings = false, $record = array() )
 	{
-		return nl2br(htmlspecialchars_decode(stripslashes($value)));
+		return nl2br( htmlspecialchars_decode( stripslashes( $value ) ) );
 	}
-	
+
 }
 
 ?>

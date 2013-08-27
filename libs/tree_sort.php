@@ -11,45 +11,51 @@
  * desc - обратный порядок сортировки (необязательно, по умолчанию false)
  */
 
-function prepareTreeSort( $params ) {
+function prepareTreeSort( $params )
+{
 
-	if ( empty( $params['content'] ) )
+	if( empty($params['content']) )
 		return $params['content'];
 
-	$order = $params['order'];
-	$desc = isset( $params['desc'] ) ? $params['desc'] : false;
-	$visible = isset( $params['visible'] ) ? $params['visible'] : false;
-	$sub = isset( $params['sub'] ) ? $params['sub'] : 'sub';
+	$order   = $params['order'];
+	$desc    = isset($params['desc']) ? $params['desc'] : false;
+	$visible = isset($params['visible']) ? $params['visible'] : false;
+	$sub     = isset($params['sub']) ? $params['sub'] : 'sub';
 
-	$tst = new treeSortTestObj( $order, $desc );
+	$tst = new treeSortTestObj($order, $desc);
 
-	usort( $params['content'], array( $tst, 'compare' ) );
+	if( is_array( $params['content'] ) )
+		usort( $params['content'], array( $tst, 'compare' ) );
 
-	foreach ( $params['content'] as &$value ) {
+	if( is_array( $params['content'] ) )
+		foreach( $params['content'] as &$value ) {
 
-		if ( ( ( $visible and $value[$visible] ) or ! $visible ) and $value[$sub] )
+			if( (($visible and $value[$visible]) or !$visible) and $value[$sub] )
 				$value[$sub] = prepareTreeSort( array( 'order' => $order, 'sub' => $sub, 'visible' => $visible, 'content' => $value[$sub] ) );
-	}
+		}
 
 	return $params['content'];
 }
 
-class treeSortTestObj {
+class treeSortTestObj
+{
 
 	protected $order, $desc;
 
-	public function __construct( $order, $desc = false ) {
+	public function __construct( $order, $desc = false )
+	{
 
 		$this->order = $order;
-		$this->desc = $desc;
+		$this->desc  = $desc;
 	}
 
-	public function compare( $a, $b ) {
+	public function compare( $a, $b )
+	{
 
-		if ( $a[$this->order] == $b[$this->order] )
+		if( $a[$this->order] == $b[$this->order] )
 			return 0;
 
-		return ( ( $a[$this->order] > $b[$this->order] ) xor $this->desc ) ? 1 : -1;
+		return (($a[$this->order]>$b[$this->order]) xor $this->desc) ? 1 : -1;
 	}
 }
 

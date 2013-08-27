@@ -17,84 +17,89 @@
 /*															*/
 /************************************************************/
 
-class field_type_access extends field_type_default{
-	
-	public $default_settings=array(
-		'sid'=>false,
-		'title'=>'Группа доступа',
-		'value'=>'|admin=rwd|moder=rw-|all=r--|',
-		'width'=>'100%'
+class field_type_access extends field_type_default
+{
+
+	public $default_settings = array(
+		'sid'   => false,
+		'title' => 'Группа доступа',
+		'value' => '|admin=rwd|moder=rw-|all=r--|',
+		'width' => '100%'
 	);
-	
-	public $template_file='types/access.tpl';
 
-	private $table='groups';
-	
+	public $template_file = 'types/access.tpl';
+
+	private $table = 'groups';
+
 	//Поле участввует в поиске
-	public $searchable=false;
+	public $searchable = false;
 
-	public function creatingString($name){
-		return '`'.$name.'` TEXT NOT NULL';
+	public function creatingString( $name )
+	{
+		return '`' . $name . '` TEXT NOT NULL';
 	}
-	
+
 	//Получить простое значение по умолчанию из настроек поля
-	public function getDefaultValue($settings=false){
-		return array('admin'=>'rwd','moder'=>'rw-','all'=>'r--');
+	public function getDefaultValue( $settings = false )
+	{
+		return array( 'admin' => 'rwd', 'moder' => 'rw-', 'all' => 'r--' );
 	}
 
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
-		
+	public function toValue( $value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false )
+	{
+
 		//Доступы групп
-		$groups=array();
-		foreach($values[$value_sid] as $group=>$access)
+		$groups = array();
+		foreach( $values[$value_sid] as $group => $access )
 			//Админам всегда и везьде доступ есть
-			if($group=='admin')
-				$groups[$group]=$group.'=rwd';
-			//Другим по необходимости
-			else
-				$groups[$group]=$group.'='.$access;
-		
+		if( $group == 'admin' )
+			$groups[$group] = $group . '=rwd';
+		//Другим по необходимости
+		else
+			$groups[$group] = $group . '=' . $access;
+
 		//Готово
-		return '|'.implode('|',$groups).'|';
+		return '|' . implode( '|', $groups ) . '|';
 	}
-		
+
 	//Получить развёрнутое значение для системы управления из простого значения
-	public function getAdmValueExplode($value, $settings=false, $record=array()){
+	public function getAdmValueExplode( $value, $settings = false, $record = array() )
+	{
 		//Группы в системе
-		$groups=model::getUserGroups();
-		
+		$groups = model::getUserGroups();
+
 		//Разбираем имеющиеся значения
-		if(is_array($value)){
-			$gs=$value;
-		}else{
-			$gs=explode('|',$value);
+		if( is_array( $value ) ) {
+			$gs = $value;
+		} else {
+			$gs = explode( '|', $value );
 		}
-		
-		foreach($gs as $g)if(strlen($g)){
-			$t=explode('=',$g);
-			$group_vals[$t[0]]=(substr_count($t[1],'r')?'r':'-').(substr_count($t[1],'w')?'w':'-').(substr_count($t[1],'d')?'d':'-');
+
+		foreach( $gs as $g ) if( strlen( $g ) ) {
+			$t = explode( '=', $g );
+			$group_vals[$t[0]] = (substr_count( $t[1], 'r' ) ? 'r' : '-') . (substr_count( $t[1], 'w' ) ? 'w' : '-') . (substr_count( $t[1], 'd' ) ? 'd' : '-');
 		}
 
 		//Указываем значения в группах
-		foreach($groups as $i=>$group){
+		foreach( $groups as $i => $group ) {
 			//Есть значение
-			if(IsSet($group_vals[$i])){
-				$groups[$i]['access']=$group_vals[$i];
-			//Есть настройка
-			}elseif(IsSet(model::$settings['access_default'])){
-				$groups[$i]['access']=model::$settings['access_default'];
-			//Нет настройки - берём стандартное
-			}else{
-				if($i=='admin')$groups[$i]['access']='rwd';
-				if($i=='moder')$groups[$i]['access']='rw-';
-				if($i=='all')$groups[$i]['access']='r--';
+			if( IsSet($group_vals[$i]) ) {
+				$groups[$i]['access'] = $group_vals[$i];
+				//Есть настройка
+			} elseif( IsSet(model::$settings['access_default']) ) {
+				$groups[$i]['access'] = model::$settings['access_default'];
+				//Нет настройки - берём стандартное
+			} else {
+				if( $i == 'admin' ) $groups[$i]['access'] = 'rwd';
+				if( $i == 'moder' ) $groups[$i]['access'] = 'rw-';
+				if( $i == 'all' ) $groups[$i]['access'] = 'r--';
 			}
-				
+
 		}
-		
-		$result['groups']=$groups;
-		
+
+		$result['groups'] = $groups;
+
 		return $result;
 	}
 

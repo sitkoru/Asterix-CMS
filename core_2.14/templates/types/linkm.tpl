@@ -1,7 +1,7 @@
 	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}">
 		<label class="control-label" for="field_{$field.sid}">{$field.title}</label>
 		<div class="controls">
-			<select name="{$field.sid}[]" class="" size=8 id="field_{$field_sid}" multiple{if $field.required} required="required"{/if}>
+			<select name="{$field.sid}[]" style="width: 100%" size=12 id="field_{$field_sid}" multiple{if $field.required} required="required"{/if}>
 			{if !$field.required}
 				<option value="0">- пусто -</option>
 			{/if}

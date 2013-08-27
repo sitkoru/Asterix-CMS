@@ -1,37 +1,59 @@
-document.write('<script src="http://src.sitko.ru/3.0/ckeditor/ckeditor.js" type="text/javascript"></script>');
-document.write('<script src="http://src.sitko.ru/3.0/ckeditor/adapters/jquery.js" type="text/javascript"></script>');
+document.write('<script src="http://src.opendev.ru/3.0/ckeditor/ckeditor.js" type="text/javascript"></script>');
+document.write('<script src="http://src.opendev.ru/3.0/ckeditor/adapters/jquery.js" type="text/javascript"></script>');
 
 var init_ckeditor = function() {
 
-	$('.controls textarea.html_editor').ckeditor({
-		toolbar:
-		[
-			[
-			'Bold','Italic','Underline','-',
-			'NumberedList','BulletedList','-',
-			'Link','Unlink','-',
-			],
-		],
-		language:'ru'
+	$('.form-group textarea.html_editor').ckeditor({
+        toolbar:
+            [
+                [
+                    'Source','-','FontSize','Format','-','Bold','Italic','Underline','-',
+                    'Subscript','Superscript','SpecialChar','-',
+                    'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull','-',
+                    'NumberedList','BulletedList','-','Outdent','Indent','-',
+                    'Link','Unlink','Anchor','-',
+                    'Table','Image','-','PasteFromWord','RemoveFormat','Blockquote','typograf'
+                ],
+            ],
+        language:'ru',
+        extraCss: 'body{font-size:1.2em;}',
+        height: '400px'
 	});
 
-	$('.controls textarea.html_editor_admin').ckeditor({
-		toolbar:
-		[
-			[
-			'Source','-','FontSize','Format','-','Bold','Italic','Underline','-',
-			'Subscript','Superscript','SpecialChar','-',
-			'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull','-',
-			'NumberedList','BulletedList','-','Outdent','Indent','-',
-			'Link','Unlink','Anchor','-',
-			'Table','Flash','Image','-','PasteFromWord','RemoveFormat','Blockquote','typograf'
-			],
-		],
-		language:'ru',
-		/*removePlugins:'scayt,menubutton,contextmenu',*/
-		filebrowserUploadUrl:'/admin/',
-		extraPlugins:'iframedialog,typograf,onchange'
-	});
+    $('.form-group textarea.html_editor_admin').ckeditor({
+        toolbar:
+            [
+                [
+                    'Source','-','FontSize','Format','-','Bold','Italic','Underline','-',
+                    'Subscript','Superscript','SpecialChar','-',
+                    'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull','-',
+                    'NumberedList','BulletedList','-','Outdent','Indent','-',
+                    'Link','Unlink','Anchor','-',
+                    'Table','Flash','Image','-','PasteFromWord','RemoveFormat','Blockquote','typograf'
+                ],
+            ],
+        language:'ru',
+        /*removePlugins:'scayt,menubutton,contextmenu',*/
+        filebrowserUploadUrl:'/admin/',
+        extraPlugins:'iframedialog,typograf,onchange'
+    });
+    $('.control-group textarea.html_editor_admin').ckeditor({
+        toolbar:
+            [
+                [
+                    'Source','-','FontSize','Format','-','Bold','Italic','Underline','-',
+                    'Subscript','Superscript','SpecialChar','-',
+                    'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull','-',
+                    'NumberedList','BulletedList','-','Outdent','Indent','-',
+                    'Link','Unlink','Anchor','-',
+                    'Table','Flash','Image','-','PasteFromWord','RemoveFormat','Blockquote','typograf'
+                ],
+            ],
+        language:'ru',
+        /*removePlugins:'scayt,menubutton,contextmenu',*/
+        filebrowserUploadUrl:'/admin/',
+        extraPlugins:'iframedialog,typograf,onchange'
+    });
 }
 
 function fn(){

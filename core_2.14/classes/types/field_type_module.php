@@ -19,47 +19,48 @@
 
 class field_type_module extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Ссылка на модуль', 'value' => '', 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Ссылка на модуль', 'value' => '', 'width' => '100%' );
+
 	public $template_file = 'types/module.tpl';
-	
+
 	private $table = 'modules';
-	
+
 	//Поле участввует в поиске
 	public $searchable = false;
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` VARCHAR(255) NOT NULL';
 	}
-	
+
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
+	public function toValue( $value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false )
+	{
 		return $values[$value_sid];
 	}
-	
+
 	//Получить развёрнутое значение для системы управления из простого значения
-	public function getAdmValueExplode($value, $settings = false, $record = array())
+	public function getAdmValueExplode( $value, $settings = false, $record = array() )
 	{
-		$res      = array();
+		$res = array();
 
 		//Варианты значений
 		$variants = model::$modules;
-		
+
 		//Отмечаем в массиве выбранные элементы
-		foreach (model::$modules as $sid => $module)
+		foreach( model::$modules as $sid => $module )
 			$res[] = array(
-				'value' => $sid,
-				'title' => $module->info['title'],
+				'value'    => $sid,
+				'title'    => $module->info['title'],
 				'selected' => ($sid == $value)
 			);
-	
+
 		$res[] = array(
-			'value' => '',
-			'title' => '- ссылка на модуль отсутствует -',
+			'value'    => '',
+			'title'    => '- ссылка на модуль отсутствует -',
 			'selected' => (!$value)
 		);
-		
+
 		//Готово
 		return $res;
 	}

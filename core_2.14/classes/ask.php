@@ -20,7 +20,7 @@
 class ask
 {
 	public $rec;
-	
+
 }
 
 ?>

@@ -2,109 +2,107 @@
 
 /************************************************************/
 /*															*/
-/*	Ядро системы управления Asterix	CMS						*/
-/*		Тип данных - Мета-данные к текстовому полю 			*/
+/*	РЇРґСЂРѕ СЃРёСЃС‚РµРјС‹ СѓРїСЂР°РІР»РµРЅРёСЏ Asterix	CMS						*/
+/*		РўРёРї РґР°РЅРЅС‹С… - РњРµС‚Р°-РґР°РЅРЅС‹Рµ Рє С‚РµРєСЃС‚РѕРІРѕРјСѓ РїРѕР»СЋ 			*/
 /*															*/
-/*	Версия ядра 2.14										*/
-/*	Версия скрипта 1.00										*/
+/*	Р’РµСЂСЃРёСЏ СЏРґСЂР° 2.14										*/
+/*	Р’РµСЂСЃРёСЏ СЃРєСЂРёРїС‚Р° 1.00										*/
 /*															*/
-/*	Copyright (c) 2012  Мишин Олег							*/
-/*	Разработчик: Мишин Олег									*/
+/*	Copyright (c) 2012  РњРёС€РёРЅ РћР»РµРі							*/
+/*	Р Р°Р·СЂР°Р±РѕС‚С‡РёРє: РњРёС€РёРЅ РћР»РµРі									*/
 /*	Email: dekmabot@gmail.com								*/
 /*	WWW: http://mishinoleg.ru								*/
-/*	Создан: 13 июля 2012 года								*/
-/*	Модифицирован: 13 июля 2012 года						*/
+/*	РЎРѕР·РґР°РЅ: 13 РёСЋР»СЏ 2012 РіРѕРґР°								*/
+/*	РњРѕРґРёС„РёС†РёСЂРѕРІР°РЅ: 13 РёСЋР»СЏ 2012 РіРѕРґР°						*/
 /*															*/
 /************************************************************/
 
-class field_type_textmeta extends field_type_default{
-	
+class field_type_textmeta extends field_type_default
+{
+
 	public $default_settings = array
 	(
-		'sid' 	=> false, 
-		'title' => 'Мета-данные к текстовому полю вида "Визуальный редактор"', 
-		'value' => '', 
+		'sid'   => false,
+		'title' => 'РњРµС‚Р°-РґР°РЅРЅС‹Рµ Рє С‚РµРєСЃС‚РѕРІРѕРјСѓ РїРѕР»СЋ РІРёРґР° "Р’РёР·СѓР°Р»СЊРЅС‹Р№ СЂРµРґР°РєС‚РѕСЂ"',
+		'value' => '',
 		'width' => '100%'
 	);
-	
+
 	public $template_file = 'types/hidden.tpl';
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` TEXT NOT NULL';
 	}
-	
-	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
+
+	//РџРѕРґРіРѕС‚Р°РІР»РёРІР°РµРј Р·РЅР°С‡РµРЅРёРµ РґР»СЏ SQL-Р·Р°РїСЂРѕСЃР°
+	public function toValue( $value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false )
+	{
 
 		$meta = false;
-		if( !IsSet( $settings['field'] ) )
+		if( !IsSet($settings['field']) )
 			$settings['field'] = 'text';
-	
-		// Поле, которое будем анализировать
+
+		// РџРѕР»Рµ, РєРѕС‚РѕСЂРѕРµ Р±СѓРґРµРј Р°РЅР°Р»РёР·РёСЂРѕРІР°С‚СЊ
 		$field_sid = $settings['field'];
-		if( IsSet( model::$modules[ $module_sid ]->structure[ $structure_sid ]['fields'][ $field_sid ] ) )
-		{
-			$field = model::$modules[ $module_sid ]->structure[ $structure_sid ]['fields'][ $field_sid ];
-			
-			// Есть чо анализировать-то ваще?
-			if( IsSet( $values[ $field_sid ] ) )
-			{
-				
-				// Данные о файлах
-				$meta['files'] = $this->getFiles( $values[ $field_sid ] );
-				
-				// Данные о ссылках
-				$meta['links'] = $this->getLinks( $values[ $field_sid ] );
-				
+		if( IsSet(model::$modules[$module_sid]->structure[$structure_sid]['fields'][$field_sid]) ) {
+			$field = model::$modules[$module_sid]->structure[$structure_sid]['fields'][$field_sid];
+
+			// Р•СЃС‚СЊ С‡Рѕ Р°РЅР°Р»РёР·РёСЂРѕРІР°С‚СЊ-С‚Рѕ РІР°С‰Рµ?
+			if( IsSet($values[$field_sid]) ) {
+
+				// Р”Р°РЅРЅС‹Рµ Рѕ С„Р°Р№Р»Р°С…
+				$meta['files'] = $this->getFiles( $values[$field_sid] );
+
+				// Р”Р°РЅРЅС‹Рµ Рѕ СЃСЃС‹Р»РєР°С…
+				$meta['links'] = $this->getLinks( $values[$field_sid] );
+
 				$meta = serialize( $meta );
 			}
-			
+
 		}
-		
-		// Готово
+
+		// Р“РѕС‚РѕРІРѕ
 		return $meta;
 	}
-	
-	//Получить развёрнутое значение из простого значения
-	public function getValueExplode($value, $settings = false, $record = array())
+
+	//РџРѕР»СѓС‡РёС‚СЊ СЂР°Р·РІС‘СЂРЅСѓС‚РѕРµ Р·РЅР°С‡РµРЅРёРµ РёР· РїСЂРѕСЃС‚РѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ
+	public function getValueExplode( $value, $settings = false, $record = array() )
 	{
 		$result = false;
 		if( $value )
-			if( !is_array($value) )
-			{
-				$result = unserialize( htmlspecialchars_decode( $value ) );
+			if( !is_array( $value ) ) {
+				$result        = unserialize( htmlspecialchars_decode( $value ) );
 				$result['old'] = $value;
 			}
-			
+
 		return $result;
 	}
-	
-	// олучить развёрнутое значение для системы управления из простого значения
-	public function getAdmValueExplode($value, $settings = false, $record = array())
+
+	// РѕР»СѓС‡РёС‚СЊ СЂР°Р·РІС‘СЂРЅСѓС‚РѕРµ Р·РЅР°С‡РµРЅРёРµ РґР»СЏ СЃРёСЃС‚РµРјС‹ СѓРїСЂР°РІР»РµРЅРёСЏ РёР· РїСЂРѕСЃС‚РѕРіРѕ Р·РЅР°С‡РµРЅРёСЏ
+	public function getAdmValueExplode( $value, $settings = false, $record = array() )
 	{
-		return $this->getValueExplode($value, $settings, $record);
+		return $this->getValueExplode( $value, $settings, $record );
 	}
 
 
-
-
-
-	// Данные о файлах
+	// Р”Р°РЅРЅС‹Рµ Рѕ С„Р°Р№Р»Р°С…
 	private function getFiles( $value )
 	{
-		preg_match_all('/(img|src)=("|\')[^"\'>]+/i', $value, $result);
-		$result=preg_replace('/(img|src)("|\'|="|=\')(.*)/i',"$3",$result[0]);
+		preg_match_all( '/(img|src)=("|\')[^"\'>]+/i', $value, $result );
+		$result = preg_replace( '/(img|src)("|\'|="|=\')(.*)/i', "$3", $result[0] );
+
 		return $result;
 	}
-	
-	// Данные о ссылках
+
+	// Р”Р°РЅРЅС‹Рµ Рѕ СЃСЃС‹Р»РєР°С…
 	private function getLinks( $value )
 	{
-		preg_match_all("/<[Aa][ \r\n\t]{1}[^>]*[Hh][Rr][Ee][Ff][^=]*=[ '\"\n\r\t]*([^ \"'>\r\n\t#]+)[^>]*>/", $value, $result);
+		preg_match_all( "/<[Aa][ \r\n\t]{1}[^>]*[Hh][Rr][Ee][Ff][^=]*=[ '\"\n\r\t]*([^ \"'>\r\n\t#]+)[^>]*>/", $value, $result );
+
 		return @$result[1];
 	}
-	
+
 }
 
 ?>

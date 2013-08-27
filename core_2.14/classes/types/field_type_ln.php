@@ -19,18 +19,18 @@
 
 class field_type_ln extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Языковая версия', 'value' => '1', 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Языковая версия', 'value' => '1', 'width' => '100%' );
+
 	//Поле участввует в поиске
 	public $searchable = false;
-	
+
 	public $template_file = 'types/ln.tpl';
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` VARCHAR(255) NOT NULL';
 	}
-	
+
 }
 
 ?>

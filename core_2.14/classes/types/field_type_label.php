@@ -19,15 +19,15 @@
 
 class field_type_label extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Неизменяемое значение', 'value' => '', 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Неизменяемое значение', 'value' => '', 'width' => '100%' );
+
 	public $template_file = 'types/label.tpl';
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` VARCHAR(255) NOT NULL';
 	}
-	
+
 }
 
 ?>

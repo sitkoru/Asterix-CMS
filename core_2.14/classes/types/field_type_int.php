@@ -19,15 +19,15 @@
 
 class field_type_int extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Целое число', 'value' => 0, 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Целое число', 'value' => 0, 'width' => '100%' );
+
 	public $template_file = 'types/int.tpl';
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` INT NOT NULL DEFAULT 0';
 	}
-	
+
 }
 
 ?>

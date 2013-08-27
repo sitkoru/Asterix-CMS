@@ -19,18 +19,18 @@
 
 class field_type_graph extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Социальный граф', 'value' => 'all', 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Социальный граф', 'value' => 'all', 'width' => '100%' );
+
 	//Поле участввует в поиске
 	public $searchable = false;
-	
+
 	public $template_file = 'types/graph.tpl';
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` LONGTEXT NOT NULL';
 	}
-	
+
 }
 
 ?>
