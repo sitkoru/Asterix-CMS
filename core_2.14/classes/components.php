@@ -242,7 +242,9 @@ class components
 				),
 				'getall'
 			);
-//			pr('1: ' . model::$last_sql);
+
+			if( $params['last_sql'] )
+				pr('1: ' . model::$last_sql);
 
 			//Раскрываем сложные поля
 			if( $recs )
@@ -360,7 +362,8 @@ class components
 				),
 				'getall'
 			);
-			// pr('2: ' . model::$last_sql);
+			if( $params['last_sql'] )
+			pr('2: ' . model::$last_sql);
 
 			//Раскрываем сложные поля
 			if( $recs )

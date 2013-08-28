@@ -149,7 +149,7 @@ class controller_get extends default_controller
 	{
 
 		//JavaScript
-		$this->addJS( 'https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js' );
+		$this->addJS( 'http://code.jquery.com/jquery-2.0.3.min.js' );
 
 		// jQuery Migrate
 		if( in_array( 'jquery-migrate', model::$settings['js_libraries'] ) ) {
@@ -169,7 +169,8 @@ class controller_get extends default_controller
 		if( in_array( 'jquery-ui', model::$settings['js_libraries'] ) ) {
 //			$this->addJS('http://src.sitko.ru/3.0/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js');
 //			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css' );
-			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui-1.8.23.custom.css' );
+			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css' );
+			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css' );
 
 		}
 
