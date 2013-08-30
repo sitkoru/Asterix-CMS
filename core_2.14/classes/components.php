@@ -219,7 +219,7 @@ class components
 			$current_page = model::$ask->current_page;
 
 			//Всего записей по запросу
-			$num_of_records = model::execSql( 'select count(`id`) as `counter` from `' . $this->getCurrentTable( $structure_sid ) . '` where ' . implode( ' and ', $where['and'] ) . ' and (' . ($where['or'] ? implode( ' or ', $where['or'] ) : '1') . ')' . ' and ' . model::pointDomain() . '', 'getrow' );
+			$num_of_records = model::execSql( 'select count(`id`) as `counter` from `' . $this->getCurrentTable( $structure_sid ) . '` where ' . implode( ' and ', $where['and'] ) . ' and (' . ($where['or'] ? implode( ' or ', $where['or'] ) : '1') . ')' . ' and ' . model::pointDomain() . ' '.$order, 'getrow' );
 			$num_of_records = $num_of_records['counter'];
 
 			//Записей на страницу
