@@ -254,6 +254,14 @@ class controller_get extends default_controller
 			$current_template_file = model::$modules[model::$ask->module]->info['prototype'] . '_' . model::$ask->output_type . '.tpl';
 		}
 
+		// Запись скрыта
+		if( IsSet(model::$ask->rec['shw']) && !model::$ask->rec['shw'] && !user::is_admin() ) {
+			model::$ask->rec    = array( 'title' => 'Страница не найдена' );
+			model::$ask->module = 'start';
+			header( "HTTP/1.0 404 Not Found" );
+			$current_template_file = '404.tpl';
+		}
+
 		//Файл основного шаблона
 		if( model::$ask->output_format == 'tpl' )
 			$template_file_path = model::$config['path']['templates'] . '/ajax/' . basename( end( model::$ask->mode ) ) . '.tpl';
@@ -264,13 +272,6 @@ class controller_get extends default_controller
 		if( !file_exists( $template_file_path ) )
 			if( !copy( model::$config['path']['templates'] . '/start_content.tpl', $template_file_path ) )
 				log::stop( '500 Internal Server Error', 'Шаблон "' . $current_template_file . '" не установлен на домене.' );
-
-		// Запись скрыта
-		if( IsSet(model::$ask->rec['shw']) && !model::$ask->rec['shw'] && !user::is_admin() ) {
-			header( "HTTP/1.0 404 Not Found" );
-			pr( 'Запись скрыта автором или администратором.' );
-			exit();
-		}
 
 		//Основная запись
 		$main_record = model::$modules[model::$ask->module]->explodeRecord( model::$ask->rec, model::$ask->structure_sid );
