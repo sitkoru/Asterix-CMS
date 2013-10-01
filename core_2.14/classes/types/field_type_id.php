@@ -19,20 +19,21 @@
 
 class field_type_id extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Системный идентификатор', 'value' => 1, 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Системный идентификатор', 'value' => 1, 'width' => '100%' );
+
 	//Поле участввует в поиске
 	public $searchable = false;
-	
+
 	//Поле подлежит изменению
 	public $editable = false;
-	
+
 	public $template_file = 'types/id.tpl';
-	
-	public function creatingString($name){
+
+	public function creatingString( $name )
+	{
 		return '`id` INT NOT NULL AUTO_INCREMENT';
 	}
-	
+
 }
 
 ?>

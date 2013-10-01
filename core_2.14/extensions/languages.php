@@ -23,9 +23,9 @@ class extention_languages extends extention_default
 {
 	var $title = 'Языковая версия';
 	var $sid = 'ln';
-	
+
 	//Инициализация расширения
-	public function __construct($model)
+	public function __construct( $model )
 	{
 		$this->model = $model;
 		/*		
@@ -33,45 +33,46 @@ class extention_languages extends extention_default
 		$this->insertFields();
 		*/
 	}
-	
+
 	//Инициализация расширения
 	public function execute()
 	{
 		//Вставим дополнительные поля в модули
 		$this->insertFields();
 	}
-	
+
 	//Вставим дополнительные поля в модули
 	private function insertFields()
 	{
-		if(model::$modules)
-		foreach (model::$modules as $module_sid => $module)
-			if ($module->structure) {
-				foreach ($module->structure as $structure_sid => $structure) {
-					model::$modules[$module_sid]->structure[$structure_sid]['fields']['ln'] = array(
-						'sid' => 'ln',
-						'group' => 'system',
-						'type' => 'ln',
-						'title' => 'Языковая версия'
-					);
+		if( model::$modules )
+			foreach( model::$modules as $module_sid => $module )
+				if( $module->structure ) {
+					foreach( $module->structure as $structure_sid => $structure ) {
+						model::$modules[$module_sid]->structure[$structure_sid]['fields']['ln'] = array(
+							'sid'   => 'ln',
+							'group' => 'system',
+							'type'  => 'ln',
+							'title' => 'Языковая версия'
+						);
+					}
 				}
-			}
 	}
-	
+
 	//Перед выполнением запроса
-	public function onSql($fields, $tables, $where = false, $group = false, $order = false, $limit = false, $query_type = 'getall')
+	public function onSql( $fields, $tables, $where = false, $group = false, $order = false, $limit = false, $query_type = 'getall' )
 	{
-		if ($query_type == 'insert') {
-			if (!$fields)
+		if( $query_type == 'insert' ) {
+			if( !$fields )
 				$fields = array();
-			if (!IsSet($fields['ln']))
+			if( !IsSet($fields['ln']) )
 				$fields['ln'] = '`ln`=1';
 		} else {
-			if (!$where)
+			if( !$where )
 				$where = array();
-			if (!IsSet($where['and']['ln']))
+			if( !IsSet($where['and']['ln']) )
 				$where['and']['ln'] = '`ln`=1';
 		}
+
 		return array(
 			$fields,
 			$tables,
@@ -81,15 +82,15 @@ class extention_languages extends extention_default
 			$limit
 		);
 	}
-	
+
 	//Добавляем системное поле в модуль
 	public function addFields()
 	{
 		return array(
 			'ln' => array(
-				'sid' => 'ln',
+				'sid'   => 'ln',
 				'group' => 'system',
-				'type' => 'ln',
+				'type'  => 'ln',
 				'title' => 'Языковая версия',
 				'value' => '1'
 			)

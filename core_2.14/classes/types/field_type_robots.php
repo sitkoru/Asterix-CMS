@@ -19,15 +19,15 @@
 
 class field_type_robots extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Редактирование файла ROBOTS.TXT', 'value' => '', 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Редактирование файла ROBOTS.TXT', 'value' => '', 'width' => '100%' );
+
 	public $template_file = 'types/html.tpl';
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` TEXT NOT NULL';
 	}
-	
+
 }
 
 ?>

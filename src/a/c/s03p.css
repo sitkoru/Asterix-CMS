@@ -203,7 +203,7 @@
 	color:#1B8DC6 !important;
 }
 
-/* всплывающая форма Удалить? */
+/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ? */
 .acms_panel_delete{padding-left: 40%;padding-top: 10%;}
 .acms_panel_delete a{padding:10px 30px;background-color: red;color: white;display: inline-block;font-size:16px;}
 
@@ -218,20 +218,20 @@
 	margin-bottom:10px;
 }
 
-/* поля картинки */
+/* пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
 .acms_field_image a.img{display: block;height: 100px;width: 100px;float: left;margin: 10px;}
 .acms_field_image input[type=text]{width:400px;font-size:14px;}
-.acms_field_image .img{background-image:url(http://src.sitko.ru/i/no-avatar.jpg);}
+.acms_field_image .img{background-image:url(http://src.opendev.ru/i/no-avatar.jpg);}
 
-/* поле Формы обратной связи */
+/* пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
 .acms_field_feedback input, .acms_field_feedback select{width:200px;font-size:14px !important;}
 .acms_field_feedback  td{margin:0; padding:5px;vertical-align:top;}
 
-/* поля галки */
+/* пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
 .acms_field_feedback .check input{width:auto;}
 .acms_field_feedback .check label{display:inline-block;}
 
-/* поля фотогалерей */
+/* пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
 .acms_field_gallery li{
 	display: block;
 	float:left;
@@ -274,7 +274,7 @@
 .acms_field_gallery .images li.new input, .acms_field_gallery .images li.new label{display:inline-block;} 
 
 .acms_field_params li{
-	background:url(http://src.sitko.ru/a/i/sort.png) left center no-repeat;
+	background:url(http://src.opendev.ru/a/i/sort.png) left center no-repeat;
 	list-style:none;
 	padding:0 30px;
 }
@@ -283,11 +283,11 @@
 	z-index:3000;
 }
 
-/* выбор компании под которой автооризоваться */
+/* пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
 .acms_companySelector-list-item{cursor:pointer;}
 .acms_companySelector-list-item:hover{background-color:#eee;}
 
-/* панель помощи */
+/* пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
 .acms_panel_groups_help{line-height:22px;}
 .acms_panel_groups_help ol, .acms_panel_groups_help ul{padding:10px 0 10px 40px;}
 .acms_panel_groups_help ol li{list-style-type:decimal !important;}

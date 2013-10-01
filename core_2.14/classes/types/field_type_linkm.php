@@ -19,26 +19,27 @@
 
 class field_type_linkm extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Пользователь системы', 'value' => 0, 'width' => '100%', 'module' => false, 'scructure_sid' => 'rec');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Пользователь системы', 'value' => 0, 'width' => '100%', 'module' => false, 'scructure_sid' => 'rec' );
+
 	public $template_file = 'types/linkm.tpl';
-	
+
 	//Поле, используемое для связки
-	public $link_field='id';
-	
+	public $link_field = 'id';
+
 	private $table = 'users';
-	
+
 	//Поле участввует в поиске
 	public $searchable = false;
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` LONGTEXT NOT NULL';
 	}
-	
-	
+
+
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
+	public function toValue( $value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false )
+	{
 		$vals = array();
 		foreach( $values[$value_sid] as $val )
 			if( $val )
@@ -46,48 +47,47 @@ class field_type_linkm extends field_type_default
 		if( !count( $vals ) )
 			return 0;
 		else
-			return htmlspecialchars('|' . implode('|', $vals) . '|');
+			return htmlspecialchars( '|' . implode( '|', $vals ) . '|' );
 	}
-	
+
 	//Получить развёрнутое значение из простого значения
-	public function getValueExplode($value, $settings = false, $record = array())
+	public function getValueExplode( $value, $settings = false, $record = array() )
 	{
 
-		if( strlen( $value ) ){
-		
+		if( strlen( $value ) ) {
+
 			// Разбираем значения
-			$arr  = explode('|', $value);
-			$res  = array();
-			UnSet( $arr[ count($arr)-1 ] );
-			UnSet( $arr[0] );
-			
+			$arr = explode( '|', $value );
+			$res = array();
+			UnSet($arr[count( $arr )-1]);
+			UnSet($arr[0]);
+
 			// fix misprint values like "||8|57|"
 			foreach( $arr as $i => $arri )
 				if( !strlen( $arri ) )
-					UnSet( $arr[ $i ] );
-			
+					UnSet($arr[$i]);
+
 			$arr = array_values( $arr );
-			
+
 			$fields = array(
 				$this->link_field,
 				'title',
 				'url'
 			);
-			if( IsSet( $record['img'] ) )
+			if( IsSet($record['img']) )
 				$fields[] = 'img';
-				
+
 			//Варианты значений
 			$this->structure = model::$modules[$settings['module']]->structure[$settings['structure_sid']];
 			if( $this->structure['type'] == 'simple' )
 				$order = 'order by `title`';
-			else{
-				$order = 'order by `left_key`';
+			else {
+				$order    = 'order by `left_key`';
 				$fields[] = 'tree_level';
 			}
 			if( isset($this->structure['fields']['pos']) )
 				$order = 'order by `pos` asc';
-			
-			
+
 			/*
 				Тестовый вариант запроса записей поштучно а не единым запросом.
 				
@@ -96,72 +96,72 @@ class field_type_linkm extends field_type_default
 				не тянуть одни и те же записи несколько раз
 			*/
 			$test = true;
-			if( $test ){
-			
-				if( !count($arr) )
+			if( $test ) {
+
+				if( !count( $arr ) )
 					return false;
-				
+
 				$recs = array();
 				foreach( $arr as $id )
-					if( $id ){
-						$sql = 'select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'`='.intval( $id ).''.(IsSet( $settings['where'] )?' and '.$settings['where']:'').' limit 1';
-						$rec = model::execSql($sql, 'getrow');
+					if( $id ) {
+						$sql = 'select * from `' . model::$modules[$settings['module']]->getCurrentTable( $settings['structure_sid'] ) . '` where `' . $this->link_field . '`=' . intval( $id ) . '' . (IsSet($settings['where']) ? ' and ' . $settings['where'] : '') . ' limit 1';
+						$rec = model::execSql( $sql, 'getrow' );
 						if( $rec )
 							$recs[] = $rec;
 					}
-			}else{
-			
-				if( count( $arr )>1 ){
-					$recs = model::execSql('select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'` in ('.implode(',', $arr).')'.(IsSet( $settings['where'] )?' and '.$settings['where']:'').' '.$order, 'getall');
-					
-				}else{
-/*
-	Нужная строка для разворачинвания нулевых значений
-	но она вызывает ошибку когда случайно первое значение - нулевое
-*/
-/*
-					if( !intval( $arr[0] ) )
-						return false;
-*/
+			} else {
 
-					$rec = model::execSql('select * from `'.model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid']).'` where `'.$this->link_field.'`='.intval( $arr[0] ).''.(IsSet( $settings['where'] )?' and '.$settings['where']:'').' '.$order.' limit 1', 'getrow');
+				if( count( $arr )>1 ) {
+					$recs = model::execSql( 'select * from `' . model::$modules[$settings['module']]->getCurrentTable( $settings['structure_sid'] ) . '` where `' . $this->link_field . '` in (' . implode( ',', $arr ) . ')' . (IsSet($settings['where']) ? ' and ' . $settings['where'] : '') . ' ' . $order, 'getall' );
+
+				} else {
+					/*
+						Нужная строка для разворачинвания нулевых значений
+						но она вызывает ошибку когда случайно первое значение - нулевое
+					*/
+					/*
+										if( !intval( $arr[0] ) )
+											return false;
+					*/
+
+					$rec  = model::execSql( 'select * from `' . model::$modules[$settings['module']]->getCurrentTable( $settings['structure_sid'] ) . '` where `' . $this->link_field . '`=' . intval( $arr[0] ) . '' . (IsSet($settings['where']) ? ' and ' . $settings['where'] : '') . ' ' . $order . ' limit 1', 'getrow' );
 					$recs = array( $rec );
 				}
-				
+
 			}
-			
-			foreach($recs as $i=>$rec){
-				if( IsSet( $rec['img']) )
-					$rec['img'] = model::$types['image']->getValueExplode($rec['img'], $modules[ $settings['module'] ]->structure[ $settings['structure_sid'] ]['fields']['img'], $record );
-				$recs[$i]=model::$modules['start']->insertRecordUrlType($rec);
+
+			foreach( $recs as $i => $rec ) {
+				if( IsSet($rec['img']) )
+					$rec['img'] = model::$types['image']->getValueExplode( $rec['img'], $modules[$settings['module']]->structure[$settings['structure_sid']]['fields']['img'], $record );
+				$recs[$i] = model::$modules['start']->insertRecordUrlType( $rec );
 			}
-			
-		}elseif( !is_array( $value ) ){
+
+		} elseif( !is_array( $value ) ) {
 			$recs = array();
-		
+
 		}
-			
+
 		//Готово
 		return $recs;
 	}
-	
+
 	//Получить развёрнутое значение для системы управления из простого значения
-	public function getAdmValueExplode($value, $settings = false, $record = array())
+	public function getAdmValueExplode( $value, $settings = false, $record = array() )
 	{
 		$res = array();
-		
-		if(isset($settings['where'])){
-			if( substr_count($settings['where'], 'echo')){
+
+		if( isset($settings['where']) ) {
+			if( substr_count( $settings['where'], 'echo' ) ) {
 				ob_start();
 				@eval($settings['where']);
 				$s = ob_get_contents();
 				ob_end_clean();
-			}else{
+			} else {
 				$s = $settings['where'];
 			}
 		}
-				
-		$fields = array(
+
+		$fields          = array(
 			$this->link_field,
 			'title',
 			'url'
@@ -170,54 +170,55 @@ class field_type_linkm extends field_type_default
 		//Варианты значений
 		if( $this->structure['type'] == 'simple' )
 			$order = 'order by `title`';
-		else{
-			$order = 'order by `left_key`';
+		else {
+			$order    = 'order by `left_key`';
 			$fields[] = 'tree_level';
 		}
-		
-			
+
 		//Варианты значений
-		$variants = model::makeSql(array(
+		$variants = model::makeSql( array(
 			'tables' => array(
-				model::$modules[$settings['module']]->getCurrentTable($settings['structure_sid'])
+				model::$modules[$settings['module']]->getCurrentTable( $settings['structure_sid'] )
 			),
-			'where' => (IsSet($settings['where']) ? array('and' => array($s)) : false),
+			'where'  => (IsSet($settings['where']) ? array( 'and' => array( $s ) ) : false),
 			'fields' => $fields,
-			'order' => $order
-		), 'getall');
-		
+			'order'  => $order
+		), 'getall' );
+
 		//Если значение ещё не развёрнуто - разворачиваем
-		$arr      = explode('|', $value);
-		
+		$arr = explode( '|', $value );
+
 		//Отмечаем в массиве выбранные элементы
-		foreach ($variants as $i => $variant)
-			if (strlen($variant[$this->link_field]))
+		foreach( $variants as $i => $variant )
+			if( strlen( $variant[$this->link_field] ) )
 				$res[] = array(
-					'value' => $variant[$this->link_field],
-					'title' => $variant['title'],
-					'selected' => in_array($variant[$this->link_field], $arr),
+					'value'      => $variant[$this->link_field],
+					'title'      => $variant['title'],
+					'selected'   => in_array( $variant[$this->link_field], $arr ),
 					'tree_level' => $variant['tree_level'],
 				);
-		
+
 		//Готово
 		return $res;
 	}
-	
+
 	//Перевести массив значений в само значение для системы управления
-	public function impAdmValue($value, $settings = false, $record = array())
+	public function impAdmValue( $value, $settings = false, $record = array() )
 	{
-		return '|' . implode('|', $value) . '|';
+		return '|' . implode( '|', $value ) . '|';
 	}
-	
-	public function toggleInLinkm($value, $id = false){
-		if(!$value)$value='|';
-		if(!$id)$id = user::$info['id'];
-		if( substr_count($value, '|'.$id.'|') ){
-			$value = str_replace('|'.$id.'|','|',$value);
-			if( $value == '|' )$value='';
-		}else{
-			$value .= $id.'|';
+
+	public function toggleInLinkm( $value, $id = false )
+	{
+		if( !$value ) $value = '|';
+		if( !$id ) $id = user::$info['id'];
+		if( substr_count( $value, '|' . $id . '|' ) ) {
+			$value = str_replace( '|' . $id . '|', '|', $value );
+			if( $value == '|' ) $value = '';
+		} else {
+			$value .= $id . '|';
 		}
+
 		return $value;
 	}
 

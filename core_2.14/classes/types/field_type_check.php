@@ -19,28 +19,31 @@
 
 class field_type_check extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Поле для галки (да/нет)', 'value' => false, 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Поле для галки (да/нет)', 'value' => false, 'width' => '100%' );
+
 	//Поле участввует в поиске
 	public $searchable = false;
-	
+
 	public $template_file = 'types/check.tpl';
-	
-	public function creatingString($name){
+
+	public function creatingString( $name )
+	{
 		return '`' . $name . '` BOOL NOT NULL';
 	}
-	
-	public function getValueExplode($value, $settings = false, $record = array()){
-		return intval( $value );	
+
+	public function getValueExplode( $value, $settings = false, $record = array() )
+	{
+		return intval( $value );
 	}
 
 
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
-		return intval(@$values[$value_sid]);
+	public function toValue( $value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false )
+	{
+		return intval( @$values[$value_sid] );
 	}
-	
-	
+
+
 }
 
 ?>

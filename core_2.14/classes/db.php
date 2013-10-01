@@ -32,20 +32,19 @@ $supported_databases = array(
 //Класс управления базами данных
 class database
 {
-	public function __construct($model)
+	public function __construct( $model )
 	{
-		$this->model = $model;
-		$this->connection = false;
+		$this->model           = $model;
+		$this->connection      = false;
 		$this->active_database = false;
 	}
-	
+
 	public function activate()
 	{
 //		mysql_select_db($this->name, $this->connection);
 		$this->active_database = $this->name;
 	}
-	
-}
 
+}
 
 ?>

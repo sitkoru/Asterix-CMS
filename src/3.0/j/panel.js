@@ -42,7 +42,7 @@ jQuery(document).ready(function(){
     return false;
   });
   
-	$('form.ajax').live('submit',function(){
+	$(document).on("submit", "form.ajax", function(){
 		var form_id=$(this).attr('id');
 		$('#'+form_id+' li').removeClass('err');
 		$.post(

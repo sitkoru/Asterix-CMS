@@ -19,16 +19,16 @@
 
 class field_type_float extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Поле для дробного числа', 'value' => 0, 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Поле для дробного числа', 'value' => 0, 'width' => '100%' );
+
 	//Поле участввует в поиске
 	public $searchable = false;
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` FLOAT(9,2) NOT NULL';
 	}
-	
+
 }
 
 ?>

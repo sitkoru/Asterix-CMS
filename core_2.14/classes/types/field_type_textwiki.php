@@ -19,30 +19,35 @@
 
 class field_type_textwiki extends field_type_default
 {
-	public $default_settings = array('sid' => false, 'title' => 'Визуальный редактор', 'value' => '', 'width' => '100%');
-	
+	public $default_settings = array( 'sid' => false, 'title' => 'Визуальный редактор', 'value' => '', 'width' => '100%' );
+
 	public $template_file = 'types/textwiki.tpl';
-	
-	public function creatingString($name)
+
+	public function creatingString( $name )
 	{
 		return '`' . $name . '` TEXT NOT NULL';
 	}
-	
-	public function getValueExplode($value, $settings = false, $record = array()){
-		include_once( model::$config['path']['libraries'].'/markdown.php' );
-		return nl2br( Markdown($value) );
+
+	public function getValueExplode( $value, $settings = false, $record = array() )
+	{
+		include_once(model::$config['path']['libraries'] . '/markdown.php');
+
+		return nl2br( Markdown( $value ) );
 	}
-	
+
 	//Подготавливаем значение для SQL-запроса
-	public function toValue($value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false){
+	public function toValue( $value_sid, $values, $old_values = array(), $settings = false, $module_sid = false, $structure_sid = false )
+	{
 		$values[$value_sid] = strip_tags( $values[$value_sid] );
+
 		return $values[$value_sid];
 	}
-	
-	public function getAdmValueExplode($value, $settings = false, $record = array()){
-		return stripslashes($value);
+
+	public function getAdmValueExplode( $value, $settings = false, $record = array() )
+	{
+		return stripslashes( $value );
 	}
-	
+
 }
 
 ?>

@@ -2,18 +2,18 @@
 
 /************************************************************/
 /*															*/
-/*	ßäðî ñèñòåìû óïðàâëåíèÿ Asterix	CMS						*/
-/*		Ïðîòîòèï êîíòðîëëåðà								*/
+/*	Ð¯Ð´Ñ€Ð¾ ÑÐ¸ÑÑ‚ÐµÐ¼Ñ‹ ÑƒÐ¿Ñ€Ð°Ð²Ð»ÐµÐ½Ð¸Ñ Asterix	CMS						*/
+/*		ÐŸÑ€Ð¾Ñ‚Ð¾Ñ‚Ð¸Ð¿ ÐºÐ¾Ð½Ñ‚Ñ€Ð¾Ð»Ð»ÐµÑ€Ð°								*/
 /*															*/
-/*	Âåðñèÿ ÿäðà 2.0.b5										*/
-/*	Âåðñèÿ ñêðèïòà 1.00										*/
+/*	Ð’ÐµÑ€ÑÐ¸Ñ ÑÐ´Ñ€Ð° 2.0.b5										*/
+/*	Ð’ÐµÑ€ÑÐ¸Ñ ÑÐºÑ€Ð¸Ð¿Ñ‚Ð° 1.00										*/
 /*															*/
-/*	Copyright (c) 2009  Ìèøèí Îëåã							*/
-/*	Ðàçðàáîò÷èê: Ìèøèí Îëåã									*/
+/*	Copyright (c) 2009  ÐœÐ¸ÑˆÐ¸Ð½ ÐžÐ»ÐµÐ³							*/
+/*	Ð Ð°Ð·Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸Ðº: ÐœÐ¸ÑˆÐ¸Ð½ ÐžÐ»ÐµÐ³									*/
 /*	Email: dekmabot@gmail.com								*/
 /*	WWW: http://mishinoleg.ru								*/
-/*	Ñîçäàí: 10 ôåâðàëÿ 2009	ãîäà							*/
-/*	Ìîäèôèöèðîâàí: 25 ñåíòÿáðÿ 2009 ãîäà					*/
+/*	Ð¡Ð¾Ð·Ð´Ð°Ð½: 10 Ñ„ÐµÐ²Ñ€Ð°Ð»Ñ 2009	Ð³Ð¾Ð´Ð°							*/
+/*	ÐœÐ¾Ð´Ð¸Ñ„Ð¸Ñ†Ð¸Ñ€Ð¾Ð²Ð°Ð½: 25 ÑÐµÐ½Ñ‚ÑÐ±Ñ€Ñ 2009 Ð³Ð¾Ð´Ð°					*/
 /*															*/
 /************************************************************/
 
@@ -21,73 +21,83 @@ class default_controller
 {
 	public $vars = array();
 	public static $add;
-	
-	//Áèáëèîòåêè, êîòîðûå ìîæíî ïîäêëþ÷èòü ïî ïñåâäîíèìàì
+
+	//Ð‘Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÐ¸, ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ðµ Ð¼Ð¾Ð¶Ð½Ð¾ Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡Ð¸Ñ‚ÑŒ Ð¿Ð¾ Ð¿ÑÐµÐ²Ð´Ð¾Ð½Ð¸Ð¼Ð°Ð¼
 	public static $known_js = array(
-		'lightbox' => 'http://src.sitko.ru/3.0/j/lightbox.js',
-		'carousel' => 'http://src.sitko.ru/3.0/bootstrap/bootstrap-carousel.js',
+		'lightbox' => 'http://src.opendev.ru/3.0/j/lightbox.js',
+		'carousel' => 'http://src.opendev.ru/3.0/bootstrap/bootstrap-carousel.js',
 	);
 	public static $known_css = array(
-		'lightbox' => 'http://src.sitko.ru/a/c/lightbox.css',
+		'lightbox'  => 'http://src.sitko.ru/a/c/lightbox.css',
 		'bootstrap' => 'http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css',
 	);
-	
-	function __construct($model, $vars, $cache){
+
+	function __construct( $model, $vars, $cache )
+	{
 		$this->model = $model;
 		$this->vars  = $vars;
 		$this->cache = $cache;
 	}
-	
-	//Äîáàâèòü íåîáõîäèìóþ JS-áèáëèîòåêó
-	public function addJS($path, $params = false){
+
+	//Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼ÑƒÑŽ JS-Ð±Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÑƒ
+	public function addJS( $path, $params = false )
+	{
 		self::$add['js_core'][] = array(
-			'path' => $path,
+			'path'   => $path,
 			'params' => $params,
 		);
+
 		return self::$add;
 	}
 
-	//Äîáàâèòü íåîáõîäèìóþ JS-áèáëèîòåêó
-	public function addCSS($path, $params = false){
+	//Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼ÑƒÑŽ JS-Ð±Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÑƒ
+	public function addCSS( $path, $params = false )
+	{
 		self::$add['css_core'][] = array(
-			'path' => $path,
+			'path'   => $path,
 			'params' => $params,
 		);
+
 		return self::$add;
 	}
-	//Äîáàâèòü íåîáõîäèìóþ JS-áèáëèîòåêó
-	public function addUserJS($vals, $params = false){
-		if( substr_count($vals, ',') ){
-			$vals = explode(',', $vals);
-			foreach($vals as $i=>$val)
-				$vals[$i] = trim($val);
-		}else
-			$vals = array($vals);
-			
-		foreach($vals as $i=>$val){
-			if( IsSet( self::$known_js[$val] ) )
+
+	//Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼ÑƒÑŽ JS-Ð±Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÑƒ
+	public function addUserJS( $vals, $params = false )
+	{
+		if( substr_count( $vals, ',' ) ) {
+			$vals = explode( ',', $vals );
+			foreach( $vals as $i => $val )
+				$vals[$i] = trim( $val );
+		} else
+			$vals = array( $vals );
+
+		foreach( $vals as $i => $val ) {
+			if( IsSet(self::$known_js[$val]) )
 				$vals[$i] = self::$known_js[$val];
 		}
+
 		return $vals;
 	}
 
-	//Äîáàâèòü íåîáõîäèìóþ JS-áèáëèîòåêó
-	public function addUserCSS($vals, $params = false){
-		if( substr_count($vals, ',') ){
-			$vals = explode(',', $vals);
-			foreach($vals as $i=>$val)
-				$vals[$i] = trim($val);
-		}else
-			$vals = array($vals);
-			
-		foreach($vals as $i=>$val){
-			if( IsSet( self::$known_css[$val] ) )
+	//Ð”Ð¾Ð±Ð°Ð²Ð¸Ñ‚ÑŒ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼ÑƒÑŽ JS-Ð±Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐºÑƒ
+	public function addUserCSS( $vals, $params = false )
+	{
+		if( substr_count( $vals, ',' ) ) {
+			$vals = explode( ',', $vals );
+			foreach( $vals as $i => $val )
+				$vals[$i] = trim( $val );
+		} else
+			$vals = array( $vals );
+
+		foreach( $vals as $i => $val ) {
+			if( IsSet(self::$known_css[$val]) )
 				$vals[$i] = self::$known_css[$val];
 		}
+
 		return $vals;
 	}
 
-	
+
 }
 
 ?>
