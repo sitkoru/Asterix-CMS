@@ -126,7 +126,7 @@ class controller_manager
 		$current_module = model::$ask->module;
 
 		//Контроллера нет - запускаем стандартные
-		if( $controller == 'admin' ) {
+		if( $controller == 'admin' && user::is_admin() ) {
 			require_once self::$config['path']['core'] . '/controllers/admin.php';
 			$controller = new controller_admin($this->model, $this->vars, $this->cache);
 			$controller->start();
