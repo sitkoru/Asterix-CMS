@@ -17,7 +17,7 @@ class interfaces
 			'system'        => true,
 			'ajax'          => false, //Отправка при помощи AJAX
 			'protection'    => false, //Защита формы
-			'auth'          => true, //Необходимый уровень доступа к интерфейсу
+			'auth'          => 'admin', //Необходимый уровень доступа к интерфейсу
 			'use_record'    => false, //Использовать ли уже имеющуюся запись
 			'getfields'     => 'getFields',
 			'control'       => 'addRecord', //Функция, отвечающая за обработку интерфейса после отправки
@@ -29,7 +29,7 @@ class interfaces
 			'system'        => true,
 			'ajax'          => false,
 			'protection'    => false,
-			'auth'          => true,
+			'auth'          => 'admin',
 			'use_record'    => true,
 			'getfields'     => 'getFields',
 			'control'       => 'editRecord',
@@ -41,7 +41,7 @@ class interfaces
 			'system'        => true,
 			'ajax'          => false,
 			'protection'    => false,
-			'auth'          => true,
+			'auth'          => 'admin',
 			'use_record'    => true,
 			'getfields'     => 'getFields',
 			'control'       => 'deleteRecord',
@@ -194,6 +194,14 @@ class interfaces
 			else
 				$this->answerInterface( 'login', array( 'result' => 'redirect', 'url' => $_SERVER['HTTP_REFERER'], 'close' => true ) );
 			exit();
+		}
+
+		// Проверка доступа к интерфейсу
+		if( $this->interfaces[$interface]['auth'] ) {
+			$access = interfaces::checkAccessToManageRecord( model::$ask->rec, $this->interfaces[$interface] );
+			if( !$access )
+				log::stop( '401 Unauthorized', 'У текущего пользователя отсутствует доступ к указанному интерфейсу.' );
+
 		}
 
 		//Captcha checkout
@@ -954,6 +962,41 @@ class interfaces
 
 		return $fields;
 	}
+
+	// Проверка доступа текущего пользователя к управлению текущей записью через текущий интрефейс
+	public static function checkAccessToManageRecord( $record, $interface )
+	{
+
+		$interface_access_level = $interface['access'];
+
+		// Доступ к интерфейсу разрешён для всех
+		if( !$interface_access_level ) {
+			return true;
+
+			// Доступ только для администраторов
+		} elseif( $interface_access_level === 'admin' ) {
+			return user::is_admin();
+
+			// Доступ только для администраторов
+		} elseif( $interface_access_level === 'moder' ) {
+			if( user::is_admin() || user::is_moder() )
+				return true;
+
+			// Доступ только для авторов
+		} elseif( $interface_access_level === 'author' ) {
+			if( user::is_admin() || user::is_moder() || ($record['author'] == user::$info['id']) )
+				return true;
+
+			// Доступ только для всех авторизованных пользователей
+		} elseif( $interface_access_level == true  ) {
+			if( user::$info['id'] )
+				return true;
+
+		}
+
+		return false;
+	}
+
 
 }
 
