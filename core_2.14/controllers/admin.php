@@ -111,7 +111,15 @@ class controller_admin extends default_controller
 	private function preloadForm( $action, $record )
 	{
 
-		//Ресурсы		
+        //Ошибки
+        if( !user::is_admin() )
+            log::stop( '400 Bad Request' );
+        if( model::$ask->output_type == 404 )
+            log::stop( '404 Not Found' );
+        if( !IsSet($action) )
+            log::stop( '501 Not Implemented' );
+
+		//Ресурсы
 		if( !$action ) {
 			$action                  = 'tree';
 			model::$ask->output_type = $action;
@@ -148,13 +156,7 @@ class controller_admin extends default_controller
 			$record['module_sid']    = model::$ask->mode[0];
 		}
 
-		//Ошибки
-		if( !user::is_admin() )
-			log::stop( '400 Bad Request' );
-		if( model::$ask->output_type == 404 )
-			log::stop( '404 Not Found' );
-		if( !IsSet($action) )
-			log::stop( '501 Not Implemented' );
+
 
 		//Шаблоны
 		$current_template_file = 'admin.tpl';
