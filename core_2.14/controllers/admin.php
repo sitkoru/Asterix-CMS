@@ -198,6 +198,13 @@ class controller_admin extends default_controller
 	private function controlForm( $action, $record )
 	{
 
+        if( !user::is_admin() )
+            log::stop( '400 Bad Request' );
+        if( model::$ask->output_type == 404 )
+            log::stop( '404 Not Found' );
+        if( !IsSet($this->actions[model::$ask->mode[0]]) )
+            log::stop( '501 Not Implemented' );
+
 		//Загрузка файлов через визуальный редактор
 		if( user::is_admin() && IsSet($_FILES['upload']) && !count( $_POST ) )
 			$this->ckeditorUpload( $_FILES['upload'] );
@@ -257,12 +264,7 @@ class controller_admin extends default_controller
 			log::stop( '404 Not Found' );
 		}
 
-		if( !user::is_admin() )
-			log::stop( '400 Bad Request' );
-		if( model::$ask->output_type == 404 )
-			log::stop( '404 Not Found' );
-		if( !IsSet($this->actions[model::$ask->mode[0]]) )
-			log::stop( '501 Not Implemented' );
+
 
 //		header('Location: '.$url);
 		header( 'Location: /admin.' . model::$ask->module . '.html' );
