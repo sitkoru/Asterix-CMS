@@ -370,7 +370,7 @@ class user
 				$_POST['password'] = self::$info['password'];
 
 				model::addRecord( 'users', 'rec', self::$info );
-				self::$authUser_localhost();
+				self::authUser_localhost();
 
 			}
 
