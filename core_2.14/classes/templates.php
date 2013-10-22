@@ -66,6 +66,11 @@ class templater
 			'addCSS'
 		) );
 
+		@$this->tmpl->register_function( 'addtpl', array(
+			$this,
+			'addTemplate'
+		) );
+
 		@$this->tmpl->register_function( 'unserialize', array(
 			$this,
 			'unserialize'
@@ -196,13 +201,31 @@ class templater
 		return $params['form5'];
 	}
 
-	public function showLinks( $value )
+	public function showLinks( $value, $length = 50 )
 	{
 
-		if( $value == strip_tags( $value ) ) {
-			$value = str_replace( '<br', ' <br', $value );
-			$value = preg_replace( '((\shttp\:\/\/)?(\w+\.)+\w+(\/[^\s]+)?)', '<a href="$0" target="_blank" rel="nofollow">$0</a>', $value );
-		}
+		// Все внешние ссылки будут вести на специальную страницу, если указано
+		$exitpage = '';
+		if( strlen( model::$settings['exitpage'] ) > 0 )
+			$exitpage = model::$settings['exitpage'].'?url=';
+
+		// Заменяем URL на ссылки
+		$value = preg_replace( "/(http:\/\/[^<\s]+[^<.,:;?!”»’“+\-\)])([.,:;?!”»’“+\-\)]?(?:<br ?\/?>)*\s|$)/iu", '<a href="'.$exitpage.'$1" target="_blank" rel="nofollow">$1</a>$2', $value );
+
+		// Обрезаем очень длинные слова
+		$t = str_replace( "\n", ' ', $value );
+		$t = str_replace( '<br />', ' ', $t );
+		$t = str_replace( '<br>', ' ', $t );
+		$t = str_replace( '  ', ' ', $t );
+		$t = explode( ' ', strip_tags( $t ) );
+		foreach( $t as $long )
+			if( strlen( $long )>$length ) {
+				$long  = trim( $long );
+				$shirt = trim( substr( $long, 0, $length ) );
+//				pr( '[' . $long . '] => [' . $shirt . ']' );
+				$value = str_replace( $long . ' ', $shirt . '... ', $value );
+				$value = str_replace( $long . '<', $shirt . '...<', $value );
+			}
 
 		return $value;
 	}
@@ -268,6 +291,19 @@ class templater
 			if( strlen( $value ) ) {
 				$value                           = trim( $value );
 				default_controller::$add['js'][] = array(
+					'path' => $value,
+				);
+			}
+		$this->tmpl->assign( 'head_add', default_controller::$add );
+	}
+
+	public function addTemplate( $params, &$smarty )
+	{
+		$val = explode( "\n", $params['val'] );
+		foreach( $val as $value )
+			if( strlen( $value ) ) {
+				$value                            = trim( $value );
+				default_controller::$add['tpl'][] = array(
 					'path' => $value,
 				);
 			}

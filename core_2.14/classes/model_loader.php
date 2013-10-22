@@ -465,6 +465,7 @@ class ModelLoader
 				'type'          => 'menum',
 				'default_value' => '|lightbox|',
 				'variants'      => array(
+					'jquery1'        => 'заменить jQuery 2 на jQuery 1',
 					'jquery-ui'      => 'jQuery-UI',
 					'jquery-migrate' => 'jQuery Migrate for 2.0',
 					'bootstrap'      => 'Bootstrap 2',
@@ -576,6 +577,12 @@ class ModelLoader
 					'vk.com'       => 'Вконтакте',
 					'twitter.com'  => 'Twitter',
 				),
+			),
+			'exitpage'        => array(
+				'group'         => 'config',
+				'title'         => 'Переходная страница для внешних ссылок',
+				'type'          => 'text',
+				'default_value' => '',
 			),
 		);
 

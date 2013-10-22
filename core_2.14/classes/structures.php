@@ -216,7 +216,7 @@ class structures
 	//Указать путь, включая хост
 	public static function insertHostToUrl( $rec )
 	{
-		$rec['url'] = 'http://' . $rec['domain'][0]['host'] . $rec['url'];
+		$rec['url'] = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'];
 
 		return $rec;
 	}
