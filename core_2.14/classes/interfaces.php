@@ -128,6 +128,7 @@ class interfaces
 
 			//Требуется авторизация админ, которого нет
 			if( ($this->interfaces[$prepare]['auth'] === 'admin') and (!user::is_admin()) ) $access = false;
+
 			//Не автор при редактировании записи
 			if( !user::is_admin() and !user::is_moder() and ($record['author'] != user::$info['id']) and $this->interfaces[$prepare]['use_record'] and ($this->info['sid'] != 'users') ) $access = false;
 			if( !user::is_admin() and !user::is_moder() and ($record['id'] != user::$info['id']) and $this->interfaces[$prepare]['use_record'] and ($this->info['sid'] == 'users') ) $access = false;

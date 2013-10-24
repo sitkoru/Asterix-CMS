@@ -246,7 +246,7 @@ class components
 			if( $params['last_sql'] )
 				pr('1: ' . model::$last_sql);
 
-			//Раскрываем сложные поля
+			// Раскрываем сложные поля
 			if( $recs )
 				foreach( $recs as $i => $rec ) {
 					$rec      = $this->explodeRecord( $rec, $structure_sid, $params['explode'] );
@@ -254,7 +254,15 @@ class components
 					$recs[$i] = $rec;
 				}
 
-			//Перелистывания страниц
+			// Связь с корзиной
+			if( IsSet($this->link_with_basket_module) )
+				if( $this->link_with_basket_module )
+					if( IsSet(model::$modules['basket']) && ($structure_sid == 'rec') )
+						if( method_exists( model::$modules['basket'], 'insertOrdered' ) ) {
+							$recs = model::$modules['basket']->insertOrdered( $recs );
+						}
+
+			// Перелистывания страниц
 			$pages = array();
 			if( $num_of_pages>1 ) {
 
@@ -363,7 +371,7 @@ class components
 				'getall'
 			);
 			if( $params['last_sql'] )
-			pr('2: ' . model::$last_sql);
+				pr('2: ' . model::$last_sql);
 
 			//Раскрываем сложные поля
 			if( $recs )
@@ -374,10 +382,12 @@ class components
 				}
 
 			//Заказанные наименования
-			if( IsSet(model::$modules['basket']) && ($structure_sid == 'rec') )
-				if( method_exists( model::$modules['basket'], 'insertOrdered' ) ) {
-					$recs = model::$modules['basket']->insertOrdered( $recs );
-				}
+			if( IsSet($this->link_with_basket_module) )
+				if( $this->link_with_basket_module )
+					if( IsSet(model::$modules['basket']) && ($structure_sid == 'rec') )
+						if( method_exists( model::$modules['basket'], 'insertOrdered' ) ) {
+							$recs = model::$modules['basket']->insertOrdered( $recs );
+						}
 
 			//Готово
 			return $recs;

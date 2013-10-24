@@ -1,4 +1,4 @@
-	<ul id="acms_bar" class="draggable">
+	<ul id="acms_bar" class="hidden-print">
 
 		<li class="a_logo"><img src="http://src.sitko.ru/i/logo_adm.png" style="height:29px;" alt="Asterix CMS" /></li>
 		<li class="a_wide">
