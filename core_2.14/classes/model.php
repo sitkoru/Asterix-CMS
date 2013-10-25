@@ -484,6 +484,12 @@ class model
 		return new geoip(self::$config['path']);
 	}
 
+	// Вызывается в конце работы
+	public function stop()
+	{
+		exit();
+	}
+
 }
 
 ////////////////////////////

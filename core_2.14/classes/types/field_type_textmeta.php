@@ -100,9 +100,10 @@ class field_type_textmeta extends field_type_default
 	{
 		preg_match_all( "/<[Aa][ \r\n\t]{1}[^>]*[Hh][Rr][Ee][Ff][^=]*=[ '\"\n\r\t]*([^ \"'>\r\n\t#]+)[^>]*>/", $value, $result );
 
-		return @$result[1];
+		if( $result[1] )
+			return $result[1];
+		else
+			return false;
 	}
 
 }
-
-?>

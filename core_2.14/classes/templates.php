@@ -32,59 +32,20 @@ class templater
 		$this->tmpl->template_dir = model::$config['path']['templates'];
 		$this->tmpl->compile_dir  = model::$config['path']['templates'] . '/c/';
 
-		//Обработчик специальных символов
-		@$this->tmpl->register_modifier( 'mb_lower', 'mb_strtolower' );
-
 		//Пишем свои функции и модификаторы
-		@$this->tmpl->register_function( 'preload', array(
-			$this,
-			'preloadData'
-		) );
+		$this->tmpl->registerPlugin( 'function', 'preload', array( $this, 'preloadData' ) );
+		$this->tmpl->registerPlugin( 'function', 'treesort', array( $this, 'treesortData' ) );
+		$this->tmpl->registerPlugin( 'function', 'numeric', array( $this, 'numeric' ) );
+		$this->tmpl->registerPlugin( 'function', 'addjs', array( $this, 'addJS' ) );
+		$this->tmpl->registerPlugin( 'function', 'addcss', array( $this, 'addCSS' ) );
+		$this->tmpl->registerPlugin( 'function', 'addtpl', array( $this, 'addTemplate' ) );
+		$this->tmpl->registerPlugin( 'function', 'unserialize', array( $this, 'unserialize' ) );
+		$this->tmpl->registerPlugin( 'function', 'admin', array( $this, 'admin' ) );
 
-		@$this->tmpl->register_function( 'treesort', array(
-			$this,
-			'treesortData'
-		) );
+		$this->tmpl->registerPlugin( 'modifier', 'cut', array( $this, 'cutData' ) );
+		$this->tmpl->registerPlugin( 'modifier', 'links', array( $this, 'showLinks' ) );
+		$this->tmpl->registerPlugin( 'modifier', 'mb_lower', 'mb_strtolower' );
 
-		@$this->tmpl->register_function( 'numeric', array(
-			$this,
-			'numeric'
-		) );
-
-		@$this->tmpl->register_modifier( 'cut', array(
-			$this,
-			'cutData'
-		) );
-
-		@$this->tmpl->register_function( 'addjs', array(
-			$this,
-			'addJS'
-		) );
-
-		@$this->tmpl->register_function( 'addcss', array(
-			$this,
-			'addCSS'
-		) );
-
-		@$this->tmpl->register_function( 'addtpl', array(
-			$this,
-			'addTemplate'
-		) );
-
-		@$this->tmpl->register_function( 'unserialize', array(
-			$this,
-			'unserialize'
-		) );
-
-		@$this->tmpl->register_modifier( 'links', array(
-			$this,
-			'showLinks'
-		) );
-
-		@$this->tmpl->register_function( 'admin', array(
-			$this,
-			'admin'
-		) );
 
 	}
 
@@ -132,7 +93,7 @@ class templater
 
 					if( $result )
 						//Записываем в шаблонизатор
-					$this->tmpl->assign( $params['result'], $result );
+						$this->tmpl->assign( $params['result'], $result );
 				}
 			}
 			//Подгрузка данных Социального Графа
@@ -206,11 +167,11 @@ class templater
 
 		// Все внешние ссылки будут вести на специальную страницу, если указано
 		$exitpage = '';
-		if( strlen( model::$settings['exitpage'] ) > 0 )
-			$exitpage = model::$settings['exitpage'].'?url=';
+		if( strlen( model::$settings['exitpage'] )>0 )
+			$exitpage = model::$settings['exitpage'] . '?url=';
 
 		// Заменяем URL на ссылки
-		$value = preg_replace( "/(http:\/\/[^<\s]+[^<.,:;?!”»’“+\-\)])([.,:;?!”»’“+\-\)]?(?:<br ?\/?>)*\s|$)/iu", '<a href="'.$exitpage.'$1" target="_blank" rel="nofollow">$1</a>$2', $value );
+		$value = preg_replace( "/(http:\/\/[^<\s]+[^<.,:;?!”»’“+\-\)])([.,:;?!”»’“+\-\)]?(?:<br ?\/?>)*\s|$)/iu", '<a href="' . $exitpage . '$1" target="_blank" rel="nofollow">$1</a>$2', $value );
 
 		// Обрезаем очень длинные слова
 		$t = str_replace( "\n", ' ', $value );
@@ -342,11 +303,11 @@ class templater
 		//Если нужно взять стандартный шаблон из внешнего пакета
 		if( $template_from_other_pack )
 			//Если путь к такому шаблону есть в конфиге
-		if( IsSet($this->paths[$template_from_other_pack]) )
-			//ну и если сам файл существует и доступен
-		if( file_exists( $this->paths[$template_from_other_pack] . '/' . $filename ) )
-			//Только тогда прописываем путь к другому шаблоону
-		return $this->paths[$template_from_other_pack] . '/' . $filename;
+			if( IsSet($this->paths[$template_from_other_pack]) )
+				//ну и если сам файл существует и доступен
+				if( file_exists( $this->paths[$template_from_other_pack] . '/' . $filename ) )
+					//Только тогда прописываем путь к другому шаблоону
+					return $this->paths[$template_from_other_pack] . '/' . $filename;
 
 		return $filename;
 	}
@@ -365,5 +326,3 @@ class templater
 	}
 
 }
-
-?>

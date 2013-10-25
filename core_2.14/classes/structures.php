@@ -85,7 +85,7 @@ class structures
 		$main   = array( 'id', 'sid', 'date_public', 'title', 'url', 'shw', 'dep_path_darent', 'dep_path_dir', 'left_key', 'right_key', 'is_link_to_module', 'seo_title', 'seo_keywords', 'seo_description', 'seo_changefreq', 'seo_priority' );
 		if( is_array( $this->structure[$structure_sid]['fields'] ) )
 			foreach( $this->structure[$structure_sid]['fields'] as $sid => $f )
-				if( (in_array( $sid, $main ) || @$f['main']) and (!IsSet($fields[$sid])) )
+				if( (in_array( $sid, $main ) || IsSet($f['main'])) and (!IsSet($fields[$sid])) )
 					$fields[$sid] = $sid;
 
 		return $fields;
@@ -117,21 +117,41 @@ class structures
 							либо это поле всегда разворачивается
 
 						*/
-					if( $value && (($explode_fields === true) || in_array( $sid, (array)$explode_fields ) || in_array( $field_settings['type'], $second_level_explodable_fields )) ) {
+						if( $value && (($explode_fields === true) || in_array( $sid, (array)$explode_fields ) || in_array( $field_settings['type'], $second_level_explodable_fields )) ) {
 
-						$rec[$sid] = model::$types[$field_settings['type']]->getValueExplode( $value, $this->structure[$structure_sid]['fields'][$sid], $rec );
+							$rec[$sid] = model::$types[$field_settings['type']]->getValueExplode( $value, $this->structure[$structure_sid]['fields'][$sid], $rec );
 
-						//Разварачиваем картинки у связанных записей
-						if( $field_settings['type'] == 'link' ) {
+							//Разварачиваем картинки у связанных записей
+							if( $field_settings['type'] == 'link' ) {
 
-							if( IsSet(model::$modules[$field_settings['module']]->structure[$field_settings['structure_sid']]) )
-								foreach( model::$modules[$field_settings['module']]->structure[$field_settings['structure_sid']]['fields'] as $sub_field_sid => $sub_field )
+								if( IsSet(model::$modules[$field_settings['module']]->structure[$field_settings['structure_sid']]) )
+									foreach( model::$modules[$field_settings['module']]->structure[$field_settings['structure_sid']]['fields'] as $sub_field_sid => $sub_field )
+										if( $sub_field['type'] == 'image' ) {
+
+											//Разворачиваем занчение
+											$new_val = model::$types['image']->getValueExplode(
+												$rec[$sid][$sub_field_sid],
+												model::$modules[$field_settings['module']]->structure[$field_settings['structure_sid']]['fields'][$sub_field_sid],
+												$field_settings
+											);
+
+											//Если значение развернулось
+											if( $new_val )
+												if( is_array( $new_val ) )
+													$rec[$sid][$sub_field_sid] = $new_val;
+										}
+
+								//Разварачиваем картинки у связанных записей
+							} elseif( $field_settings['type'] == 'user' ) {
+
+								$module_sid = model::getModuleSidByPrototype( 'users' );
+								foreach( model::$modules[$module_sid]->structure['rec']['fields'] as $sub_field_sid => $sub_field )
 									if( $sub_field['type'] == 'image' ) {
 
 										//Разворачиваем занчение
 										$new_val = model::$types['image']->getValueExplode(
 											$rec[$sid][$sub_field_sid],
-											model::$modules[$field_settings['module']]->structure[$field_settings['structure_sid']]['fields'][$sub_field_sid],
+											model::$modules[$module_sid]->structure['rec']['fields'][$sub_field_sid],
 											$field_settings
 										);
 
@@ -141,28 +161,8 @@ class structures
 												$rec[$sid][$sub_field_sid] = $new_val;
 									}
 
-							//Разварачиваем картинки у связанных записей
-						} elseif( $field_settings['type'] == 'user' ) {
-
-							$module_sid = model::getModuleSidByPrototype( 'users' );
-							foreach( model::$modules[$module_sid]->structure['rec']['fields'] as $sub_field_sid => $sub_field )
-								if( $sub_field['type'] == 'image' ) {
-
-									//Разворачиваем занчение
-									$new_val = model::$types['image']->getValueExplode(
-										$rec[$sid][$sub_field_sid],
-										model::$modules[$module_sid]->structure['rec']['fields'][$sub_field_sid],
-										$field_settings
-									);
-
-									//Если значение развернулось
-									if( $new_val )
-										if( is_array( $new_val ) )
-											$rec[$sid][$sub_field_sid] = $new_val;
-								}
-
+							}
 						}
-					}
 				}
 			}
 

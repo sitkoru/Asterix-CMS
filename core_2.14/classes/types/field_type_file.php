@@ -87,11 +87,12 @@ class field_type_file extends field_type_default
 		} elseif( strlen( $values[$value_sid]['tmp_name'] ) ) {
 
 			//Обновление картинки
-			if( @$values[$value_sid . '_old_id'] ) {
-				$old_data = $this->getValueExplode( $values[$value_sid . '_old_id'] );
-				acmsFiles::delete( model::$config['path']['files'] . $old_data['path'] );
-				$image_id = 0;
-			}
+			if( IsSet($values[$value_sid . '_old_id']) )
+				if( $values[$value_sid . '_old_id'] ) {
+					$old_data = $this->getValueExplode( $values[$value_sid . '_old_id'] );
+					acmsFiles::delete( model::$config['path']['files'] . $old_data['path'] );
+					$image_id = 0;
+				}
 
 			//Проверка уникальности имени файла
 			$name = acmsFiles::unique( $values[$value_sid]['name'], model::$config['path']['files'] );

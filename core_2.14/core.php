@@ -35,5 +35,3 @@ if( !$start_only ) {
 	$model = new model($config, $log, $cache);
 
 }
-
-?>

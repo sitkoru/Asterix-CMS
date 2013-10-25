@@ -78,11 +78,12 @@ class field_type_image extends field_type_default
 				$values[$value_sid]['name'] = basename( $values[$value_sid]['tmp_name'] );
 
 			//Обновление картинки
-			if( @$values[$value_sid . '_old_id'] ) {
-				$old_data = $this->getValueExplode( $values[$value_sid . '_old_id'] );
-				acmsFiles::delete( model::$config['path']['images'] . $old_data['path'] );
-				$image_id = 0;
-			}
+			if( IsSet($values[$value_sid . '_old_id']) )
+				if( $values[$value_sid . '_old_id'] ) {
+					$old_data = $this->getValueExplode( $values[$value_sid . '_old_id'] );
+					acmsFiles::delete( model::$config['path']['images'] . $old_data['path'] );
+					$image_id = 0;
+				}
 
 			//Создаём папку, если ещё нет
 			$dir_path = model::$config['path']['public_images'] . '/' . $module_prototype . '/' . $structure_sid . str_pad( $values['id'], 6, '0', STR_PAD_LEFT );
@@ -104,7 +105,7 @@ class field_type_image extends field_type_default
 
 			//Ужимаем до нужного размера и перезаписываем
 			$acmsImages = new acmsImages;
-			$data       = $acmsImages->resize( $filename, false, $settings['resize_type'], @$settings['resize_width'], @$settings['resize_height'] );
+			$data       = $acmsImages->resize( $filename, false, $settings['resize_type'], $settings['resize_width'], $settings['resize_height'] );
 
 			//Доп.характеристики
 			$data['path']  = $dir_path . '/' . $name;
@@ -116,22 +117,23 @@ class field_type_image extends field_type_default
 			$data['colors'] = $acmsImages->colors( $filename );
 
 			//Обрезка по маске
-			if( @$values[$value_sid . '_cut_mask']['size']>0 ) {
+			if( $values[$value_sid . '_cut_mask']['size']>0 ) {
 				$filename     = $acmsImages->cut_mask( $filename, false, $values[$value_sid . '_cut_mask'] );
 				$data['path'] = str_replace( '.' . $ext, '.png', $data['path'] );
 				$ext          = 'png';
 			}
 
 			//Установка Watermark
-			if( @$values[$value_sid . '_watermark']['size']>0 )
-				$acmsImages->put_watermark( $filename, false, $values[$value_sid . '_watermark'], $values[$value_sid . '_watermark_side'] );
+			if( IsSet($values[$value_sid . '_watermark']) )
+				if( $values[$value_sid . '_watermark']['size']>0 )
+					$acmsImages->put_watermark( $filename, false, $values[$value_sid . '_watermark'], $values[$value_sid . '_watermark_side'] );
 
 			//Делаем превьюшки
 			if( IsSet($settings['pre']) )
 				foreach( $settings['pre'] as $sid => $pre ) {
 					$pre_filename = str_replace( '.' . $ext, '_' . $sid . '.' . $ext, $filename );
 					$data[$sid]   = $dir_path . '/' . str_replace( '.' . $ext, '_' . $sid . '.' . $ext, basename( $data['path'] ) );
-					$acmsImages->resize( $filename, $pre_filename, $pre['resize_type'], @$pre['resize_width'], @$pre['resize_height'] );
+					$acmsImages->resize( $filename, $pre_filename, $pre['resize_type'], $pre['resize_width'], $pre['resize_height'] );
 
 					//Фильтры - чёлно-белый
 					if( is_array( $values[$value_sid . '_filter']['bw'] ) )

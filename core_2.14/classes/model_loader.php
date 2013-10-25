@@ -51,7 +51,7 @@ class ModelLoader
 
 		$config['settings']['phpversion'] = phpversion();
 
-		@ini_set( 'include_path', implode( ';', $config['path'] ) );
+		ini_set( 'include_path', implode( ';', $config['path'] ) );
 
 		return $config;
 	}
@@ -89,7 +89,7 @@ class ModelLoader
 
 						//не ADO
 					} else {
-						$db[$name] = new $n($model);
+						$db[$name] = new $n();
 					}
 
 					$db[$name]->Connect( $one['host'], $one['user'], $one['password'], $one['name'] );
@@ -253,13 +253,13 @@ class ModelLoader
 		$extensions = array();
 		//Подгрузка библиотеки расширений к модулям, инициализация
 		if( is_array( model::$config['extensions'] ) )
-			foreach( model::$config['extensions'] as $extention_sid => $filename ) {
+			foreach( model::$config['extensions'] as $extension_sid => $filename ) {
 				//Подключаем файл библиотеки
 				require_once(model::$config['path']['core'] . '/extensions/' . $filename);
 				//Создаём
-				$name                       = 'extention_' . $extention_sid;
-				$extensions[$extention_sid] = new $name($this);
-				$extensions[$extention_sid]->execute();
+				$name                       = 'extention_' . $extension_sid;
+				$extensions[$extension_sid] = new $name();
+				$extensions[$extension_sid]->execute();
 			}
 
 		return $extensions;
@@ -640,15 +640,23 @@ class ModelLoader
 			if( $warning && $notice && $strict )
 				error_reporting( E_ALL^E_DEPRECATED );
 			elseif( $warning && $notice )
-				error_reporting( E_ALL^E_DEPRECATED^E_STRICT ); elseif( $warning && $strict )
-				error_reporting( E_ALL^E_DEPRECATED^E_NOTICE ); elseif( $notice && $strict )
-				error_reporting( E_ALL^E_DEPRECATED^E_WARNING ); elseif( $warning )
-				error_reporting( E_ALL^E_DEPRECATED^E_STRICT^E_NOTICE ); elseif( $strict )
-				error_reporting( E_ALL^E_DEPRECATED^E_WARNING^E_NOTICE ); elseif( $notice )
-				error_reporting( E_ALL^E_DEPRECATED^E_WARNING^E_STRICT ); else
+				error_reporting( E_ALL^E_DEPRECATED^E_STRICT );
+			elseif( $warning && $strict )
+				error_reporting( E_ALL^E_DEPRECATED^E_NOTICE );
+			elseif( $notice && $strict )
+				error_reporting( E_ALL^E_DEPRECATED^E_WARNING );
+			elseif( $warning )
+				error_reporting( E_ALL^E_DEPRECATED^E_STRICT^E_NOTICE );
+			elseif( $strict )
+				error_reporting( E_ALL^E_DEPRECATED^E_WARNING^E_NOTICE );
+			elseif( $notice )
+				error_reporting( E_ALL^E_DEPRECATED^E_WARNING^E_STRICT );
+			else
 				error_reporting( 0 );
 
 			ini_set( "display_errors", "on" );
+
+//			ini_set( "display_errors", "off" );
 
 		} else {
 
@@ -660,4 +668,3 @@ class ModelLoader
 
 }
 
-?>

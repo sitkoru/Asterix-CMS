@@ -108,9 +108,9 @@ class controller_manager
 		//Перебираем все контроллеры
 		foreach( $this->controllers as $sid => $controller )
 			//Если допустимый метод
-		if( in_array( $_SERVER['REQUEST_METHOD'], $controller['methods'] ) )
-			if( in_array( model::$ask->output, $controller['format'] ) )
-				return $sid;
+			if( in_array( $_SERVER['REQUEST_METHOD'], $controller['methods'] ) )
+				if( in_array( model::$ask->output, $controller['format'] ) )
+					return $sid;
 
 		//Если существует указание
 		if( IsSet($this->controllers[$_SERVER['REQUEST_METHOD']]) )
@@ -126,7 +126,7 @@ class controller_manager
 		$current_module = model::$ask->module;
 
 		//Контроллера нет - запускаем стандартные
-		if( $controller == 'admin' && user::is_admin() ) {
+		if( $controller == 'admin' ) {
 			require_once self::$config['path']['core'] . '/controllers/admin.php';
 			$controller = new controller_admin($this->model, $this->vars, $this->cache);
 			$controller->start();
@@ -161,30 +161,31 @@ class controller_manager
 	private function checkTestMode()
 	{
 
-		if( intval( @model::$settings['test_mode'] ) && (!user::is_admin()) ) {
-			$current_ip = $_SERVER['REMOTE_ADDR'];
+		if( IsSet(model::$settings['test_mode']) )
+			if( intval( model::$settings['test_mode'] ) && (!user::is_admin()) ) {
+				$current_ip = $_SERVER['REMOTE_ADDR'];
 
-			//Обработка ошибки
-			if( !file_exists( self::$config['path']['core'] . '/ip_good.txt' ) )
-				log::err( 'file_not_found', self::$config['path']['core'] . '/ip_good.txt' );
+				//Обработка ошибки
+				if( !file_exists( self::$config['path']['core'] . '/ip_good.txt' ) )
+					log::err( 'file_not_found', self::$config['path']['core'] . '/ip_good.txt' );
 
-			//Подгружаем список администраторских IP-адресов
-			$white_ips = file( self::$config['path']['core'] . '/ip_good.txt' );
+				//Подгружаем список администраторских IP-адресов
+				$white_ips = file( self::$config['path']['core'] . '/ip_good.txt' );
 
-			//Чистим
-			foreach( $white_ips as $i => $p )
-				$white_ips[$i] = trim( $p );
+				//Чистим
+				foreach( $white_ips as $i => $p )
+					$white_ips[$i] = trim( $p );
 
-			//Проверяем
-			if( !in_array( $current_ip, $white_ips ) ) {
-				if( !headers_sent() ) {
-					header( 'Content-Type: text/html; charset=utf-8' );
-					header( 'HTTP/1.0 404 Not Found' );
+				//Проверяем
+				if( !in_array( $current_ip, $white_ips ) ) {
+					if( !headers_sent() ) {
+						header( 'Content-Type: text/html; charset=utf-8' );
+						header( 'HTTP/1.0 404 Not Found' );
+					}
+					print(model::$settings['test_mode_text'] . ' <!--' . $current_ip . '-->');
+					exit();
 				}
-				print(model::$settings['test_mode_text'] . ' <!--' . $current_ip . '-->');
-				exit();
 			}
-		}
 	}
 
 	//Контроллер устаревшей формы обратной связи
@@ -203,8 +204,8 @@ class controller_manager
 		foreach( $form['fields'] as $i => $field ) {
 			if( $field['type'] == 'file' ) {
 				$message .= $field['title'] . ': <strong>Смотреть в прикрепленных файлах</strong><br />';
-			} else
-				$message .= $field['title'] . ': <strong>' . @$this->vars['f' . $i] . '</strong><br />';
+			} elseif( IsSet($this->vars['f' . $i]) )
+				$message .= $field['title'] . ': <strong>' . $this->vars['f' . $i] . '</strong><br />';
 		}
 
 		foreach( $_FILES as $key => $file ) {
@@ -351,10 +352,14 @@ class controller_manager
 
 			$rec['url'] = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . (strlen( $rec['url'] )>2 ? '.html' : '');
 
-			if( @date( "U", strtotime( $rec['date_public'] ) )<date( "U", strtotime( "1995-01-01" ) ) )
-				$rec['date_public'] = '2000-01-01 00:00:00';
+			if( $rec['date_public'] ){
+				if( date( "U", strtotime( $rec['date_public'] ) )<date( "U", strtotime( "1995-01-01" ) ) )
+					$rec['date_public'] = '2000-01-01 00:00:00';
+			}else{
+				$rec['date_public'] = date("Y-m-d H:i:s");
+			}
 
-			$rec['date_public'] = @date( "c", strtotime( $rec['date_public'] ) );
+			$rec['date_public'] = date( "c", strtotime( $rec['date_public'] ) );
 			$recs[$i]           = $rec;
 
 			foreach( $filter as $fi )

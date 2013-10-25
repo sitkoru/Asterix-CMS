@@ -81,9 +81,10 @@ class field_type_rating extends field_type_default
 		$rec        = model::$modules[$module_sid]->explodeRecord( $rec, 'rec' );
 
 		//Добавляем голос в запись
+		$field['thanks'] = 0;
 		foreach( $rec as $field_sid => &$field ) {
 			if( model::$modules[$module_sid]->structure['rec']['fields'][$field_sid]['type'] == 'rating' ) {
-				@$field['thanks']++;
+				$field['thanks']++;
 				$rec    = $this->implodeValue( $field_sid, $rec );
 				$rating = $rec[$field_sid];
 				model::execSql( 'update `' . model::$modules[$module_sid]->getCurrentTable( 'rec' ) . '` set `' . $field_sid . '`="' . $rating . '" where `id`="' . $rec['id'] . '" limit 1', 'update' );

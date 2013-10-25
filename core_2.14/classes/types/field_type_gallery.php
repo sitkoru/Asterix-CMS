@@ -92,11 +92,12 @@ class field_type_gallery extends field_type_default
 				} elseif( strlen( $values[$value_sid]['tmp_name'][$i] ) ) {
 
 					//Обновление картинки
-					if( @$values[$value_sid . '_old_id'] ) {
-						$old_path = substr( $values[$value_sid . '_old_id'][$i], 0, strpos( $values[$value_sid . '_old_id'][$i], '|' ) );
-						acmsFiles::delete( model::$config['path']['www'] . $dir_path . '' . $old_path );
-						$image_id = 0;
-					}
+					if( IsSet($values[$value_sid . '_old_id']) )
+						if( $values[$value_sid . '_old_id'] ) {
+							$old_path = substr( $values[$value_sid . '_old_id'][$i], 0, strpos( $values[$value_sid . '_old_id'][$i], '|' ) );
+							acmsFiles::delete( model::$config['path']['www'] . $dir_path . '' . $old_path );
+							$image_id = 0;
+						}
 
 					//Проверка уникальности имени файла
 					$name = acmsFiles::unique( $values[$value_sid]['name'][$i], model::$config['path']['www'] . $dir_path );
@@ -112,7 +113,7 @@ class field_type_gallery extends field_type_default
 
 					//Ужимаем до нужного размера и перезаписываем
 					$acmsImages = new acmsImages;
-					$data       = $acmsImages->resize( $filename, false, $settings['resize_type'], @$settings['resize_width'], @$settings['resize_height'] );
+					$data       = $acmsImages->resize( $filename, false, $settings['resize_type'], $settings['resize_width'], $settings['resize_height'] );
 
 					//Доп.характеристики
 					$data['path']  = $dir_path . '/' . $name;
@@ -128,7 +129,7 @@ class field_type_gallery extends field_type_default
 							$data[$sid]   = $dir_path . '/' . str_replace( '.' . $ext, '_' . $sid . '.' . $ext, basename( $data['path'] ) );
 
 							// Размер картинки
-							$acmsImages->resize( $filename, $pre_filename, $pre['resize_type'], @$pre['resize_width'], @$pre['resize_height'] );
+							$acmsImages->resize( $filename, $pre_filename, $pre['resize_type'], $pre['resize_width'], $pre['resize_height'] );
 
 							//Фильтры - чёлно-белый
 							if( is_array( $values[$value_sid . '_filter']['bw'] ) )

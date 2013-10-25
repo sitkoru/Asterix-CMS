@@ -40,7 +40,7 @@ class field_type_password extends field_type_default
 		$this->correctFieldType( $module_sid, $structure_sid, $field_sid );
 
 		// Если значение найдено
-		if( strlen( @$record[$field_sid] )>0 ) {
+		if( strlen( $record[$field_sid] )>0 ) {
 
 			// Соль не задана
 			if( !strlen( $record['salt'] ) ) {

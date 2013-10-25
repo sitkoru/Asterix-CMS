@@ -26,9 +26,8 @@ class extention_domains extends extention_default
 	var $table_name = 'domains';
 
 	//Инициализация расширения
-	public function __construct( $model )
+	public function __construct()
 	{
-		$this->model = $model;
 
 		//Определяем текущий домен
 		$this->defineCurrentDomain();

@@ -99,13 +99,120 @@ class controller_admin extends default_controller
 		)
 	);
 
+	// Публичные шаблоны
+	var $public_templates = array(
+		'login'      => array( 'path' => 'v4/login.tpl' ),
+		'manage_bar' => array( 'path' => 'v4/manage_bar.tpl' ),
+	);
+
+	private $header = 200;
+
 	public function start()
 	{
-		if( model::$ask->method == 'GET' )
+		if( model::$ask->method == 'GET' ) {
+
+			$this->preloadGet();
 			$this->preloadForm( model::$ask->mode[0], model::$ask->rec );
-		else
+
+		} else
 			$this->controlForm( model::$ask->mode[0], model::$ask->rec );
 	}
+
+	// Обработка всех GET-запросов в админку
+	private function preloadGet()
+	{
+
+		/*
+		 * Запросы бывают:
+		 * .list
+		 * .tree
+		 * .add
+		 * .edit
+		 * .delete
+		 * .moveto
+		 * .moveup
+		 * .movedown
+		 *
+		 * */
+
+		// Управление записями
+		if( IsSet(model::$ask->mode[0]) ) {
+
+
+			// Публичные шаблоны
+		} elseif( IsSet($this->public_templates[model::$ask->url[0]]) ) {
+
+			// Вывести шаблон на печать
+			$this->outputPublicTemplate( model::$ask->url[0] );
+
+		}
+
+
+	}
+
+	private function outputPublicTemplate( $template_sid )
+	{
+
+		// Шаблон определён
+		if( IsSet($this->public_templates[$template_sid]) ) {
+
+			// Отправляем шаблон на печать
+			$this->outputTemplate( $this->initTemplater(), $this->public_templates[$template_sid]['path'] );
+
+			// Всё отработало успешно
+			model::stop();
+
+			// Ошибка вызова
+		} else {
+			log::stop( '501 Not Implemented' );
+		}
+
+	}
+
+	// Инициализация шаблонизатора
+	private function initTemplater()
+	{
+		require_once(model::$config['path']['core'] . '/classes/templates.php');
+
+		$tmpl = new templater();
+		$tmpl->assign( 'ask', model::$ask );
+		$tmpl->assign( 'content', model::$ask->rec );
+		$tmpl->assign( 'paths', model::$config['path'] );
+		$tmpl->assign( 'settings', model::$settings );
+		$tmpl->assign( 'config_openid', array_keys( model::$config['openid'] ) );
+		$tmpl->assign( 'path_admin_templates', model::$config['path']['admin_templates'] );
+
+		return $tmpl;
+	}
+
+	// Компиляция и вывод на печать готового шаблона
+	private function outputTemplate( $tmpl, $template_file )
+	{
+
+		//Компилируем
+		try {
+			$ready_html = $tmpl->fetch( $template_file, 'admin_templates' );
+		} catch ( Exception $e ) {
+			log::stop( '500 Internal Server Error', 'Ошибка компиляции шаблона', $e );
+		}
+
+		// Чтобы шаблон знал текущий статус запроса - сообщаем ему код
+		$tmpl->assign( 'header_status', intval( $this->header ) );
+
+		if( !headers_sent() ) {
+
+			if( $this->header == 200 ) {
+				header( 'Content-Type: text/html; charset=utf-8' );
+				header( "HTTP/1.0 200 Ok" );
+			} else {
+				pr( '[другой заголовок]' );
+			}
+
+		}
+
+		echo $ready_html;
+	}
+
 
 	//Форма редактирования записи
 	private function preloadForm( $action, $record )
@@ -156,10 +263,8 @@ class controller_admin extends default_controller
 		if( !IsSet($action) )
 			log::stop( '501 Not Implemented' );
 
-		//Шаблоны
-		$current_template_file = 'admin.tpl';
-		require_once(model::$config['path']['core'] . '/classes/templates.php');
-		$tmpl = new templater();
+		// Шаблонизатор
+		$tmpl = $this->initTemplater();
 
 		//Данные
 		$action_result['title']                 = $this->actions[$action];
@@ -172,26 +277,8 @@ class controller_admin extends default_controller
 		$action_result['groups'] = $this->getGroups( $action, $record );
 
 		$tmpl->assign( 'action', $action_result );
-		$tmpl->assign( 'ask', model::$ask );
-		$tmpl->assign( 'content', model::$ask->rec );
-		$tmpl->assign( 'paths', model::$config['path'] );
-		$tmpl->assign( 'settings', model::$settings );
-		$tmpl->assign( 'path_admin_templates', model::$config['path']['admin_templates'] );
 
-		//Компилируем
-		try {
-			$ready_html = $tmpl->fetch( 'forms/body.tpl', 'admin_templates' );
-		} catch ( Exception $e ) {
-			log::stop( '500 Internal Server Error', 'Ошибка компиляции', $e );
-		}
-
-		if( !headers_sent() ) {
-			header( 'Content-Type: text/html; charset=utf-8' );
-			header( "HTTP/1.0 200 Ok" );
-		}
-
-		echo $ready_html;
-		exit();
+		$this->outputTemplate( $tmpl, 'forms/body.tpl' );
 	}
 
 	//Контроллер обработки отправленной формы
@@ -206,7 +293,7 @@ class controller_admin extends default_controller
 			log::stop( '400 Bad Request' );
 		if( model::$ask->output_type == 404 )
 			log::stop( '404 Not Found' );
-		if( !IsSet($this->actions[model::$ask->mode[0]]) )
+		if( !IsSet($this->actions[$action]) )
 			log::stop( '501 Not Implemented' );
 
 		if( $action == 'addRecord' ) {
@@ -228,40 +315,19 @@ class controller_admin extends default_controller
 			exit();
 
 		} elseif( $action == 'settings' ) {
+
 			model::$ask->module        = 'start';
 			model::$ask->structure_sid = 'rec';
 			model::$ask->output_type   = 'content';
-			$url                       = $this->updateSettings();
-			/*
-					}elseif( $action == 'templates' ){
-						$file = model::$config['path']['templates'].'/'.str_replace('_tpl', '.tpl', $this->vars['id']);
-						file_put_contents($file, $this->vars['html']);
-						chmod($file, 0775);
-						header('Location: /admin/start.templates.html');
-						exit();
 
-					}elseif( $action == 'css' ){
-						$file = model::$config['path']['styles'].'/'.str_replace('_css', '.css', $this->vars['id']);
-						file_put_contents($file, $this->vars['html']);
-						chmod($file, 0775);
-						header('Location: /admin/start.css.html');
-						exit();
+			$this->updateSettings();
 
-					}elseif( $action == 'js' ){
-						$file = model::$config['path']['javascript'].'/'.str_replace('_js', '.js', $this->vars['id']);
-						file_put_contents($file, $this->vars['html']);
-						chmod($file, 0775);
-						header('Location: /admin/start.js.html');
-						exit();
+			header( 'Location: /admin.settings.success.html' );
+			exit();
 
-					}elseif( $action == 'access' ){
-						pr_r($this->vars);
-						exit();
-			*/
 		} else {
 			log::stop( '404 Not Found' );
 		}
-
 
 //		header('Location: '.$url);
 		header( 'Location: /admin.' . model::$ask->module . '.html' );
@@ -297,14 +363,22 @@ class controller_admin extends default_controller
 		if( $action == 'settings' )
 			$fields = $this->getSettingsFields();
 		elseif( $action == 'tree' )
-			$fields = $this->getTree( $record ); elseif( $action == 'templates' and !IsSet(model::$ask->mode[3]) )
-			$fields = $this->getTemplates(); elseif( $action == 'templates' and model::$ask->mode[3] == 'editRecord' )
-			$fields = $this->getOneTemplate( model::$ask->mode[1] . '.' . model::$ask->mode[2] ); elseif( $action == 'css' and !IsSet(model::$ask->mode[3]) )
-			$fields = $this->getCSS(); elseif( $action == 'css' and model::$ask->mode[3] == 'editRecord' )
-			$fields = $this->getOneCSS( model::$ask->mode[1] . '.' . model::$ask->mode[2] ); elseif( $action == 'js' and !IsSet(model::$ask->mode[3]) )
-			$fields = $this->getJS(); elseif( $action == 'js' and model::$ask->mode[3] == 'editRecord' )
-			$fields = $this->getOneJS( model::$ask->mode[1] . '.' . model::$ask->mode[2] ); elseif( $action == 'access' )
-			$fields = $this->getAccess(); else {
+			$fields = $this->getTree( $record );
+		elseif( $action == 'templates' and !IsSet(model::$ask->mode[3]) )
+			$fields = $this->getTemplates();
+		elseif( $action == 'templates' and model::$ask->mode[3] == 'editRecord' )
+			$fields = $this->getOneTemplate( model::$ask->mode[1] . '.' . model::$ask->mode[2] );
+		elseif( $action == 'css' and !IsSet(model::$ask->mode[3]) )
+			$fields = $this->getCSS();
+		elseif( $action == 'css' and model::$ask->mode[3] == 'editRecord' )
+			$fields = $this->getOneCSS( model::$ask->mode[1] . '.' . model::$ask->mode[2] );
+		elseif( $action == 'js' and !IsSet(model::$ask->mode[3]) )
+			$fields = $this->getJS();
+		elseif( $action == 'js' and model::$ask->mode[3] == 'editRecord' )
+			$fields = $this->getOneJS( model::$ask->mode[1] . '.' . model::$ask->mode[2] );
+		elseif( $action == 'access' )
+			$fields = $this->getAccess();
+		else {
 			if( !IsSet(model::$modules[model::$ask->module]) )
 				log::stop( '404 Not Found', 'Произошло обращение к несуществующему модулю', 'Вполне возможно, ссылка на модуль была удалёна из дерева сайта вручную. <br />Включите режим Разработки для автоматического исправления ошибки.' );
 			$fields = model::$modules[model::$ask->module]->prepareInterface( $action, array( 'id' => $record['id'] ), false );

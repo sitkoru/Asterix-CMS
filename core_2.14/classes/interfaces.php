@@ -138,13 +138,16 @@ class interfaces
 
 			$fields = interfaces::getFields( $record, $prepare, $public );
 
+			if( !IsSet($this->interfaces[$prepare]['comment']) )
+				$this->interfaces[$prepare]['comment'] = false;
+
 			//Готово
 			$result = array(
 				'sid'        => $prepare, //Идентификатор интерфейса
 				'interface'  => $prepare, //Идентификатор интерфейса
 				'url'        => $url,
 				'title'      => $this->interfaces[$prepare]['title'], //Название интерфейса
-				'comment'    => @$this->interfaces[$prepare]['comment'], //Название интерфейса
+				'comment'    => $this->interfaces[$prepare]['comment'], //Название интерфейса
 				'fields'     => $fields, //Поля и значения
 				'auth'       => $this->interfaces[$prepare]['auth'],
 				'action'     => (IsSet($this->interfaces[$prepare]['action']) ? $this->interfaces[$prepare]['action'] : '/' . $this->info['sid'] . '.' . $prepare) . '.html',
@@ -206,9 +209,13 @@ class interfaces
 		}
 
 		//Captcha checkout
-		if( $this->interfaces[$interface]['protection'] == 'captcha' )
-			if( @$_SESSION['form_captcha_code'] != $params['captcha'] )
-				log::stop( '401 Unauthorized', 'Captcha не введена, либо введена неверно' );
+		if( $this->interfaces[$interface]['protection'] == 'captcha' ) {
+			if( !IsSet($_SESSION['form_captcha_code']) || !IsSet($params['captcha']) )
+				log::stop( '401 Unauthorized', 'Captcha не введена' );
+
+			if( $_SESSION['form_captcha_code'] != $params['captcha'] )
+				log::stop( '401 Unauthorized', 'Captcha введена неверно' );
+		}
 
 		//Фильтрация переданных значений - убираем лишние
 		$fields = interfaces::getFields( $params, $interface, $public );
@@ -299,23 +306,31 @@ class interfaces
 	public function answerInterface( $interface, $result )
 	{
 
-		if( model::$ask->controller == 'admin' )
+		if( model::$ask->controller == 'admin' ) {
+
 			header( 'Location: /admin.' . model::$ask->module . '.html' );
 
-		//Ajax внутренним скриптом
-		elseif( $this->interfaces[$interface]['ajax'] === 'action' )
+			//Ajax внутренним скриптом
+		} elseif( $this->interfaces[$interface]['ajax'] === 'action' ) {
 			return $result; //Ajax стандартный
-		elseif( $this->interfaces[$interface]['ajax'] )
+
+		} elseif( $this->interfaces[$interface]['ajax'] ) {
 			print(json_encode( $result, JSON_HEX_QUOT )); //Не Ajax вовсе
-		elseif( IsSet($result['url']) )
-			header( 'Location: ' . $result['url'] ); else
+
+		} elseif( IsSet($result['url']) ) {
+			header( 'Location: ' . $result['url'] );
+
+		} else {
 			header( 'Location: ' . $_SERVER['HTTP_REFERER'] );
+
+		}
 
 		exit();
 	}
 
-	//Добавление записи в структуру модуля
-	public function addRecord( $values, $structure_sid = 'rec' )
+//Добавление записи в структуру модуля
+	public
+	function addRecord( $values, $structure_sid = 'rec' )
 	{
 
 		model::check_demo();
@@ -330,12 +345,12 @@ class interfaces
 		if( IsSet($values['id']) ) {
 
 			/*
-				Сам REPLACE использовать нельзя, так как 
+				Сам REPLACE использовать нельзя, так как
 				при выполнении REPLACE только с ID мы обнуляем другие поля
 				а позже при внесении изменений может возникнуть ситуация
 				что кол-во полей структуры не совпадают с полями в базе,
 				тогда данные этой записи будут безвозвратно потеряны.
-				
+
 				Такая ситуация может возникнуть, когда разработчик создал поле в структуре,
 				но не отразил это в базе, а unit-тесты оказались выключены.
 			*/
@@ -398,8 +413,9 @@ class interfaces
 		return $this->editRecord( $values, $structure_sid );
 	}
 
-	//Добавление записи в структуру модуля
-	public function editRecord( $values, $structure_sid = 'rec', $conditions = false )
+//Добавление записи в структуру модуля
+	public
+	function editRecord( $values, $structure_sid = 'rec', $conditions = false )
 	{
 
 		model::check_demo();
@@ -475,7 +491,10 @@ class interfaces
 				'getrow'
 			);
 
-			$url                     = @$parent['url'] . '/' . $values['sid'];
+			if( !IsSet($parent['url']) )
+				$parent['url'] = false;
+
+			$url                     = $parent['url'] . '/' . $values['sid'];
 			$what['url']             = '`url`="' . mysql_real_escape_string( $url ) . '"';
 			$what[$parent_field_sid] = '`' . $parent_field_sid . '`="' . mysql_real_escape_string( $values[$parent_field_sid] ) . '"';
 		}
@@ -509,19 +528,20 @@ class interfaces
 		);
 
 		//Обновляем элемент дерева вместе с переносом
-		if( ($parent_field_type == 'tree') and (@$values['dep_path_parent'] != @$data_before['dep_path_parent']) and ($values['sid'] != 'index') ) {
+		if( IsSet($values['dep_path_parent']) and IsSet($data_before['dep_path_parent']) )
+			if( ($parent_field_type == 'tree') and ($values['dep_path_parent'] != $data_before['dep_path_parent']) and ($values['sid'] != 'index') ) {
 
-			//Если не установлен обработчик таблицы
-			if( !IsSet($this->structure[$structure_sid]['db_manager']) ) {
-				require_once(model::$config['path']['core'] . '/classes/nestedsets.php');
-				$this->structure[$structure_sid]['db_manager'] = new nested_sets($this->model, $this->getCurrentTable( $structure_sid ));
+				//Если не установлен обработчик таблицы
+				if( !IsSet($this->structure[$structure_sid]['db_manager']) ) {
+					require_once(model::$config['path']['core'] . '/classes/nestedsets.php');
+					$this->structure[$structure_sid]['db_manager'] = new nested_sets($this->model, $this->getCurrentTable( $structure_sid ));
+				}
+				//Исключаем ошибку при доюавлении, когда родитель не найден
+				if( IsSet($parent['id']) ) {
+					//Обновление индексов дерева
+					$this->structure[$structure_sid]['db_manager']->moveChild( $parent['id'], $values['id'] );
+				}
 			}
-			//Исключаем ошибку при доюавлении, когда родитель не найден
-			if( IsSet($parent['id']) ) {
-				//Обновление индексов дерева
-				$this->structure[$structure_sid]['db_manager']->moveChild( $parent['id'], $values['id'] );
-			}
-		}
 		$data_after = $this->getRecordById( $structure_sid, $values['id'] );
 
 		//Обновляем поддерево
@@ -541,7 +561,8 @@ class interfaces
 		if( $values['sid'] == 'start' )
 			$url = '';
 		elseif( strlen( $url ) )
-			$url .= '.html'; else
+			$url .= '.html';
+		else
 			$url = '';
 
 		//Возвращаем URL, на который будет переброшен пользователь
@@ -552,8 +573,9 @@ class interfaces
 
 	}
 
-	//Удаление записи
-	public function deleteRecord( $record, $structure_sid = 'rec', $conditions )
+//Удаление записи
+	public
+	function deleteRecord( $record, $structure_sid = 'rec', $conditions )
 	{
 
 		model::check_demo();
@@ -595,8 +617,9 @@ class interfaces
 		);
 	}
 
-	//Сохранение дополнительных настроек записи
-	public function saveRecordSettings( $values, $structure_sid = 'rec' )
+//Сохранение дополнительных настроек записи
+	public
+	function saveRecordSettings( $values, $structure_sid = 'rec' )
 	{
 		$settings = array(
 			'interfaces_int' => (array)$values['interfaces_int'],
@@ -609,8 +632,9 @@ class interfaces
 		model::execSql( 'update `' . $this->getCurrentTable( $structure_sid ) . '` set `acms_settings`="' . mysql_real_escape_string( serialize( $settings ) ) . '" where `id`="' . mysql_real_escape_string( $values['id'] ) . '" limit 1', 'update' );
 	}
 
-	//Переместить на одну позицию выше
-	public function moveUp( $record, $structure_sid = 'rec', $conditions )
+//Переместить на одну позицию выше
+	public
+	function moveUp( $record, $structure_sid = 'rec', $conditions )
 	{
 
 		model::check_demo();
@@ -690,8 +714,9 @@ class interfaces
 		}
 	}
 
-	//Переместить на одну позицию ниже
-	public function moveDown( $record, $structure_sid = 'rec', $conditions )
+//Переместить на одну позицию ниже
+	public
+	function moveDown( $record, $structure_sid = 'rec', $conditions )
 	{
 
 		model::check_demo();
@@ -772,8 +797,9 @@ class interfaces
 		}
 	}
 
-	//Переместить на одну позицию ниже
-	public function moveTo( $params, $structure_sid = 'rec', $conditions )
+//Переместить на одну позицию ниже
+	public
+	function moveTo( $params, $structure_sid = 'rec', $conditions )
 	{
 
 		$record_id = $params['record'];
@@ -826,15 +852,17 @@ class interfaces
 		}
 	}
 
-	//Переместить на одну позицию ниже
-	public function toggleRecord( $params, $structure_sid = 'rec', $conditions )
+//Переместить на одну позицию ниже
+	public
+	function toggleRecord( $params, $structure_sid = 'rec', $conditions )
 	{
 		if( $this->structure[$structure_sid]['fields'][$params['field']]['type'] == 'check' )
 			model::execSql( 'update `' . $this->getCurrentTable( $structure_sid ) . '` set `' . mysql_real_escape_string( $params['field'] ) . '` = NOT(`' . mysql_real_escape_string( $params['field'] ) . '`) where `id`=' . intval( $params['record_id'] ) . ' limit 1', 'update' );
 	}
 
-	//Обновляем поддерево зависимых записей
-	public function updateChildren( $structure_sid, $old_data, $new_data, $new_url, $condition = false, $domain = false )
+//Обновляем поддерево зависимых записей
+	public
+	function updateChildren( $structure_sid, $old_data, $new_data, $new_url, $condition = false, $domain = false )
 	{
 
 		model::check_demo();
@@ -921,7 +949,8 @@ class interfaces
 		}
 	}
 
-	public function getAllInterfaces()
+	public
+	function getAllInterfaces()
 	{
 
 		$groups = array(
@@ -964,8 +993,9 @@ class interfaces
 		return $fields;
 	}
 
-	// Проверка доступа текущего пользователя к управлению текущей записью через текущий интрефейс
-	public static function checkAccessToManageRecord( $record, $interface )
+// Проверка доступа текущего пользователя к управлению текущей записью через текущий интрефейс
+	public
+	static function checkAccessToManageRecord( $record, $interface )
 	{
 
 		$interface_access_level = $interface['access'];
@@ -989,7 +1019,7 @@ class interfaces
 				return true;
 
 			// Доступ только для всех авторизованных пользователей
-		} elseif( $interface_access_level == true  ) {
+		} elseif( $interface_access_level == true ) {
 			if( user::$info['id'] )
 				return true;
 

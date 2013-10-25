@@ -28,9 +28,8 @@ class mysql{
   public $query_log=array();
   public $name;
 
-	public function __construct($model)
+	public function __construct()
 	{
-		$this->model = $model;
 		$this->connection = false;
 		if( property_exists('model', 'active_database') )
 			model::$active_database = false;

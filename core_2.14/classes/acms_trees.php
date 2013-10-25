@@ -192,7 +192,12 @@ class acms_trees
 					$levels             = $this->getLevels( 'rec', array() );
 					$levels             = array_reverse( $levels );
 					$next_structure_sid = false;
-					foreach( $levels as $j => $level ) if( $level == $structure_sid ) $next_structure_sid = @$levels[$j+1];
+
+					foreach( $levels as $j => $level )
+						if( $level == $structure_sid )
+							if( IsSet($levels[$j+1]) )
+								$next_structure_sid = $levels[$j+1];
+
 					//Нашли вложенную структуру в данном модуле
 					if( $next_structure_sid ) {
 						//Название поля-связки с текущей структурой
