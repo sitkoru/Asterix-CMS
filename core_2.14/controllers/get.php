@@ -207,7 +207,7 @@ class controller_get extends default_controller
 			$this->addCSS( model::$settings['css_main'], array( 'media' => 'screen,projection' ) );
 
 		// Стили версии для печати
-//		$this->addCSS( model::$config['path']['public_styles'] . '/print.css', array( 'media' => 'print' ) );
+		$this->addCSS( model::$config['path']['public_styles'] . '/print.css', array( 'media' => 'print' ) );
 
 		//Подключаем шаблонизатор
 		require_once(model::$config['path']['core'] . '/classes/templates.php');

@@ -131,7 +131,7 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
 
 .acms.acms-panel-bottom {
     top: auto;
-    bottom: 0;
+    bottom: -2px;
 }
 
 .acms.acms-panel-bottom .acms-panel {
@@ -183,6 +183,7 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
 
 .acms-mainmenu a {
     text-decoration: none;
+    color: #08c;
 }
 
 .acms-mainmenu a[href='#'] {
@@ -194,15 +195,14 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
 .acms-mainmenu > li {
     display: inline-block;
     width: auto;
-    height: 33px;
     padding: 6px 7px;
-    margin-top: -4px;
+    float: left;
 }
 
 .acms-mainmenu > li > ul {
     position: absolute;
     background-color: #1B8DC6;
-    margin: 7px -20px -20px;
+    margin: 6px -20px -20px;
     padding: 0 20px 10px 20px;
 
     border-bottom-left-radius: 10px;

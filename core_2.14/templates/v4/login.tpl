@@ -48,7 +48,7 @@
         </style>
 
         <div style="text-align: center;">
-            <h1 style="font-size: 26px; color: #ff7a00; font-weight: normal;line-height: 120%;margin-top: 20px; font-style: normal; font-family: Arial;">Панель управления сайтом</h1>
+            <h1 style="font-size: 26px !important; color: #ff7a00; font-weight: normal;line-height: 120%;margin-top: 20px; font-style: normal; font-family: Arial;">Панель управления сайтом</h1>
         </div>
         <form style="
             width: 100%;
