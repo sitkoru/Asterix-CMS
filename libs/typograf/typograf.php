@@ -47,7 +47,7 @@ class TypografWebService {
 		$path
 	;
 
-	public function __construct( $useragent = 'Sitko.ru typograf client', $tags = false ) {
+	public function __construct( $useragent = 'Asterix CMS typograf client', $tags = false ) {
 
 		if ( $tags )
 			$this->setTags( $tags );

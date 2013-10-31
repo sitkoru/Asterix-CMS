@@ -1,6 +1,6 @@
 	<ul id="acms_bar" class="hidden-print">
 
-		<li class="a_logo"><img src="http://src.sitko.ru/i/logo_adm.png" style="height:29px;" alt="Asterix CMS" /></li>
+		<li class="a_logo"><img src="http://src.opendev.ru/i/logo_adm.png" style="height:29px;" alt="Asterix CMS" /></li>
 		<li class="a_wide">
 			<a href="/admin.html" target="acms">Дерево сайта</a>
 			<ul class="a_sub">
@@ -46,7 +46,6 @@
 			<a rel="help" href="#">Помощь</a>
 			<ul class="a_sub">
 				<li><a href="http://admin.sitko.ru/tree.html" class="out">Помощь по системе управления</a></li>
-				<li><a href="http://sitko.ru" class="out">Подробнее о разработчике</a></li>
 				<li><a href="http://asterix.opendev.ru" class="out">Подробнее о системе управления</a></li>
 			</ul>
 		</li>
@@ -84,5 +83,5 @@
 
 	<div id="acms_content">
 		<a class="acms_close" href="#">&times;</a>
-		<iframe name="acms" src="" style="border:0; width:1000px; height:550px; padding:0 20px; float:left;" SCROLLING=YES></iframe>
+		<iframe name="acms" src="about:black" style="border:0; width:1000px; height:550px; padding:0 20px; float:left;" SCROLLING=YES></iframe>
 	</div>

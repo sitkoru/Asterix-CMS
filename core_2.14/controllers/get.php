@@ -160,18 +160,16 @@ class controller_get extends default_controller
 		}
 
 		//JavaScript
-//		$this->addJS( 'http://src.opendev.ru/3.0/jquery-ui-1.8.23.custom/ui/jquery-ui.js' );
 		$this->addJS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js' );
-		$this->addJS( 'http://src.opendev.ru/3.0/j/panel.js' );
-		$this->addJS( 'http://src.opendev.ru/3.0/j/j.js' );
+//		$this->addJS( 'http://src.opendev.ru/3.0/j/panel.js' );
+//		$this->addJS( 'http://src.opendev.ru/3.0/j/j.js' );
+		$this->addJS( 'http://src.opendev.ru/v4/j/acms_panel.js' );
 
 		//Библиотеки для Администратора
-		$this->addCSS( 'http://src.opendev.ru/3.0/c/panel.css' );
+//		$this->addCSS( 'http://src.opendev.ru/3.0/c/panel.css' );
 
 		// jQuery-UI
 		if( in_array( 'jquery-ui', model::$settings['js_libraries'] ) ) {
-//			$this->addJS('http://src.sitko.ru/3.0/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js');
-//			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css' );
 			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css' );
 			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css' );
 
@@ -209,7 +207,7 @@ class controller_get extends default_controller
 			$this->addCSS( model::$settings['css_main'], array( 'media' => 'screen,projection' ) );
 
 		// Стили версии для печати
-		$this->addCSS( model::$config['path']['public_styles'] . '/print.css', array( 'media' => 'print' ) );
+//		$this->addCSS( model::$config['path']['public_styles'] . '/print.css', array( 'media' => 'print' ) );
 
 		//Подключаем шаблонизатор
 		require_once(model::$config['path']['core'] . '/classes/templates.php');

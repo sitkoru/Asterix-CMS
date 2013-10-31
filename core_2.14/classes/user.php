@@ -382,7 +382,7 @@ class user
 
 		} elseif( in_array( $provider, array( 'facebook.com', 'facebook' ) ) ) {
 			if( IsSet($_GET['error']) )
-				break;
+				return false;
 
 			//дефолтные настройки из конфига
 			$app_id     = model::$settings['oauth_facebook_id'];

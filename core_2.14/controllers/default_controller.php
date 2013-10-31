@@ -28,7 +28,7 @@ class default_controller
 		'carousel' => 'http://src.opendev.ru/3.0/bootstrap/bootstrap-carousel.js',
 	);
 	public static $known_css = array(
-		'lightbox'  => 'http://src.sitko.ru/a/c/lightbox.css',
+		'lightbox'  => 'http://src.opendev.ru/a/c/lightbox.css',
 		'bootstrap' => 'http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css',
 	);
 

@@ -37,9 +37,9 @@ $(document).ready(function () {
 
                 $('body').append(login_form).css('overflow', 'hidden');
 
-                $('.acms-login__background-cover').css('height', window.height);
+                $('.acms-content__background-cover').css('height', window.height);
 
-                $('.acms-login__background-cover').fadeIn('fast');
+                $('.acms-content__background-cover').fadeIn('fast');
 
                 acms_actions();
             });
