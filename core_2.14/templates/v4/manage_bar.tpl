@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<div class="acms acms-panel__background-cover">
+<div class="acms acms-panel__background-cover{if $settings.acms_position} acms-panel-{$settings.acms_position}{else} acms-panel-top{/if}">
     <div class="acms-panel">
 
         <ul class="acms-mainmenu hidden-print">

@@ -411,6 +411,19 @@ class ModelLoader
 				'title' => 'Дата создания сайта',
 				'type'  => 'datetime',
 			),
+			'acms_position'   => array(
+				'group'    => 'main',
+				'title'    => 'Позиция панели управления сайтом',
+				'type'     => 'menu',
+				'variants' => array(
+					'top'    => 'Вверху',
+					'bottom' => 'Внизу',
+/*
+					'right'  => 'Справа',
+					'left'   => 'Слева',
+*/
+				),
+			),
 
 			// SEO
 			'counter'         => array(

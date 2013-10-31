@@ -83,7 +83,7 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
     vertical-align: middle;
 }
 
-.acms.acms-panel__background-cover,.acms.acms-content__background-cover {
+.acms.acms-panel__background-cover, .acms.acms-content__background-cover {
     position: fixed;
     left: 0;
     top: 0;
@@ -92,7 +92,8 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
     z-index: 1999;
     text-align: center;
 }
-.acms.acms-content__background-cover{
+
+.acms.acms-content__background-cover {
     display: none;
     background-color: rgba(0, 0, 0, 0.9);
     cursor: pointer;
@@ -104,27 +105,50 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
     top: 0;
     height: auto;
     z-index: 2000;
-/*
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-*/
+    /*
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+    */
     padding: 0 10px;
     display: inline-block;
 }
-.acms .acms-panel, .acms .acms-mainmenu ul{
-/*
-    background-color: rgb(200, 229, 255);
-    border: 1px solid rgb(165, 212, 255);
-*/
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
 
+.acms .acms-panel, .acms .acms-mainmenu ul {
     background-color: #ffffff;
     border: #f5f5f5;
+}
+
+.acms.acms-panel-top {
+    top: 0;
+}
+
+.acms.acms-panel-top .acms-panel {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     border-top: 0;
     box-shadow: 0 5px 10px -2px black;
 }
-.acms .acms-content{
+
+.acms.acms-panel-bottom {
+    top: auto;
+    bottom: 0;
+}
+
+.acms.acms-panel-bottom .acms-panel {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom: 0;
+    box-shadow: 0 -5px 10px -2px black;
+}
+
+.acms.acms-panel-bottom .acms-panel .acms-mainmenu > li > ul {
+    bottom: 50px;
+    padding: 20px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.acms .acms-content {
     display: inline-block;
     width: 90%;
     max-width: 1100px;
@@ -157,27 +181,31 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
     white-space: nowrap;
 }
 
-.acms-mainmenu a{
+.acms-mainmenu a {
     text-decoration: underline;
 }
-.acms-mainmenu a[href='#']{
+
+.acms-mainmenu a[href='#'] {
     cursor: default;
     text-decoration: none;
     color: grey;
 }
-.acms-mainmenu>li {
+
+.acms-mainmenu > li {
     display: inline-block;
     width: auto;
     height: 33px;
     padding: 4px 7px;
 }
-.acms-mainmenu>li>ul {
+
+.acms-mainmenu > li > ul {
     position: absolute;
     background-color: white;
     margin: 9px -20px -20px;
     padding: 0 20px 10px 20px;
 }
-.acms-mainmenu>li>ul>li {
+
+.acms-mainmenu > li > ul > li {
     list-style: none;
     text-align: left;
     margin: 5px 0;
@@ -186,10 +214,12 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
 .acms-mainmenu ul {
     display: none;
 }
-.acms-mainmenu li:hover ul{
+
+.acms-mainmenu li:hover ul {
     display: block;
 }
-.acms .acms-cross, .acms .acms-save{
+
+.acms .acms-cross, .acms .acms-save {
     position: absolute;
     width: 30px;
     height: 30px;
@@ -201,14 +231,17 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
     border-radius: 3px;
     color: silver;
 }
-.acms .acms-save{
+
+.acms .acms-save {
     margin-top: 20px;
 }
-.acms .acms-save:hover{
+
+.acms .acms-save:hover {
     color: rgb(0, 185, 74);
     border-color: rgb(0, 185, 74);
 }
-.acms .acms-cross:hover{
+
+.acms .acms-cross:hover {
     color: red;
     border-color: red;
 }
