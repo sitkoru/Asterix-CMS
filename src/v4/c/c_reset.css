@@ -195,13 +195,14 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
     display: inline-block;
     width: auto;
     height: 33px;
-    padding: 4px 7px;
+    padding: 6px 7px;
+    margin-top: -4px;
 }
 
 .acms-mainmenu > li > ul {
     position: absolute;
     background-color: #1B8DC6;
-    margin: 9px -20px -20px;
+    margin: 7px -20px -20px;
     padding: 0 20px 10px 20px;
 
     border-bottom-left-radius: 10px;

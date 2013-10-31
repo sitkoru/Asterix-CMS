@@ -13,8 +13,8 @@
 
         <ul class="acms-mainmenu hidden-print">
 
-            <li class="a_logo"><img src="http://src.opendev.ru/i/logo_adm.png" style="vertical-align: middle;" alt="Asterix CMS" /></li>
-            <li class="a_wide">
+            <li><img src="http://src.opendev.ru/i/logo_adm.png" style="vertical-align: middle;" alt="Asterix CMS" /></li>
+            <li>
                 <a href="#" data-target="acms">Дерево сайта</a>
                 <ul class="a_sub">
                     {foreach from=$add.recs item=rec}
@@ -28,7 +28,7 @@
                 {/if}
                 </ul>
             </li>
-            <li class="a_narrow">
+            <li>
                 <a rel="add" href="#" OnClick="return false;" data-target="acms">Добавить</a>
                 <ul class="a_sub">
                     {foreach from=$add.recs item=rec}
@@ -42,8 +42,8 @@
                 {/if}
                 </ul>
             </li>
-            <li class="a_wide"><a href="/admin{$content.url_clear}.editRecord.html" data-target="acms">Изменить</a></li>
-            <li class="a_narrow">
+            <li><a href="/admin{$content.url_clear}.editRecord.html" data-target="acms">Изменить</a></li>
+            <li>
                 <a href="/admin/start.settings.html" data-target="acms">Настройки</a>
                 {if $settings.test_mode}
                     <ul class="a_sub">
@@ -59,16 +59,7 @@
                     </ul>
                 {/if}
             </li>
-<!--
-            <li class="a_narrow">
-                <a rel="help" href="#">Помощь</a>
-                <ul class="a_sub">
-                    <li><a href="http://admin.sitko.ru/tree.html" class="out">Помощь по системе управления</a></li>
-                    <li><a href="http://asterix.opendev.ru" class="out">Подробнее о системе управления</a></li>
-                </ul>
-            </li>
--->
-            <li class="a_narrow">
+            <li>
                 <a rel="about" href="#">О сайте</a>
                 <ul class="a_sub">
                     <li>Сайт: {$settings.domain_title|cut:40}</li>
@@ -81,7 +72,7 @@
 
             {admin data=update result=update}
             {if $update}
-                <li class="a_narrow">
+                <li>
                     <a rel="update" href="#" style="color:red;">Обновление</a>
                     <ul class="a_sub">
                         <li>Ваша версия: {$config.version}</li>
@@ -91,12 +82,7 @@
                     </ul>
                 </li>
             {/if}
-<!--
-            <li class="a_narrow">
-                <a href="/admin{$user.url_clear}.editRecord.html" data-target="acms">{$user.title}</a>
-            </li>
--->
-            <li class="a_narrow">
+            <li>
                 <a rel="exit" href="?logout=yes" style="color: red;">Выход</a>
             </li>
         </ul>
