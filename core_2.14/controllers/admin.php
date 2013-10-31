@@ -511,6 +511,12 @@ class controller_admin extends default_controller
 	//Загрузка файлов через CKEditor
 	private function ckeditorUpload( $file )
 	{
+
+		if( model::$config['settings']['demo_mode'] ) {
+			print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');
+			exit();
+		}
+
 		$ext      = substr( $file['name'], strrpos( $file['name'], '.' ) );
 		$dir      = date( "Y" );
 		$filename = 'img' . date( "YmdHis" ) . $ext;
@@ -519,7 +525,7 @@ class controller_admin extends default_controller
 		include_once(model::$config['path']['libraries'] . '/acmsFiles.php');
 		include_once(model::$config['path']['libraries'] . '/acmsDirs.php');
 		acmsDirs::makeFolder( model::$config['path']['files'] . '/' . $dir );
-		$result = acmsFiles::upload( $file['tmp_name'], $path );
+		$result = acmsFiles::upload( $file['tmp_name'], $path, '0775', model::$types['file']->allowed_extensions  );
 
 		if( $result ) {
 			$public_filename = model::$config['path']['public_files'] . '/' . $dir . '/' . $filename;

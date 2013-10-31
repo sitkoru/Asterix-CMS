@@ -29,7 +29,7 @@ class field_type_file extends field_type_default
 									  'resize_type' => 'inner', 'resize_width' => 250, 'resize_height' => 250, 'resize_proportions' => true );
 
 	//Разрешённые форматы файлов для загрузки
-	private $allowed_extensions = array(
+	public $allowed_extensions = array(
 		'image/jpeg'                                                                => 'jpg',
 		'image/gif'                                                                 => 'gif',
 		'image/png'                                                                 => 'png',
