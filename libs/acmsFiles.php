@@ -3,10 +3,18 @@
 class acmsFiles{
 
 	//Загрузка изображения
-	public function upload($tmp, $path, $chmod = 0775){
+	public function upload($tmp, $path, $chmod = 0775, $allowed_extensions = false){
 		
 		// Закаченный файл
 		if( is_uploaded_file( $tmp ) ){
+
+			if( is_array( $allowed_extensions ) ) {
+				$name = basename( $path );
+				$ext  = substr( $name, strrpos( $name, '.' )+1 );
+				if( !in_array( $ext, $allowed_extensions ) )
+					return false;
+			}
+
 			if( move_uploaded_file($tmp, $path) ){
 				chmod($path, $chmod);
 				return $path;
