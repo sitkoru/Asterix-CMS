@@ -101,7 +101,7 @@ class field_type_image extends field_type_default
 			$ext = substr( $name, strrpos( $name, '.' )+1 );
 
 			//Загружаем файл
-			$filename = acmsFiles::upload( $values[$value_sid]['tmp_name'], model::$config['path']['www'] . $dir_path . '/' . $name );
+			$filename = acmsFiles::upload( $values[$value_sid]['tmp_name'], model::$config['path']['www'] . $dir_path . '/' . $name, '0775', $this->allowed_extensions );
 
 			//Ужимаем до нужного размера и перезаписываем
 			$acmsImages = new acmsImages;
