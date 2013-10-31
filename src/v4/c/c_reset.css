@@ -189,4 +189,27 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
 .acms-mainmenu li:hover ul{
     display: block;
 }
+.acms .acms-cross, .acms .acms-save{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    margin: -15px;
+    cursor: pointer;
+    line-height: 28px;
+    border: 1px solid rgb(218, 218, 218);
+    display: block;
+    border-radius: 3px;
+    color: silver;
+}
+.acms .acms-save{
+    margin-top: 20px;
+}
+.acms .acms-save:hover{
+    color: rgb(0, 185, 74);
+    border-color: rgb(0, 185, 74);
+}
+.acms .acms-cross:hover{
+    color: red;
+    border-color: red;
+}
 

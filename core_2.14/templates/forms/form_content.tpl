@@ -3,7 +3,7 @@
 	{include file="$path_admin_templates/forms/tabs.tpl"}
 
 
-		<form name="edit_record" method="POST" action="/admin{if $content.url}{$content.url}{else}/start{/if}.{$action.form_action}.{$action.structure_sid}.html" enctype="multipart/form-data" class="acms_panel_form form-horizontal">
+		<form id="acms_form" name="edit_record" method="POST" action="/admin{if $content.url}{$content.url}{else}/start{/if}.{$action.form_action}.{$action.structure_sid}.html" enctype="multipart/form-data" class="acms_panel_form form-horizontal">
 			<input type="hidden" name="action" value="{$action.form_action}" />
 			<input type="hidden" name="module" value="{$action.module}" />
 			<input type="hidden" name="structure_sid" value="{$action.structure_sid}" />

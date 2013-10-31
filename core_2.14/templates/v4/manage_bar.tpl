@@ -2,14 +2,16 @@
 
 <div class="acms acms-content__background-cover">
     <div class="acms-content">
-        <iframe style="border:0; width:100%; height:100%;" SCROLLING=YES></iframe>
+        <div class="acms-cross">✖</div>
+<!--        <div class="acms-save">✔</div>-->
+        <iframe id="acms_iframe_id" style="border:0; width:100%; height:100%;" SCROLLING=YES></iframe>
     </div>
 </div>
 
 <div class="acms acms-panel__background-cover">
     <div class="acms-panel">
 
-        <ul class="acms-mainmenu hidden-print" style="margin-top: 0;">
+        <ul class="acms-mainmenu hidden-print">
 
             <li class="a_logo"><img src="http://src.opendev.ru/i/logo_adm.png" style="vertical-align: middle;" alt="Asterix CMS" /></li>
             <li class="a_wide">
@@ -89,11 +91,11 @@
                     </ul>
                 </li>
             {/if}
-
+<!--
             <li class="a_narrow">
                 <a href="/admin{$user.url_clear}.editRecord.html" data-target="acms">{$user.title}</a>
             </li>
-
+-->
             <li class="a_narrow">
                 <a rel="exit" href="?logout=yes" style="color: red;">Выход</a>
             </li>

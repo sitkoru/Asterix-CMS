@@ -20,4 +20,14 @@ $(document).ready(function () {
         return false;
     });
 
+    $('.acms-content').click(function( e ){
+        e.stopPropagation();
+        return false;
+    });
+
+    $('.acms-cross').click(function( e ){
+        $('.acms-content__background-cover').fadeOut('fast');
+        $('body').css('overflow', 'auto');
+    });
+
 });
