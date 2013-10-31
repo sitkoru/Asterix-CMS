@@ -69,7 +69,7 @@
                     Чужой компьютер
                 </label>
                 <div style="margin-left: 152px;">
-                    <button type="button" style="padding: 5px 25px;" class="acms-login__login_button">Войти</button>
+                    <button type="button" style="padding: 5px 25px; border:0;" class="acms-login__login_button">Войти</button>
                     {foreach from=$config_openid item=rec}
                         <a style="padding: 5px 10px; display: inline-block; color: white;" href="https://www.google.com/accounts/o8/ud?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.mode=checkid_setup&openid.return_to=http://{$ask->host}/?login&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.realm=http://{$ask->host}/&openid.ui.ns=http://specs.openid.net/extensions/ui/1.0&openid.ui.icon=true&hd=sitko.ru&openid.ns.ax=http://openid.net/srv/ax/1.0&openid.ax.mode=fetch_request&openid.ax.required=firstname,lastname,email,language&openid.ax.type.firstname=http://axschema.org/namePerson/first&openid.ax.type.lastname=http://axschema.org/namePerson/last&openid.ax.type.email=http://axschema.org/contact/email&openid.ax.type.language=http://axschema.org/pref/language">Вход по домену</a>
                     {/foreach}
