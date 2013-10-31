@@ -9,7 +9,7 @@
 </div>
 
 <div class="acms acms-panel__background-cover{if $settings.acms_position} acms-panel-{$settings.acms_position}{else} acms-panel-top{/if}">
-    <div class="acms-panel">
+    <div class="acms-panel{if $settings.test_mode} acms-test-mode{/if}">
 
         <ul class="acms-mainmenu hidden-print">
 
@@ -45,19 +45,6 @@
             <li><a href="/admin{$content.url_clear}.editRecord.html" data-target="acms">Изменить</a></li>
             <li>
                 <a href="/admin/start.settings.html" data-target="acms">Настройки</a>
-                {if $settings.test_mode}
-                    <ul class="a_sub">
-                        <!--
-                                    <li><a href="/admin/start.access.html" target="acms">Уровни доступа</a></li>
-                        -->
-                        <li><a href="/admin/start.css.html" data-target="acms">Стили</a></li>
-                        <li><a href="/admin/start.js.html" data-target="acms">JavaScript</a></li>
-                        <!--
-                                    <li><a href="/admin/start.modules.html" target="acms">Модули</a></li>
-                        -->
-                        <li><a href="/admin/start.templates.html" data-target="acms">Шаблоны</a></li>
-                    </ul>
-                {/if}
             </li>
             <li>
                 <a rel="about" href="#">О сайте</a>
@@ -70,21 +57,24 @@
                 </ul>
             </li>
 
-            {admin data=update result=update}
-            {if $update}
-                <li>
-                    <a rel="update" href="#" style="color:red;">Обновление</a>
-                    <ul class="a_sub">
-                        <li>Ваша версия: {$config.version}</li>
-                        <li>Стабильная версия: {$update.version}</li>
-                        <li></li>
-                        <li><a href="/admin.update.html" data-target="acms">Обновить движок сайта</a></li>
-                    </ul>
-                </li>
-            {/if}
+        {admin data=update result=update}
+        {if $update}
+            <li>
+                <a rel="update" href="#" style="color:red;">Обновление</a>
+                <ul class="a_sub">
+                    <li>Ваша версия: {$config.version}</li>
+                    <li>Стабильная версия: {$update.version}</li>
+                    <li></li>
+                    <li><a href="/admin.update.html" data-target="acms">Обновить движок сайта</a></li>
+                </ul>
+            </li>
+        {/if}
+
+        {if !$settings.test_mode}
             <li>
                 <a rel="exit" href="?logout=yes" style="color: red;">Выход</a>
             </li>
+        {/if}
         </ul>
 
     </div>

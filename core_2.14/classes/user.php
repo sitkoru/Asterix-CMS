@@ -259,10 +259,14 @@ class user
 	//Установка Cookie
 	public static function deleteCookie( $name )
 	{
-		$time   = time()-3600;
-		$path   = '/';
-		$domain = '.' . $_SERVER['HTTP_HOST'];
-		setcookie( $name, '', $time, $path, $domain );
+
+		if( !model::$settings['test_mode'] ) {
+			$time   = time()-3600;
+			$path   = '/';
+			$domain = '.' . $_SERVER['HTTP_HOST'];
+			setcookie( $name, '', $time, $path, $domain );
+		}
+
 	}
 
 
@@ -707,10 +711,10 @@ class user
 											if( model::$config['openid'][$user_email_host] == 'admin' )
 												$openid_user_admin = true;
 									}
-/*
-								if( (model::$config['openid']['sitko.ru'] == 'admin') && substr_count( $params['contact/email'], '@sitko.ru' ) )
-									$openid_user_admin = true;
-*/
+								/*
+																if( (model::$config['openid']['sitko.ru'] == 'admin') && substr_count( $params['contact/email'], '@sitko.ru' ) )
+																	$openid_user_admin = true;
+								*/
 
 								$login = model::$types['sid']->correctValue( $openid_domain . '_' . $params['contact/email'] );
 								if( IsSet($params['namePerson/first']) )

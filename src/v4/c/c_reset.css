@@ -261,3 +261,6 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
     border-color: red;
 }
 
+.acms-test-mode{
+    border: 3px dotted red !important;
+}
