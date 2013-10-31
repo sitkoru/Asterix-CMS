@@ -512,10 +512,7 @@ class controller_admin extends default_controller
 	private function ckeditorUpload( $file )
 	{
 
-		if( model::$config['settings']['demo_mode'] ) {
-			print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');
-			exit();
-		}
+		model::check_demo();
 
 		$ext      = substr( $file['name'], strrpos( $file['name'], '.' ) );
 		$dir      = date( "Y" );
