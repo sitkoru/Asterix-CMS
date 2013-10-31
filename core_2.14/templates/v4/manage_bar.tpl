@@ -13,7 +13,7 @@
 
         <ul class="acms-mainmenu hidden-print">
 
-            <li><img src="http://src.opendev.ru/i/logo_adm.png" style="vertical-align: middle;" alt="Asterix CMS" /></li>
+            <li style="background-color: transparent;"><img src="http://src.opendev.ru/i/logo_adm.png" style="vertical-align: middle;" alt="Asterix CMS" /></li>
             <li>
                 <a href="#" data-target="acms">Дерево сайта</a>
                 <ul class="a_sub">
