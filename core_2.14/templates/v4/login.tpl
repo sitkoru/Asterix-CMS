@@ -36,8 +36,10 @@
                 display: inline-block;
                 width: 150px;
                 font-size: 14px;
-                padding: 5px;
+                padding: 5px 0;
                 text-align: right;
+                font-weight: normal;
+                margin-bottom: 3px;
             }
             .acms-login__login_form a{
                 display: block;
@@ -45,8 +47,8 @@
             }
         </style>
 
-        <div style="text-align: center; color: #ff7a00;">
-            <h1 style="font-size: 26px;">Панель управления сайтом</h1>
+        <div style="text-align: center;">
+            <h1 style="font-size: 26px; color: #ff7a00; font-weight: normal;line-height: 120%;margin-top: 20px; font-style: normal; font-family: Arial;">Панель управления сайтом</h1>
         </div>
         <form style="
             width: 100%;
@@ -55,32 +57,32 @@
             background-color: #ff7a00;
             color: white;
         ">
-            <fieldset style="border: 0;">
+            <fieldset style="border: 0; margin: 0;">
                 <label>Логин: </label>
                 <input type="text" name="login" required="required">
                 <br />
                 <label>Пароль: </label>
                 <input type="password" name="password" required="required">
                 <br />
-                <label style="margin-left: 150px; text-align: left; width: 100%; font-weight: normal; font-size: 14px;">
+                <label style="margin-left: 150px; text-align: left; font-weight: normal; font-size: 14px;">
                     <input type="checkbox" name="remember">
-                     Чужой компьютер
+                    Чужой компьютер
                 </label>
-                <div style="width: 100%; margin-left: 152px;">
+                <div style="margin-left: 152px;">
                     <button type="button" style="padding: 5px 25px;" class="acms-login__login_button">Войти</button>
-                {foreach from=$config_openid item=rec}
-                    <a style="padding: 5px 10px; display: inline-block; color: white;" href="https://www.google.com/accounts/o8/ud?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.mode=checkid_setup&openid.return_to=http://{$ask->host}/?login&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.realm=http://{$ask->host}/&openid.ui.ns=http://specs.openid.net/extensions/ui/1.0&openid.ui.icon=true&hd=sitko.ru&openid.ns.ax=http://openid.net/srv/ax/1.0&openid.ax.mode=fetch_request&openid.ax.required=firstname,lastname,email,language&openid.ax.type.firstname=http://axschema.org/namePerson/first&openid.ax.type.lastname=http://axschema.org/namePerson/last&openid.ax.type.email=http://axschema.org/contact/email&openid.ax.type.language=http://axschema.org/pref/language">Вход по домену</a>
-                {/foreach}
+                    {foreach from=$config_openid item=rec}
+                        <a style="padding: 5px 10px; display: inline-block; color: white;" href="https://www.google.com/accounts/o8/ud?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&openid.mode=checkid_setup&openid.return_to=http://{$ask->host}/?login&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.realm=http://{$ask->host}/&openid.ui.ns=http://specs.openid.net/extensions/ui/1.0&openid.ui.icon=true&hd=sitko.ru&openid.ns.ax=http://openid.net/srv/ax/1.0&openid.ax.mode=fetch_request&openid.ax.required=firstname,lastname,email,language&openid.ax.type.firstname=http://axschema.org/namePerson/first&openid.ax.type.lastname=http://axschema.org/namePerson/last&openid.ax.type.email=http://axschema.org/contact/email&openid.ax.type.language=http://axschema.org/pref/language">Вход по домену</a>
+                    {/foreach}
                 </div>
             </fieldset>
         </form>
 
         <div style="margin: 10px 0; font-size: 12px;">
-            <div style="display: inline-block; width: 150px; text-align: right; padding-right: 5px; vertical-align: sub;">
+            <div style="display: inline-block; width: 150px; text-align: right; padding: 5px 0; vertical-align: sub;">
                 <a href="http://asterix.opendev.ru"><img src="http://src.sitko.ru/a/i/asterix.png" alt="" style="vertical-align: baseline;"></a>
             </div>
             <div style="display: inline-block; width: 250px;">
-                <a href="http://mishinoleg.ru">Официальный сайт разработчика</a>
+                <a href="http://mishinoleg.ru" style="color: #428bca;">Официальный сайт разработчика</a>
                 <a href="http://admin.opendev.ru" style="color:grey; margin-top: 10px;">Помощь по системе управления</a>
                 <a href="http://asterix.opendev.ru" style="color:grey;">Система управления сайтом, версия 2.14</a>
             </div>
