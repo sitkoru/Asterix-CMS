@@ -40,7 +40,15 @@
 
 {include file="`$paths.admin_templates`/cnct_head_css.tpl"}
 
-{foreach from=$head_add.tpl item=lib}{if strlen($lib.path)}{include file=$lib.path}{/if}{/foreach}
+    <!-- all js from core -->
+    {foreach from=$head_add.js_core item=lib}<script type="text/javascript" src="{$lib.path}"></script>
+    {/foreach}
+
+    <!-- all js from templates -->
+    {foreach from=$head_add.js item=lib}<script type="text/javascript" src="{$lib.path}"></script>
+    {/foreach}
+
+    {foreach from=$head_add.tpl item=lib}{if strlen($lib.path)}{include file=$lib.path}{/if}{/foreach}
 
 	<link rel="icon" type="image/png" href="/favicon.ico" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
