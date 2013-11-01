@@ -484,6 +484,14 @@ class model
 		return new geoip(self::$config['path']);
 	}
 
+	//Класс определения IP-адреса
+	public function initServices()
+	{
+		include_once(self::$config['path']['core'] . '/..tests/services.php');
+
+		return new acmsServices();
+	}
+
 	// Вызывается в конце работы
 	public function stop()
 	{

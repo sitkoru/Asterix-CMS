@@ -195,7 +195,7 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
 .acms-mainmenu > li {
     display: inline-block;
     width: auto;
-    padding: 6px 7px;
+    padding: 6px 12px;
     float: left;
 }
 
@@ -229,6 +229,7 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
 .acms-mainmenu li:hover ul {
     display: block;
     background-color: #1B8DC6;
+    color: white;
 }
 .acms-mainmenu li:hover>a {
     color: white;
