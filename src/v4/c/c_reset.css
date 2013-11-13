@@ -153,6 +153,7 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
     width: 90%;
     max-width: 1100px;
     height: calc(100% - 120px);
+    min-height: 600px;
     margin-top: 45px;
     background-color: white;
     box-shadow: 0 0 10px -2px black;

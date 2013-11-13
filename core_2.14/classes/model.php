@@ -17,8 +17,12 @@
 /*															*/
 /************************************************************/
 
+
+require_once( 'model_sql.php' );
+
 class model
 {
+	use db;
 
 	public static $config;
 	public static $db;
@@ -35,7 +39,6 @@ class model
 
 		require_once($config['path']['core'] . '/classes/model_loader.php');
 		require_once($config['path']['core'] . '/classes/model_sql.php');
-		require_once($config['path']['core'] . '/classes/model_finder.php');
 		require_once($config['path']['core'] . '/classes/user.php');
 		require_once($config['path']['core'] . '/classes/default_module.php');
 		require_once($config['path']['core'] . '/tests/compatibility.php');
@@ -56,7 +59,7 @@ class model
 		self::$extensions = ModelLoader::loadExtensions();
 		self::$settings   = ModelLoader::loadSettings();
 		self::$ask        = ModelLoader::loadAsk();
-		self::$ask->rec   = ModelFinder::getRecordByAsk( self::$ask->url );
+		self::$ask->rec   = self::getRecordByAsk( self::$ask->url );
 
 		$this->unittest_modules();
 		$this->check_no_www();
@@ -78,35 +81,6 @@ class model
 	public function authUser()
 	{
 		$this->user = new user($this);
-	}
-
-	//Загрузка дополнительных элементов к записи
-	private function loadRecordSettings( $found_rec )
-	{
-		//Раскрытие настроек записи, если есть
-		if( $found_rec['acms_settings'] ) {
-			$acms_settings = unserialize( $found_rec['acms_settings'] );
-
-			//Подсоединяем все интерфейсы
-			if( is_array( $acms_settings['interface'] ) )
-				foreach( $acms_settings['interface'] as $interface_sid => $interface )
-					if( $interface['shw'] ) {
-						list($module_sid, $interface_sid) = explode( '|', $interface_sid );
-
-						//Загружаем интерфейс
-						$params = array(
-							'id' => self::$ask->rec['id'],
-						);
-						$result = self::$modules[$module_sid]->prepareInterface( $interface_sid, $params );
-						if( $result ) {
-							$found_rec['acms_interface'][$interface_sid]        = $result;
-							$found_rec['acms_interface'][$interface_sid]['sid'] = $interface_sid;
-							$found_rec['acms_interface'][$interface_sid]['url'] = str_replace( '.html', '.' . $interface_sid . '.html', $found_rec['url'] );
-						}
-					}
-		}
-
-		return $found_rec;
 	}
 
 	//Подготовка данных для ввода в шаблонизатор
@@ -229,7 +203,7 @@ class model
 
 						//Определяем его текущую структуру
 						if( IsSet(self::$modules[$current_module]) ) {
-							$tree          = array_reverse( self::$modules[$current_module]->getLevels( 'rec', array() ) );
+							$tree          = array_reverse( self::$modules[$current_module]->getStructure_allLevels() );
 							$tree_index    = -1;
 							$structure_sid = $tree[$tree_index];
 
@@ -333,18 +307,6 @@ class model
 		}
 	}
 
-	//Выполнить готовый запрос к базе данных
-	public static function execSql( $sql, $query_type = 'getall', $database = 'system', $no_cache = false )
-	{
-		return ModelSql::execSql( $sql, $query_type, $database, $no_cache );
-	}
-
-	//Подготовить запрос к базе данных на основе предоставленных характеристик
-	public static function makeSql( $sql_conditions, $query_type = 'getall', $database = 'system', $no_cache = false )
-	{
-		return ModelSql::makeSql( $sql_conditions, $query_type, $database, $no_cache );
-	}
-
 	//Получить SID модуля, установленный в системе, зная его прототип
 	public function getModuleSidByPrototype( $prototype )
 	{
@@ -364,6 +326,64 @@ class model
 	public function getModuleByPrototype( $prototype )
 	{
 		return self::$modules[$this->getModuleSidByPrototype( $prototype )];
+	}
+
+	//Поиск записи в модели
+	public static function getRecordByAsk( $url, $prefered_module = 'start' )
+	{
+
+		// Сначала ищем в корневом модуле
+		if( is_object( model::$modules[$prefered_module] ) )
+			foreach( model::$modules[$prefered_module]->structure as $structure_sid => $structure ){
+				$last_structure_sid = $structure_sid;
+
+				if( $url )
+					$url_string = '/' . implode( '/', $url );
+				else
+					$url_string = '';
+
+				$where = '(`url`="' . mysql_real_escape_string( $url_string ) . '"';
+				if( $prefered_module == 'start' )
+					$where .= ' or `url_alias`="' . mysql_real_escape_string( $url_string ) . '"';
+				$where .= ')';
+
+				$record = self::makeSql(
+					array(
+						'tables' => array( model::$modules[$prefered_module]->getCurrentTable( $last_structure_sid ) ),
+						'where'  => array( 'and' => array( 'url' => $where ) )
+					),
+					'getrow'
+				);
+			}
+
+		// Нашли запись в стандартном модуле
+		if( $record ) {
+			if( $record['is_link_to_module'] ) {
+				model::$ask->module        = $record['is_link_to_module'];
+				model::$ask->structure_sid = end( array_keys( model::$modules[$prefered_module]->structure ) );
+				model::$ask->output_type   = 'index';
+			} else {
+				model::$ask->module        = $prefered_module;
+				model::$ask->structure_sid = $last_structure_sid;
+
+				if( $url_string == '' )
+					model::$ask->output_type = 'index';
+				elseif( $last_structure_sid != 'rec' )
+					model::$ask->output_type = 'list'; else
+					model::$ask->output_type = 'content';
+			}
+
+			// Не нашли, ищем глубже
+		} else {
+			for( $i = 0; $i<count( $url ); $i++ )
+				if( !$record )
+					if( IsSet(model::$modules[$url[$i]]) )
+						if( $url[$i] != $prefered_module )
+							$record = self::getRecordByAsk( $url, $url[$i] );
+		}
+
+		// Готово
+		return $record;
 	}
 
 	//Проверка no-www
@@ -484,14 +504,6 @@ class model
 		return new geoip(self::$config['path']);
 	}
 
-	//Класс определения IP-адреса
-	public function initServices()
-	{
-		include_once(self::$config['path']['core'] . '/..tests/services.php');
-
-		return new acmsServices();
-	}
-
 	// Вызывается в конце работы
 	public function stop()
 	{
@@ -499,9 +511,3 @@ class model
 	}
 
 }
-
-////////////////////////////
-/// СОВМЕСТИМОСТЬ С 2.13 ///
-////////////////////////////
-
-?>

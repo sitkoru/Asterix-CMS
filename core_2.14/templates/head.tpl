@@ -53,6 +53,8 @@
 	<link rel="icon" type="image/png" href="/favicon.ico" />
 	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
 	<link rel="search" type="application/opensearchdescription+xml" href="/opensearch_desc.xml" title="{$settings.domain_title}" />
+{if $rss_link}
     <link rel="alternate" type="application/rss+xml" title="Новости в RSS" href="/news.xml" />
+{/if}
 
 </head>

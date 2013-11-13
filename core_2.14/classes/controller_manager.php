@@ -28,6 +28,7 @@ class controller_manager
 	public $controllers = array(
 		'get'   => array( 'methods' => array( 'GET' ), 'title' => 'Получение содержания страницы', 'protection' => false, 'model' => true, 'path' => 'get.php', 'format' => array( 'html' ) ),
 		'admin' => array( 'methods' => array( 'GET', 'POST' ), 'title' => 'Система управления', 'protection' => false, 'model' => true, 'path' => 'admin.php', 'format' => array( 'html' ) ),
+		'dev'   => array( 'methods' => array( 'GET', 'POST' ), 'title' => 'Панель разработчика', 'protection' => false, 'model' => true, 'path' => 'dev.php', 'format' => array( 'html' ) ),
 	);
 
 	//Загружаемся
@@ -65,17 +66,17 @@ class controller_manager
 	//Подгрузка переданных параметров
 	function loadData()
 	{
-		if( $_SERVER['REQUEST_METHOD'] == 'GET' )
+		if( $_SERVER[ 'REQUEST_METHOD' ] == 'GET' )
 			$this->vars = $_GET;
-		elseif( $_SERVER['REQUEST_METHOD'] == 'POST' )
+		elseif( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' )
 			$this->vars = array_merge( $_GET, $_POST, $_FILES );
 	}
 
 	//Загружаем модель
 	private function loadModel()
 	{
-		require_once(self::$config['path']['core'] . '/classes/model.php');
-		$this->model = new model(self::$config, $this->log, $this->cache);
+		require_once( self::$config[ 'path' ][ 'core' ] . '/classes/model.php' );
+		$this->model = new model( self::$config, $this->log, $this->cache );
 	}
 
 	//Определение контроллера
@@ -83,38 +84,43 @@ class controller_manager
 	{
 
 		//Админка определяется раньше, до разбора URL
-		if( IsSet(model::$ask->controller) )
+		if( IsSet( model::$ask->controller ) )
 			return model::$ask->controller;
 		//если контроллер уже определёт (Admin)
-		if( IsSet($this->activeController) )
+		if( IsSet( $this->activeController ) )
 			return $this->activeController;
 
 		//Admin
-		if( model::$ask->url[0] == 'admin' ) {
+		if( model::$ask->url[ 0 ] == 'admin' ) {
 			return 'admin';
+
+			//Обычный контроллер
+			//Admin
+		} elseif( model::$ask->url[ 0 ] == 'dev' ) {
+			return 'dev';
 
 			//Обычный контроллер
 		} else {
 
-			if( $_SERVER['REQUEST_METHOD'] == 'GET' )
+			if( $_SERVER[ 'REQUEST_METHOD' ] == 'GET' )
 				return 'get';
-			elseif( ($_SERVER['REQUEST_METHOD'] == 'POST') && (IsSet(model::$ask->mode[0]) || IsSet($this->vars['interface'])) ) {
-				if( !IsSet($this->vars['interface']) )
-					$this->vars['interface'] = model::$ask->mode[0];
-				model::$modules[model::$ask->module]->controlInterface( $this->vars['interface'], $this->vars, true );
+			elseif( ( $_SERVER[ 'REQUEST_METHOD' ] == 'POST' ) && ( IsSet( model::$ask->mode[ 0 ] ) || IsSet( $this->vars[ 'interface' ] ) ) ) {
+				if( !IsSet( $this->vars[ 'interface' ] ) )
+					$this->vars[ 'interface' ] = model::$ask->mode[ 0 ];
+				model::$modules[ model::$ask->module ]->controlInterface( $this->vars[ 'interface' ], $this->vars, true );
 			}
 		}
 
 		//Перебираем все контроллеры
 		foreach( $this->controllers as $sid => $controller )
 			//Если допустимый метод
-			if( in_array( $_SERVER['REQUEST_METHOD'], $controller['methods'] ) )
-				if( in_array( model::$ask->output, $controller['format'] ) )
+			if( in_array( $_SERVER[ 'REQUEST_METHOD' ], $controller[ 'methods' ] ) )
+				if( in_array( model::$ask->output, $controller[ 'format' ] ) )
 					return $sid;
 
 		//Если существует указание
-		if( IsSet($this->controllers[$_SERVER['REQUEST_METHOD']]) )
-			return $_SERVER['REQUEST_METHOD'];
+		if( IsSet( $this->controllers[ $_SERVER[ 'REQUEST_METHOD' ] ] ) )
+			return $_SERVER[ 'REQUEST_METHOD' ];
 
 		//Контроллер по умолчанию
 		return 'get';
@@ -127,31 +133,37 @@ class controller_manager
 
 		//Контроллера нет - запускаем стандартные
 		if( $controller == 'admin' ) {
-			require_once self::$config['path']['core'] . '/controllers/admin.php';
-			$controller = new controller_admin($this->model, $this->vars, $this->cache);
+			require_once self::$config[ 'path' ][ 'core' ] . '/controllers/admin.php';
+			$controller = new controller_admin( $this->model, $this->vars, $this->cache );
 			$controller->start();
 
-			//Существует запрошенный интерфейс
-		} elseif( (model::$ask->method == 'POST') && (IsSet(model::$modules[$current_module]->interfaces[$this->vars['interface']]) || IsSet(model::$modules[$current_module]->interfaces[model::$ask->mode[0]])) ) {
+			//Контроллера нет - запускаем стандартные
+		}elseif( $controller == 'dev' ) {
+				require_once self::$config[ 'path' ][ 'core' ] . '/controllers/dev.php';
+				$controller = new controller_dev( $this->model, $this->vars, $this->cache );
+				$controller->start();
+
+				//Существует запрошенный интерфейс
+		} elseif( ( model::$ask->method == 'POST' ) && ( IsSet( model::$modules[ $current_module ]->interfaces[ $this->vars[ 'interface' ] ] ) || IsSet( model::$modules[ $current_module ]->interfaces[ model::$ask->mode[ 0 ] ] ) ) ) {
 			/*
 			До сюда не доходит, вызывается в defineController
 			*/
 
-			if( !IsSet($this->vars['interface']) )
-				$this->vars['interface'] = model::$ask->mode[0];
-			model::$modules[$current_module]->controlInterface( $this->vars['interface'], $this->vars );
+			if( !IsSet( $this->vars[ 'interface' ] ) )
+				$this->vars[ 'interface' ] = model::$ask->mode[ 0 ];
+			model::$modules[ $current_module ]->controlInterface( $this->vars[ 'interface' ], $this->vars );
 			pr( 'Вызванный контроллер интерфейса не вернул результата.' );
 			exit();
 
 			//Устаревший контроллер Feedback
-		} elseif( (model::$ask->method == 'POST') && ($this->vars['action'] == 'feedback') && IsSet(model::$ask->rec['feedback']) ) {
+		} elseif( ( model::$ask->method == 'POST' ) && ( $this->vars[ 'action' ] == 'feedback' ) && IsSet( model::$ask->rec[ 'feedback' ] ) ) {
 			$this->feedback();
 			exit();
 
 			//Контроллера нет - запускаем стандартные
 		} else {
-			require_once self::$config['path']['core'] . '/controllers/get.php';
-			$controller = new controller_get($this->model, $this->vars, $this->cache);
+			require_once self::$config[ 'path' ][ 'core' ] . '/controllers/get.php';
+			$controller = new controller_get( $this->model, $this->vars, $this->cache );
 			$controller->start();
 
 		}
@@ -161,20 +173,20 @@ class controller_manager
 	private function checkTestMode()
 	{
 
-		if( IsSet(model::$settings['test_mode']) )
-			if( intval( model::$settings['test_mode'] ) && (!user::is_admin()) ) {
-				$current_ip = $_SERVER['REMOTE_ADDR'];
+		if( IsSet( model::$settings[ 'test_mode' ] ) )
+			if( intval( model::$settings[ 'test_mode' ] ) && ( !user::is_admin() ) ) {
+				$current_ip = $_SERVER[ 'REMOTE_ADDR' ];
 
 				//Обработка ошибки
-				if( !file_exists( self::$config['path']['core'] . '/ip_good.txt' ) )
-					log::err( 'file_not_found', self::$config['path']['core'] . '/ip_good.txt' );
+				if( !file_exists( self::$config[ 'path' ][ 'core' ] . '/ip_good.txt' ) )
+					log::err( 'file_not_found', self::$config[ 'path' ][ 'core' ] . '/ip_good.txt' );
 
 				//Подгружаем список администраторских IP-адресов
-				$white_ips = file( self::$config['path']['core'] . '/ip_good.txt' );
+				$white_ips = file( self::$config[ 'path' ][ 'core' ] . '/ip_good.txt' );
 
 				//Чистим
 				foreach( $white_ips as $i => $p )
-					$white_ips[$i] = trim( $p );
+					$white_ips[ $i ] = trim( $p );
 
 				//Проверяем
 				if( !in_array( $current_ip, $white_ips ) ) {
@@ -182,7 +194,7 @@ class controller_manager
 						header( 'Content-Type: text/html; charset=utf-8' );
 						header( 'HTTP/1.0 404 Not Found' );
 					}
-					print(model::$settings['test_mode_text'] . ' <!--' . $current_ip . '-->');
+					print( model::$settings[ 'test_mode_text' ] . ' <!--' . $current_ip . '-->' );
 					exit();
 				}
 			}
@@ -191,7 +203,7 @@ class controller_manager
 	//Контроллер устаревшей формы обратной связи
 	private function feedback()
 	{
-		$form = unserialize( model::$ask->rec['feedback'] );
+		$form = unserialize( model::$ask->rec[ 'feedback' ] );
 		if( !is_array( $form ) ) return false;
 
 		$allow_files = array(
@@ -201,67 +213,67 @@ class controller_manager
 		);
 
 		$message = '';
-		foreach( $form['fields'] as $i => $field ) {
-			if( $field['type'] == 'file' ) {
-				$message .= $field['title'] . ': <strong>Смотреть в прикрепленных файлах</strong><br />';
-			} elseif( IsSet($this->vars['f' . $i]) )
-				$message .= $field['title'] . ': <strong>' . $this->vars['f' . $i] . '</strong><br />';
+		foreach( $form[ 'fields' ] as $i => $field ) {
+			if( $field[ 'type' ] == 'file' ) {
+				$message .= $field[ 'title' ] . ': <strong>Смотреть в прикрепленных файлах</strong><br />';
+			} elseif( IsSet( $this->vars[ 'f' . $i ] ) )
+				$message .= $field[ 'title' ] . ': <strong>' . $this->vars[ 'f' . $i ] . '</strong><br />';
 		}
 
 		foreach( $_FILES as $key => $file ) {
 
-			if( !is_array( $file['name'] ) ) {
+			if( !is_array( $file[ 'name' ] ) ) {
 
 				foreach( $file as $prop => $value ) {
 
-					$new_file[$prop][] = $value;
+					$new_file[ $prop ][ ] = $value;
 				}
 
 				$file = $new_file;
 			}
 
-			foreach( $file['type'] as $i => $mimetype ) {
+			foreach( $file[ 'type' ] as $i => $mimetype ) {
 
 				if( !in_array( $mimetype, $allow_files ) ) {
 
-					$errors['file'] = "Недопустимый тип файла '{$file['name'][$i]}'({$file['type'][$i]})";
+					$errors[ 'file' ] = "Недопустимый тип файла '{$file[ 'name' ][$i]}'({$file[ 'type' ][$i]})";
 				} else
 
-					$files[] = array( 'file' => $file['tmp_name'][$i],
-									  'type' => $mimetype,
+					$files[ ] = array( 'file' => $file[ 'tmp_name' ][ $i ],
+									   'type' => $mimetype,
 					);
 			}
 		}
 
 		$subject = 'Соощение с сайта ' . model::$ask->host;
-		$footer  = 'Сообщение отослано со страницы: <a href="' . $_SERVER['HTTP_REFERER'] . '">' . urldecode( $_SERVER['HTTP_REFERER'] ) . '</a><br />' . date( 'd-m-Y H:i' );
+		$footer  = 'Сообщение отослано со страницы: <a href="' . $_SERVER[ 'HTTP_REFERER' ] . '">' . urldecode( $_SERVER[ 'HTTP_REFERER' ] ) . '</a><br />' . date( 'd-m-Y H:i' );
 		$message = 'Пользователь отправил сообщение с сайта http://' . model::$ask->host . '/<br /><br />' . $message . '<br /><hr />' . $footer;
 
 		$email = model::initEmail();
 
 		//$email->send($form['email'],$subject,$message,'html');
-		$email->send( $form['email'], $subject, $message, 'html', $files );
+		$email->send( $form[ 'email' ], $subject, $message, 'html', $files );
 
-		$_SESSION['messages']['feedback']['ok'] = 'Сообщение успешно отправлено';
+		$_SESSION[ 'messages' ][ 'feedback' ][ 'ok' ] = 'Сообщение успешно отправлено';
 
 		//Готово
-		header( 'Location: ' . model::$ask->rec['url'] . '.html#feedback' );
+		header( 'Location: ' . model::$ask->rec[ 'url' ] . '.html#feedback' );
 		exit();
 	}
 
 	// Отдаём ответы на стандартные запросы
 	private function ansverDefinedPaths()
 	{
-		$path = strtolower( $_SERVER['REQUEST_URI'] );
+		$path = strtolower( $_SERVER[ 'REQUEST_URI' ] );
 
 		// favicon.ico
 		if( $path == '/favicon.ico' ) {
 			$rec = model::execSql( 'select `value` from `settings` where `var`="favicon"', 'getrow' );
-			$rec = unserialize( htmlspecialchars_decode( $rec['value'] ) );
-			if( is_readable( model::$config['path']['www'] . $rec['path'] ) ) {
+			$rec = unserialize( htmlspecialchars_decode( $rec[ 'value' ] ) );
+			if( is_readable( model::$config[ 'path' ][ 'www' ] . $rec[ 'path' ] ) ) {
 				header( "HTTP/1.0 200 Ok" );
 				header( 'Content-Type: image/x-icon; charset=utf-8' );
-				readfile( model::$config['path']['www'] . $rec['path'] );
+				readfile( model::$config[ 'path' ][ 'www' ] . $rec[ 'path' ] );
 			} else {
 				header( "HTTP/1.0 404 Not Found" );
 			}
@@ -269,15 +281,15 @@ class controller_manager
 
 			// sitemap.xml
 		} elseif( $path == '/sitemap.xml' ) {
-			require(model::$config['path']['core'] . '/classes/templates.php');
-			$tmpl = new templater($model);
+			require( model::$config[ 'path' ][ 'core' ] . '/classes/templates.php' );
+			$tmpl = new templater( $model );
 			$recs = $this->siteMap();
 			$tmpl->assign( 'recs', $recs );
 			header( "HTTP/1.0 200 Ok" );
 			header( 'Content-Type:text/xml' );
-			$current_template_file = model::$config['path']['admin_templates'] . '/sitemap.tpl';
+			$current_template_file = model::$config[ 'path' ][ 'admin_templates' ] . '/sitemap.tpl';
 			$ready_html            = $tmpl->fetch( $current_template_file );
-			print($ready_html);
+			print( $ready_html );
 			exit();
 
 			// robots.txt
@@ -286,15 +298,15 @@ class controller_manager
 			if( $rec ) {
 				header( "HTTP/1.0 200 Ok" );
 				header( 'Content-Type: text/plain; charset=utf-8' );
-				print($rec['value']);
+				print( $rec[ 'value' ] );
 			} else {
 				header( "HTTP/1.0 404 Not Found" );
 			}
 			exit();
 		} elseif( $path == '/opensearch_desc.xml' ) {
-			if( IsSet(model::$modules['search']) ) {
+			if( IsSet( model::$modules[ 'search' ] ) ) {
 				$rec = model::execSql( 'select `url` from `start_rec` where `is_link_to_module`="search" limit 1', 'getrow' );
-				if( IsSet($rec['url']) ) {
+				if( IsSet( $rec[ 'url' ] ) ) {
 					$data = '<?xml version="1.0"?>
 <OpenSearchDescription 
 	xmlns="http://a9.com/-/spec/opensearch/1.1/" 
@@ -302,15 +314,15 @@ class controller_manager
 	
 	<ShortName>Поиск по сайту</ShortName>
 	<Description>Поиск по сайту</Description>
-	<Image height="16" width="16" type="image/x-icon">http://' . $_SERVER['HTTP_HOST'] . '/favicon.ico</Image>
-	<Url type="text/html" method="get" template="http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . '.html?q={searchTerms}" />
-	<Url type="application/x-suggestions+json" method="get" template="http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . '.html?q={searchTerms}" />
-	<Url type="application/x-suggestions+xml" method="get" template="http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . '.html?format=xml&amp;q={searchTerms}" />
-	<moz:SearchForm>http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . '.html</moz:SearchForm>
+	<Image height="16" width="16" type="image/x-icon">http://' . $_SERVER[ 'HTTP_HOST' ] . '/favicon.ico</Image>
+	<Url type="text/html" method="get" template="http://' . $_SERVER[ 'HTTP_HOST' ] . $rec[ 'url' ] . '.html?q={searchTerms}" />
+	<Url type="application/x-suggestions+json" method="get" template="http://' . $_SERVER[ 'HTTP_HOST' ] . $rec[ 'url' ] . '.html?q={searchTerms}" />
+	<Url type="application/x-suggestions+xml" method="get" template="http://' . $_SERVER[ 'HTTP_HOST' ] . $rec[ 'url' ] . '.html?format=xml&amp;q={searchTerms}" />
+	<moz:SearchForm>http://' . $_SERVER[ 'HTTP_HOST' ] . $rec[ 'url' ] . '.html</moz:SearchForm>
 </OpenSearchDescription>';
 					header( "HTTP/1.0 200 Ok" );
 					header( 'Content-Type: text/xml; charset=utf-8' );
-					print($data);
+					print( $data );
 					exit();
 				}
 			}
@@ -326,22 +338,22 @@ class controller_manager
 		$filter = array();
 
 		// Читаем robots.txt и учитываем его в выдаче
-		$f = explode( "\n", model::$settings['robots'] );
+		$f = explode( "\n", model::$settings[ 'robots' ] );
 		foreach( $f as $fi )
 			if( substr_count( $fi, 'Disallow' ) ) {
 				$path = substr( $fi, strpos( $fi, ' ' )+1 );
 				if( substr_count( $fi, '*' ) )
 					$path = substr( $path, 0, strrpos( $path, '*' ) );
-				$filter[] = trim( $path );
+				$filter[ ] = trim( $path );
 			}
 
 		$recs = array();
 		foreach( model::$modules as $module_sid => $module )
-			if( IsSet($module->structure) )
-				if( !$module->structure['rec']['hide_in_tree'] ) {
+			if( IsSet( $module->structure ) )
+				if( !$module->structure[ 'rec' ][ 'hide_in_tree' ] ) {
 
 					$fields = '`url`,`date_public`';
-					if( IsSet(model::$extensions['seo']) )
+					if( IsSet( model::$extensions[ 'seo' ] ) )
 						$fields .= ',`seo_changefreq`,`seo_priority`';
 					$current = model::execSql( 'select ' . $fields . ' from `' . $module->getCurrentTable( 'rec' ) . '` where `shw`=1', 'getall' );
 					$recs    = array_merge( $recs, (array)$current );
@@ -350,21 +362,21 @@ class controller_manager
 		//Форматируем данные
 		foreach( $recs as $i => $rec ) {
 
-			$rec['url'] = 'http://' . $_SERVER['HTTP_HOST'] . $rec['url'] . (strlen( $rec['url'] )>2 ? '.html' : '');
+			$rec[ 'url' ] = 'http://' . $_SERVER[ 'HTTP_HOST' ] . $rec[ 'url' ] . ( strlen( $rec[ 'url' ] )>2 ? '.html' : '' );
 
-			if( $rec['date_public'] ){
-				if( date( "U", strtotime( $rec['date_public'] ) )<date( "U", strtotime( "1995-01-01" ) ) )
-					$rec['date_public'] = '2000-01-01 00:00:00';
-			}else{
-				$rec['date_public'] = date("Y-m-d H:i:s");
+			if( $rec[ 'date_public' ] ) {
+				if( date( "U", strtotime( $rec[ 'date_public' ] ) )<date( "U", strtotime( "1995-01-01" ) ) )
+					$rec[ 'date_public' ] = '2000-01-01 00:00:00';
+			} else {
+				$rec[ 'date_public' ] = date( "Y-m-d H:i:s" );
 			}
 
-			$rec['date_public'] = date( "c", strtotime( $rec['date_public'] ) );
-			$recs[$i]           = $rec;
+			$rec[ 'date_public' ] = date( "c", strtotime( $rec[ 'date_public' ] ) );
+			$recs[ $i ]           = $rec;
 
 			foreach( $filter as $fi )
-				if( substr_count( $rec['url'], $fi ) )
-					UnSet($recs[$i]);
+				if( substr_count( $rec[ 'url' ], $fi ) )
+					UnSet( $recs[ $i ] );
 
 		}
 

@@ -1,9 +1,9 @@
 <?php
 
-class components
+trait components
 {
 
-	public static function load( $module )
+	public function getComponent_load( $module )
 	{
 
 		//Стандартные
@@ -37,7 +37,7 @@ class components
 	}
 
 	//Запуск подготовки данных в компоненте
-	public static function init( $module, $prepare, $params )
+	public function getComponent_init( $module, $prepare, $params )
 	{
 		$result = false;
 
@@ -64,7 +64,7 @@ class components
 				$result = $module->$function_name( $params );
 
 			} elseif( method_exists( 'components', $function_name ) ) {
-				$result = components::$function_name( $params );
+				$result = $this->$function_name( $params );
 			}
 
 			// Если в компоненте указан шаблон, в который выводить, то сохранем эту отметку
@@ -82,7 +82,7 @@ class components
 	{
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//Определяем структуру к которой обращается
 		$structure_sid = 'rec';
@@ -96,7 +96,7 @@ class components
 		if( IsSet($params['order']) )
 			$order = $params['order'];
 		else
-			$order = components::getOrderBy( $structure_sid );
+			$order = $this->getStructure_defaultOrderBy( $structure_sid );
 
 		//Забираем запись
 		$rec = model::makeSql(
@@ -122,7 +122,7 @@ class components
 	{
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//Забираем запись
 		$rec = model::makeSql(
@@ -147,7 +147,7 @@ class components
 	{
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//Условия отображения на сайте
 		$where['and'][] = '`shw`=1';
@@ -190,7 +190,7 @@ class components
 			$params['explode'] = true;
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//По умолчанию не более 100 записей
 		if( !IsSet($params['limit']) )
@@ -208,7 +208,7 @@ class components
 		if( IsSet($params['order']) )
 			$order = $params['order'];
 		else
-			$order = components::getOrderBy( $structure_sid );
+			$order = $this->getStructure_defaultOrderBy( $structure_sid );
 
 		//Требуется разбивка на страницы
 		if( $params['chop_to_pages'] ) {
@@ -405,7 +405,7 @@ class components
 			$structure_sid = 'rec';
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		if( !IsSet($where['and']['shw']) )
 			$where['and']['shw'] = '`shw`=1';
@@ -431,7 +431,7 @@ class components
 	{
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//Забираем запись
 		$rec = model::makeSql(
@@ -457,7 +457,7 @@ class components
 	{
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//По умолчанию не более 100 записей
 		if( !IsSet($params['limit']) )
@@ -509,7 +509,7 @@ class components
 		//SID родителя
 
 		//Сортировка
-		$order = $this->getOrderBy( 'rec' );
+		$order = $this->getStructure_defaultOrderBy( 'rec' );
 
 		//Забираем запись
 		$rec = model::makeSql(
@@ -781,23 +781,4 @@ class components
 		return $where;
 	}
 
-	//Сортировка по умолчанию
-	public function getOrderBy( $structure_sid )
-	{
-		//Сортировка деревьев
-		if( $this->structure[$structure_sid]['type'] == 'tree' )
-			return 'order by `left_key`';
-
-		//Сортирвка по POS
-		elseif( IsSet($this->structure[$structure_sid]['fields']['pos']) )
-			return 'order by `pos`,`title`'; //Сортирвка по Lock_up
-		elseif( IsSet($this->structure[$structure_sid]['fields']['lock_up']) )
-			return 'order by `lock_up` desc, `date_public` desc'; //Сортировка по публичной дате
-		else
-			return 'order by `date_public` desc,`title`';
-	}
-
-
 }
-
-?>

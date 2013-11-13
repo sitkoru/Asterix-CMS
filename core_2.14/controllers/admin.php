@@ -17,7 +17,7 @@
 /*															*/
 /************************************************************/
 
-require_once('default_controller.php');
+require_once( 'default_controller.php' );
 
 class controller_admin extends default_controller
 {
@@ -112,10 +112,10 @@ class controller_admin extends default_controller
 		if( model::$ask->method == 'GET' ) {
 
 			$this->preloadGet();
-			$this->preloadForm( model::$ask->mode[0], model::$ask->rec );
+			$this->preloadForm( model::$ask->mode[ 0 ], model::$ask->rec );
 
 		} else
-			$this->controlForm( model::$ask->mode[0], model::$ask->rec );
+			$this->controlForm( model::$ask->mode[ 0 ], model::$ask->rec );
 	}
 
 	// Обработка всех GET-запросов в админку
@@ -136,14 +136,14 @@ class controller_admin extends default_controller
 		 * */
 
 		// Управление записями
-		if( IsSet(model::$ask->mode[0]) ) {
+		if( IsSet( model::$ask->mode[ 0 ] ) ) {
 
 
 			// Публичные шаблоны
-		} elseif( IsSet($this->public_templates[model::$ask->url[0]]) ) {
+		} elseif( IsSet( $this->public_templates[ model::$ask->url[ 0 ] ] ) ) {
 
 			// Вывести шаблон на печать
-			$this->outputPublicTemplate( model::$ask->url[0] );
+			$this->outputPublicTemplate( model::$ask->url[ 0 ] );
 
 		}
 
@@ -154,10 +154,10 @@ class controller_admin extends default_controller
 	{
 
 		// Шаблон определён
-		if( IsSet($this->public_templates[$template_sid]) ) {
+		if( IsSet( $this->public_templates[ $template_sid ] ) ) {
 
 			// Отправляем шаблон на печать
-			$this->outputTemplate( $this->initTemplater(), $this->public_templates[$template_sid]['path'] );
+			$this->outputTemplate( $this->initTemplater(), $this->public_templates[ $template_sid ][ 'path' ] );
 
 			// Всё отработало успешно
 			model::stop();
@@ -172,15 +172,15 @@ class controller_admin extends default_controller
 	// Инициализация шаблонизатора
 	private function initTemplater()
 	{
-		require_once(model::$config['path']['core'] . '/classes/templates.php');
+		require_once( model::$config[ 'path' ][ 'core' ] . '/classes/templates.php' );
 
 		$tmpl = new templater();
 		$tmpl->assign( 'ask', model::$ask );
 		$tmpl->assign( 'content', model::$ask->rec );
-		$tmpl->assign( 'paths', model::$config['path'] );
+		$tmpl->assign( 'paths', model::$config[ 'path' ] );
 		$tmpl->assign( 'settings', model::$settings );
-		$tmpl->assign( 'config_openid', array_keys( model::$config['openid'] ) );
-		$tmpl->assign( 'path_admin_templates', model::$config['path']['admin_templates'] );
+		$tmpl->assign( 'config_openid', array_keys( model::$config[ 'openid' ] ) );
+		$tmpl->assign( 'path_admin_templates', model::$config[ 'path' ][ 'admin_templates' ] );
 
 		return $tmpl;
 	}
@@ -252,7 +252,7 @@ class controller_admin extends default_controller
 		} else {
 			$action                  = 'tree';
 			model::$ask->output_type = $action;
-			$record['module_sid']    = model::$ask->mode[0];
+			$record[ 'module_sid' ]  = model::$ask->mode[ 0 ];
 		}
 
 		//Ошибки
@@ -260,21 +260,21 @@ class controller_admin extends default_controller
 			log::stop( '400 Bad Request' );
 		if( model::$ask->output_type == 404 )
 			log::stop( '404 Not Found' );
-		if( !IsSet($action) )
+		if( !IsSet( $action ) )
 			log::stop( '501 Not Implemented' );
 
 		// Шаблонизатор
 		$tmpl = $this->initTemplater();
 
 		//Данные
-		$action_result['title']                 = $this->actions[$action];
-		$action_result['module']                = model::$ask->module;
-		$action_result['structure_sid']         = model::$ask->structure_sid;
-		$action_result['form_action']           = $action;
-		$action_result['content_template_file'] = 'forms/form_' . model::$ask->output_type . '.tpl';
-		$action_result['content_template_file'] = $tmpl->correctTemplatePackPath( $action_result['content_template_file'], 'admin_templates' );
+		$action_result[ 'title' ]                 = $this->actions[ $action ];
+		$action_result[ 'module' ]                = model::$ask->module;
+		$action_result[ 'structure_sid' ]         = model::$ask->structure_sid;
+		$action_result[ 'form_action' ]           = $action;
+		$action_result[ 'content_template_file' ] = 'forms/form_' . model::$ask->output_type . '.tpl';
+		$action_result[ 'content_template_file' ] = $tmpl->correctTemplatePackPath( $action_result[ 'content_template_file' ], 'admin_templates' );
 
-		$action_result['groups'] = $this->getGroups( $action, $record );
+		$action_result[ 'groups' ] = $this->getGroups( $action, $record );
 
 		$tmpl->assign( 'action', $action_result );
 
@@ -286,14 +286,14 @@ class controller_admin extends default_controller
 	{
 
 		//Загрузка файлов через визуальный редактор
-		if( user::is_admin() && IsSet($_FILES['upload']) && !count( $_POST ) )
-			$this->ckeditorUpload( $_FILES['upload'] );
+		if( user::is_admin() && IsSet( $_FILES[ 'upload' ] ) && !count( $_POST ) )
+			$this->ckeditorUpload( $_FILES[ 'upload' ] );
 
 		if( !user::is_admin() )
 			log::stop( '400 Bad Request' );
 		if( model::$ask->output_type == 404 )
 			log::stop( '404 Not Found' );
-		if( !IsSet($this->actions[$action]) )
+		if( !IsSet( $this->actions[ $action ] ) )
 			log::stop( '501 Not Implemented' );
 
 		if( $action == 'addRecord' ) {
@@ -302,16 +302,16 @@ class controller_admin extends default_controller
 
 		} elseif( $action == 'editRecord' ) {
 			$this->checkRestBeforeEdit();
-			model::$modules[model::$ask->module]->controlInterface( 'editRecord', $this->vars );
+			model::$modules[ model::$ask->module ]->controlInterface( 'editRecord', $this->vars );
 
 		} elseif( $action == 'move' ) {
-			model::$modules[$this->vars['module_sid']]->moveTo( $this->vars, $this->vars['structure_sid'] );
+			model::$modules[ $this->vars[ 'module_sid' ] ]->moveTo( $this->vars, $this->vars[ 'structure_sid' ] );
 			exit();
 
 		} elseif( $action == 'delete' ) {
-			$record = model::$modules[$this->vars['module_sid']]->getRecordById( $this->vars['structure_sid'], $this->vars['record'] );
+			$record = model::$modules[ $this->vars[ 'module_sid' ] ]->getRecordById( $this->vars[ 'structure_sid' ], $this->vars[ 'record' ] );
 			if( $record )
-				$res = model::$modules[$this->vars['module_sid']]->deleteRecord( $record, $this->vars['structure_sid'] );
+				$res = model::$modules[ $this->vars[ 'module_sid' ] ]->deleteRecord( $record, $this->vars[ 'structure_sid' ] );
 			exit();
 
 		} elseif( $action == 'settings' ) {
@@ -336,11 +336,11 @@ class controller_admin extends default_controller
 
 	private function checkRestBeforeAdd()
 	{
-		if( IsSet(model::$ask->rec['is_link_to_module']) )
-			if( model::$ask->rec['is_link_to_module'] )
-				model::$ask->module = model::$ask->rec['is_link_to_module'];
-		if( IsSet(model::$ask->mode[1]) )
-			model::$ask->structure_sid = model::$ask->mode[1];
+		if( IsSet( model::$ask->rec[ 'is_link_to_module' ] ) )
+			if( model::$ask->rec[ 'is_link_to_module' ] )
+				model::$ask->module = model::$ask->rec[ 'is_link_to_module' ];
+		if( IsSet( model::$ask->mode[ 1 ] ) )
+			model::$ask->structure_sid = model::$ask->mode[ 1 ];
 		if( model::$ask->structure_sid == 'rec' )
 			model::$ask->output_type = 'content';
 		else
@@ -349,7 +349,7 @@ class controller_admin extends default_controller
 
 	private function checkRestBeforeEdit()
 	{
-		if( (model::$ask->output_type == 'index') and (model::$ask->module) and (model::$ask->controller == 'admin') ) {
+		if( ( model::$ask->output_type == 'index' ) and ( model::$ask->module ) and ( model::$ask->controller == 'admin' ) ) {
 			model::$ask->module        = 'start';
 			model::$ask->structure_sid = 'rec';
 			model::$ask->output_type   = 'content';
@@ -364,25 +364,25 @@ class controller_admin extends default_controller
 			$fields = $this->getSettingsFields();
 		elseif( $action == 'tree' )
 			$fields = $this->getTree( $record );
-		elseif( $action == 'templates' and !IsSet(model::$ask->mode[3]) )
+		elseif( $action == 'templates' and !IsSet( model::$ask->mode[ 3 ] ) )
 			$fields = $this->getTemplates();
-		elseif( $action == 'templates' and model::$ask->mode[3] == 'editRecord' )
-			$fields = $this->getOneTemplate( model::$ask->mode[1] . '.' . model::$ask->mode[2] );
-		elseif( $action == 'css' and !IsSet(model::$ask->mode[3]) )
+		elseif( $action == 'templates' and model::$ask->mode[ 3 ] == 'editRecord' )
+			$fields = $this->getOneTemplate( model::$ask->mode[ 1 ] . '.' . model::$ask->mode[ 2 ] );
+		elseif( $action == 'css' and !IsSet( model::$ask->mode[ 3 ] ) )
 			$fields = $this->getCSS();
-		elseif( $action == 'css' and model::$ask->mode[3] == 'editRecord' )
-			$fields = $this->getOneCSS( model::$ask->mode[1] . '.' . model::$ask->mode[2] );
-		elseif( $action == 'js' and !IsSet(model::$ask->mode[3]) )
+		elseif( $action == 'css' and model::$ask->mode[ 3 ] == 'editRecord' )
+			$fields = $this->getOneCSS( model::$ask->mode[ 1 ] . '.' . model::$ask->mode[ 2 ] );
+		elseif( $action == 'js' and !IsSet( model::$ask->mode[ 3 ] ) )
 			$fields = $this->getJS();
-		elseif( $action == 'js' and model::$ask->mode[3] == 'editRecord' )
-			$fields = $this->getOneJS( model::$ask->mode[1] . '.' . model::$ask->mode[2] );
+		elseif( $action == 'js' and model::$ask->mode[ 3 ] == 'editRecord' )
+			$fields = $this->getOneJS( model::$ask->mode[ 1 ] . '.' . model::$ask->mode[ 2 ] );
 		elseif( $action == 'access' )
 			$fields = $this->getAccess();
 		else {
-			if( !IsSet(model::$modules[model::$ask->module]) )
+			if( !IsSet( model::$modules[ model::$ask->module ] ) )
 				log::stop( '404 Not Found', 'Произошло обращение к несуществующему модулю', 'Вполне возможно, ссылка на модуль была удалёна из дерева сайта вручную. <br />Включите режим Разработки для автоматического исправления ошибки.' );
-			$fields = model::$modules[model::$ask->module]->prepareInterface( $action, array( 'id' => $record['id'] ), false );
-			$fields = $fields['fields'];
+			$fields = model::$modules[ model::$ask->module ]->getInterface( $action, array( 'id' => $record[ 'id' ] ), false );
+			$fields = $fields[ 'fields' ];
 //			$fields = $this->getRecordFields(model::$ask->module, model::$ask->structure_sid, $record, false);
 		}
 
@@ -396,22 +396,22 @@ class controller_admin extends default_controller
 	{
 		$fields = model::execSql( 'select * from `settings` where ' . model::pointDomain(), 'getall' );
 		foreach( $fields as $i => $field ) {
-			if( $field['field'] )
-				$field = array_merge( unserialize( $field['field'] ), $field );
-			$field['sid'] = $field['var'];
-			UnSet($field['var']);
-			if( !$field['type'] )
-				$field['type'] = 'text';
-			if( !$field['sid'] )
-				$field['sid'] = 'val';
+			if( $field[ 'field' ] )
+				$field = array_merge( unserialize( $field[ 'field' ] ), $field );
+			$field[ 'sid' ] = $field[ 'var' ];
+			UnSet( $field[ 'var' ] );
+			if( !$field[ 'type' ] )
+				$field[ 'type' ] = 'text';
+			if( !$field[ 'sid' ] )
+				$field[ 'sid' ] = 'val';
 
-			if( !IsSet($field['value']) )
-				$field['value'] = model::$types[$field['type']]->getDefaultValue( $field );
-			if( !is_array( $field['value'] ) )
-				$field['value'] = model::$types[$field['type']]->getAdmValueExplode( $field['value'], $field );
-			$field['template_file'] = model::$types[$field['type']]->template_file;
+			if( !IsSet( $field[ 'value' ] ) )
+				$field[ 'value' ] = model::$types[ $field[ 'type' ] ]->getDefaultValue( $field );
+			if( !is_array( $field[ 'value' ] ) )
+				$field[ 'value' ] = model::$types[ $field[ 'type' ] ]->getAdmValueExplode( $field[ 'value' ], $field );
+			$field[ 'template_file' ] = model::$types[ $field[ 'type' ] ]->template_file;
 
-			$fields[$i] = $field;
+			$fields[ $i ] = $field;
 		}
 
 		return $fields;
@@ -422,29 +422,29 @@ class controller_admin extends default_controller
 
 		// Вывод только указанного модуля
 		$only_module = false;
-		if( IsSet($record['module_sid']) ) {
-			$only_module = $record['module_sid'];
+		if( IsSet( $record[ 'module_sid' ] ) ) {
+			$only_module = $record[ 'module_sid' ];
 		}
 
 		$j = 0;
 		foreach( model::$modules as $module_sid => $module ) {
 
-			if( !$only_module || ($only_module == $module_sid) )
+			if( !$only_module || ( $only_module == $module_sid ) )
 				if( is_array( $module->structure ) )
 					foreach( $module->structure as $structure_sid => $structure )
-						if( !$structure['hide_in_tree'] ) {
+						if( !$structure[ 'hide_in_tree' ] ) {
 							$j++;
 
-							$sortable = (IsSet($structure['fields']['pos']) || ($structure['type'] == 'tree'));
+							$sortable = ( IsSet( $structure[ 'fields' ][ 'pos' ] ) || ( $structure[ 'type' ] == 'tree' ) );
 							$recs     = $module->getModuleShirtTree( false, $structure_sid, 10 );
 
 							if( is_array( $recs ) )
 								foreach( $recs as $i => $rec ) {
-									$fields[1000*$module->info['id']+100*$j+$i] =
+									$fields[ 1000*$module->info[ 'id' ]+100*$j+$i ] =
 										array_merge(
 											$rec,
 											array(
-												'group'      => $module->info['title'] . ($structure_sid != 'rec' ? ' (' . $structure['title'] . ')' : ''),
+												'group'      => $module->info[ 'title' ] . ( $structure_sid != 'rec' ? ' (' . $structure[ 'title' ] . ')' : '' ),
 												'tree_level' => 1,
 												'sortable'   => $sortable
 											)
@@ -460,24 +460,24 @@ class controller_admin extends default_controller
 
 	public function sortFieldsToGroups( $fields )
 	{
-		require_once(model::$config['path']['libraries'] . '/tree_sort.php');
+		require_once( model::$config[ 'path' ][ 'libraries' ] . '/tree_sort.php' );
 
 		$groups = array();
 		foreach( $fields as $field ) {
-			if( !$field['group'] )
-				$field['group'] = 'main';
+			if( !$field[ 'group' ] )
+				$field[ 'group' ] = 'main';
 
-			if( !IsSet($groups[$field['group']]) ) {
-				if( IsSet($this->groups[$field['group']]) )
-					$groups[$field['group']] = $this->groups[$field['group']];
+			if( !IsSet( $groups[ $field[ 'group' ] ] ) ) {
+				if( IsSet( $this->groups[ $field[ 'group' ] ] ) )
+					$groups[ $field[ 'group' ] ] = $this->groups[ $field[ 'group' ] ];
 				else
-					$groups[$field['group']] = array(
-						'pos'   => 200+(count( $groups )+1)*10,
-						'title' => $field['group'],
+					$groups[ $field[ 'group' ] ] = array(
+						'pos'   => 200+( count( $groups )+1 )*10,
+						'title' => $field[ 'group' ],
 					);
 			}
 
-			$groups[$field['group']]['fields'][] = $field;
+			$groups[ $field[ 'group' ] ][ 'fields' ][ ] = $field;
 		}
 
 		//Сортируем закладки по порядку
@@ -497,10 +497,10 @@ class controller_admin extends default_controller
 		$sets = model::execSql( 'select * from `settings` where ' . model::pointDomain() . '', 'getall' );
 
 		foreach( $sets as $set ) {
-			if( IsSet($this->vars[$set['var']]) or ($set['type'] == 'check') ) {
-				$val    = model::$types[$set['type']]->toValue( $set['var'], $this->vars, $set );
+			if( IsSet( $this->vars[ $set[ 'var' ] ] ) or ( $set[ 'type' ] == 'check' ) ) {
+				$val    = model::$types[ $set[ 'type' ] ]->toValue( $set[ 'var' ], $this->vars, $set );
 				$in_str = '`value`="' . mysql_real_escape_string( $val ) . '"';
-				$sql    = 'update `settings` set ' . $in_str . ' where ' . model::pointDomain() . ' and `var`="' . mysql_real_escape_string( $set['var'] ) . '"';
+				$sql    = 'update `settings` set ' . $in_str . ' where ' . model::pointDomain() . ' and `var`="' . mysql_real_escape_string( $set[ 'var' ] ) . '"';
 				model::execSql( $sql, 'update' );
 			}
 		}
@@ -514,23 +514,40 @@ class controller_admin extends default_controller
 
 		model::check_demo();
 
-		$ext      = substr( $file['name'], strrpos( $file['name'], '.' ) );
+		$ext      = substr( $file[ 'name' ], strrpos( $file[ 'name' ], '.' )+1 );
 		$dir      = date( "Y" );
-		$filename = 'img' . date( "YmdHis" ) . $ext;
-		$path     = model::$config['path']['files'] . '/' . $dir . '/' . $filename;
+		$filename = 'img' . date( "YmdHis" ) . '.' . $ext;
+		$path     = model::$config[ 'path' ][ 'files' ] . '/' . $dir . '/' . $filename;
 
-		include_once(model::$config['path']['libraries'] . '/acmsFiles.php');
-		include_once(model::$config['path']['libraries'] . '/acmsDirs.php');
-		acmsDirs::makeFolder( model::$config['path']['files'] . '/' . $dir );
-		$result = acmsFiles::upload( $file['tmp_name'], $path, '0775', model::$types['file']->allowed_extensions  );
+		include_once( model::$config[ 'path' ][ 'libraries' ] . '/acmsFiles.php' );
+		include_once( model::$config[ 'path' ][ 'libraries' ] . '/acmsDirs.php' );
+		acmsDirs::makeFolder( model::$config[ 'path' ][ 'files' ] . '/' . $dir );
+
+		$result          = acmsFiles::upload( $file[ 'tmp_name' ], $path, 0775, model::$types[ 'file' ]->allowed_extensions );
+		$public_filename = model::$config[ 'path' ][ 'public_files' ] . '/' . $dir . '/' . $filename;
+
+		// Уменьшаем размер загружаемой картинки
+		if( in_array( $ext, model::$types[ 'image' ]->allowed_extensions ) ) {
+			include_once( model::$config[ 'path' ][ 'libraries' ] . '/acmsImages.php' );
+			$img = new acmsImages;
+			$img->resize( model::$config[ 'path' ][ 'www' ] . $public_filename, false, 'inner', 1000, 1000, 0775 );
+		}
+
+		// Проверка на необходимость установки watermark
+		$watermark_library_path = model::$config[ 'path' ][ 'libraries' ] . '/acmsWatermark.php';
+		if( file_exists( $watermark_library_path ) ) {
+			require_once( $watermark_library_path );
+			if( class_exists( 'acmsWatermark' ) )
+				if( acmsWatermark::isWatermarkNeeded_upload() )
+					acmsWatermark::setWatermark( model::$config[ 'path' ][ 'www' ] . $public_filename );
+		}
 
 		if( $result ) {
-			$public_filename = model::$config['path']['public_files'] . '/' . $dir . '/' . $filename;
-			print('
+			print( '
 			<script type"text/javascript">
-				window.parent.CKEDITOR.tools.callFunction(\'' . $_GET['CKEditorFuncNum'] . '\', \'' . $public_filename . '\', \'\');
+				window.parent.CKEDITOR.tools.callFunction(\'' . $_GET[ 'CKEditorFuncNum' ] . '\', \'' . $public_filename . '\', \'\');
 			</script>
-			');
+			' );
 			exit();
 		}
 
@@ -542,8 +559,8 @@ class controller_admin extends default_controller
 	public static function templateExec( $params )
 	{
 
-		if( $params['data'] == 'update' ) {
-			include_once(model::$config['path']['core'] . '/classes/acms_updater.php');
+		if( $params[ 'data' ] == 'update' ) {
+			include_once( model::$config[ 'path' ][ 'core' ] . '/classes/acms_updater.php' );
 
 			return acms_updater::checkUpdate( $params );
 		}

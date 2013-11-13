@@ -53,7 +53,7 @@ class controller_get extends default_controller
 
 			//Интерфейсы
 			if( IsSet(model::$modules[model::$ask->module]->interfaces[model::$ask->mode[0]]) )
-				$result = model::$modules[model::$ask->module]->prepareInterface( model::$ask->mode[0], array( 'record' => model::$ask->rec ), true );
+				$result = model::$modules[model::$ask->module]->getInterface( model::$ask->mode[0], array( 'record' => model::$ask->rec ), true );
 
 			//Компоненты
 			elseif( IsSet(model::$modules[model::$ask->module]->prepares[model::$ask->mode[0]]) )
@@ -161,8 +161,6 @@ class controller_get extends default_controller
 
 		//JavaScript
 		$this->addJS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js' );
-//		$this->addJS( 'http://src.opendev.ru/3.0/j/panel.js' );
-//		$this->addJS( 'http://src.opendev.ru/3.0/j/j.js' );
 		$this->addJS( 'http://src.opendev.ru/v4/j/acms_panel.js' );
 
 		//Библиотеки для Администратора
@@ -280,7 +278,7 @@ class controller_get extends default_controller
 		//Интерфейсы
 		if( model::$ask->mode[0] )
 			if( IsSet(model::$modules[model::$ask->module]->interfaces[model::$ask->mode[0]]) )
-				$main_record['interface'] = model::$modules[model::$ask->module]->prepareInterface( model::$ask->mode[0], array( 'record' => model::$ask->rec ), true );
+				$main_record['interface'] = model::$modules[model::$ask->module]->getInterface( model::$ask->mode[0], array( 'record' => model::$ask->rec ), true );
 		//Компоненты
 		if( model::$ask->mode[0] )
 			if( IsSet(model::$modules[model::$ask->module]->prepares[model::$ask->mode[0]]) )
@@ -304,6 +302,10 @@ class controller_get extends default_controller
 		$tmpl->assign( 'get_vars', $_GET );
 		$tmpl->assign( 'path_admin_templates', model::$config['path']['admin_templates'] );
 		$tmpl->assign( 'content', $main_record );
+
+		if( IsSet(model::$modules['news']) )
+			$tmpl->assign( 'rss_link', true );
+
 
 		// Данные настройки о блокировании старых браузеров
 		$block_ie6 = false;
@@ -468,7 +470,7 @@ class controller_get extends default_controller
 				(($int['auth'] === true) and user::is_authorized()) or //Пользователь должен быть просто авторизован
 				(($int['auth'] === 'admin') and user::is_admin())
 			)
-				return model::$modules[$module_sid]->prepareInterface( $interface_sid, $main_record );
+				return model::$modules[$module_sid]->getInterface( $interface_sid, $main_record );
 		}
 
 		//Не нашли доступного компонента
@@ -507,5 +509,3 @@ class controller_get extends default_controller
 	}
 
 }
-
-?>

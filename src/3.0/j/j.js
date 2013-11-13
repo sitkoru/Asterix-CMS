@@ -56,6 +56,7 @@ var init_ckeditor = function() {
     });
 }
 
+
 function fn(){
 	$( ".sortable" ).sortable({
 		items: "li:not(.not_sorted)",

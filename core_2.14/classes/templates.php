@@ -89,7 +89,7 @@ class templater
 					//Имя интерфейса, которую будем вызывать
 					$function_name = $params['interface'];
 					//Запрашиваем данные
-					$result = model::$modules[$params['module']]->prepareInterface( $function_name, $params );
+					$result = model::$modules[$params['module']]->getInterface( $function_name, $params );
 
 					if( $result )
 						//Записываем в шаблонизатор

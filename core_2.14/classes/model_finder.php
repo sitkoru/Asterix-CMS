@@ -1,69 +1,7 @@
 <?php
 
-class ModelFinder
+trait finder
 {
-
-	//Поиск записи в модели
-	public function getRecordByAsk( $url, $prefered_module = 'start' )
-	{
-
-		// Сначала ищем в корневом модуле
-		if( is_object( model::$modules[$prefered_module] ) )
-			foreach( model::$modules[$prefered_module]->structure as $structure_sid => $structure )
-				if( !$record ) {
-					$last_structure_sid = $structure_sid;
-
-					if( $url )
-						$url_string = '/' . implode( '/', $url );
-					else
-						$url_string = '';
-
-					$where = '(`url`="' . mysql_real_escape_string( $url_string ) . '"';
-					if( $prefered_module == 'start' )
-						$where .= ' or `url_alias`="' . mysql_real_escape_string( $url_string ) . '"';
-					$where .= ')';
-
-					$record = $this->makeSql(
-						array(
-							'tables' => array( model::$modules[$prefered_module]->getCurrentTable( $last_structure_sid ) ),
-							'where'  => array( 'and' => array( 'url' => $where ) )
-						),
-						'getrow'
-					);
-				}
-
-		// Нашли запись в стандартном модуле
-		if( $record ) {
-			if( $record['is_link_to_module'] ) {
-				model::$ask->module        = $record['is_link_to_module'];
-				model::$ask->structure_sid = end( array_keys( model::$modules[$prefered_module]->structure ) );
-				model::$ask->output_type   = 'index';
-			} else {
-				model::$ask->module        = $prefered_module;
-				model::$ask->structure_sid = $last_structure_sid;
-
-				if( $url_string == '' )
-					model::$ask->output_type = 'index';
-				elseif( $last_structure_sid != 'rec' )
-					model::$ask->output_type = 'list'; else
-					model::$ask->output_type = 'content';
-			}
-
-			// Не нашли, ищем глубже
-		} else {
-			for( $i = 0; $i<count( $url ); $i++ )
-				if( !$record )
-					if( IsSet(model::$modules[$url[$i]]) )
-						if( $url[$i] != $prefered_module )
-							$record = ModelFinder::getRecordByAsk( $url, $url[$i] );
-		}
-
-		// Вставляем окончание .html
-//		$record = structures::insertRecordUrlType( $record );
-
-		// Готово
-		return $record;
-	}
 
 	//Забрать запись по ID
 	public function getRecordById( $structure_sid, $id )
@@ -139,7 +77,7 @@ class ModelFinder
 	}
 
 	//Форматирование полученных данных после запроса из базы
-	public static function clearAfterDB( $recs )
+	public function clearAfterDB( $recs )
 	{
 
 		//Список записей
@@ -169,5 +107,3 @@ class ModelFinder
 	}
 
 }
-
-?>

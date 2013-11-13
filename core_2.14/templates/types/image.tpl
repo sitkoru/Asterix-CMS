@@ -1,5 +1,11 @@
 	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}">
-		<label class="control-label" for="field_{$field.sid}">{$field.title}</label>
+		<label class="control-label" for="field_{$field.sid}">
+            {$field.title}
+        {if $field.value.watermark_set}
+            <br />
+            <span class="label label-warning" title="На картинку будет установлен водный знак.">+ водный знак</span>
+        {/if}
+        </label>
 		<div class="controls">
 		{if $field.value.path}
 			<ul class="thumbnails">

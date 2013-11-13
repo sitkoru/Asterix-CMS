@@ -1,10 +1,10 @@
-<link rel="stylesheet" type="text/css" href="http://src.opendev.ru/v4/c/c_reset.css" />
+<link rel="stylesheet" type="text/css" href="http://src.opendev.ru/v4/c/c_reset.css?v=3" />
 
 <div class="acms acms-content__background-cover">
     <div class="acms-content">
         <div class="acms-cross">✖</div>
 <!--        <div class="acms-save">✔</div>-->
-        <iframe id="acms_iframe_id" style="border:0; width:100%; height:100%;" SCROLLING=YES></iframe>
+        <iframe id="acms_iframe_id" style="border:0; width:100%; height:100%; min-height: 550px;" SCROLLING=YES></iframe>
     </div>
 </div>
 
