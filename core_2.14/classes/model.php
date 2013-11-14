@@ -17,7 +17,6 @@
 /*															*/
 /************************************************************/
 
-
 require_once( 'model_sql.php' );
 
 class model
@@ -37,11 +36,11 @@ class model
 	function __construct( $config, $log, $cache = false )
 	{
 
-		require_once($config['path']['core'] . '/classes/model_loader.php');
-		require_once($config['path']['core'] . '/classes/model_sql.php');
-		require_once($config['path']['core'] . '/classes/user.php');
-		require_once($config['path']['core'] . '/classes/default_module.php');
-		require_once($config['path']['core'] . '/tests/compatibility.php');
+		require_once( $config[ 'path' ][ 'core' ] . '/classes/model_loader.php' );
+		require_once( $config[ 'path' ][ 'core' ] . '/classes/model_sql.php' );
+		require_once( $config[ 'path' ][ 'core' ] . '/classes/user.php' );
+		require_once( $config[ 'path' ][ 'core' ] . '/classes/default_module.php' );
+		require_once( $config[ 'path' ][ 'core' ] . '/tests/compatibility.php' );
 
 		$this->log        = $log;
 		$this->log->model = $this;
@@ -80,7 +79,7 @@ class model
 	//Подключение базы данных
 	public function authUser()
 	{
-		$this->user = new user($this);
+		$this->user = new user( $this );
 	}
 
 	//Подготовка данных для ввода в шаблонизатор
@@ -92,36 +91,36 @@ class model
 			if( $recs )
 				foreach( $recs as $i => $rec ) {
 					//Чистый url - без окончания
-					if( substr_count( $rec['url'], '.' ) )
-						$url = substr( $rec['url'], 0, strpos( $rec['url'], '.' ) );
+					if( substr_count( $rec[ 'url' ], '.' ) )
+						$url = substr( $rec[ 'url' ], 0, strpos( $rec[ 'url' ], '.' ) );
 					else
-						$url = $rec['url'];
+						$url = $rec[ 'url' ];
 
 					//Главная страница
-					if( $rec['url'] == '/' )
-						$rec['url'] = '';
+					if( $rec[ 'url' ] == '/' )
+						$rec[ 'url' ] = '';
 
 					//Пользователь сейчас здесь
-					if( $current_user_url == $rec['url'] ) {
-						$recs[$i]['show_subs'] = true;
-						$recs[$i]['show_link'] = false;
-						$recs[$i]['mark']      = true;
-						if( IsSet($rec['sub']) )
-							$recs[$i]['sub'] = setOpenAndActiveStatus( $rec['sub'], $current_user_url );
+					if( $current_user_url == $rec[ 'url' ] ) {
+						$recs[ $i ][ 'show_subs' ] = true;
+						$recs[ $i ][ 'show_link' ] = false;
+						$recs[ $i ][ 'mark' ]      = true;
+						if( IsSet( $rec[ 'sub' ] ) )
+							$recs[ $i ][ 'sub' ] = setOpenAndActiveStatus( $rec[ 'sub' ], $current_user_url );
 
 						//Пользователь в подразделе текущей записи
 					} elseif( substr_count( $current_user_url, $url ) ) {
-						$recs[$i]['show_subs'] = true;
-						$recs[$i]['show_link'] = true;
-						$recs[$i]['mark']      = false;
-						if( IsSet($rec['sub']) )
-							$recs[$i]['sub'] = setOpenAndActiveStatus( $rec['sub'], $current_user_url );
+						$recs[ $i ][ 'show_subs' ] = true;
+						$recs[ $i ][ 'show_link' ] = true;
+						$recs[ $i ][ 'mark' ]      = false;
+						if( IsSet( $rec[ 'sub' ] ) )
+							$recs[ $i ][ 'sub' ] = setOpenAndActiveStatus( $rec[ 'sub' ], $current_user_url );
 
 						//Обычный пункт меню
 					} else {
-						$recs[$i]['show_subs'] = false;
-						$recs[$i]['show_link'] = true;
-						$recs[$i]['mark']      = false;
+						$recs[ $i ][ 'show_subs' ] = false;
+						$recs[ $i ][ 'show_link' ] = true;
+						$recs[ $i ][ 'mark' ]      = false;
 					}
 
 				}
@@ -157,18 +156,18 @@ class model
 		//Перебираем все части url
 		if( is_array( self::$ask->url ) )
 			foreach( self::$ask->url as $i => $url )
-				if( IsSet(self::$modules[$current_module]) ) {
+				if( IsSet( self::$modules[ $current_module ] ) ) {
 
 					//Получаем все основные поля модуля
-					$fields = self::$modules[$current_module]->getMainFields( $structure_sid );
+					$fields = self::$modules[ $current_module ]->getMainFields( $structure_sid );
 					//Если коренной модуль - отслеживаем перенаправление на другой модуль
 					if( !$current_module )
-						$fields[] = 'is_link_to_module';
+						$fields[ ] = 'is_link_to_module';
 					//Если уже не
 					//Получаем запись
 					$rec = model::makeSql( array(
 						'tables' => array(
-							self::$modules[$current_module]->getCurrentTable( $structure_sid )
+							self::$modules[ $current_module ]->getCurrentTable( $structure_sid )
 						),
 						'fields' => $fields,
 						'where'  => array(
@@ -179,10 +178,10 @@ class model
 					), 'getrow' );
 
 					//Дочерние структуры записей
-					if( ($structure_sid != 'rec') and (!$rec) ) {
+					if( ( $structure_sid != 'rec' ) and ( !$rec ) ) {
 						$rec = model::makeSql( array(
 							'tables' => array(
-								self::$modules[$current_module]->getCurrentTable( 'rec' )
+								self::$modules[ $current_module ]->getCurrentTable( 'rec' )
 							),
 							'fields' => $fields,
 							'where'  => array(
@@ -194,25 +193,25 @@ class model
 					}
 
 					//Записываем
-					$path[$i] = $rec;
+					$path[ $i ] = $rec;
 
 					//Если коренной модуль - отслеживаем перенаправление на другой модуль
-					if( strlen( $rec['is_link_to_module'] )>0 ) {
+					if( strlen( $rec[ 'is_link_to_module' ] )>0 ) {
 						//Меняем текущий модуль
-						$current_module = $rec['is_link_to_module'];
+						$current_module = $rec[ 'is_link_to_module' ];
 
 						//Определяем его текущую структуру
-						if( IsSet(self::$modules[$current_module]) ) {
-							$tree          = array_reverse( self::$modules[$current_module]->getStructure_allLevels() );
+						if( IsSet( self::$modules[ $current_module ] ) ) {
+							$tree          = array_reverse( self::$modules[ $current_module ]->getStructure_allLevels() );
 							$tree_index    = -1;
-							$structure_sid = $tree[$tree_index];
+							$structure_sid = $tree[ $tree_index ];
 
 							//Если имела место смена модуля
 							if( $current_module ) {
 								//Следующая структура
 								$tree_index++;
 								//Запоминаем
-								$structure_sid = $tree[$tree_index];
+								$structure_sid = $tree[ $tree_index ];
 							}
 						}
 					}
@@ -221,8 +220,8 @@ class model
 				}
 
 		//Вставляем окончания к URL`ам
-		if( IsSet(self::$modules[$current_module]) )
-			$path = self::$modules[$current_module]->insertRecordUrlType( $path );
+		if( IsSet( self::$modules[ $current_module ] ) )
+			$path = self::$modules[ $current_module ]->insertRecordUrlType( $path );
 
 		//Готово
 		return $path;
@@ -231,26 +230,26 @@ class model
 	//Создание краткого дерева модели
 	public static function prepareShirtTree( $module_sid = 'start', $structure_sid = 'rec', $root_record_id = false, $levels_to_show = 2, $conditions = array( 'and' => array( '`shw`=1' ) ) )
 	{
-		if( is_object( self::$modules[$module_sid] ) )
-			return self::$modules[$module_sid]->getModuleShirtTree( $root_record_id, $structure_sid, $levels_to_show, $conditions );
+		if( is_object( self::$modules[ $module_sid ] ) )
+			return self::$modules[ $module_sid ]->getModuleShirtTree( $root_record_id, $structure_sid, $levels_to_show, $conditions );
 	}
 
 	//Добавление записи в структуру модуля
 	public function addRecord( $module_sid = 'start', $structure_sid, $values )
 	{
-		return self::$modules[$module_sid]->addRecord( $values, $structure_sid );
+		return self::$modules[ $module_sid ]->addRecord( $values, $structure_sid );
 	}
 
 	//Добавление записи в структуру модуля
 	public function editRecord( $module_sid = 'start', $structure_sid, $values, $conditions = false )
 	{
-		return self::$modules[$module_sid]->editRecord( $values, $structure_sid, $conditions );
+		return self::$modules[ $module_sid ]->editRecord( $values, $structure_sid, $conditions );
 	}
 
 	//Старое название функции
 	public function updateRecord( $module_sid = 'start', $structure_sid, $values, $conditions = false )
 	{
-		return self::$modules[$module_sid]->editRecord( $values, $structure_sid, $conditions );
+		return self::$modules[ $module_sid ]->editRecord( $values, $structure_sid, $conditions );
 	}
 
 
@@ -261,20 +260,20 @@ class model
 		//Собираем значения уникального поля записей
 		$unique = array();
 		foreach( $records as $rec )
-			$unique[] = $rec[$check_unique_field];
+			$unique[ ] = $rec[ $check_unique_field ];
 
 		//Условия
-		$where   = $conditions;
-		$where[] = '`' . mysql_real_escape_string( $check_unique_field ) . '` IN ("' . implode( '", "', $unique ) . '")';
+		$where    = $conditions;
+		$where[ ] = '`' . mysql_real_escape_string( $check_unique_field ) . '` IN ("' . implode( '", "', $unique ) . '")';
 
 		//Если на домене открыто изменение домена - импорт производится без учёта данных текущего домена
-		if( self::$config['settings']['domain_switch'] )
-			$where['domain'] = false;
+		if( self::$config[ 'settings' ][ 'domain_switch' ] )
+			$where[ 'domain' ] = false;
 
 		//Забираем записи которые уже существуют, их будем обновлять
 		$update_recs = self::makeSql( array(
 			'tables' => array(
-				self::$modules[$module]->getCurrentTable( $structure_sid )
+				self::$modules[ $module ]->getCurrentTable( $structure_sid )
 			),
 			'fields' => array(
 				$check_unique_field,
@@ -288,14 +287,14 @@ class model
 		//Уникальные поля этих записей
 		$update = array();
 		foreach( $update_recs as $rec )
-			$update[$rec[$check_unique_field]] = $rec['id'];
+			$update[ $rec[ $check_unique_field ] ] = $rec[ 'id' ];
 
 		//Заливаем записи
 		foreach( $records as $record ) {
 			//Запись подлежит обновлению
-			if( IsSet($update[$record[$check_unique_field]]) ) {
+			if( IsSet( $update[ $record[ $check_unique_field ] ] ) ) {
 				//Вставляем ID существующей записи
-				$record['id'] = $update[$record[$check_unique_field]];
+				$record[ 'id' ] = $update[ $record[ $check_unique_field ] ];
 				//Обновляем
 				self::editRecord( $module, $structure_sid, $record, $conditions );
 
@@ -316,7 +315,7 @@ class model
 			$prototype = 'start';
 
 		foreach( self::$modules as $module_sid => $module )
-			if( $module->info['prototype'] == $prototype )
+			if( $module->info[ 'prototype' ] == $prototype )
 				return $module_sid;
 
 		return $prototype;
@@ -325,7 +324,7 @@ class model
 	//Получить SID модуля, установленный в системе, зная его прототип
 	public function getModuleByPrototype( $prototype )
 	{
-		return self::$modules[$this->getModuleSidByPrototype( $prototype )];
+		return self::$modules[ $this->getModuleSidByPrototype( $prototype ) ];
 	}
 
 	//Поиск записи в модели
@@ -333,8 +332,11 @@ class model
 	{
 
 		// Сначала ищем в корневом модуле
-		if( is_object( model::$modules[$prefered_module] ) )
-			foreach( model::$modules[$prefered_module]->structure as $structure_sid => $structure ){
+		$record  =false;
+		if( is_object( model::$modules[ $prefered_module ] ) ) {
+			$structures = model::$modules[ $prefered_module ]->getStructures();
+			foreach( $structures as $structure_sid => $structure ) if( !$record ) {
+
 				$last_structure_sid = $structure_sid;
 
 				if( $url )
@@ -349,18 +351,19 @@ class model
 
 				$record = self::makeSql(
 					array(
-						'tables' => array( model::$modules[$prefered_module]->getCurrentTable( $last_structure_sid ) ),
+						'tables' => array( model::$modules[ $prefered_module ]->getCurrentTable( $last_structure_sid ) ),
 						'where'  => array( 'and' => array( 'url' => $where ) )
 					),
 					'getrow'
 				);
 			}
+		}
 
 		// Нашли запись в стандартном модуле
 		if( $record ) {
-			if( $record['is_link_to_module'] ) {
-				model::$ask->module        = $record['is_link_to_module'];
-				model::$ask->structure_sid = end( array_keys( model::$modules[$prefered_module]->structure ) );
+			if( $record[ 'is_link_to_module' ] ) {
+				model::$ask->module        = $record[ 'is_link_to_module' ];
+				model::$ask->structure_sid = end( array_keys( model::$modules[ $prefered_module ]->structure ) );
 				model::$ask->output_type   = 'index';
 			} else {
 				model::$ask->module        = $prefered_module;
@@ -369,7 +372,8 @@ class model
 				if( $url_string == '' )
 					model::$ask->output_type = 'index';
 				elseif( $last_structure_sid != 'rec' )
-					model::$ask->output_type = 'list'; else
+					model::$ask->output_type = 'list';
+				else
 					model::$ask->output_type = 'content';
 			}
 
@@ -377,9 +381,10 @@ class model
 		} else {
 			for( $i = 0; $i<count( $url ); $i++ )
 				if( !$record )
-					if( IsSet(model::$modules[$url[$i]]) )
-						if( $url[$i] != $prefered_module )
-							$record = self::getRecordByAsk( $url, $url[$i] );
+					if( IsSet( model::$modules[ $url[ $i ] ] ) )
+						if( $url[ $i ] != $prefered_module ) {
+							$record = self::getRecordByAsk( $url, $url[ $i ] );
+						}
 		}
 
 		// Готово
@@ -389,20 +394,20 @@ class model
 	//Проверка no-www
 	private function check_no_www()
 	{
-		if( model::$settings['no_www'] ) {
+		if( model::$settings[ 'no_www' ] ) {
 
 			//Без www
-			if( substr_count( $_SERVER['HTTP_HOST'], 'www.' ) and (model::$settings['no_www'] == 'no_www') ) {
-				$new_host = str_replace( 'www.', '', $_SERVER['HTTP_HOST'] );
+			if( substr_count( $_SERVER[ 'HTTP_HOST' ], 'www.' ) and ( model::$settings[ 'no_www' ] == 'no_www' ) ) {
+				$new_host = str_replace( 'www.', '', $_SERVER[ 'HTTP_HOST' ] );
 				header( 'HTTP/1.1 301 Moved Permanently' );
-				header( 'Location: http://' . $new_host . $_SERVER['REQUEST_URI'] );
+				header( 'Location: http://' . $new_host . $_SERVER[ 'REQUEST_URI' ] );
 				exit();
 
 				//Без www
-			} elseif( !substr_count( $_SERVER['HTTP_HOST'], 'www.' ) and (model::$settings['no_www'] == 'www') and (substr_count( $_SERVER['HTTP_HOST'], '.' )<2) ) {
-				$new_host = 'www.' . $_SERVER['HTTP_HOST'];
+			} elseif( !substr_count( $_SERVER[ 'HTTP_HOST' ], 'www.' ) and ( model::$settings[ 'no_www' ] == 'www' ) and ( substr_count( $_SERVER[ 'HTTP_HOST' ], '.' )<2 ) ) {
+				$new_host = 'www.' . $_SERVER[ 'HTTP_HOST' ];
 				header( 'HTTP/1.1 301 Moved Permanently' );
-				header( 'Location: http://' . $new_host . $_SERVER['REQUEST_URI'] );
+				header( 'Location: http://' . $new_host . $_SERVER[ 'REQUEST_URI' ] );
 				exit();
 			}
 		}
@@ -411,8 +416,8 @@ class model
 	//Режим демонстрации
 	public function check_demo()
 	{
-		if( self::$config['settings']['demo_mode'] ) {
-			print('В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"');
+		if( self::$config[ 'settings' ][ 'demo_mode' ] ) {
+			print( 'В режиме демонстрации вы не можете вносить изменения в базу данных. Нажмите "Назад"' );
 			exit();
 		}
 	}
@@ -420,8 +425,8 @@ class model
 	//Уточнить текущий домен, если необходимо
 	public static function pointDomain()
 	{
-		if( IsSet(self::$extensions['domains']) )
-			return self::$extensions['domains']->getWhere();
+		if( IsSet( self::$extensions[ 'domains' ] ) )
+			return self::$extensions[ 'domains' ]->getWhere();
 		else
 			return '1';
 	}
@@ -429,8 +434,8 @@ class model
 	//Уточнить текущий домен, если необходимо
 	public static function pointDomainID()
 	{
-		if( IsSet(self::$extensions['domains']) )
-			return self::$extensions['domains']->domain['id'];
+		if( IsSet( self::$extensions[ 'domains' ] ) )
+			return self::$extensions[ 'domains' ]->domain[ 'id' ];
 		else
 			return '1';
 	}
@@ -438,11 +443,11 @@ class model
 	//Уточнить текущий домен, если необходимо
 	public static function getDomain()
 	{
-		if( IsSet(self::$extensions['domains']) )
-			return self::$extensions['domains']->domain;
+		if( IsSet( self::$extensions[ 'domains' ] ) )
+			return self::$extensions[ 'domains' ]->domain;
 		else
 			return array(
-				'title'        => self::$settings['domain_title'],
+				'title'        => self::$settings[ 'domain_title' ],
 				'host'         => self::$ask->host,
 				'current_host' => self::$ask->host,
 			);
@@ -459,49 +464,49 @@ class model
 	//Класс работы с Excel
 	public function initExcel()
 	{
-		include_once(self::$config['path']['core'] . '/../libs/excel/excel.php');
+		include_once( self::$config[ 'path' ][ 'core' ] . '/../libs/excel/excel.php' );
 
-		return new excel(self::$config['path']);
+		return new excel( self::$config[ 'path' ] );
 	}
 
 	//Класс работы с Zip
 	public function initZip()
 	{
-		include_once(self::$config['path']['core'] . '/../libs/zipper.php');
+		include_once( self::$config[ 'path' ][ 'core' ] . '/../libs/zipper.php' );
 
-		return new zipper(self::$config['path']);
+		return new zipper( self::$config[ 'path' ] );
 	}
 
 	//Класс работы с Email
 	public function initEmail()
 	{
-		include_once(self::$config['path']['core'] . '/../libs/email.php');
+		include_once( self::$config[ 'path' ][ 'core' ] . '/../libs/email.php' );
 
-		return new email($this);
+		return new email( $this );
 	}
 
 	//Класс работы с фильтрами HTML
 	public function initFilters()
 	{
-		include_once(self::$config['path']['core'] . '/../libs/filters.php');
+		include_once( self::$config[ 'path' ][ 'core' ] . '/../libs/filters.php' );
 
-		return new filters($this);
+		return new filters( $this );
 	}
 
 	//Класс работы с RSS/XML
 	public function initRss()
 	{
-		include_once(self::$config['path']['core'] . '/../libs/rss.php');
+		include_once( self::$config[ 'path' ][ 'core' ] . '/../libs/rss.php' );
 
-		return new rss(self::$config['path']);
+		return new rss( self::$config[ 'path' ] );
 	}
 
 	//Класс определения IP-адреса
 	public function initGeoip()
 	{
-		include_once(self::$config['path']['core'] . '/../libs/geoip.php');
+		include_once( self::$config[ 'path' ][ 'core' ] . '/../libs/geoip.php' );
 
-		return new geoip(self::$config['path']);
+		return new geoip( self::$config[ 'path' ] );
 	}
 
 	// Вызывается в конце работы
