@@ -115,15 +115,6 @@ class field_type_gallery extends field_type_default
 					$acmsImages = new acmsImages;
 					$data       = $acmsImages->resize( $filename, false, $settings[ 'resize_type' ], $settings[ 'resize_width' ], $settings[ 'resize_height' ] );
 
-					// Проверка на необходимость установки watermark
-					$watermark_library_path = model::$config[ 'path' ][ 'libraries' ] . '/acmsWatermark.php';
-					if( file_exists( $watermark_library_path ) && ( $module_sid != 'users' ) ) {
-						require_once( $watermark_library_path );
-						if( class_exists( 'acmsWatermark' ) )
-							if( acmsWatermark::isWatermarkNeeded_gallery() || acmsWatermark::isWatermarkNeeded_interface() )
-								acmsWatermark::setWatermark( $filename );
-					}
-
 					//Доп.характеристики
 					$data[ 'path' ]  = $dir_path . '/' . $name;
 					$data[ 'title' ] = strip_tags( $values[ $value_sid . '_title' ][ $i ] );
@@ -153,7 +144,7 @@ class field_type_gallery extends field_type_default
 
 									if( ($pre_image_width >= $min_size) || ( $pre_image_height >= $min_size ) )
 										if( acmsWatermark::isWatermarkNeeded_image() || acmsWatermark::isWatermarkNeeded_interface() )
-											acmsWatermark::setWatermark( $pre_filename );
+											acmsWatermark::setWatermark( $pre_filename, $value_sid );
 								}
 
 							}
@@ -164,7 +155,19 @@ class field_type_gallery extends field_type_default
 									$acmsImages->filter_bw( $pre_filename );
 
 						}
-					//Файл не передан, просто обновление Alt
+
+					// Проверка на необходимость установки watermark для основной картинки
+					$watermark_library_path = model::$config[ 'path' ][ 'libraries' ] . '/acmsWatermark.php';
+					if( file_exists( $watermark_library_path ) && ( $module_sid != 'users' ) ) {
+						require_once( $watermark_library_path );
+
+						if( class_exists( 'acmsWatermark' ) )
+							if( acmsWatermark::isWatermarkNeeded_image() || acmsWatermark::isWatermarkNeeded_interface() )
+								acmsWatermark::setWatermark( $filename, $value_sid );
+
+					}
+
+				//Файл не передан, просто обновление Alt
 				} elseif( strlen( $_POST[ $value_sid . '_old_id' ][ $i ] ) ) {
 					$data            = $this->getValueExplode( $_POST[ $value_sid . '_old_id' ][ $i ] );
 					$data[ 'title' ] = strip_tags( $_POST[ $value_sid . '_title' ][ $i ] );

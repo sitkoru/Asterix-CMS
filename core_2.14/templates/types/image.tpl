@@ -30,6 +30,7 @@
 			{/foreach}
 			</ul>
 		{/if}
+
 			<input type="hidden" name="{$field.sid}_old_id" value="{$field.value.old|escape}" />
 			<input type="text" name="{$field.sid}_title" value="{$field.value.title|escape}" placeholder="Альтернативный текст" /><br />
 			<input type="file" name="{$field.sid}" id="{$field.sid}_id"{if $field.required} required="required"{/if} OnChange="
@@ -61,5 +62,11 @@ onChangeImagefile( '{$field.sid}_id', '{$field.sid}_first' );
 				<input type="checkbox" name="{$field.sid}_delete" id="{$field.sid}_delete" value="1" />
 			</label>
 {/if}
+
+        {if $field.value.watermark_allownotset}
+            <label class="checkbox" for="{$field.sid}_watermark_notset">не ставить "Водяной знак"
+                <input type="checkbox" name="{$field.sid}_watermark_notset" id="{$field.sid}_watermark_notset" value="1" />
+            </label>
+        {/if}
 		</div>
 	</div>

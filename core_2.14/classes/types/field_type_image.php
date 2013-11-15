@@ -147,7 +147,7 @@ class field_type_image extends field_type_default
 
 							if( ($pre_image_width >= $min_size) || ( $pre_image_height >= $min_size ) )
 								if( acmsWatermark::isWatermarkNeeded_image() || acmsWatermark::isWatermarkNeeded_interface() )
-									acmsWatermark::setWatermark( $pre_filename );
+									acmsWatermark::setWatermark( $pre_filename, $value_sid );
 						}
 
 					}
@@ -166,7 +166,7 @@ class field_type_image extends field_type_default
 
 				if( class_exists( 'acmsWatermark' ) )
 					if( acmsWatermark::isWatermarkNeeded_image() || acmsWatermark::isWatermarkNeeded_interface() )
-						acmsWatermark::setWatermark( $filename );
+						acmsWatermark::setWatermark( $filename, $value_sid );
 
 			}
 
@@ -215,9 +215,15 @@ class field_type_image extends field_type_default
 		$watermark_library_path = model::$config[ 'path' ][ 'libraries' ] . '/acmsWatermark.php';
 		if( file_exists( $watermark_library_path ) ) {
 			require_once( $watermark_library_path );
-			if( acmsWatermark::isWatermarkNeeded_image() )
+			if( acmsWatermark::isWatermarkNeeded_image() ){
 				$value[ 'watermark_set' ] = true;
+
+				if( acmsWatermark::isWatermark_allowNotSet() )
+					$value[ 'watermark_allownotset' ] = true;
+			}
 		}
+
+
 
 		return $value;
 	}
@@ -265,5 +271,3 @@ class field_type_image extends field_type_default
 	}
 
 }
-
-?>
