@@ -47,9 +47,8 @@ class model
 		$this->cache      = $cache;
 
 		self::$config = ModelLoader::loadConfig( $config );
-
-		self::$db    = ModelLoader::loadDatabase( self::$db );
-		self::$types = ModelLoader::loadTypes();
+		self::$db     = ModelLoader::loadDatabase( self::$db );
+		self::$types  = ModelLoader::loadTypes();
 
 		// Локальная авторизация, возможна до инициализации модулей
 		user::authUser_fast();
@@ -332,7 +331,7 @@ class model
 	{
 
 		// Сначала ищем в корневом модуле
-		$record  =false;
+		$record = false;
 		if( is_object( model::$modules[ $prefered_module ] ) ) {
 			$structures = model::$modules[ $prefered_module ]->getStructures();
 			foreach( $structures as $structure_sid => $structure ) if( !$record ) {

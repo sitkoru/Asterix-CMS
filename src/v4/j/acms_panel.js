@@ -30,4 +30,31 @@ $(document).ready(function () {
         $('body').css('overflow', 'auto');
     });
 
+    $(document).on("submit", "form.ajax", function(){
+        var form_id=$(this).attr('id');
+        $('#'+form_id+' li').removeClass('err');
+        $.post(
+            $(this).attr('action'),
+            $(this).serialize(),
+            function(data){
+                if(data['result']=='error'){
+                    for(var key in data['errors']){
+                        $('#'+form_id+' #id_'+key).parent().addClass('err');
+                        alert( data['errors'][key]);
+                    }
+                }else if(data['result']=='action'){
+                    eval(data['action'])(data['params']);
+                }else if(data['result']=='message'){
+                    alert(data['message']);
+                }else if(data['result']=='redirect'){
+                    document.location.href=data['url'];
+                }
+                if(data['close']){
+                    $('#'+form_id).parent('.interface').hide();
+                }
+            },
+            "json");
+        return false;
+    });
+
 });

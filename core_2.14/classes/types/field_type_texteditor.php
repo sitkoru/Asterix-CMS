@@ -59,5 +59,3 @@ class field_type_text_editor extends field_type_default
 	}
 
 }
-
-?>

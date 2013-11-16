@@ -10,7 +10,7 @@ if( error_reporting() != 22519 )
 
 session_start();
 
-//ini_set('error_log', $config['path']['www'].'../error_'.$_SERVER['HTTP_HOST'].'.log');
+
 ini_set( 'include_path', implode( ';', $config['path'] ) );
 
 // Система контроля исключений работы системы

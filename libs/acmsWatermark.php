@@ -121,7 +121,10 @@ class acmsWatermark
 
 	public static function isWatermarkNeeded_upload()
 	{
-		return self::isType( 'upload' );
+		if( IsSet( $_SESSION['watermark_upload_notset'] ) )
+			return $_SESSION['watermark_upload_notset'];
+		else
+			return self::isType( 'upload' );
 	}
 
 	public static function isWatermarkNeeded_interface()

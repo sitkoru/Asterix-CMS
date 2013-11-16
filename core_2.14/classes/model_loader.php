@@ -484,6 +484,7 @@ class ModelLoader
 					'bootstrap'      => 'Bootstrap 2',
 					'bootstrap3'     => 'Bootstrap 3',
 					'lightbox'       => 'Lightbox',
+					'lightbox2'      => 'Lightbox 2',
 					'combosex'       => 'Combosex',
 				),
 			),

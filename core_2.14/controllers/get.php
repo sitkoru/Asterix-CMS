@@ -197,7 +197,13 @@ class controller_get extends default_controller
 			$this->addJS( 'http://src.opendev.ru/3.0/lightbox/lightbox.js' );
 			$this->addCSS( 'http://src.opendev.ru/3.0/lightbox/lightbox.css' );
 		}
-
+/*
+		// Lightbox
+		if( in_array( 'lightbox2', model::$settings['js_libraries'] ) ) {
+			$this->addJS( 'http://src.opendev.ru/3.0/lightbox2/js/lightbox-2.6.min.js' );
+			$this->addCSS( 'http://src.opendev.ru/3.0/lightbox2/css/lightbox.css' );
+		}
+*/
 		// Стандартные стили
 		if( !strlen( model::$settings['css_main'] ) )
 			$this->addCSS( model::$config['path']['public_styles'] . '/s.css', array( 'media' => 'screen,projection' ) );

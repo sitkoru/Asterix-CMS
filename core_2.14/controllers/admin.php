@@ -494,6 +494,19 @@ class controller_admin extends default_controller
 	//Сохраняем настройки
 	private function updateSettings()
 	{
+
+		if( IsSet( $this->vars[ 'watermark_notset' ] ) ) {
+
+			if( substr_count( $this->vars[ 'watermark_notset' ], 'true' ))
+				$this->vars[ 'watermark_notset' ] = true;
+			else
+				$this->vars[ 'watermark_notset' ] = false;
+			$_SESSION['watermark_upload_notset'] = $this->vars[ 'watermark_notset' ];
+
+			print( 'ok' );
+			exit();
+		}
+
 		$sets = model::execSql( 'select * from `settings` where ' . model::pointDomain() . '', 'getall' );
 
 		foreach( $sets as $set ) {
@@ -504,6 +517,9 @@ class controller_admin extends default_controller
 				model::execSql( $sql, 'update' );
 			}
 		}
+
+		UnSet( $_SESSION['watermark_upload_notset'] );
+
 		header( 'Location: /admin/start.settings.rec.success.html' );
 		exit();
 	}
@@ -566,6 +582,22 @@ class controller_admin extends default_controller
 		}
 
 	}
+
+	public function toggleInLinkm( $value, $id = false )
+	{
+
+		if( !$value ) $value = '|';
+		if( !$id ) $id = user::$info[ 'id' ];
+		if( substr_count( $value, '|' . $id . '|' ) ) {
+			$value = str_replace( '|' . $id . '|', '|', $value );
+			if( $value == '|' ) $value = '';
+		} else {
+			$value .= $id . '|';
+		}
+
+		return $value;
+	}
+
 
 }
 

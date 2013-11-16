@@ -677,107 +677,103 @@ class user
 	private static function finish_OAuthUser()
 	{
 
-		//Если есть разрешённые сервера для авторизации
-		if( model::$config['openid'] ) {
+		require_once(model::$config['path']['libraries'] . '/openid.php');
+		$openid = new LightOpenID('http://' . $_SERVER['HTTP_HOST']);
 
-			require_once(model::$config['path']['libraries'] . '/openid.php');
-			$openid = new LightOpenID('http://' . $_SERVER['HTTP_HOST']);
+		try {
+			if( !$openid->mode ) {
+			} elseif( $openid->mode == 'cancel' ) {
+				echo 'User has canceled authentication!';
+			} else {
 
-			try {
-				if( !$openid->mode ) {
-				} elseif( $openid->mode == 'cancel' ) {
-					echo 'User has canceled authentication!';
-				} else {
+				$params = $openid->getAttributes();
 
-					$params = $openid->getAttributes();
+				//Проверяем email на наличие нужного домена
+				if( substr_count( $params['contact/email'], '@' ) === 1 ) {
 
-					//Проверяем email на наличие нужного домена
-					if( substr_count( $params['contact/email'], '@' ) === 1 ) {
+					$openid_domain = parse_url( $_GET['openid_op_endpoint'] );
+					$openid_domain = $openid_domain['host'];
+					$openid_domain = str_replace( 'openid.', '', $openid_domain );
+					$openid_domain = str_replace( 'www.', '', $openid_domain );
 
-						$openid_domain = parse_url( $_GET['openid_op_endpoint'] );
-						$openid_domain = $openid_domain['host'];
-						$openid_domain = str_replace( 'openid.', '', $openid_domain );
-						$openid_domain = str_replace( 'www.', '', $openid_domain );
+					if( IsSet(model::$settings['oauth_openid']) )
+						if( in_array( $openid_domain, model::$settings['oauth_openid'] ) ) {
 
-						if( IsSet(model::$settings['oauth_openid']) )
-							if( in_array( $openid_domain, model::$settings['oauth_openid'] ) ) {
+							//Смотрим на конфиг, давать ли пользователям этого домена админа
+							$openid_user_admin = false;
+							if( IsSet($params['contact/email']) )
+								if( substr_count( $params['contact/email'], '@' ) ) {
+									$user_email_host = substr( $params['contact/email'], strpos( $params['contact/email'], '@' )+1 );
+									if( IsSet(model::$config['openid'][$user_email_host]) )
+										if( model::$config['openid'][$user_email_host] == 'admin' )
+											$openid_user_admin = true;
+								}
+							/*
+															if( (model::$config['openid']['sitko.ru'] == 'admin') && substr_count( $params['contact/email'], '@sitko.ru' ) )
+																$openid_user_admin = true;
+							*/
 
-								//Смотрим на конфиг, давать ли пользователям этого домена админа
-								$openid_user_admin = false;
-								if( IsSet($params['contact/email']) )
-									if( substr_count( $params['contact/email'], '@' ) ) {
-										$user_email_host = substr( $params['contact/email'], strpos( $params['contact/email'], '@' )+1 );
-										if( IsSet(model::$config['openid'][$user_email_host]) )
-											if( model::$config['openid'][$user_email_host] == 'admin' )
-												$openid_user_admin = true;
-									}
-								/*
-																if( (model::$config['openid']['sitko.ru'] == 'admin') && substr_count( $params['contact/email'], '@sitko.ru' ) )
-																	$openid_user_admin = true;
-								*/
+							$login = model::$types['sid']->correctValue( $openid_domain . '_' . $params['contact/email'] );
+							if( IsSet($params['namePerson/first']) )
+								$title = $params['namePerson/first'] . ' ' . $params['namePerson/last'];
+							else
+								$title = $params['namePerson'];
 
-								$login = model::$types['sid']->correctValue( $openid_domain . '_' . $params['contact/email'] );
-								if( IsSet($params['namePerson/first']) )
-									$title = $params['namePerson/first'] . ' ' . $params['namePerson/last'];
-								else
-									$title = $params['namePerson'];
+							//Начинаем регить
+							self::$info        = array(
+								'login'      => $login,
+								'password'   => $_GET['openid_identity'], //$openid->data['openid_assoc_handle'],
+								'admin'      => $openid_user_admin,
+								'title'      => $title,
+								'email'      => $params['contact/email'],
+								'session_id' => session_id(),
+							);
+							$_POST['login']    = self::$info['login'];
+							$_POST['password'] = self::$info['password'];
 
-								//Начинаем регить
-								self::$info        = array(
-									'login'      => $login,
-									'password'   => $_GET['openid_identity'], //$openid->data['openid_assoc_handle'],
-									'admin'      => $openid_user_admin,
-									'title'      => $title,
-									'email'      => $params['contact/email'],
-									'session_id' => session_id(),
-								);
+							//Авторизуем
+							$user = self::$info;
+							self::authUser_localhost();
+
+							//Регистрируем
+							if( !self::$info['id'] ) {
+								self::$info               = $user;
+								self::$info['sid']        = $login;
+								self::$info['shw']        = true;
+								self::$info['active']     = true;
+								self::$info['admin']      = $openid_user_admin;
+								self::$info['session_id'] = session_id();
+
+								//Первый пользователь в системе всегда становится админом
+								if( self::ifFirstThenAdmin() )
+									self::$info['admin'] = true;
+
 								$_POST['login']    = self::$info['login'];
 								$_POST['password'] = self::$info['password'];
 
-								//Авторизуем
-								$user = self::$info;
-								self::authUser_localhost();
-
-								//Регистрируем
-								if( !self::$info['id'] ) {
-									self::$info               = $user;
-									self::$info['sid']        = $login;
-									self::$info['shw']        = true;
-									self::$info['active']     = true;
-									self::$info['admin']      = $openid_user_admin;
-									self::$info['session_id'] = session_id();
-
-									//Первый пользователь в системе всегда становится админом
-									if( self::ifFirstThenAdmin() )
-										self::$info['admin'] = true;
-
-									$_POST['login']    = self::$info['login'];
-									$_POST['password'] = self::$info['password'];
-
-									//Проверяем уже заполненный профиль указанного человека
-									if( strlen( self::$info['email'] )>5 ) {
-										$old = model::execSql( 'select `id` from `' . self::$table_name . '` where `email`="' . mysql_real_escape_string( self::$info['email'] ) . '"', 'getrow' );
-										if( $old )
-											self::$info['is_link_to'] = $old['id'];
-									}
-
-									model::addRecord( 'users', 'rec', self::$info );
-									self::authUser_localhost();
+								//Проверяем уже заполненный профиль указанного человека
+								if( strlen( self::$info['email'] )>5 ) {
+									$old = model::execSql( 'select `id` from `' . self::$table_name . '` where `email`="' . mysql_real_escape_string( self::$info['email'] ) . '"', 'getrow' );
+									if( $old )
+										self::$info['is_link_to'] = $old['id'];
 								}
 
-								header( 'Location: ' . $_SESSION['oauth_referer'] );
-								UnSet($_SESSION['oauth_referer']);
-								exit();
+								model::addRecord( 'users', 'rec', self::$info );
+								self::authUser_localhost();
 							}
-					} else {
-						echo "Ошибка передачи данных";
-					}
 
+							header( 'Location: ' . $_SESSION['oauth_referer'] );
+							UnSet($_SESSION['oauth_referer']);
+							exit();
+						}
+				} else {
+					echo "Ошибка передачи данных";
 				}
 
-			} catch ( ErrorException $e ) {
-				echo $e->getMessage();
 			}
+
+		} catch ( ErrorException $e ) {
+			echo $e->getMessage();
 		}
 	}
 
