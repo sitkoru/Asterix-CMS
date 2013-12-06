@@ -52,7 +52,7 @@ class extention_domains extends extention_default
 			foreach( model::$modules as $module_sid => $module )
 				if( $module->structure ) {
 					foreach( $module->structure as $structure_sid => $structure ) {
-						model::$modules[$module_sid]->structure[$structure_sid]['fields']['domain'] = array(
+						model::$modules[ $module_sid ]->structure[ $structure_sid ][ 'fields' ][ 'domain' ] = array(
 							'sid'   => 'domain',
 							'group' => 'system',
 							'type'  => 'domain',
@@ -74,7 +74,7 @@ class extention_domains extends extention_default
 				}
 		*/
 		//Хост
-		$host = $_SERVER['HTTP_HOST'];
+		$host = $_SERVER[ 'HTTP_HOST' ];
 		$host = str_replace( 'www.', '', $host );
 
 		//Смотрим текущий хост среди заведённых в системе
@@ -99,35 +99,35 @@ class extention_domains extends extention_default
 		if( !$this->domain ) {
 			header( 'Content-Type: text/html; charset=utf-8' );
 			header( "HTTP/1.0 404 Not Found" );
-			print('Домен не опознан.');
+			print( 'Домен не опознан.' );
 			exit();
 		}
 
 		//Домен опознан, но отключен - выходим.
-		if( !$this->domain['active'] ) {
+		if( !$this->domain[ 'active' ] ) {
 			header( 'Content-Type: text/html; charset=utf-8' );
 			header( "HTTP/1.0 404 Not Found" );
-			print('Домен отключен.');
+			print( 'Домен отключен.' );
 			exit();
 		}
 
 		//Проверка на основной домен
-		if( $this->domain['host'] == $host )
-			$this->domain['main'] = true;
+		if( $this->domain[ 'host' ] == $host )
+			$this->domain[ 'main' ] = true;
 		else
-			$this->domain['main'] = false;
+			$this->domain[ 'main' ] = false;
 
 		//Дата
-		$this->domain['date_public'] = model::$types['datetime']->getValueExplode( $this->domain['date_start'] );
+		$this->domain[ 'date_public' ] = model::$types[ 'datetime' ]->getValueExplode( $this->domain[ 'date_start' ] );
 
 		//Текущий хост
-		$this->domain['current_host'] = $host;
+		$this->domain[ 'current_host' ] = $host;
 	}
 
 	//Исправление путей в шаблонизаторе
 	private function correctTemplater()
 	{
-		model::$config['path']['templates'] .= '/' . $this->domain['templates'];
+		model::$config[ 'path' ][ 'templates' ] .= '/' . $this->domain[ 'templates' ];
 	}
 
 
@@ -138,14 +138,14 @@ class extention_domains extends extention_default
 		if( in_array( $query_type, array( 'insert', 'replace' ) ) ) {
 			if( !$fields )
 				$fields = array();
-			if( !IsSet($fields['domain']) )
-				$fields['domain'] = '`domain`="|' . $this->domain['id'] . '|"';
+			if( !IsSet( $fields[ 'domain' ] ) )
+				$fields[ 'domain' ] = '`domain`="|' . $this->domain[ 'id' ] . '|"';
 		} else {
 			if( !$where )
 				$where = array();
 			if( $structure_sid != 'domain' )
-				if( !IsSet($where['and']['domain']) )
-					$where['and']['domain'] = $this->getWhere();
+				if( !IsSet( $where[ 'and' ][ 'domain' ] ) )
+					$where[ 'and' ][ 'domain' ] = $this->getWhere();
 		}
 
 //		}
@@ -163,7 +163,7 @@ class extention_domains extends extention_default
 	public function getWhere()
 	{
 //		if( model::$config['settings']['domain_switch'])
-		return '( (`domain`="all") || (`domain` LIKE "%|' . $this->domain['id'] . '|%") )';
+		return '( (`domain`="all") || (`domain` LIKE "%|' . $this->domain[ 'id' ] . '|%") )';
 		/*
 				else
 					return '1';

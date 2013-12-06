@@ -210,14 +210,16 @@ class ModelLoader
 		$modules = array();
 
 		//Подгружаем модули
-		$mods = model::execSql( 'select * from `modules` where `active`=1 order by `id`', 'getall' );
+		$mods = model::execSql( 'select * from `modules` where `active`=1 order by `id`', 'getall', 'system', true );
 
-		//Обратная совместимость с ядрами 2.13 и меньше
+		// Обратная совместимость с ядрами 2.13 и меньше
 		foreach( $mods as $i => $mod )
 			if( $mod[ 'prototype' ] == 'start' )
 				$mods[ $i ][ 'sid' ] = 'start';
 
 		foreach( $mods as $module ) {
+
+//			self::initModule( $module );
 
 			$module_path = model::$config[ 'path' ][ 'modules' ] . '/' . $module[ 'prototype' ] . '.php';
 			if( file_exists( $module_path ) ) {
@@ -243,7 +245,57 @@ class ModelLoader
 			}
 		}
 
-		return $modules;
+	}
+
+	private static function initModule( $record )
+	{
+
+		if( !$record[ 'active' ] )
+			return false;
+
+		// Физический модуль
+		if( $record[ 'prototype' ] ) {
+
+			$module_file_path = model::$config[ 'path' ][ 'modules' ] . '/' . basename( $record[ 'prototype' ] ) . '.php';
+			if( is_readable( $module_file_path ) ) {
+				require_once( $module_file_path );
+
+				$record[ 'url' ]  = '/' . $record[ 'sid' ];
+				$record[ 'path' ] = $module_file_path;
+
+				$name = $record[ 'prototype' ] . '_module';
+
+				model::$modules[ $record[ 'sid' ] ] = new $name( NULL, $record );
+			}
+
+			// Виртуальный модуль
+		} else {
+			/*
+						$sid = $record[ 'sid' ];
+
+						$record[ 'url' ]  = '/' . $sid;
+						$record[ 'path' ] = false;
+
+						$module = unserialize( $record[ 'object' ] );
+						if( !is_object( $module ) ) {
+							$settings = unserialize( $record[ 'settings' ] );
+							$module   = self::createModule( $settings );
+						}
+
+						if( !is_object( $module ) )
+							return false;
+
+						model::$modules[ $record[ 'sid' ] ] = $module;
+			*/
+		}
+
+		return true;
+	}
+
+	private static function createModule( $settings )
+	{
+
+
 	}
 
 	//Подгрузка расширений к модулю
@@ -484,7 +536,7 @@ class ModelLoader
 					'bootstrap'      => 'Bootstrap 2',
 					'bootstrap3'     => 'Bootstrap 3',
 					'lightbox'       => 'Lightbox',
-					'lightbox2'      => 'Lightbox 2',
+					'less'           => 'LESS - Leaner CSS',
 					'combosex'       => 'Combosex',
 				),
 			),

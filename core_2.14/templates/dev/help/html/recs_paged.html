@@ -1,0 +1,46 @@
+<h3>Вывод списка записей с разбивкой на страницы</h3>
+<p>
+    Компонент recs - самый мощный и развитый компонент для вывода данных. Самая главная его "фишка" по сравнению с другими компонентами - он умеет разбивать выводимые записи на страницы.
+</p>
+<p>Обратите внимание, компонент также автоматически готовит и данные для построения переключателя страниц, а также предлагает какие номера страниц можно в данный момент скрыть и змаенить троеточием.</p>
+
+<textarea id="editor_modal1" class="editor_modal" name="code" style="display: none;">
+
+{preload module=news data=recs result=result chop_to_pages=true items_per_page=10}
+{if $result.recs}
+
+        <!-- записи -->
+        <ul>
+        {foreach from=$result.recs item=rec}
+            <li><a href="{$rec.url}">{$rec.title}</a></li>
+        {/foreach}
+        </ul>
+
+        <!-- номера страниц -->
+        {if count($result.pages.items) > 1}
+        <ul class="pagination">
+            <li{if $result.current == 0} class="disabled"{/if}><a href="{$result.pages.prev.url}">&larr;</a></li>
+
+        {foreach from=$result.pages.items item=item key=key}
+        {if $key == $result.current}
+            <li class="active"><a href="{$item.url}">{$key+1}</a></li>
+        {elseif $item.dots}
+            <li class="disabled"><a href="{$item.url}">…</a></li>
+        {elseif !$item.hide}
+            <li><a href="{$item.url}">{$key+1}</a></li>
+        {/if}
+        {/foreach}
+
+        {if IsSet( $get_vars.items_per_page )}
+            {assign items_per_page $get_vars.items_per_page}
+        {/if}
+
+            <li{if $result.current+1 == count($result.pages.items)} class="disabled"{/if}><a href="{$result.pages.next.url}">&rarr;</a></li>
+        </ul>
+    {/if}
+{/if}
+
+</textarea>
+
+<p>Обратите внимание, что в примере сразу показан блок с выводом номеров страниц. Каждая страница может быть активной, если пользователь находится на ней. Страница может быть скрытой, если бользователь находиться в 5 и более страниц от ней. Вместо скрытых страниц выводяится троеточие. Также, страница может быть "disabled", в случае если нельзя листать в эту сторону.</p>
+

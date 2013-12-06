@@ -1,0 +1,18 @@
+<h3>Вывод случайных записей</h3>
+<p>
+    Компонент ranbomlist поможет вам получить несколько случайных запией их структуры. Компонент поддерживает все обычные параметры, а также указание сортировки и ограничение кол-ва записей.
+</p>
+
+<textarea id="editor_modal1" class="editor_modal" name="code" style="display: none;">
+
+    {preload module=news data=randomlist result=recs}
+    {if $recs}
+    <ul>
+        {foreach from=$recs item=rec}
+        <li><a href="{$rec.url}">{$rec.title}</a></li>
+        {/foreach}
+    </ul>
+    {/if}
+
+</textarea>
+

@@ -1,0 +1,18 @@
+<h3>Вывод записей кроме указанной</h3>
+<p>
+    Иногда на страницах нужно расположить блоки "Другие записи раздела", то есть показать все (либо последние) записи, кроме текущей. Для этого можно использовать любой компонент, необходимо лишь передать параметр nid=[id текущей статьи], и она будет исключена из вывода.
+</p>
+
+<textarea id="editor_modal1" class="editor_modal" name="code" style="display: none;">
+
+    {preload module=news data=recs nid=$content.id result=recs}
+    {if $recs}
+    <ul>
+        {foreach from=$recs item=rec}
+        <li><a href="{$rec.url}">{$rec.title}</a></li>
+        {/foreach}
+    </ul>
+    {/if}
+
+</textarea>
+

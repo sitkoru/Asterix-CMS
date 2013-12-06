@@ -1,0 +1,17 @@
+<h3>Вывод последних записей</h3>
+<p>
+   Таким выводом очень удобно пользоваться, когда нужно вывести анонс новостей на главной странице, или же последние записи из какого-то раздела.
+</p>
+
+<textarea id="editor_modal1" class="editor_modal" name="code" style="display: none;">
+
+{preload module=news data=recs result=recs}
+{if $recs}
+    <ul>
+    {foreach from=$recs item=rec}
+        <li><a href="{$rec.url}">{$rec.title}</a></li>
+    {/foreach}
+    </ul>
+{/if}
+
+</textarea>

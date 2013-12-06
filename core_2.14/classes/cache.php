@@ -29,10 +29,10 @@ class cache
 //        $this->log = $log;
 
 		//Добавляем в реестр экземпляр кэширования в файлы
-		if( self::$config['cache']['type'] == 'files' )
-			BASE_Registry::set( 'cache', new CACHE_Manager(new CACHE_File(self::$config['cache']['cache_path'])) );
-		elseif( self::$config['cache']['type'] == 'memcache' )
-			BASE_Registry::set( 'cache', new CACHE_Manager(new CACHE_MemCache(self::$config['cache']['cache_host'], self::$config['cache']['cache_port'])) );
+		if( self::$config[ 'cache' ][ 'type' ] == 'files' )
+			BASE_Registry::set( 'cache', new CACHE_Manager( new CACHE_File( self::$config[ 'cache' ][ 'cache_path' ] ) ) );
+		elseif( self::$config[ 'cache' ][ 'type' ] == 'memcache' )
+			BASE_Registry::set( 'cache', new CACHE_Manager( new CACHE_MemCache( self::$config[ 'cache' ][ 'cache_host' ], self::$config[ 'cache' ][ 'cache_port' ] ) ) );
 
 		//Получаем экземпляр класса кеширования из реестра
 		$this->cache = BASE_Registry::get( 'cache' );
@@ -56,15 +56,15 @@ class cache
 
 	public static function readSqlCache( $sql )
 	{
-		if( IsSet(self::$sql_cache[$sql]) )
-			return self::$sql_cache[$sql];
+		if( IsSet( self::$sql_cache[ $sql ] ) )
+			return self::$sql_cache[ $sql ];
 		else
 			return false;
 	}
 
 	public static function makeSqlCache( $sql, $result )
 	{
-		self::$sql_cache[$sql] = $result;
+		self::$sql_cache[ $sql ] = $result;
 	}
 
 }
@@ -89,7 +89,7 @@ class CACHE_File implements CACHE_ICache
 			flock( $f, LOCK_UN );
 		}
 		fclose( $f );
-		unset($str_val);
+		unset( $str_val );
 	}
 
 	public function load( $valueID, $time )
@@ -97,7 +97,7 @@ class CACHE_File implements CACHE_ICache
 		$file_name = $this->getPathCache( $valueID ) .
 			$this->nameCache( $valueID );
 		if( !file_exists( $file_name ) ) return false;
-		if( (filemtime( $file_name )+$time)<time() ) {
+		if( ( filemtime( $file_name )+$time )<time() ) {
 			return false;
 		}
 		if( !$data = file( $file_name ) ) return false;
@@ -153,12 +153,12 @@ class CACHE_MemCache implements CACHE_ICache
 	 * @param string $host     - хост сервера memcached
 	 * @param int    $port     - порт сервера memcached
 	 * @param int    $compress - [0,1], сжимать или нет данные перед
-	 * помещением в память
+	 *                         помещением в память
 	 */
 	public function __construct( $host, $port = 11211, $compress = 0 )
 	{
 		$this->memcache = memcache_connect( $host, $port );
-		$this->compress = ($compress) ? MEMCACHE_COMPRESSED : 0;
+		$this->compress = ( $compress ) ? MEMCACHE_COMPRESSED : 0;
 	}
 
 	public function load( $valueID, $timeLife )
@@ -203,26 +203,26 @@ class BASE_Registry
 
 	public static function set( $key, $var )
 	{
-		if( isset(self::$_vars[$key]) == true ) {
-			throw new Exception('Данная переменная [' . $key . '] уже существует!');
+		if( isset( self::$_vars[ $key ] ) == true ) {
+			throw new Exception( 'Данная переменная [' . $key . '] уже существует!' );
 		}
-		self::$_vars[$key] = $var;
+		self::$_vars[ $key ] = $var;
 
 		return true;
 	}
 
 	public static function get( $key )
 	{
-		if( isset(self::$_vars[$key]) == false ) {
+		if( isset( self::$_vars[ $key ] ) == false ) {
 			return null;
 		}
 
-		return self::$_vars[$key];
+		return self::$_vars[ $key ];
 	}
 
 	public static function remove( $var )
 	{
-		unset(self::$_vars[$key]);
+		unset( self::$_vars[ $key ] );
 	}
 }
 

@@ -1,0 +1,27 @@
+<h3>Вывод записей за период</h3>
+<p>
+    При обращении к любому стандартному компоненту, можно указать, за какой период мы хотим получить от него записи. Для этого в параметре date_public мы можем указать значения:
+</p>
+        <ol>
+            <li>today - записи после 0:00 текущего дня</li>
+            <li>day - записи за последние 24 часа</li>
+            <li>yesterday - записи с 0:00 по 23:59 за предыдущий день</li>
+            <li>week - записи за последние 7 дней</li>
+            <li>month - записи за последние 30 дней</li>
+            <li>year - записи с текущего числа прошлого года</li>
+        </ol>
+
+<textarea id="editor_modal1" class="editor_modal" name="code" style="display: none;">
+
+    <h1>Записи за вчера</h1>
+    {preload module=news data=recs date_public=yesterday result=recs}
+    {if $recs}
+    <ul>
+        {foreach from=$recs item=rec}
+        <li><a href="{$rec.url}">{$rec.title}</a></li>
+        {/foreach}
+    </ul>
+    {/if}
+
+</textarea>
+

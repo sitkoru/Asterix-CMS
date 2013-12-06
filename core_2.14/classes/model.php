@@ -29,6 +29,7 @@ class model
 	public static $modules;
 	public static $extensions;
 	public static $settings;
+	public static $cache;
 	public static $ask;
 	public static $last_sql;
 	public static $active_database = 'system';
@@ -45,6 +46,7 @@ class model
 		$this->log        = $log;
 		$this->log->model = $this;
 		$this->cache      = $cache;
+		self::$cache      = $cache;
 
 		self::$config = ModelLoader::loadConfig( $config );
 		self::$db     = ModelLoader::loadDatabase( self::$db );
@@ -53,7 +55,8 @@ class model
 		// Локальная авторизация, возможна до инициализации модулей
 		user::authUser_fast();
 
-		self::$modules    = ModelLoader::loadModules();
+		self::preloadModules();
+
 		self::$extensions = ModelLoader::loadExtensions();
 		self::$settings   = ModelLoader::loadSettings();
 		self::$ask        = ModelLoader::loadAsk();
@@ -73,6 +76,11 @@ class model
 		// Включаем все необходимые режимы совместимости
 		compatibility::init();
 
+	}
+
+	public function preloadModules()
+	{
+		ModelLoader::loadModules();
 	}
 
 	//Подключение базы данных
@@ -334,28 +342,29 @@ class model
 		$record = false;
 		if( is_object( model::$modules[ $prefered_module ] ) ) {
 			$structures = model::$modules[ $prefered_module ]->getStructures();
-			foreach( $structures as $structure_sid => $structure ) if( !$record ) {
+			if( $structures )
+				foreach( $structures as $structure_sid => $structure ) if( !$record ) {
 
-				$last_structure_sid = $structure_sid;
+					$last_structure_sid = $structure_sid;
 
-				if( $url )
-					$url_string = '/' . implode( '/', $url );
-				else
-					$url_string = '';
+					if( $url )
+						$url_string = '/' . implode( '/', $url );
+					else
+						$url_string = '';
 
-				$where = '(`url`="' . mysql_real_escape_string( $url_string ) . '"';
-				if( $prefered_module == 'start' )
-					$where .= ' or `url_alias`="' . mysql_real_escape_string( $url_string ) . '"';
-				$where .= ')';
+					$where = '(`url`="' . mysql_real_escape_string( $url_string ) . '"';
+					if( $prefered_module == 'start' )
+						$where .= ' or `url_alias`="' . mysql_real_escape_string( $url_string ) . '"';
+					$where .= ')';
 
-				$record = self::makeSql(
-					array(
-						'tables' => array( model::$modules[ $prefered_module ]->getCurrentTable( $last_structure_sid ) ),
-						'where'  => array( 'and' => array( 'url' => $where ) )
-					),
-					'getrow'
-				);
-			}
+					$record = self::makeSql(
+						array(
+							'tables' => array( model::$modules[ $prefered_module ]->getCurrentTable( $last_structure_sid ) ),
+							'where'  => array( 'and' => array( 'url' => $where ) )
+						),
+						'getrow'
+					);
+				}
 		}
 
 		// Нашли запись в стандартном модуле

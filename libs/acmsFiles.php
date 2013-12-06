@@ -21,8 +21,9 @@ class acmsFiles{
 			}
 		
 		// Файл из интернета
-		}elseif( substr_count( $tmp, 'http://' ) ){
+		}elseif( substr_count( $tmp, 'http://' ) || substr_count( $tmp, 'https://' ) ){
 			$content = file_get_contents( $tmp );
+
 			$f = fopen( $path, 'w' );
 			fwrite( $f, $content );
 			fclose( $f );

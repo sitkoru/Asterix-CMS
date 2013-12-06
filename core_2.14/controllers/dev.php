@@ -12,6 +12,11 @@ class controller_dev extends default_controller
 		error_reporting( E_ALL^E_DEPRECATED^E_NOTICE^E_STRICT );
 		ini_set( "display_errors", "on" );
 
+		if( !user::$info['admin']){
+			print('Не хватает доступа. Спасибо =)');
+			return false;
+		}
+
 		if( model::$ask->method == 'GET' ) {
 			$this->preloadGet();
 		} else {
