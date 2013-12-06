@@ -1,0 +1,20 @@
+<h3>Вывод облака тегов</h3>
+<p>
+    Облако тегов стало привычным поисковым компонентом сайтов с большим количеством разношёрстной информации. Само собой, в текущем движке есть штатная поддержка тегов, и инструмент для построения облака. Ниже представлен способ вывести на сайте облако тегов.
+</p>
+<p>При получении облака тегов не важно, к какому модулю вы обратитесь. В любом случае вы получите общее облако тегов.</p>
+
+<textarea id="editor_modal1" class="editor_modal" name="code" style="display: none;">
+
+    <h1>Облако тегов</h1>
+    <p>
+    {preload module=news data=tags result=tags}
+    {if count( $tags )}
+        {foreach from=$tags item=tag}{if strlen( $tag.title )}
+            <a href="/search.tags.html?q={$tag.title}" class="label" style="font-size: {$tag.font_size_round}" data-font-size-float="{$tag.font_size}">{$tag.title}</a>
+        {/if}{/foreach}
+    {/if}
+    </p>
+
+</textarea>
+

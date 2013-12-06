@@ -42,6 +42,14 @@ class field_type_user extends field_type_default
 		return $values[$value_sid];
 	}
 
+	//Получить простое значение по умолчанию из настроек поля
+	public function getDefaultValue( $settings = false )
+	{
+		if( user::$info['id'] )
+			return user::$info['id'];
+		else
+			return false;
+	}
 
 	//Получить развёрнутое значение из простого значения
 	public function getValueExplode( $value, $settings = false, $record = array() )

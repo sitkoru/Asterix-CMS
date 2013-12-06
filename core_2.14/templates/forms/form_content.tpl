@@ -45,7 +45,9 @@
 
 				<div class="form-actions">
 					<button type="submit" class="btn btn-large btn-primary">{if $action.button_title}{$action.button_title}{else}Сохранить изменения{/if}</button>&nbsp;
+<!--
 					<button type="reset" class="btn">Отмена</button>
+-->
 				</div>
 				
 			</fieldset>

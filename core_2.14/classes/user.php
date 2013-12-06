@@ -29,35 +29,35 @@ class user
 	{
 
 		//Logout
-		if( IsSet($_GET['logout']) ) {
+		if( IsSet( $_GET[ 'logout' ] ) ) {
 			self::logout();
 
-			header( 'Location: ' . $_SERVER['HTTP_REFERER'] );
+			header( 'Location: ' . $_SERVER[ 'HTTP_REFERER' ] );
 			exit();
 		}
 
 		//Авторизация
-		if( IsSet($_SESSION['auth']) ) {
+		if( IsSet( $_SESSION[ 'auth' ] ) ) {
 			self::authUser();
 
 			//Авторизация
-		} elseif( IsSet($_GET['openid_assoc_handle']) ) {
-			UnSet($_SESSION['auth']);
+		} elseif( IsSet( $_GET[ 'openid_assoc_handle' ] ) ) {
+			UnSet( $_SESSION[ 'auth' ] );
 			session_regenerate_id();
 			self::deleteCookie( 'auth' );
 			self::finish_OAuthUser();
 			//$this->authUser();
 
 			//Авторизация Oauth
-		} elseif( IsSet($_GET['login_oauth']) ) {
+		} elseif( IsSet( $_GET[ 'login_oauth' ] ) ) {
 			self::start_OAuthUser();
 
 			//Авторизация
-		} elseif( IsSet($_COOKIE['auth']) ) {
+		} elseif( IsSet( $_COOKIE[ 'auth' ] ) ) {
 			self::authUser();
 
 			//Авторизация
-		} elseif( IsSet($_GET['login']) && IsSet($_GET['auth']) ) {
+		} elseif( IsSet( $_GET[ 'login' ] ) && IsSet( $_GET[ 'auth' ] ) ) {
 			self::authUser();
 
 			//Начальные данные пользователя
@@ -73,7 +73,7 @@ class user
 	// Выйти из учётной записи
 	public static function logout()
 	{
-		UnSet($_SESSION['auth']);
+		UnSet( $_SESSION[ 'auth' ] );
 		session_regenerate_id();
 		self::deleteCookie( 'auth' );
 		self::$info = array(
@@ -94,14 +94,14 @@ class user
 	{
 
 		//Аккаунт-ссылка на основной аккаунт
-		if( $user['is_link_to'] ) {
+		if( $user[ 'is_link_to' ] ) {
 			$user = model::makeSql( array(
 				'tables' => array(
 					self::$table_name
 				),
 				'where'  => array(
 					'and' => array(
-						'`id`="' . intval( $user['is_link_to'] ) . '"',
+						'`id`="' . intval( $user[ 'is_link_to' ] ) . '"',
 						'`active`' => '1'
 					)
 				)
@@ -109,21 +109,21 @@ class user
 		}
 
 		//Проверка на пустой URL, такое могло случаться на движке моложе 2.14
-		if( !$user['url'] ) {
-			$user = model::$types['sid']->toValue( 'sid', $user );
-			model::execSql( 'update `' . self::$table_name . '` set `url`="/users/' . mysql_real_escape_string( $user['sid'] ) . '" where `id`=' . intval( $user['id'] ) . ' limit 1', 'update' );
+		if( !$user[ 'url' ] ) {
+			$user = model::$types[ 'sid' ]->toValue( 'sid', $user );
+			model::execSql( 'update `' . self::$table_name . '` set `url`="/users/' . mysql_real_escape_string( $user[ 'sid' ] ) . '" where `id`=' . intval( $user[ 'id' ] ) . ' limit 1', 'update' );
 		}
 
-		$_SESSION['auth'] = $user['session_id'];
+		$_SESSION[ 'auth' ] = $user[ 'session_id' ];
 
-		$user                      = default_module::insertRecordUrlType( $user );
-		user::$info                = $user;
-		user::$info['public_auth'] = md5( $user['session_id'] );
-		user::updateMyLoginDate( user::$info['id'] );
+		$user                        = default_module::insertRecordUrlType( $user );
+		user::$info                  = $user;
+		user::$info[ 'public_auth' ] = md5( $user[ 'session_id' ] );
+		user::updateMyLoginDate( user::$info[ 'id' ] );
 		//user::$info = default_module::insertRecordUrlType(user::$info);
 
-		if( IsSet($_GET['login']) || IsSet($_GET['openid']) || IsSet($_GET['openid.ns']) )
-			if( !IsSet($_SESSION['oauth_referer']) ) {
+		if( IsSet( $_GET[ 'login' ] ) || IsSet( $_GET[ 'openid' ] ) || IsSet( $_GET[ 'openid.ns' ] ) )
+			if( !IsSet( $_SESSION[ 'oauth_referer' ] ) ) {
 				header( 'Location: /' );
 				exit();
 			}
@@ -138,12 +138,12 @@ class user
 	public static function authUser_long()
 	{
 		if(
-			IsSet($_GET['openid_assoc_handle']) and
-			IsSet($_GET['openid_identity']) and
-			IsSet($_GET['openid_mode']) and
-			IsSet($_GET['openid_return_to']) and
-			IsSet($_GET['openid_sig']) and
-			IsSet($_GET['openid_signed'])
+			IsSet( $_GET[ 'openid_assoc_handle' ] ) and
+			IsSet( $_GET[ 'openid_identity' ] ) and
+			IsSet( $_GET[ 'openid_mode' ] ) and
+			IsSet( $_GET[ 'openid_return_to' ] ) and
+			IsSet( $_GET[ 'openid_sig' ] ) and
+			IsSet( $_GET[ 'openid_signed' ] )
 		) {
 			self::finish_OAuthUser();
 		}
@@ -155,12 +155,12 @@ class user
 
 		//Возврат авторизации по OpenID
 		if(
-			IsSet($_GET['openid_assoc_handle']) and
-			IsSet($_GET['openid_identity']) and
-			IsSet($_GET['openid_mode']) and
-			IsSet($_GET['openid_return_to']) and
-			IsSet($_GET['openid_sig']) and
-			IsSet($_GET['openid_signed'])
+			IsSet( $_GET[ 'openid_assoc_handle' ] ) and
+			IsSet( $_GET[ 'openid_identity' ] ) and
+			IsSet( $_GET[ 'openid_mode' ] ) and
+			IsSet( $_GET[ 'openid_return_to' ] ) and
+			IsSet( $_GET[ 'openid_sig' ] ) and
+			IsSet( $_GET[ 'openid_signed' ] )
 		) {
 			self::finish_OAuthUser();
 
@@ -175,23 +175,23 @@ class user
 	{
 
 		//Авторизация по логину/паролю
-		if( IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
+		if( IsSet( $_POST[ 'login' ] ) && IsSet( $_POST[ 'password' ] ) && ( !IsSet( $_POST[ 'title' ] ) ) ) {
 
-			$user = model::$types['password']->tryAuth( 'login', $_POST );
+			$user = model::$types[ 'password' ]->tryAuth( 'login', $_POST );
 
-			UnSet($_POST['login']);
-			UnSet($_POST['password']);
+			UnSet( $_POST[ 'login' ] );
+			UnSet( $_POST[ 'password' ] );
 
 			//Залогинелся
 			if( $user ) {
 
-				self::setCookie( 'auth', $user['session_id'] );
+				self::setCookie( 'auth', $user[ 'session_id' ] );
 				self::all_ok( $user );
-				$_SESSION['just_logged'] = date( 'H:i:s', strtotime( '+10 seconds' ) );
+				$_SESSION[ 'just_logged' ] = date( 'H:i:s', strtotime( '+10 seconds' ) );
 
 				$result = array(
 					'result' => 'redirect',
-					'url'    => $_SERVER['HTTP_REFERER'],
+					'url'    => $_SERVER[ 'HTTP_REFERER' ],
 					'close'  => true,
 				);
 				//Не подошло
@@ -205,32 +205,32 @@ class user
 			}
 
 			//Ответ
-			if( $redirect && IsSet($_SERVER['HTTP_X_REQUESTED_WITH']) && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest' ) {
-				print(json_encode( $result ));
+			if( $redirect && IsSet( $_SERVER[ 'HTTP_X_REQUESTED_WITH' ] ) && !empty( $_SERVER[ 'HTTP_X_REQUESTED_WITH' ] ) && strtolower( $_SERVER[ 'HTTP_X_REQUESTED_WITH' ] ) == 'xmlhttprequest' ) {
+				print( json_encode( $result ) );
 				exit();
 			}
 
 			//Авторизация по GET-параметру
-		} elseif( IsSet($_GET['login']) && IsSet($_GET['auth']) ) {
-			$user = model::$types['password']->tryAuth( 'auth', $_POST );
-			UnSet($_GET['login']);
-			UnSet($_GET['auth']);
+		} elseif( IsSet( $_GET[ 'login' ] ) && IsSet( $_GET[ 'auth' ] ) ) {
+			$user = model::$types[ 'password' ]->tryAuth( 'auth', $_POST );
+			UnSet( $_GET[ 'login' ] );
+			UnSet( $_GET[ 'auth' ] );
 
 			//Авторизация по сессии
-		} elseif( IsSet($_SESSION['auth']) ) {
-			$user = model::$types['password']->tryAuth( 'session', $_SESSION['auth'] );
+		} elseif( IsSet( $_SESSION[ 'auth' ] ) ) {
+			$user = model::$types[ 'password' ]->tryAuth( 'session', $_SESSION[ 'auth' ] );
 
 			//Авторизация по Cookies
-		} elseif( IsSet($_COOKIE['auth']) ) {
-			$user = model::$types['password']->tryAuth( 'session', $_COOKIE['auth'] );
+		} elseif( IsSet( $_COOKIE[ 'auth' ] ) ) {
+			$user = model::$types[ 'password' ]->tryAuth( 'session', $_COOKIE[ 'auth' ] );
 		}
 
 		// Удачно
 		if( $user ) {
 
-			self::setCookie( 'auth', $user['session_id'] );
+			self::setCookie( 'auth', $user[ 'session_id' ] );
 			self::all_ok( $user );
-			$_SESSION['just_logged'] = date( 'H:i:s', strtotime( '+10 seconds' ) );
+			$_SESSION[ 'just_logged' ] = date( 'H:i:s', strtotime( '+10 seconds' ) );
 
 			// Не удачно
 		} else {
@@ -248,10 +248,10 @@ class user
 	//Установка Cookie
 	private static function setCookie( $name, $value )
 	{
-		if( !IsSet($_POST['no_cookie']) ) {
+		if( !IsSet( $_POST[ 'no_cookie' ] ) ) {
 			$time   = time()+60*60*24*365;
 			$path   = '/';
-			$domain = '.' . $_SERVER['HTTP_HOST'];
+			$domain = '.' . $_SERVER[ 'HTTP_HOST' ];
 			setcookie( $name, $value, $time, $path, $domain );
 		}
 	}
@@ -260,10 +260,10 @@ class user
 	public static function deleteCookie( $name )
 	{
 
-		if( !model::$settings['test_mode'] ) {
+		if( !model::$settings[ 'test_mode' ] ) {
 			$time   = time()-3600;
 			$path   = '/';
-			$domain = '.' . $_SERVER['HTTP_HOST'];
+			$domain = '.' . $_SERVER[ 'HTTP_HOST' ];
 			setcookie( $name, '', $time, $path, $domain );
 		}
 
@@ -274,32 +274,32 @@ class user
 	private static function start_OAuthUser()
 	{
 
-		$provider = $_GET['login_oauth'];
+		$provider = $_GET[ 'login_oauth' ];
 
-		if( !IsSet($_SESSION['oauth_referer']) ) {
-			$_SESSION['oauth_referer'] = $_SERVER['HTTP_REFERER'];
-			if( IsSet($_GET['anchor']) )
-				$_SESSION['oauth_referer'] .= '#' . $_GET['anchor'];
+		if( !IsSet( $_SESSION[ 'oauth_referer' ] ) ) {
+			$_SESSION[ 'oauth_referer' ] = $_SERVER[ 'HTTP_REFERER' ];
+			if( IsSet( $_GET[ 'anchor' ] ) )
+				$_SESSION[ 'oauth_referer' ] .= '#' . $_GET[ 'anchor' ];
 		}
 
 		if( in_array( $provider, array( 'vk.com', 'vk' ) ) ) {
-			if( IsSet($_GET['error']) )
+			if( IsSet( $_GET[ 'error' ] ) )
 				return false;
 
 			//дефолтные настройки из конфига
-			$app_id     = model::$settings['oauth_vk_id'];
-			$app_secret = model::$settings['oauth_vk_s_key'];
+			$app_id     = model::$settings[ 'oauth_vk_id' ];
+			$app_secret = model::$settings[ 'oauth_vk_s_key' ];
 			$my_url     = 'http://' . model::$ask->host . '/?login_oauth=vk';
 
 			session_start();
-			$code = $_REQUEST["code"];
+			$code = $_REQUEST[ "code" ];
 
 			//получаем код доступа
-			if( empty($code) ) {
-				$_SESSION['state'] = md5( uniqid( rand(), TRUE ) ); //CSRF protection
-				$dialog_url        = 'https://oauth.vk.com/authorize?client_id=' . $app_id . '&scope=notify,friends,photos,status,groups,offline&display=page&response_type=code&redirect_uri=http://' . model::$ask->host . '/?login_oauth=vk';
+			if( empty( $code ) ) {
+				$_SESSION[ 'state' ] = md5( uniqid( rand(), TRUE ) ); //CSRF protection
+				$dialog_url          = 'https://oauth.vk.com/authorize?client_id=' . $app_id . '&scope=notify,friends,photos,status,groups,offline&display=page&response_type=code&redirect_uri=http://' . model::$ask->host . '/?login_oauth=vk';
 				//$dialog_url = 'http://api.vk.com/oauth/authorize?client_id='.$app_id.'&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
-				echo("<script> top.location.href='" . $dialog_url . "'</script>");
+				echo( "<script> top.location.href='" . $dialog_url . "'</script>" );
 			}
 
 			//Получаем Token
@@ -309,69 +309,69 @@ class user
 			$token = (array)json_decode( $f );
 
 			//Запрос данных
-			$url2  = "https://api.vk.com/method/getProfiles?uid=" . $token['user_id'] . "&access_token=" . $token['access_token'] . "&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
+			$url2  = "https://api.vk.com/method/getProfiles?uid=" . $token[ 'user_id' ] . "&access_token=" . $token[ 'access_token' ] . "&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
 			$datas = json_decode( file_get_contents( $url2 ) );
 			$datas = (array)$datas;
 
-			if( !IsSet($datas['response']) )
+			if( !IsSet( $datas[ 'response' ] ) )
 				return false;
 
-			$datas = (array)$datas['response'][0];
+			$datas = (array)$datas[ 'response' ][ 0 ];
 
 			self::$info = array(
-				'login'      => 'vk' . $datas['uid'],
-				'password'   => $datas['uid'] . 'thisismyverybigwordformd5',
+				'login'      => 'vk' . $datas[ 'uid' ],
+				'password'   => $datas[ 'uid' ] . 'thisismyverybigwordformd5',
 				'admin'      => false,
-				'title'      => $datas['first_name'] . ' ' . $datas['last_name'],
-				'img'        => $datas['photo_big'],
+				'title'      => $datas[ 'first_name' ] . ' ' . $datas[ 'last_name' ],
+				'img'        => $datas[ 'photo_big' ],
 				'session_id' => session_id(),
 			);
 
-			$_POST['login']    = self::$info['login'];
-			$_POST['password'] = self::$info['password'];
+			$_POST[ 'login' ]    = self::$info[ 'login' ];
+			$_POST[ 'password' ] = self::$info[ 'password' ];
 
 			//Авторизуем
 			self::authUser_localhost();
-			$login = model::$types['sid']->correctValue( self::$info['login'] );
+			$login = model::$types[ 'sid' ]->correctValue( self::$info[ 'login' ] );
 
 			//Регистрируем
-			if( !self::$info['id'] ) {
+			if( !self::$info[ 'id' ] ) {
 
 				self::$info = array(
-					'sid'        => model::$types['sid']->correctValue( 'vk' . $datas['uid'] ),
+					'sid'        => model::$types[ 'sid' ]->correctValue( 'vk' . $datas[ 'uid' ] ),
 					'shw'        => true,
 					'active'     => true,
-					'admin'      => intval( model::$config['openid'][$_GET['login_oauth']] == 'admin' ),
+					'admin'      => intval( model::$config[ 'openid' ][ $_GET[ 'login_oauth' ] ] == 'admin' ),
 					'session_id' => session_id(),
-					'login'      => 'vk' . $datas['uid'],
-					'password'   => $datas['uid'] . 'thisismyverybigwordformd5',
+					'login'      => 'vk' . $datas[ 'uid' ],
+					'password'   => $datas[ 'uid' ] . 'thisismyverybigwordformd5',
 					'admin'      => false,
-					'title'      => $datas['first_name'] . ' ' . $datas['last_name'],
-					'img'        => array( 'tmp_name' => $datas['photo_big'] ),
+					'title'      => $datas[ 'first_name' ] . ' ' . $datas[ 'last_name' ],
+					'img'        => array( 'tmp_name' => $datas[ 'photo_big' ] ),
 					'session_id' => session_id(),
 				);
 
 				// День рождения, если требуется
-				if( IsSet(model::$modules['users']->structure['rec']['fields']['birthday']) ) {
-					$bdate                  = explode( '.', $datas['bdate'] );
-					$bdate                  = date( "Y-m-d", strtotime( $bdate[2] . '-' . $bdate[1] . '-' . $bdate[0] ) );
-					self::$info['birthday'] = array( 'date' => $bdate );
+				if( IsSet( model::$modules[ 'users' ]->structure[ 'rec' ][ 'fields' ][ 'birthday' ] ) ) {
+					$bdate                    = explode( '.', $datas[ 'bdate' ] );
+					$bdate                    = date( "Y-m-d", strtotime( $bdate[ 2 ] . '-' . $bdate[ 1 ] . '-' . $bdate[ 0 ] ) );
+					self::$info[ 'birthday' ] = array( 'date' => $bdate );
 				}
 
 				// Страница на ВК
-				if( IsSet(model::$modules['users']->structure['rec']['fields']['web']) )
-					self::$info['web'] = 'http://vk.com/id' . $datas['uid'];
+				if( IsSet( model::$modules[ 'users' ]->structure[ 'rec' ][ 'fields' ][ 'web' ] ) )
+					self::$info[ 'web' ] = 'http://vk.com/id' . $datas[ 'uid' ];
 
 				// Есть поле для хранения OpenID-данных - записываем
-				if( IsSet(model::$modules['users']->structure['rec']['fields']['openid_data']) )
-					self::$info['openid_data'] = json_encode( $datas );
+				if( IsSet( model::$modules[ 'users' ]->structure[ 'rec' ][ 'fields' ][ 'openid_data' ] ) )
+					self::$info[ 'openid_data' ] = json_encode( $datas );
 
 				//Первый пользователь в системе всегда становится админом
 				if( self::ifFirstThenAdmin() )
-					self::$info['admin'] = true;
+					self::$info[ 'admin' ] = true;
 
-				$_POST['login']    = self::$info['login'];
-				$_POST['password'] = self::$info['password'];
+				$_POST[ 'login' ]    = self::$info[ 'login' ];
+				$_POST[ 'password' ] = self::$info[ 'password' ];
 
 				model::addRecord( 'users', 'rec', self::$info );
 				self::authUser_localhost();
@@ -379,109 +379,109 @@ class user
 			}
 
 			//На главную
-			header( 'Location: ' . $_SESSION['oauth_referer'] );
-			UnSet($_SESSION['oauth_referer']);
+			header( 'Location: ' . $_SESSION[ 'oauth_referer' ] );
+			UnSet( $_SESSION[ 'oauth_referer' ] );
 			exit();
 
 
 		} elseif( in_array( $provider, array( 'facebook.com', 'facebook' ) ) ) {
-			if( IsSet($_GET['error']) )
+			if( IsSet( $_GET[ 'error' ] ) )
 				return false;
 
 			//дефолтные настройки из конфига
-			$app_id     = model::$settings['oauth_facebook_id'];
-			$app_secret = model::$settings['oauth_facebook_s_key'];
+			$app_id     = model::$settings[ 'oauth_facebook_id' ];
+			$app_secret = model::$settings[ 'oauth_facebook_s_key' ];
 			$my_url     = 'http://' . model::$ask->host . '/?login_oauth=facebook';
 
 			session_start();
-			$code = $_REQUEST["code"];
+			$code = $_REQUEST[ "code" ];
 
 			//получаем код доступа
-			if( empty($code) ) {
-				$_SESSION['state'] = md5( uniqid( rand(), TRUE ) ); //CSRF protection
+			if( empty( $code ) ) {
+				$_SESSION[ 'state' ] = md5( uniqid( rand(), TRUE ) ); //CSRF protection
 //				$dialog_url = 'https://www.facebook.com/dialog/oauth?client_id='.$app_id.'&redirect_uri='.urlencode($my_url).'&scope=email&response_type=token';
-				$dialog_url = "http://www.facebook.com/dialog/oauth?client_id=" . $app_id . "&redirect_uri=" . urlencode( $my_url ) . "&scope=email&state=" . $_SESSION['state'];
-				echo("<script> top.location.href='" . $dialog_url . "'</script>");
+				$dialog_url = "http://www.facebook.com/dialog/oauth?client_id=" . $app_id . "&redirect_uri=" . urlencode( $my_url ) . "&scope=email&state=" . $_SESSION[ 'state' ];
+				echo( "<script> top.location.href='" . $dialog_url . "'</script>" );
 			}
 
 			//получаем токен
-			if( $_REQUEST['state'] == $_SESSION['state'] ) {
+			if( $_REQUEST[ 'state' ] == $_SESSION[ 'state' ] ) {
 
 				$token_url = "https://graph.facebook.com/oauth/access_token?" . "client_id=" . $app_id . "&redirect_uri=" . urlencode( $my_url ) . "&client_secret=" . $app_secret . "&code=" . $code;
 				$response  = file_get_contents( $token_url );
 				$params    = null;
 				parse_str( $response, $params );
 
-				$graph_url = "https://graph.facebook.com/me?access_token=" . $params['access_token'];
+				$graph_url = "https://graph.facebook.com/me?access_token=" . $params[ 'access_token' ];
 
 				//получаем данные пользователя с помощью токена
 				$datas = json_decode( file_get_contents( $graph_url ) );
 				$datas = (array)$datas;
 
 				self::$info = array(
-					'login'      => 'facebook' . $datas['id'],
-					'password'   => $datas['id'] . 'thisismyverybigwordformd5',
+					'login'      => 'facebook' . $datas[ 'id' ],
+					'password'   => $datas[ 'id' ] . 'thisismyverybigwordformd5',
 					'admin'      => false,
-					'title'      => $datas['name'],
+					'title'      => $datas[ 'name' ],
 					'avatar'     => NULL,
 					'photo'      => NULL,
-					'email'      => $datas['email'],
+					'email'      => $datas[ 'email' ],
 					'session_id' => session_id(),
 				);
 
-				$_POST['login']    = self::$info['login'];
-				$_POST['password'] = self::$info['password'];
+				$_POST[ 'login' ]    = self::$info[ 'login' ];
+				$_POST[ 'password' ] = self::$info[ 'password' ];
 
 				//Авторизуем
 				self::authUser_localhost();
-				$login = model::$types['sid']->correctValue( self::$info['login'] );
+				$login = model::$types[ 'sid' ]->correctValue( self::$info[ 'login' ] );
 
 				//Регистрируем
-				if( !self::$info['id'] ) {
+				if( !self::$info[ 'id' ] ) {
 
 					self::$info = array(
-						'sid'        => model::$types['sid']->correctValue( 'facebook' . $datas['id'] ),
+						'sid'        => model::$types[ 'sid' ]->correctValue( 'facebook' . $datas[ 'id' ] ),
 						'shw'        => true,
 						'active'     => true,
-						'admin'      => intval( model::$config['openid'][$_GET['login_oauth']] == 'admin' ),
+						'admin'      => intval( model::$config[ 'openid' ][ $_GET[ 'login_oauth' ] ] == 'admin' ),
 						'session_id' => session_id(),
-						'login'      => 'facebook' . $datas['id'],
-						'password'   => $datas['id'] . 'thisismyverybigwordformd5',
+						'login'      => 'facebook' . $datas[ 'id' ],
+						'password'   => $datas[ 'id' ] . 'thisismyverybigwordformd5',
 						'admin'      => false,
-						'title'      => $datas['name'],
-						'img'        => $datas['profile_image_url'],
+						'title'      => $datas[ 'name' ],
+						'img'        => $datas[ 'profile_image_url' ],
 						'session_id' => session_id(),
 					);
 
 					// Есть поле для хранения OpenID-данных - записываем
-					if( IsSet(model::$modules['users']->structure['rec']['fields']['openid_data']) )
-						self::$info['openid_data'] = json_encode( $datas );
+					if( IsSet( model::$modules[ 'users' ]->structure[ 'rec' ][ 'fields' ][ 'openid_data' ] ) )
+						self::$info[ 'openid_data' ] = json_encode( $datas );
 
 					//Первый пользователь в системе всегда становится админом
 					if( self::ifFirstThenAdmin() )
-						self::$info['admin'] = true;
+						self::$info[ 'admin' ] = true;
 
-					$_POST['login']    = self::$info['login'];
-					$_POST['password'] = self::$info['password'];
+					$_POST[ 'login' ]    = self::$info[ 'login' ];
+					$_POST[ 'password' ] = self::$info[ 'password' ];
 
 					model::addRecord( 'users', 'rec', self::$info );
 					self::authUser_localhost();
 				}
 
-				header( 'Location: ' . $_SESSION['oauth_referer'] );
-				UnSet($_SESSION['oauth_referer']);
+				header( 'Location: ' . $_SESSION[ 'oauth_referer' ] );
+				UnSet( $_SESSION[ 'oauth_referer' ] );
 				exit();
 
 			} else
-				echo("Произошла ошибка авторизации. Попробуйте еще раз.");
+				echo( "Произошла ошибка авторизации. Попробуйте еще раз." );
 			exit();
 
 
 		} elseif( in_array( $provider, array( 'twitter.com', 'twitter' ) ) ) {
 
 			//Дефолтные настройки
-			$TWITTER_CONSUMER_KEY    = model::$settings['oauth_twitter_id'];
-			$TWITTER_CONSUMER_SECRET = model::$settings['oauth_twitter_s_key'];
+			$TWITTER_CONSUMER_KEY    = model::$settings[ 'oauth_twitter_id' ];
+			$TWITTER_CONSUMER_SECRET = model::$settings[ 'oauth_twitter_s_key' ];
 			$TWITTER_URL_CALLBACK    = 'http://' . model::$ask->host . '/?login_oauth=twitter';
 
 			$URL_REQUEST_TOKEN = 'https://api.twitter.com/oauth/request_token';
@@ -489,7 +489,7 @@ class user
 			$URL_ACCESS_TOKEN  = 'https://api.twitter.com/oauth/access_token';
 			$URL_ACCOUNT_DATA  = 'http://twitter.com/users/show';
 
-			if( !IsSet($_GET['oauth_verifier']) ) {
+			if( !IsSet( $_GET[ 'oauth_verifier' ] ) ) {
 
 				// рандомная строка (для безопасности)
 				$oauth_nonce = md5( uniqid( rand(), true ) );
@@ -524,8 +524,8 @@ class user
 				$response = file_get_contents( $url );
 				parse_str( $response, $result );
 
-				$oauth_token        = $result['oauth_token'];
-				$oauth_token_secret = $result['oauth_token_secret'];
+				$oauth_token        = $result[ 'oauth_token' ];
+				$oauth_token_secret = $result[ 'oauth_token_secret' ];
 
 				self::setCookie( 'oauth_token_secret', $oauth_token_secret );
 
@@ -542,14 +542,14 @@ class user
 				$oauth_timestamp = time();
 
 				// oauth_token
-				$oauth_token = $_GET['oauth_token'];
+				$oauth_token = $_GET[ 'oauth_token' ];
 
 				// oauth_verifier
-				$oauth_verifier = $_GET['oauth_verifier'];
+				$oauth_verifier = $_GET[ 'oauth_verifier' ];
 
 				// oauth_token_secret получаем из сессии, которую зарегистрировали
 				// во время запроса request_token
-				$oauth_token_secret = $_COOKIE['oauth_token_secret'];
+				$oauth_token_secret = $_COOKIE[ 'oauth_token_secret' ];
 
 				$oauth_base_text = "GET&";
 				$oauth_base_text .= urlencode( $URL_ACCESS_TOKEN ) . "&";
@@ -579,76 +579,82 @@ class user
 
 				parse_str( $response, $result );
 
-				$user_id = $result['user_id'];
+				$user_id    = $result[ 'user_id' ];
+				$user_title = $result[ 'screen_name' ];
 
-				$url      = 'https://api.twitter.com/1/users/show.json?user_id=' . $result['user_id'] . '&screen_name=' . $result['screen_name'] . '&include_entities=true';
-				$response = file_get_contents( $url );
+				if( !IsSet( $result[ 'user_id' ] ) ) {
+					print( 'Авторизация через Twitter не удалась.' );
+					exit();
+				}
 
-				$datas = json_decode( $response );
-				$datas = (array)$datas;
+				// avatar
+				$user_url = 'https://twitter.com/' . $user_title;
+				$user_img = file_get_contents( $user_url );
+				$user_img = substr( $user_img, strpos( $user_img, 'js-action-profile-avatar' ) );
+				$user_img = substr( $user_img, strpos( $user_img, 'src="' )+strlen( 'src="' ) );
+				$user_img = substr( $user_img, 0, strpos( $user_img, '"' ) );
+				$user_img = str_replace( '_normal', '', $user_img );
 
 				self::$info = array(
-					'login'      => 'twitter' . $datas['id'],
-					'password'   => $datas['id'] . 'thisismyverybigwordformd5',
+					'login'      => 'twitter' . $user_id,
+					'password'   => $user_id . 'thisismyverybigwordformd5',
 					'admin'      => false,
-					'title'      => $datas['name'],
-					'avatar'     => $datas['profile_image_url'],
-					'photo'      => $datas['profile_image_url'],
+					'title'      => $user_title,
+					'avatar'     => $user_img,
+					'photo'      => $user_img,
 					'session_id' => session_id(),
 				);
 
-				$_POST['login']    = self::$info['login'];
-				$_POST['password'] = self::$info['password'];
+				$_POST[ 'login' ]    = self::$info[ 'login' ];
+				$_POST[ 'password' ] = self::$info[ 'password' ];
 
 				//Авторизуем
 				self::authUser_localhost();
 
 				//Регистрируем
-				if( !self::$info['id'] ) {
+				if( !self::$info[ 'id' ] ) {
 
 					self::$info = array(
-						'sid'        => model::$types['sid']->correctValue( 'twitter' . $datas['id'] ),
+						'sid'        => model::$types[ 'sid' ]->correctValue( 'twitter' . $user_id ),
 						'shw'        => true,
 						'active'     => true,
-						'admin'      => intval( model::$config['openid'][$_GET['login_oauth']] == 'admin' ),
+						'admin'      => intval( model::$config[ 'openid' ][ $_GET[ 'login_oauth' ] ] == 'admin' ),
 						'session_id' => session_id(),
-						'login'      => 'twitter' . $datas['id'],
-						'password'   => $datas['id'] . 'thisismyverybigwordformd5',
-						'admin'      => false,
-						'title'      => $datas['name'],
-						'img'        => array( 'tmp_name' => $datas['profile_image_url'] ),
-						'session_id' => session_id(),
+						'login'      => 'twitter' . $user_id,
+						'password'   => $user_id . 'thisismyverybigwordformd5',
+						'title'      => $user_title,
+						'img'        => array( 'tmp_name' => $user_img ),
 					);
 
 					// Страница
-					if( IsSet(model::$modules['users']->structure['rec']['fields']['web']) )
-						self::$info['web'] = $datas['url'];
+					if( IsSet( model::$modules[ 'users' ]->structure[ 'rec' ][ 'fields' ][ 'web' ] ) )
+						self::$info[ 'web' ] = $user_url;
 
 					// Блок
-					if( IsSet(model::$modules['users']->structure['rec']['fields']['blog']) )
-						self::$info['blog'] = 'https://twitter.com/' . $datas['screen_name'];
-
-					// Есть поле для хранения OpenID-данных - записываем
-					if( IsSet(model::$modules['users']->structure['rec']['fields']['openid_data']) )
-						self::$info['openid_data'] = json_encode( $datas );
-
+					if( IsSet( model::$modules[ 'users' ]->structure[ 'rec' ][ 'fields' ][ 'blog' ] ) )
+						self::$info[ 'blog' ] = 'https://twitter.com/' . $user_title;
+					/*
+										// Есть поле для хранения OpenID-данных - записываем
+										if( IsSet( model::$modules[ 'users' ]->structure[ 'rec' ][ 'fields' ][ 'openid_data' ] ) )
+											self::$info[ 'openid_data' ] = json_encode( $datas );
+					*/
 					//Первый пользователь в системе всегда становится админом
 					if( self::ifFirstThenAdmin() )
-						self::$info['admin'] = true;
+						self::$info[ 'admin' ] = true;
 
-					$_POST['login']    = self::$info['login'];
-					$_POST['password'] = self::$info['password'];
+					$_POST[ 'login' ]    = self::$info[ 'login' ];
+					$_POST[ 'password' ] = self::$info[ 'password' ];
 
-					model::$modules['users']->addRecord( self::$info );
+					model::$modules[ 'users' ]->addRecord( self::$info );
 					self::authUser_localhost();
-
-					exit();
 
 				}
 			}
 
-			header( 'Location: ' . $_SESSION['oauth_referer'] );
-			UnSet($_SESSION['oauth_referer']);
+			if( !IsSet( $_SESSION[ 'oauth_referer' ] ) )
+				$_SESSION[ 'oauth_referer' ] = '/';
+			header( 'Location: ' . $_SESSION[ 'oauth_referer' ] );
+			UnSet( $_SESSION[ 'oauth_referer' ] );
 			exit();
 
 
@@ -677,8 +683,8 @@ class user
 	private static function finish_OAuthUser()
 	{
 
-		require_once(model::$config['path']['libraries'] . '/openid.php');
-		$openid = new LightOpenID('http://' . $_SERVER['HTTP_HOST']);
+		require_once( model::$config[ 'path' ][ 'libraries' ] . '/openid.php' );
+		$openid = new LightOpenID( 'http://' . $_SERVER[ 'HTTP_HOST' ] );
 
 		try {
 			if( !$openid->mode ) {
@@ -689,23 +695,23 @@ class user
 				$params = $openid->getAttributes();
 
 				//Проверяем email на наличие нужного домена
-				if( substr_count( $params['contact/email'], '@' ) === 1 ) {
+				if( substr_count( $params[ 'contact/email' ], '@' ) === 1 ) {
 
-					$openid_domain = parse_url( $_GET['openid_op_endpoint'] );
-					$openid_domain = $openid_domain['host'];
+					$openid_domain = parse_url( $_GET[ 'openid_op_endpoint' ] );
+					$openid_domain = $openid_domain[ 'host' ];
 					$openid_domain = str_replace( 'openid.', '', $openid_domain );
 					$openid_domain = str_replace( 'www.', '', $openid_domain );
 
-					if( IsSet(model::$settings['oauth_openid']) )
-						if( in_array( $openid_domain, model::$settings['oauth_openid'] ) ) {
+					if( IsSet( model::$settings[ 'oauth_openid' ] ) )
+						if( in_array( $openid_domain, model::$settings[ 'oauth_openid' ] ) ) {
 
 							//Смотрим на конфиг, давать ли пользователям этого домена админа
 							$openid_user_admin = false;
-							if( IsSet($params['contact/email']) )
-								if( substr_count( $params['contact/email'], '@' ) ) {
-									$user_email_host = substr( $params['contact/email'], strpos( $params['contact/email'], '@' )+1 );
-									if( IsSet(model::$config['openid'][$user_email_host]) )
-										if( model::$config['openid'][$user_email_host] == 'admin' )
+							if( IsSet( $params[ 'contact/email' ] ) )
+								if( substr_count( $params[ 'contact/email' ], '@' ) ) {
+									$user_email_host = substr( $params[ 'contact/email' ], strpos( $params[ 'contact/email' ], '@' )+1 );
+									if( IsSet( model::$config[ 'openid' ][ $user_email_host ] ) )
+										if( model::$config[ 'openid' ][ $user_email_host ] == 'admin' )
 											$openid_user_admin = true;
 								}
 							/*
@@ -713,57 +719,57 @@ class user
 																$openid_user_admin = true;
 							*/
 
-							$login = model::$types['sid']->correctValue( $openid_domain . '_' . $params['contact/email'] );
-							if( IsSet($params['namePerson/first']) )
-								$title = $params['namePerson/first'] . ' ' . $params['namePerson/last'];
+							$login = model::$types[ 'sid' ]->correctValue( $openid_domain . '_' . $params[ 'contact/email' ] );
+							if( IsSet( $params[ 'namePerson/first' ] ) )
+								$title = $params[ 'namePerson/first' ] . ' ' . $params[ 'namePerson/last' ];
 							else
-								$title = $params['namePerson'];
+								$title = $params[ 'namePerson' ];
 
 							//Начинаем регить
-							self::$info        = array(
+							self::$info          = array(
 								'login'      => $login,
-								'password'   => $_GET['openid_identity'], //$openid->data['openid_assoc_handle'],
+								'password'   => $_GET[ 'openid_identity' ], //$openid->data['openid_assoc_handle'],
 								'admin'      => $openid_user_admin,
 								'title'      => $title,
-								'email'      => $params['contact/email'],
+								'email'      => $params[ 'contact/email' ],
 								'session_id' => session_id(),
 							);
-							$_POST['login']    = self::$info['login'];
-							$_POST['password'] = self::$info['password'];
+							$_POST[ 'login' ]    = self::$info[ 'login' ];
+							$_POST[ 'password' ] = self::$info[ 'password' ];
 
 							//Авторизуем
 							$user = self::$info;
 							self::authUser_localhost();
 
 							//Регистрируем
-							if( !self::$info['id'] ) {
-								self::$info               = $user;
-								self::$info['sid']        = $login;
-								self::$info['shw']        = true;
-								self::$info['active']     = true;
-								self::$info['admin']      = $openid_user_admin;
-								self::$info['session_id'] = session_id();
+							if( !self::$info[ 'id' ] ) {
+								self::$info                 = $user;
+								self::$info[ 'sid' ]        = $login;
+								self::$info[ 'shw' ]        = true;
+								self::$info[ 'active' ]     = true;
+								self::$info[ 'admin' ]      = $openid_user_admin;
+								self::$info[ 'session_id' ] = session_id();
 
 								//Первый пользователь в системе всегда становится админом
 								if( self::ifFirstThenAdmin() )
-									self::$info['admin'] = true;
+									self::$info[ 'admin' ] = true;
 
-								$_POST['login']    = self::$info['login'];
-								$_POST['password'] = self::$info['password'];
+								$_POST[ 'login' ]    = self::$info[ 'login' ];
+								$_POST[ 'password' ] = self::$info[ 'password' ];
 
 								//Проверяем уже заполненный профиль указанного человека
-								if( strlen( self::$info['email'] )>5 ) {
-									$old = model::execSql( 'select `id` from `' . self::$table_name . '` where `email`="' . mysql_real_escape_string( self::$info['email'] ) . '"', 'getrow' );
+								if( strlen( self::$info[ 'email' ] )>5 ) {
+									$old = model::execSql( 'select `id` from `' . self::$table_name . '` where `email`="' . mysql_real_escape_string( self::$info[ 'email' ] ) . '"', 'getrow' );
 									if( $old )
-										self::$info['is_link_to'] = $old['id'];
+										self::$info[ 'is_link_to' ] = $old[ 'id' ];
 								}
 
 								model::addRecord( 'users', 'rec', self::$info );
 								self::authUser_localhost();
 							}
 
-							header( 'Location: ' . $_SESSION['oauth_referer'] );
-							UnSet($_SESSION['oauth_referer']);
+							header( 'Location: ' . $_SESSION[ 'oauth_referer' ] );
+							UnSet( $_SESSION[ 'oauth_referer' ] );
 							exit();
 						}
 				} else {
@@ -781,23 +787,23 @@ class user
 	{
 		$c = model::execSql( 'select count(`id`) as `count` from `' . self::$table_name . '`', 'getrow' );
 
-		return !$c['count'];
+		return !$c[ 'count' ];
 	}
 
 
 	public static function is_authorized()
 	{
-		return !!self::$info['id'];
+		return !!self::$info[ 'id' ];
 	}
 
 	public static function is_admin()
 	{
-		return self::$info['admin'];
+		return self::$info[ 'admin' ];
 	}
 
 	public static function is_moder()
 	{
-		return self::$info['moder'];
+		return self::$info[ 'moder' ];
 	}
 
 }

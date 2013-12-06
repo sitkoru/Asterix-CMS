@@ -29,7 +29,7 @@ class field_type_gallery extends field_type_default
 									  'resize_type' => 'inner', 'resize_width' => 250, 'resize_height' => 250, 'resize_proportions' => true );
 
 	//Разрешённые форматы файлов для загрузки
-	private $allowed_extensions = array( 'image/jpeg' => 'jpg', 'image/gif' => 'gif', 'image/png' => 'png' );
+	private $allowed_extensions = array( 'jpeg', 'image/jpeg' => 'jpg', 'image/gif' => 'gif', 'image/png' => 'png' );
 
 	public $template_file = 'types/gallery.tpl';
 
@@ -142,7 +142,7 @@ class field_type_gallery extends field_type_default
 									$pre_image_height = $size[ 1 ];
 									$min_size         = acmsWatermark::getImageMinSize();
 
-									if( ($pre_image_width >= $min_size) || ( $pre_image_height >= $min_size ) )
+									if( ( $pre_image_width>=$min_size ) || ( $pre_image_height>=$min_size ) )
 										if( acmsWatermark::isWatermarkNeeded_image() || acmsWatermark::isWatermarkNeeded_interface() )
 											acmsWatermark::setWatermark( $pre_filename, $value_sid );
 								}
@@ -167,7 +167,7 @@ class field_type_gallery extends field_type_default
 
 					}
 
-				//Файл не передан, просто обновление Alt
+					//Файл не передан, просто обновление Alt
 				} elseif( strlen( $_POST[ $value_sid . '_old_id' ][ $i ] ) ) {
 					$data            = $this->getValueExplode( $_POST[ $value_sid . '_old_id' ][ $i ] );
 					$data[ 'title' ] = strip_tags( $_POST[ $value_sid . '_title' ][ $i ] );
@@ -234,7 +234,9 @@ class field_type_gallery extends field_type_default
 	//Получить развёрнутое значение для системы управления из простого значения
 	public function getAdmValueExplode( $value, $settings = false, $record = array() )
 	{
-		return $this->getValueExplode( $value, $settings, $record );
+		$value = $this->getValueExplode( $value, $settings, $record );
+
+		return $value;
 	}
 
 	//Проверяем, что поле имеет тим TEXT

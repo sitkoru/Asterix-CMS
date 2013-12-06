@@ -142,7 +142,7 @@ html, .acms body, .acms div, .acms span, .acms object, .acms iframe, .acms h1, .
 }
 
 .acms.acms-panel-bottom .acms-panel .acms-mainmenu > li > ul {
-    bottom: 50px;
+    bottom: 48px;
     padding: 20px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;

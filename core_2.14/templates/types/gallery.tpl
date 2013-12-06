@@ -1,6 +1,10 @@
 	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}">
 		<label class="control-label" for="field_{$field.sid}">
 			{$field.title}
+        {if $field.value.watermark_set}
+            <br />
+            <span class="label label-warning" title="На картинку будет установлен водный знак.">+ водный знак</span>
+        {/if}
 		</label>
 		<label class="control-label" style="clear: both;">
 			<a class="icon-th-large" 	OnClick="
@@ -25,10 +29,15 @@
 					<input type="hidden" name="{$field.sid}_old_id[{$key}]" value="{$field.value.old|escape}" />
 					<textarea name="{$field.sid}_title[{$key}]" placeholder="Описание картинки" />{$rec.title|escape}</textarea>
 				</li>
-			{/foreach}
+            {/foreach}
 			</ul>
 		{/if}
-			<span class="help-block">
+        {if $settings.watermark_on}
+            <label class="checkbox" for="{$field.sid}_watermark_notset">не ставить "Водяной знак"
+                <input type="checkbox" name="{$field.sid}_watermark_notset" id="{$field.sid}_watermark_notset" value="1" />
+            </label>
+        {/if}
+            <span class="help-block">
 				Вы можете выбрать сразу несколько фотографий
 			</span>
 		</div>
