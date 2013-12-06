@@ -16,6 +16,12 @@
 /*															*/
 /************************************************************/
 
+require_once( 'structures.php' );
+require_once( 'components.php' );
+require_once( 'interfaces.php' );
+require_once( 'acms_trees.php' );
+require_once( 'model_finder.php' );
+
 class Dynamic
 {
 
