@@ -29,7 +29,7 @@ class field_type_gallery extends field_type_default
 									  'resize_type' => 'inner', 'resize_width' => 250, 'resize_height' => 250, 'resize_proportions' => true );
 
 	//Разрешённые форматы файлов для загрузки
-	private $allowed_extensions = array( 'jpeg', 'image/jpeg' => 'jpg', 'image/gif' => 'gif', 'image/png' => 'png' );
+	private $allowed_extensions = array('image/jpeg' =>  'jpeg', 'image/jpeg' => 'jpg', 'image/gif' => 'gif', 'image/png' => 'png' );
 
 	public $template_file = 'types/gallery.tpl';
 
