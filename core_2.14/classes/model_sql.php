@@ -1,10 +1,10 @@
 <?php
 
-class ModelSql
+trait db
 {
 
 	//Выполнить готовый запрос к базе данных
-	public static function execSql( $sql, //готовый sql-запрос
+	static public function execSql( $sql, //готовый sql-запрос
 									$query_type = 'getall', //варианты: getraw, getall, insert, update, delete
 									$database = 'system', //нужная база данных.
 									$no_cache = false //Не использовать кеш запроса
@@ -86,7 +86,7 @@ class ModelSql
 	}
 
 	//Подготовить запрос к базе данных на основе предоставленных характеристик
-	public static function makeSql(
+	static public function makeSql(
 		$sql_conditions = array( 'fields' => array(), 'tables' => array(), 'where' => array(), 'group' => array(), 'order' => '', 'limit' => false ), //массив условий для sql-запроса
 		$query_type = 'getall', //варианты: getrow, getall, insert, update, delete
 		$database = 'system', //нужная база данных.
@@ -207,5 +207,3 @@ class ModelSql
 
 
 }
-
-?>

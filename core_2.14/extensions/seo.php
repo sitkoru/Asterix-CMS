@@ -29,9 +29,8 @@ class extention_seo extends extention_default
 	private $priority = array( '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8', '0.9', '1.0' );
 
 	//Инициализация расширения
-	public function __construct( $model )
+	public function __construct()
 	{
-		$this->model = $model;
 		/*
 		//Вставим дополнительные поля в модули
 		$this->insertFields();
@@ -125,7 +124,7 @@ class extention_seo extends extention_default
 		if( !model::$config['settings']['count_crawlers'] )
 			return false;
 
-		$browser = @get_browser();
+		$browser = get_browser();
 		if( $browser->crawler ) {
 			$field = false;
 			$sql   = false;
@@ -160,7 +159,7 @@ class extention_seo extends extention_default
 
 				//Пишем лог для выявления ошибок
 				$f = fopen( model::$config['path']['www'] . '/crawlers.log', 'a+' );
-				fwrite( $f, date( "Y-m-d H:i:s" ) . '|' . model::$extensions['domains']->domain['host'] . '|' . $browser->browser . '|' . model::$ask->original_url . '|' . @$sql . "\r\n" );
+				fwrite( $f, date( "Y-m-d H:i:s" ) . '|' . model::$extensions['domains']->domain['host'] . '|' . $browser->browser . '|' . model::$ask->original_url . '|' . $sql . "\r\n" );
 				fclose( $f );
 
 				chmod( model::$config['path']['www'] . '/crawlers.log', 0775 );
@@ -190,15 +189,16 @@ class extention_seo extends extention_default
 				$recs[$i] = $t;
 
 				//Если есть подразделы
-				if( @$recs[$i]['sub'] )
-					if( count( $recs[$i]['sub'] ) ) {
-						//Делаем из них список
-						$subs = toLine( $recs[$i]['sub'] );
-						//Убираем список подразделов у текущей записи
-						UnSet($recs[$i]['sub']);
-						//Вставляем список подразделов следом
-						$recs = array_merge( $recs, $subs );
-					}
+				if( IsSet($recs[$i]['sub']) )
+					if( $recs[$i]['sub'] )
+						if( count( $recs[$i]['sub'] ) ) {
+							//Делаем из них список
+							$subs = toLine( $recs[$i]['sub'] );
+							//Убираем список подразделов у текущей записи
+							UnSet($recs[$i]['sub']);
+							//Вставляем список подразделов следом
+							$recs = array_merge( $recs, $subs );
+						}
 			}
 
 			return $recs;
@@ -212,7 +212,8 @@ class extention_seo extends extention_default
 			//Дописываем Url
 			$recs[$i]['url'] = 'http://' . $_SERVER['HTTP_HOST'] . $recs[$i]['url'];
 			//Форматируем дату
-			$recs[$i]['date_public'] = @date( "c", strtotime( $recs[$i]['date_public'] ) );
+			if( IsSet($recs[$i]['date_public']) )
+				$recs[$i]['date_public'] = date( "c", strtotime( $recs[$i]['date_public'] ) );
 		}
 
 		return $recs;
@@ -220,4 +221,3 @@ class extention_seo extends extention_default
 
 }
 
-?>

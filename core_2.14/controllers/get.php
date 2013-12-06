@@ -53,7 +53,7 @@ class controller_get extends default_controller
 
 			//Интерфейсы
 			if( IsSet(model::$modules[model::$ask->module]->interfaces[model::$ask->mode[0]]) )
-				$result = model::$modules[model::$ask->module]->prepareInterface( model::$ask->mode[0], array( 'record' => model::$ask->rec ), true );
+				$result = model::$modules[model::$ask->module]->getInterface( model::$ask->mode[0], array( 'record' => model::$ask->rec ), true );
 
 			//Компоненты
 			elseif( IsSet(model::$modules[model::$ask->module]->prepares[model::$ask->mode[0]]) )
@@ -149,7 +149,10 @@ class controller_get extends default_controller
 	{
 
 		//JavaScript
-		$this->addJS( 'http://code.jquery.com/jquery-2.0.3.min.js' );
+		if( in_array( 'jquery1', model::$settings['js_libraries'] ) )
+			$this->addJS( 'http://code.jquery.com/jquery-1.10.2.min.js' );
+		else
+			$this->addJS( 'http://code.jquery.com/jquery-2.0.3.min.js' );
 
 		// jQuery Migrate
 		if( in_array( 'jquery-migrate', model::$settings['js_libraries'] ) ) {
@@ -157,18 +160,14 @@ class controller_get extends default_controller
 		}
 
 		//JavaScript
-//		$this->addJS( 'http://src.opendev.ru/3.0/jquery-ui-1.8.23.custom/ui/jquery-ui.js' );
 		$this->addJS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js' );
-		$this->addJS( 'http://src.opendev.ru/3.0/j/panel.js' );
-		$this->addJS( 'http://src.opendev.ru/3.0/j/j.js' );
+		$this->addJS( 'http://src.opendev.ru/v4/j/acms_panel.js' );
 
 		//Библиотеки для Администратора
-		$this->addCSS( 'http://src.opendev.ru/3.0/c/panel.css' );
+//		$this->addCSS( 'http://src.opendev.ru/3.0/c/panel.css' );
 
 		// jQuery-UI
 		if( in_array( 'jquery-ui', model::$settings['js_libraries'] ) ) {
-//			$this->addJS('http://src.sitko.ru/3.0/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js');
-//			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css' );
 			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css' );
 			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css' );
 
@@ -198,7 +197,13 @@ class controller_get extends default_controller
 			$this->addJS( 'http://src.opendev.ru/3.0/lightbox/lightbox.js' );
 			$this->addCSS( 'http://src.opendev.ru/3.0/lightbox/lightbox.css' );
 		}
-
+/*
+		// Lightbox
+		if( in_array( 'lightbox2', model::$settings['js_libraries'] ) ) {
+			$this->addJS( 'http://src.opendev.ru/3.0/lightbox2/js/lightbox-2.6.min.js' );
+			$this->addCSS( 'http://src.opendev.ru/3.0/lightbox2/css/lightbox.css' );
+		}
+*/
 		// Стандартные стили
 		if( !strlen( model::$settings['css_main'] ) )
 			$this->addCSS( model::$config['path']['public_styles'] . '/s.css', array( 'media' => 'screen,projection' ) );
@@ -279,7 +284,7 @@ class controller_get extends default_controller
 		//Интерфейсы
 		if( model::$ask->mode[0] )
 			if( IsSet(model::$modules[model::$ask->module]->interfaces[model::$ask->mode[0]]) )
-				$main_record['interface'] = model::$modules[model::$ask->module]->prepareInterface( model::$ask->mode[0], array( 'record' => model::$ask->rec ), true );
+				$main_record['interface'] = model::$modules[model::$ask->module]->getInterface( model::$ask->mode[0], array( 'record' => model::$ask->rec ), true );
 		//Компоненты
 		if( model::$ask->mode[0] )
 			if( IsSet(model::$modules[model::$ask->module]->prepares[model::$ask->mode[0]]) )
@@ -303,6 +308,10 @@ class controller_get extends default_controller
 		$tmpl->assign( 'get_vars', $_GET );
 		$tmpl->assign( 'path_admin_templates', model::$config['path']['admin_templates'] );
 		$tmpl->assign( 'content', $main_record );
+
+		if( IsSet(model::$modules['news']) )
+			$tmpl->assign( 'rss_link', true );
+
 
 		// Данные настройки о блокировании старых браузеров
 		$block_ie6 = false;
@@ -467,7 +476,7 @@ class controller_get extends default_controller
 				(($int['auth'] === true) and user::is_authorized()) or //Пользователь должен быть просто авторизован
 				(($int['auth'] === 'admin') and user::is_admin())
 			)
-				return model::$modules[$module_sid]->prepareInterface( $interface_sid, $main_record );
+				return model::$modules[$module_sid]->getInterface( $interface_sid, $main_record );
 		}
 
 		//Не нашли доступного компонента
@@ -506,5 +515,3 @@ class controller_get extends default_controller
 	}
 
 }
-
-?>

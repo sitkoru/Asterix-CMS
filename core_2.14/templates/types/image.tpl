@@ -1,5 +1,11 @@
 	<div class="control-group acms_panel_groups acms_panel_group_{$group_key}">
-		<label class="control-label" for="field_{$field.sid}">{$field.title}</label>
+		<label class="control-label" for="field_{$field.sid}">
+            {$field.title}
+        {if $field.value.watermark_set}
+            <br />
+            <span class="label label-warning" title="На картинку будет установлен водный знак.">+ водный знак</span>
+        {/if}
+        </label>
 		<div class="controls">
 		{if $field.value.path}
 			<ul class="thumbnails">
@@ -24,6 +30,7 @@
 			{/foreach}
 			</ul>
 		{/if}
+
 			<input type="hidden" name="{$field.sid}_old_id" value="{$field.value.old|escape}" />
 			<input type="text" name="{$field.sid}_title" value="{$field.value.title|escape}" placeholder="Альтернативный текст" /><br />
 			<input type="file" name="{$field.sid}" id="{$field.sid}_id"{if $field.required} required="required"{/if} OnChange="
@@ -55,5 +62,11 @@ onChangeImagefile( '{$field.sid}_id', '{$field.sid}_first' );
 				<input type="checkbox" name="{$field.sid}_delete" id="{$field.sid}_delete" value="1" />
 			</label>
 {/if}
+
+        {if $field.value.watermark_allownotset}
+            <label class="checkbox" for="{$field.sid}_watermark_notset">не ставить "Водяной знак"
+                <input type="checkbox" name="{$field.sid}_watermark_notset" id="{$field.sid}_watermark_notset" value="1" />
+            </label>
+        {/if}
 		</div>
 	</div>

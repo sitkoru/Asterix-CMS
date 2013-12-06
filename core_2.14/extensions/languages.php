@@ -25,13 +25,8 @@ class extention_languages extends extention_default
 	var $sid = 'ln';
 
 	//Инициализация расширения
-	public function __construct( $model )
+	public function __construct()
 	{
-		$this->model = $model;
-		/*		
-		//Вставим дополнительные поля в модули
-		$this->insertFields();
-		*/
 	}
 
 	//Инициализация расширения

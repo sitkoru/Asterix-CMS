@@ -1,7 +1,7 @@
 
 <div class="acms_submit_out">
-	<img class="acms_cancel" src="http://src.sitko.ru/i/error.png" alt="Закрыть без сохранения" />
-	<img class="acms_save" src="http://src.sitko.ru/i/save.png" alt="Сохранить" />
+	<img class="acms_cancel" src="http://src.opendev.ru/i/error.png" alt="Закрыть без сохранения" />
+	<img class="acms_save" src="http://src.opendev.ru/i/save.png" alt="Сохранить" />
 </div>
 
 <ul class="acms_tabs">

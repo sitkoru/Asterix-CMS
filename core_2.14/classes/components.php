@@ -1,9 +1,9 @@
 <?php
 
-class components
+trait components
 {
 
-	public static function load( $module )
+	public function getComponent_load( $module )
 	{
 
 		//Стандартные
@@ -37,7 +37,7 @@ class components
 	}
 
 	//Запуск подготовки данных в компоненте
-	public static function init( $module, $prepare, $params )
+	public function getComponent_init( $module, $prepare, $params )
 	{
 		$result = false;
 
@@ -55,18 +55,16 @@ class components
 				в описании компонента
 			*/
 			if( IsSet($module->prepares[$prepare]['params']) )
-				$params = array_merge( @$module->prepares[$prepare]['params'], $params );
+				if( is_array( $module->prepares[$prepare]['params'] ) )
+					$params = array_merge( $module->prepares[$prepare]['params'], $params );
 
 			/* TODO: Разобраться почему три разных метода */
 
 			if( is_callable( array( $module, $function_name ) ) ) {
 				$result = $module->$function_name( $params );
 
-			} elseif( method_exists( $module, $function_name ) ) {
-				$result = call_user_func( array( $this, $function_name ), $params );
-
 			} elseif( method_exists( 'components', $function_name ) ) {
-				$result = components::$function_name( $params );
+				$result = $this->$function_name( $params );
 			}
 
 			// Если в компоненте указан шаблон, в который выводить, то сохранем эту отметку
@@ -84,7 +82,7 @@ class components
 	{
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//Определяем структуру к которой обращается
 		$structure_sid = 'rec';
@@ -98,7 +96,7 @@ class components
 		if( IsSet($params['order']) )
 			$order = $params['order'];
 		else
-			$order = components::getOrderBy( $structure_sid );
+			$order = $this->getStructure_defaultOrderBy( $structure_sid );
 
 		//Забираем запись
 		$rec = model::makeSql(
@@ -124,7 +122,7 @@ class components
 	{
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//Забираем запись
 		$rec = model::makeSql(
@@ -149,7 +147,7 @@ class components
 	{
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//Условия отображения на сайте
 		$where['and'][] = '`shw`=1';
@@ -192,7 +190,7 @@ class components
 			$params['explode'] = true;
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//По умолчанию не более 100 записей
 		if( !IsSet($params['limit']) )
@@ -210,7 +208,7 @@ class components
 		if( IsSet($params['order']) )
 			$order = $params['order'];
 		else
-			$order = components::getOrderBy( $structure_sid );
+			$order = $this->getStructure_defaultOrderBy( $structure_sid );
 
 		//Требуется разбивка на страницы
 		if( $params['chop_to_pages'] ) {
@@ -219,15 +217,17 @@ class components
 			$current_page = model::$ask->current_page;
 
 			//Всего записей по запросу
-			$num_of_records = model::execSql( 'select count(`id`) as `counter` from `' . $this->getCurrentTable( $structure_sid ) . '` where ' . implode( ' and ', $where['and'] ) . ' and (' . ($where['or'] ? implode( ' or ', $where['or'] ) : '1') . ')' . ' and ' . model::pointDomain() . ' '.$order, 'getrow' );
+			$num_of_records = model::execSql( 'select count(`id`) as `counter` from `' . $this->getCurrentTable( $structure_sid ) . '` where ' . implode( ' and ', $where['and'] ) . ' and (' . ($where['or'] ? implode( ' or ', $where['or'] ) : '1') . ')' . ' and ' . model::pointDomain() . ' ' . $order, 'getrow' );
 			$num_of_records = $num_of_records['counter'];
 
 			//Записей на страницу
 			if( $params['params_from_get'] && IsSet($_GET['items_per_page']) )
 				$items_per_page = intval( $_GET['items_per_page'] );
 			elseif( IsSet($params['items_per_page']) )
-				$items_per_page = $params['items_per_page']; elseif( IsSet(model::$settings['items_per_page']) )
-				$items_per_page = model::$settings['items_per_page']; else $items_per_page = 10;
+				$items_per_page = $params['items_per_page'];
+			elseif( IsSet(model::$settings['items_per_page']) )
+				$items_per_page = model::$settings['items_per_page'];
+			else $items_per_page = 10;
 
 			//Количество страниц
 			$num_of_pages = ceil( $num_of_records/$items_per_page );
@@ -244,9 +244,9 @@ class components
 			);
 
 			if( $params['last_sql'] )
-				pr('1: ' . model::$last_sql);
+				pr( '1: ' . model::$last_sql );
 
-			//Раскрываем сложные поля
+			// Раскрываем сложные поля
 			if( $recs )
 				foreach( $recs as $i => $rec ) {
 					$rec      = $this->explodeRecord( $rec, $structure_sid, $params['explode'] );
@@ -254,7 +254,15 @@ class components
 					$recs[$i] = $rec;
 				}
 
-			//Перелистывания страниц
+			// Связь с корзиной
+			if( IsSet($this->link_with_basket_module) )
+				if( $this->link_with_basket_module )
+					if( IsSet(model::$modules['basket']) && ($structure_sid == 'rec') )
+						if( method_exists( model::$modules['basket'], 'insertOrdered' ) ) {
+							$recs = model::$modules['basket']->insertOrdered( $recs );
+						}
+
+			// Перелистывания страниц
 			$pages = array();
 			if( $num_of_pages>1 ) {
 
@@ -273,10 +281,10 @@ class components
 				// Суммарная строка GET-параметров
 				if( !$get_vars )
 					$get_vars_string = '';
-				elseif( count( $get_vars ) == 1 ){
-					$a = array_values( $get_vars );
+				elseif( count( $get_vars ) == 1 ) {
+					$a               = array_values( $get_vars );
 					$get_vars_string = '?' . $a[0];
-				}else
+				} else
 					$get_vars_string = '?' . implode( '&', $get_vars );
 
 				//Учитываем другие модификаторы
@@ -363,7 +371,7 @@ class components
 				'getall'
 			);
 			if( $params['last_sql'] )
-			pr('2: ' . model::$last_sql);
+				pr( '2: ' . model::$last_sql );
 
 			//Раскрываем сложные поля
 			if( $recs )
@@ -374,10 +382,12 @@ class components
 				}
 
 			//Заказанные наименования
-			if( IsSet(model::$modules['basket']) && ($structure_sid == 'rec') )
-				if( method_exists( model::$modules['basket'], 'insertOrdered' ) ) {
-					$recs = model::$modules['basket']->insertOrdered( $recs );
-				}
+			if( IsSet($this->link_with_basket_module) )
+				if( $this->link_with_basket_module )
+					if( IsSet(model::$modules['basket']) && ($structure_sid == 'rec') )
+						if( method_exists( model::$modules['basket'], 'insertOrdered' ) ) {
+							$recs = model::$modules['basket']->insertOrdered( $recs );
+						}
 
 			//Готово
 			return $recs;
@@ -395,7 +405,7 @@ class components
 			$structure_sid = 'rec';
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		if( !IsSet($where['and']['shw']) )
 			$where['and']['shw'] = '`shw`=1';
@@ -421,7 +431,7 @@ class components
 	{
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//Забираем запись
 		$rec = model::makeSql(
@@ -447,7 +457,7 @@ class components
 	{
 
 		//Получаем условия
-		$where = components::convertParamsToWhere( $params );
+		$where = $this->convertParamsToWhere( $params );
 
 		//По умолчанию не более 100 записей
 		if( !IsSet($params['limit']) )
@@ -499,7 +509,7 @@ class components
 		//SID родителя
 
 		//Сортировка
-		$order = $this->getOrderBy( 'rec' );
+		$order = $this->getStructure_defaultOrderBy( 'rec' );
 
 		//Забираем запись
 		$rec = model::makeSql(
@@ -556,7 +566,8 @@ class components
 
 		//Настройка для разбивки записей на страницы
 		if( IsSet($params['limit']) ) $items_per_page = $params['limit'];
-		elseif( IsSet(model::$settings['items_per_page']) ) $items_per_page = model::$settings['items_per_page']; else $items_per_page = 10;
+		elseif( IsSet(model::$settings['items_per_page']) ) $items_per_page = model::$settings['items_per_page'];
+		else $items_per_page = 10;
 
 		//Текущая страница
 		$page = model::$ask->current_page; //current_page;
@@ -770,23 +781,4 @@ class components
 		return $where;
 	}
 
-	//Сортировка по умолчанию
-	public function getOrderBy( $structure_sid )
-	{
-		//Сортировка деревьев
-		if( $this->structure[$structure_sid]['type'] == 'tree' )
-			return 'order by `left_key`';
-
-		//Сортирвка по POS
-		elseif( IsSet($this->structure[$structure_sid]['fields']['pos']) )
-			return 'order by `pos`,`title`'; //Сортирвка по Lock_up
-		elseif( IsSet($this->structure[$structure_sid]['fields']['lock_up']) )
-			return 'order by `lock_up` desc, `date_public` desc'; //Сортировка по публичной дате
-		else
-			return 'order by `date_public` desc,`title`';
-	}
-
-
 }
-
-?>

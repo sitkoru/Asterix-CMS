@@ -17,7 +17,7 @@ var init_ckeditor = function() {
             ],
         language:'ru',
         extraCss: 'body{font-size:1.2em;}',
-        height: '400px'
+        height: '500px'
 	});
 
     $('.form-group textarea.html_editor_admin').ckeditor({
@@ -55,6 +55,7 @@ var init_ckeditor = function() {
         extraPlugins:'iframedialog,typograf,onchange'
     });
 }
+
 
 function fn(){
 	$( ".sortable" ).sortable({

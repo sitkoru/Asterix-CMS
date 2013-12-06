@@ -76,7 +76,7 @@ class field_type_link extends field_type_default
 		if( isset($settings['where']) ) {
 			if( substr_count( $settings['where'], 'echo' ) ) {
 				ob_start();
-				@eval($settings['where']);
+				eval($settings['where']);
 				$s = ob_get_contents();
 				ob_end_clean();
 			} else {

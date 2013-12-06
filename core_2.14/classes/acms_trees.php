@@ -1,6 +1,6 @@
 <?php
 
-class acms_trees
+trait acms_trees
 {
 
 	//Показать краткое дерево модуля
@@ -12,7 +12,7 @@ class acms_trees
 	)
 	{
 
-		return acms_trees::getStructureShirtTree( $root_record_id, $structure_sid, $levels_to_show, $conditions );
+		return $this->getStructureShirtTree( $root_record_id, $structure_sid, $levels_to_show, $conditions );
 	}
 
 	//Показать краткое дерево сруктуры
@@ -22,10 +22,10 @@ class acms_trees
 		if( !$this->structure[$structure_sid]['hide_in_tree'] ) {
 			//Древовидные структуры
 			if( $this->structure[$structure_sid]['type'] == 'tree' ) {
-				$recs = acms_trees::getStructureShirtTree_typeTree( $root_record_id, $structure_sid, $levels_to_show, $conditions );
+				$recs = $this->getStructureShirtTree_typeTree( $root_record_id, $structure_sid, $levels_to_show, $conditions );
 				//Линейные структуры
 			} else {
-				$recs = acms_trees::getStructureShirtTree_typeSimple( $root_record_id, $structure_sid, $levels_to_show, false, $conditions );
+				$recs = $this->getStructureShirtTree_typeSimple( $root_record_id, $structure_sid, $levels_to_show, false, $conditions );
 			}
 		}
 
@@ -45,7 +45,7 @@ class acms_trees
 		//Обработка расширениями - получаем в Where подстановки от расширений
 		if( model::$extensions ) foreach( model::$extensions as $ext ) {
 			if( method_exists( $ext, 'onSql' ) )
-				list($a, $a, $where, $a, $a, $a) = $ext->onSql( false, false, $where, false, false, false );
+				list($a, $a, $where, $a, $a, $a) = $ext->onSql( false, false, false, false, false, false );
 		}
 
 		//Учитываем переданные в функцию условия
@@ -141,7 +141,7 @@ class acms_trees
 								'dep_path_' . model::$ask->structure_sid . '' => '`dep_path_' . model::$ask->structure_sid . '`="' . mysql_real_escape_string( $rec[$dep_field_sid] ) . '"'
 							)
 						);
-						$recs  = acms_trees::getStructureShirtTree_typeSimple( false, $search_children, $levels_to_show, $where );
+						$recs  = $this->getStructureShirtTree_typeSimple( false, $search_children, $levels_to_show, $where );
 					}
 
 				}
@@ -163,7 +163,7 @@ class acms_trees
 							if( is_object( model::$modules[$rec['is_link_to_module']] ) ) {
 
 								//Корневая структура зависимого модуля
-								$tree              = model::$modules[$rec['is_link_to_module']]->getLevels( 'rec' );
+								$tree              = model::$modules[$rec['is_link_to_module']]->getStructure_allLevels();
 								$dep_structure_sid = $tree[count( $tree )-1];
 
 								if( !model::$modules[$rec['is_link_to_module']]->structure[$dep_structure_sid]['hide_in_tree'] ) {
@@ -189,10 +189,15 @@ class acms_trees
 				//Вложенные структуры в пределах этого модуля
 				if( count( $this->structure )>1 ) {
 					//Ищем следующий уровень
-					$levels             = $this->getLevels( 'rec', array() );
+					$levels             = $this->getStructure_allLevels();
 					$levels             = array_reverse( $levels );
 					$next_structure_sid = false;
-					foreach( $levels as $j => $level ) if( $level == $structure_sid ) $next_structure_sid = @$levels[$j+1];
+
+					foreach( $levels as $j => $level )
+						if( $level == $structure_sid )
+							if( IsSet($levels[$j+1]) )
+								$next_structure_sid = $levels[$j+1];
+
 					//Нашли вложенную структуру в данном модуле
 					if( $next_structure_sid ) {
 						//Название поля-связки с текущей структурой
@@ -202,7 +207,7 @@ class acms_trees
 						$where['and'][$field_name] = '`' . mysql_real_escape_string( $field_name ) . '`="' . mysql_real_escape_string( $rec['sid'] ) . '"';
 					}
 					//Забираем вложенные записи структуры
-					$subs = acms_trees::getStructureShirtTree( false, $next_structure_sid, $levels_to_show-1, $where );
+					$subs = $this->getStructureShirtTree( false, $next_structure_sid, $levels_to_show-1, $where );
 					//Нашли вложенные модули
 					if( $subs ) {
 						//Если вложенные записи есть на ряду с вложенными модулями - суммируем
@@ -218,7 +223,7 @@ class acms_trees
 			}
 
 		//Перекомпановка из линейного массива во вложенные списки
-		$recs = self::reformRecords( $recs, $recs[0]['tree_level'], 0, count( $recs ) );
+		$recs = $this->reformRecords( $recs, $recs[0]['tree_level'], 0, count( $recs ) );
 		//Вставляем окончание .html
 		$recs = $this->insertRecordUrlType( $recs );
 
@@ -268,7 +273,7 @@ class acms_trees
 
 				//Ищем потомков
 				if( $search_children ) {
-					$recs = acms_trees::getStructureShirtTree_typeSimple( false, $search_children, $levels_to_show, $where );
+					$recs = $this->getStructureShirtTree_typeSimple( false, $search_children, $levels_to_show, $where );
 				}
 			}
 
@@ -331,7 +336,7 @@ class acms_trees
 
 								//Ищем потомков
 								if( $search_children ) {
-									$children = acms_trees::getStructureShirtTree_typeSimple( $root_record_id, $search_children, $levels_to_show-1, $where );
+									$children = $this->getStructureShirtTree_typeSimple( $root_record_id, $search_children, $levels_to_show-1, $where );
 									if( $children ) $recs[$i]['sub'] = $children;
 								}
 							}
@@ -356,7 +361,7 @@ class acms_trees
 	}
 
 	//Рекурсивная функция переформирования линейного списка записей в дерево
-	public static function reformRecords( $recs, $level, $from, $to )
+	public function reformRecords( $recs, $level, $from, $to )
 	{
 		$found = array();
 		for( $i = $from; $i<$to; $i++ ) {
@@ -367,9 +372,9 @@ class acms_trees
 		$res = array();
 		foreach( $found as $i => $f ) {
 			if( $i+1 == count( $found ) ) {
-				$new_subs = self::reformRecords( $recs, $level+1, $f['from'], $to );
+				$new_subs = $this->reformRecords( $recs, $level+1, $f['from'], $to );
 			} elseif( $f['from']<$found[$i+1]['from'] ) {
-				$new_subs = self::reformRecords( $recs, $level+1, $f['from'], $found[$i+1]['from'] );
+				$new_subs = $this->reformRecords( $recs, $level+1, $f['from'], $found[$i+1]['from'] );
 			}
 			if( $new_subs ) {
 				//Уже есть какие-то подразделы
@@ -387,5 +392,3 @@ class acms_trees
 
 
 }
-
-?>

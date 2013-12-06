@@ -73,5 +73,3 @@ class fake_model
 	}
 
 }
-
-?>

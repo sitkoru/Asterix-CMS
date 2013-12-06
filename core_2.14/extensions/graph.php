@@ -37,9 +37,8 @@ class extention_graph extends extention_default
 	);
 
 	//Инициализация расширения
-	public function __construct( $model )
+	public function __construct()
 	{
-		$this->model = $model;
 	}
 
 	//Инициализация расширения
@@ -52,7 +51,10 @@ class extention_graph extends extention_default
 	//Обращение к социальному графу из шаблона
 	public function askFromTemplate( $function, $settings )
 	{
-		return $this->$function( @$settings );
+		if( !$settings )
+			$settings = array();
+
+		return $this->$function( $settings );
 	}
 
 	//Получить полный граф для записи, либо взаимный граф со второй записью
@@ -61,7 +63,8 @@ class extention_graph extends extention_default
 		if( $params['top1'] )
 			list($module, $structure_sid, $record_id) = explode( '|', $params['top1'] );
 		elseif( $params['top2'] )
-			list($module, $structure_sid, $record_id) = explode( '|', $params['top2'] ); elseif( $params['any_top'] )
+			list($module, $structure_sid, $record_id) = explode( '|', $params['top2'] );
+		elseif( $params['any_top'] )
 			list($module, $structure_sid, $record_id) = explode( '|', $params['any_top'] );
 
 		//Общий граф - нечёткий выбор
@@ -116,7 +119,7 @@ class extention_graph extends extention_default
 						$rec['graph_top']['type'] = $link['type'];
 
 						$rec['module']       = $module;
-						$rec['module_title'] = @model::$modules[$module]->title_one;
+						$rec['module_title'] = model::$modules[$module]->title_one;
 						$rec['structure']    = model::$modules[$module]->info['title'];
 
 						//Кроме текущей записи
@@ -193,7 +196,7 @@ class extention_graph extends extention_default
 						'`type`="' . mysql_real_escape_string( $params['type'] ) . '"',
 						'`date_added`=NOW()',
 						'`author`="' . mysql_real_escape_string( user::$info['id'] ) . '"',
-						'`text`="' . mysql_real_escape_string( @$params['text'] ) . '"',
+						'`text`="' . mysql_real_escape_string( $params['text'] ) . '"',
 					),
 					'where'  => array(
 						'and' => array(
@@ -219,7 +222,7 @@ class extention_graph extends extention_default
 					'`type`="' . mysql_real_escape_string( $params['type'] ) . '"',
 					'`date_added`=NOW()',
 					'`author`="' . mysql_real_escape_string( user::$info['id'] ) . '"',
-					'`text`="' . mysql_real_escape_string( @$params['text'] ) . '"',
+					'`text`="' . mysql_real_escape_string( $params['text'] ) . '"',
 				),
 			),
 			'insert'

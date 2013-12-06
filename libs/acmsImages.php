@@ -181,21 +181,21 @@ class acmsImages{
 		);
 		
 		//Читаем Watermark
-		$wmk = imagecreatefrompng( $watermark['tmp_name'] );
-		$size       = GetImageSize( $watermark['tmp_name'] );
+		$wmk = imagecreatefrompng( $watermark );
+		$size       = GetImageSize( $watermark );
 		$wmk_width  = $size[0];
 		$wmk_height = $size[1];
 
 		//Куда клеим
 		if($side == 'rb'){
-			$start_x = $src_width - $wmk_width;
-			$start_y = $src_height - $wmk_height;
+			$start_x = $src_width - $wmk_width - 10;
+			$start_y = $src_height - $wmk_height - 10;
 		}elseif($side == 'rt'){
-			$start_x = $src_width - $wmk_width;
+			$start_x = $src_width - $wmk_width - 10;
 			$start_y = 0;
 		}elseif($side == 'lb'){
 			$start_x = 0;
-			$start_y = $src_height - $wmk_height;
+			$start_y = $src_height - $wmk_height - 10;
 		}elseif($side == 'lt'){
 			$start_x = 0;
 			$start_y = 0;
@@ -235,6 +235,8 @@ class acmsImages{
 		ImageDestroy($src);
 		ImageDestroy($dst);
 		ImageDestroy($wmk);
+
+		return true;
 	}
 
 	//Поределяем финальные размеры изображения по заданным настройкам
