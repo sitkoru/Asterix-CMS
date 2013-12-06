@@ -16,14 +16,40 @@
 /*															*/
 /************************************************************/
 
-require_once( 'structures.php' );
-require_once( 'components.php' );
-require_once( 'interfaces.php' );
-require_once( 'acms_trees.php' );
-require_once( 'model_finder.php' );
+class Dynamic
+{
+
+	function __call( $func, $args )
+	{
+		$func  = strtolower( $func );
+		$assoc = $this->funcs[$func];
+		if( is_object( $assoc ) )
+			return call_user_func_array( array( $assoc, $func ), $args );
+		if( !isset($assoc) )
+			$assoc = get_class( $this );
+		$argarr = array();
+		$keys   = array_keys( $args );
+		foreach( $keys as $id => $key )
+			$argarr[] = '$args[$keys[' . $id . ']]';
+		$argstr = implode( $argarr, "," );
+
+		return
+			eval("return $assoc::$func($argstr);");
+	}
+
+	public function class_import( $arg1, $arg2 = null )
+	{
+		assert( is_object( $arg1 ) || class_exists( $arg1 ) );
+		if( isset($arg2) )
+			$this->funcs[strtolower( $arg2 )] = $arg1;
+		else
+			foreach( get_class_methods( $arg1 ) as $method )
+				$this->funcs[strtolower( $method )] = $arg1;
+	}
+}
 
 //Модуль по умолчанию
-class default_module // extends Dynamic
+class default_module extends Dynamic
 {
 	use structures, interfaces, components, acms_trees, finder;
 
