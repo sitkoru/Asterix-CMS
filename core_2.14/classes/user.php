@@ -600,8 +600,6 @@ class user
 					'password'   => $user_id . 'thisismyverybigwordformd5',
 					'admin'      => false,
 					'title'      => $user_title,
-					'avatar'     => $user_img,
-					'photo'      => $user_img,
 					'session_id' => session_id(),
 				);
 
