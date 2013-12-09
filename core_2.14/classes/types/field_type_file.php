@@ -30,7 +30,7 @@ class field_type_file extends field_type_default
 
 	//Разрешённые форматы файлов для загрузки
 	public $allowed_extensions = array(
-		'jpeg',
+																						'jpeg',
 		'image/jpeg'                                                                => 'jpg',
 		'image/gif'                                                                 => 'gif',
 		'image/png'                                                                 => 'png',
