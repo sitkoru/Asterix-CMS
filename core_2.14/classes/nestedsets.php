@@ -121,7 +121,7 @@ class nested_sets
 		model::execSql( 'update `' . $this->table . '` set `left_key`=(`left_key`+' . ($skew_edit) . '), `right_key`=(`right_key`+' . $skew_edit . '), `tree_level`=(`tree_level`+' . $skew_level . ') where `id` IN (' . implode( ',', $ids ) . ')', 'update', 'system', true );
 	}
 
-	//Поменять местами две записи
+	//Поменять местами две соседние записи
 	public function move( $first_id, $second_id, $conditions = false )
 	{
 		//Забираем запись, которую перемещаем
