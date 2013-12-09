@@ -10,7 +10,7 @@ class acmsFiles{
 
 			if( is_array( $allowed_extensions ) ) {
 				$name = basename( $path );
-				$ext  = substr( $name, strrpos( $name, '.' )+1 );
+				$ext  = mb_strtolower( substr( $name, strrpos( $name, '.' )+1 ) );
 				if( !in_array( $ext, $allowed_extensions ) ){
 					print('Неверное расширение файла ['.$ext.']');
 					print_r($allowed_extensions);
