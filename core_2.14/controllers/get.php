@@ -288,13 +288,16 @@ class controller_get extends default_controller
 				if( model::$ask->mode[ 0 ] )
 					if( IsSet( model::$modules[ model::$ask->module ]->interfaces[ model::$ask->mode[ 0 ] ] ) )
 						$main_record[ 'interface' ] = model::$modules[ model::$ask->module ]->getInterface( model::$ask->mode[ 0 ], array( 'record' => model::$ask->rec ), true );
+
 				//Компоненты
 				if( model::$ask->mode[ 0 ] )
 					if( IsSet( model::$modules[ model::$ask->module ]->prepares[ model::$ask->mode[ 0 ] ] ) )
 						$main_record[ 'component' ] = model::$modules[ model::$ask->module ]->prepareComponent( model::$ask->mode[ 0 ], array( 'record' => model::$ask->rec ), true );
+
 				//contentPrepare
 				if( is_callable( array( model::$modules[ model::$ask->module ], 'contentPrepare' ) ) )
 					$main_record = model::$modules[ model::$ask->module ]->contentPrepare( $main_record, $structure_sid = 'rec' );
+
 			} else {
 				log::stop( '500 Internal Server Error', 'Модуль не установлен [' . model::$ask->module . '].' );
 			}

@@ -30,8 +30,8 @@ class field_type_file extends field_type_default
 
 	//Разрешённые форматы файлов для загрузки
 	public $allowed_extensions = array(
+		'jpeg',
 		'image/jpeg'                                                                => 'jpg',
-		'image/jpg'                                                                => 'jpeg',
 		'image/gif'                                                                 => 'gif',
 		'image/png'                                                                 => 'png',
 		'image/x-icon'                                                              => 'ico',
@@ -72,7 +72,7 @@ class field_type_file extends field_type_default
 		//Коррекция типа данных
 		$this->correctFieldType( $module_sid, $structure_sid, $value_sid );
 
-		require_once model::$config['path']['core'] . '/../libs/acmsFiles.php';
+		require_once model::$config[ 'path' ][ 'core' ] . '/../libs/acmsFiles.php';
 
 		//Настройки поля, переданные из модуля
 		if( $settings )
@@ -80,23 +80,23 @@ class field_type_file extends field_type_default
 				$this->$var = $val;
 
 		//Удаление фотки
-		if( $values[$value_sid . '_delete'] ) {
-			$old_data = $this->getValueExplode( $values[$value_sid . '_old_id'] );
-			acmsFiles::delete( model::$config['path']['files'] . $old_data['path'] );
+		if( $values[ $value_sid . '_delete' ] ) {
+			$old_data = $this->getValueExplode( $values[ $value_sid . '_old_id' ] );
+			acmsFiles::delete( model::$config[ 'path' ][ 'files' ] . $old_data[ 'path' ] );
 
 			//Файл передан
-		} elseif( strlen( $values[$value_sid]['tmp_name'] ) ) {
+		} elseif( strlen( $values[ $value_sid ][ 'tmp_name' ] ) ) {
 
 			//Обновление картинки
-			if( IsSet($values[$value_sid . '_old_id']) )
-				if( $values[$value_sid . '_old_id'] ) {
-					$old_data = $this->getValueExplode( $values[$value_sid . '_old_id'] );
-					acmsFiles::delete( model::$config['path']['files'] . $old_data['path'] );
+			if( IsSet( $values[ $value_sid . '_old_id' ] ) )
+				if( $values[ $value_sid . '_old_id' ] ) {
+					$old_data = $this->getValueExplode( $values[ $value_sid . '_old_id' ] );
+					acmsFiles::delete( model::$config[ 'path' ][ 'files' ] . $old_data[ 'path' ] );
 					$image_id = 0;
 				}
 
 			//Проверка уникальности имени файла
-			$name = acmsFiles::unique( $values[$value_sid]['name'], model::$config['path']['files'] );
+			$name = acmsFiles::unique( $values[ $value_sid ][ 'name' ], model::$config[ 'path' ][ 'files' ] );
 
 			//Проверка корректности имени файла
 			$name = acmsFiles::filename_filter( $name );
@@ -105,27 +105,23 @@ class field_type_file extends field_type_default
 			$ext = substr( $name, strrpos( $name, '.' )+1 );
 
 			//Загружаем файл
-			$filename = acmsFiles::upload( $values[$value_sid]['tmp_name'], model::$config['path']['files'] . '/' . $name );
+			$filename = acmsFiles::upload( $values[ $value_sid ][ 'tmp_name' ], model::$config[ 'path' ][ 'files' ] . '/' . $name );
 
 			//Доп.характеристики
-			$data['type']  = $values[$value_sid]['type'];
-			$data['path']  = model::$config['path']['public_files'] . '/' . $name;
-			$data['title'] = strip_tags( $values[$value_sid . '_title'] );
-			$data['date']  = date( "Y-m-d H:i:s" );
-			$data['size']  = filesize( model::$config['path']['files'] . '/' . $name );
+			$data[ 'type' ]  = $values[ $value_sid ][ 'type' ];
+			$data[ 'path' ]  = model::$config[ 'path' ][ 'public_files' ] . '/' . $name;
+			$data[ 'title' ] = strip_tags( $values[ $value_sid . '_title' ] );
+			$data[ 'date' ]  = date( "Y-m-d H:i:s" );
+			$data[ 'size' ]  = filesize( model::$config[ 'path' ][ 'files' ] . '/' . $name );
 
 
 			//Файл не передан, просто обновление Alt
-		} elseif( strlen( $_POST[$value_sid . '_old_id'] ) ) {
-			$data = $this->getValueExplode( $_POST[$value_sid . '_old_id'] );
-			UnSet($data['old']);
-			$data['title'] = strip_tags( $_POST[$value_sid . '_title'] );
-			
-		}elseif (!strlen($values[$value_sid]['tmp_name'])) {
-			if( $values[$value_sid . '_old_id'] ){
-				$data = $values[$value_sid . '_old_id'];
-			}
+		} elseif( strlen( $_POST[ $value_sid . '_old_id' ] ) ) {
+			$data = $this->getValueExplode( $_POST[ $value_sid . '_old_id' ] );
+			UnSet( $data[ 'old' ] );
+			$data[ 'title' ] = strip_tags( $_POST[ $value_sid . '_title' ] );
 		}
+
 		//Готово
 		if( $data )
 			return serialize( $data );
@@ -139,13 +135,13 @@ class field_type_file extends field_type_default
 	{
 
 		//Старые значения
-		if( (substr_count( $value, '|' )>1) && (!substr_count( $value, '{' )) )
+		if( ( substr_count( $value, '|' )>1 ) && ( !substr_count( $value, '{' ) ) )
 			$value = $this->old2new( $value, $settings );
 
 		if( !is_array( $value ) ) {
-			$rec_old    = $value;
-			$rec        = unserialize( htmlspecialchars_decode( $value ) );
-			$rec['old'] = $rec_old;
+			$rec_old      = $value;
+			$rec          = unserialize( htmlspecialchars_decode( $value ) );
+			$rec[ 'old' ] = $rec_old;
 		}
 
 		//Готово
@@ -163,10 +159,10 @@ class field_type_file extends field_type_default
 	private function correctFieldType( $module_sid, $structure_sid, $field_sid )
 	{
 		if( $module ) {
-			$sql = 'select DATA_TYPE from information_schema.COLUMNS where TABLE_SCHEMA="' . model::$config['db']['system']['name'] . '" and TABLE_NAME="' . model::$modules[$module_sid]->getCurrentTable( $structure_sid ) . '" and COLUMN_NAME="' . $field_sid . '"';
+			$sql = 'select DATA_TYPE from information_schema.COLUMNS where TABLE_SCHEMA="' . model::$config[ 'db' ][ 'system' ][ 'name' ] . '" and TABLE_NAME="' . model::$modules[ $module_sid ]->getCurrentTable( $structure_sid ) . '" and COLUMN_NAME="' . $field_sid . '"';
 			$res = model::execSql( $sql, 'getrow' );
-			if( $res['DATA_TYPE'] != 'text' ) {
-				$sql = 'alter table `' . model::$modules[$module_sid]->getCurrentTable( $structure_sid ) . '` modify ' . $this->creatingString( $field_sid );
+			if( $res[ 'DATA_TYPE' ] != 'text' ) {
+				$sql = 'alter table `' . model::$modules[ $module_sid ]->getCurrentTable( $structure_sid ) . '` modify ' . $this->creatingString( $field_sid );
 				$res = model::execSql( $sql, 'update' );
 			}
 		}
@@ -178,12 +174,12 @@ class field_type_file extends field_type_default
 
 		//Данные
 		if( !is_array( $value ) ) {
-			list($rec['path'], $rec['type'], $rec['size'], $rec['title'], $rec['realname']) = explode( '|', $value );
+			list( $rec[ 'path' ], $rec[ 'type' ], $rec[ 'size' ], $rec[ 'title' ], $rec[ 'realname' ] ) = explode( '|', $value );
 		}
 
 		//ID
-		$rec['id']  = $value;
-		$rec['old'] = serialize( $rec );
+		$rec[ 'id' ]  = $value;
+		$rec[ 'old' ] = serialize( $rec );
 
 		return serialize( $rec );
 	}

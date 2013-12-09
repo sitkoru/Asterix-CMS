@@ -11,8 +11,11 @@ class acmsFiles{
 			if( is_array( $allowed_extensions ) ) {
 				$name = basename( $path );
 				$ext  = substr( $name, strrpos( $name, '.' )+1 );
-				if( !in_array( $ext, $allowed_extensions ) )
+				if( !in_array( $ext, $allowed_extensions ) ){
+					print('Неверное расширение файла ['.$ext.']');
+					print_r($allowed_extensions);
 					return false;
+				}
 			}
 
 			if( move_uploaded_file($tmp, $path) ){
