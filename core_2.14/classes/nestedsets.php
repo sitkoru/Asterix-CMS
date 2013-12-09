@@ -65,7 +65,7 @@ class nested_sets
 		return $recs;
 	}
 
-	//Добавление записи в конец таблицы
+	//Добавление записи в конец раздела роодителя
 	public function addChild( $parent_id, $record, $conditions = false )
 	{
 
