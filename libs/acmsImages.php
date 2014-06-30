@@ -90,7 +90,7 @@ class acmsImages{
 
 	//Сделать изображение чёрно-белым
 	public function filter_bw( $src_path, $dest_path = false ){
-	
+
 		//Читаем размер рисунка
 		$size           = GetImageSize($src_path);
 		$current_width  = $size[0];
@@ -99,7 +99,13 @@ class acmsImages{
 		
 		//Читаем картинку
 		$src = file_get_contents( $src_path );
-		$src = ImageCreateFromJpeg( $src_path );
+		
+		if($type == 'image/jpeg')
+			$src = ImageCreateFromJpeg( $src_path );
+		elseif ($type == 'image/gif')
+			$src = ImageCreateFromGif( $src_path );
+		elseif ($type == 'image/png')
+			$src = ImageCreateFromPng( $src_path );
 
 		for ($i=0; $i<$current_width; $i++)
 			for ($j=0; $j<$current_height; $j++){
