@@ -25,8 +25,11 @@ var init_ckeditor = function () {
 
         toolbar: [
             [
-                'Source', '-', 'FontSize', 'Format', '-', 'Bold', 'Italic', 'Underline', '-'
-
+                'Source', '-', 'FontSize', 'Format', '-', 'Bold', 'Italic', 'Underline', '-',
+                'Subscript', 'Superscript', 'SpecialChar', '-',
+                'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyFull', '-',
+                'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
+                'Table', 'Flash', 'Image', '-', 'PasteFromWord', 'RemoveFormat', 'Blockquote', 'typograf'
             ],
         ],
         language: 'ru',
