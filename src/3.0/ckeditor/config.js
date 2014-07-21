@@ -10,7 +10,7 @@ CKEDITOR.editorConfig = function (config) {
 
     // The toolbar groups arrangement, optimized for two toolbar rows.
     config.toolbar = [
-        'Source', '-', 'FontSize', 'Format', '-', 'Bold', 'Italic', 'Underline', '-',
+        ['Source', '-', 'FontSize', 'Format', '-', 'Bold', 'Italic', 'Underline', '-',
         'Subscript', 'Superscript', 'SpecialChar', '-',
         'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyFull', '-',
         'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
@@ -19,7 +19,7 @@ CKEDITOR.editorConfig = function (config) {
         'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'CreateDiv', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', 'BidiLtr', 'BidiRtl', '-',
         'TextColor', 'BGColor', '-',
         'UIColor', 'Maximize', 'ShowBlocks', '-',
-        'Table', 'Flash', 'Image', '-', 'PasteFromWord', 'RemoveFormat', 'Blockquote', 'typograf'
+        'Table', 'Flash', 'Image', '-', 'PasteFromWord', 'RemoveFormat', 'Blockquote', 'typograf']
     ];
     config.toolbarGroups = [
         {name: 'clipboard', groups: [ 'clipboard', 'undo', 'paste', 'pastefromword', 'copy' ]},
@@ -38,6 +38,11 @@ CKEDITOR.editorConfig = function (config) {
         {name: 'about'}
     ];
 
+    config.toolbar_Basic = [
+        [ 'Source', '-', 'Bold', 'Italic' ]
+    ];
+// Load toolbar_Name where Name = Basic.
+    config.toolbar = 'Basic';
     // Remove some buttons provided by the standard plugins, which are
     // not needed in the Standard(s) toolbar.
     config.removeButtons = 'Underline,Subscript,Superscript';
