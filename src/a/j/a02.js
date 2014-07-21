@@ -29,12 +29,6 @@ var init_ckeditor = function () {
                 'Subscript', 'Superscript', 'SpecialChar', '-',
                 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyFull', '-',
                 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
-                'Link', 'Unlink', 'Anchor', '-',
-                'Link', 'Unlink', 'Anchor', '-',
-                'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField', '-',
-                'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'CreateDiv', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', 'BidiLtr', 'BidiRtl', '-',
-                'TextColor', 'BGColor', '-',
-                'UIColor', 'Maximize', 'ShowBlocks', '-',
                 'Table', 'Flash', 'Image', '-', 'PasteFromWord', 'RemoveFormat', 'Blockquote', 'typograf'
             ],
         ],
