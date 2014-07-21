@@ -6,7 +6,7 @@ var init_ckeditor = function () {
     $('.form-group textarea.html_editor').ckeditor({
         toolbar: [
             [
-                'Source', '-', 'FontSize', 'Format', '-',
+                'Source', '-', 'FontSize', 'Format','Print','Redo','-',
                 'Bold', 'Italic', 'Underline', '-',
                 'Subscript', 'Superscript', 'SpecialChar', '-',
                 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyFull', '-',
@@ -27,7 +27,7 @@ var init_ckeditor = function () {
     $('.form-group textarea.html_editor_admin').ckeditor({
         toolbar: [
             [
-                'Source', '-', 'FontSize', 'Format', '-', 'Bold', 'Italic', 'Underline', '-',
+                'Source', '-', 'FontSize', 'Format','Print','Redo','-',
                 'Subscript', 'Superscript', 'SpecialChar', '-',
                 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyFull', '-',
                 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
@@ -47,7 +47,8 @@ var init_ckeditor = function () {
     $('.control-group textarea.html_editor_admin').ckeditor({
         toolbar: [
             [
-                'Source', '-', 'FontSize', 'Format', '-', 'Bold', 'Italic', 'Underline', '-',
+                'Source', '-', 'FontSize', 'Format','Print','Redo','-',
+                'Bold', 'Italic', 'Underline', '-',
                 'Subscript', 'Superscript', 'SpecialChar', '-',
                 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyFull', '-',
                 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
