@@ -23,6 +23,7 @@ var init_ckeditor = function () {
             extraCss: 'body{font-size:1.2em;}',
             height: '400px',
             extraAllowedContent:'mediainsert(*)[*]{*}; script(*)[*]{*}; php',
+            allowedContentRules:true,
             allowedContent: true
         }
     );
@@ -47,6 +48,7 @@ var init_ckeditor = function () {
         filebrowserUploadUrl: '/admin/',
         extraPlugins: 'iframedialog,typograf,onchange',
         extraAllowedContent:'mediainsert(*)[*]{*}; script(*)[*]{*}; php',
+        allowedContentRules:true,
         allowedContent: true
     });
     $('.control-group textarea.html_editor_admin').ckeditor({
@@ -70,6 +72,7 @@ var init_ckeditor = function () {
         filebrowserUploadUrl: '/admin/',
         extraPlugins: 'iframedialog,typograf,onchange',
         extraAllowedContent:'mediainsert(*)[*]{*}; script(*)[*]{*}; php',
+        allowedContentRules:true,
         allowedContent: true
     });
 }
