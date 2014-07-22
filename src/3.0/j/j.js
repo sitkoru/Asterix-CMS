@@ -4,50 +4,55 @@ document.write('<script src="http://src.sitko.ru/3.0/ckeditor/adapters/jquery.js
 var init_ckeditor = function () {
 
     $('.form-group textarea.html_editor').ckeditor({
-        toolbar: [
-            [
-                'Source', '-', 'FontSize', 'Format','Print','Redo','-',
-                'Bold', 'Italic', 'Underline', '-',
-                'Subscript', 'Superscript', 'SpecialChar', '-',
-                'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyFull', '-',
-                'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
-                'Link', 'Unlink', 'Anchor', '-',
-                'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField', '-',
-                'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'CreateDiv', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', 'BidiLtr', 'BidiRtl', '-',
-                'TextColor','BGColor','-',
-                'UIColor','Maximize','ShowBlocks','-',
-                'Table', 'Image', '-', 'PasteFromWord', 'RemoveFormat', 'Blockquote', 'typograf'
+            toolbar: [
+                [
+                    'Source', '-', 'FontSize', 'Format', 'Print', 'Redo', '-',
+                    'Bold', 'Italic', 'Underline', '-',
+                    'Subscript', 'Superscript', 'SpecialChar', '-',
+                    'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyFull', '-',
+                    'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
+                    'Link', 'Unlink', 'Anchor', '-',
+                    'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField', '-',
+                    'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'CreateDiv', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', 'BidiLtr', 'BidiRtl', '-',
+                    'TextColor', 'BGColor', '-',
+                    'UIColor', 'Maximize', 'ShowBlocks', '-',
+                    'Table', 'Image', '-', 'PasteFromWord', 'RemoveFormat', 'Blockquote', 'typograf'
+                ],
             ],
-        ],
-        language: 'ru',
-        extraCss: 'body{font-size:1.2em;}',
-        height: '400px'
-    });
+            language: 'ru',
+            extraCss: 'body{font-size:1.2em;}',
+            height: '400px',
+            forcePasteAsPlainText: true,
+            allowedContent: true
+        }
+    );
 
     $('.form-group textarea.html_editor_admin').ckeditor({
         toolbar: [
             [
-                'Source', '-', 'FontSize', 'Format','Print','Redo','-',
+                'Source', '-', 'FontSize', 'Format', 'Print', 'Redo', '-',
                 'Subscript', 'Superscript', 'SpecialChar', '-',
                 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyFull', '-',
                 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-',
                 'Link', 'Unlink', 'Anchor', '-',
                 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField', '-',
                 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'CreateDiv', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', 'BidiLtr', 'BidiRtl', '-',
-                'TextColor','BGColor','-',
-                'UIColor','Maximize','ShowBlocks','-',
+                'TextColor', 'BGColor', '-',
+                'UIColor', 'Maximize', 'ShowBlocks', '-',
                 'Table', 'Flash', 'Image', '-', 'PasteFromWord', 'RemoveFormat', 'Blockquote', 'typograf'
             ],
         ],
         language: 'ru',
         /*removePlugins:'scayt,menubutton,contextmenu',*/
         filebrowserUploadUrl: '/admin/',
-        extraPlugins: 'iframedialog,typograf,onchange'
+        extraPlugins: 'iframedialog,typograf,onchange',
+        forcePasteAsPlainText: true,
+        allowedContent: true
     });
     $('.control-group textarea.html_editor_admin').ckeditor({
         toolbar: [
             [
-                'Source', '-', 'FontSize', 'Format','Print','Redo','-',
+                'Source', '-', 'FontSize', 'Format', 'Print', 'Redo', '-',
                 'Bold', 'Italic', 'Underline', '-',
                 'Subscript', 'Superscript', 'SpecialChar', '-',
                 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyFull', '-',
@@ -55,15 +60,17 @@ var init_ckeditor = function () {
                 'Link', 'Unlink', 'Anchor', '-',
                 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField', '-',
                 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'CreateDiv', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', 'BidiLtr', 'BidiRtl', '-',
-                'TextColor','BGColor','-',
-                'UIColor','Maximize','ShowBlocks','-',
+                'TextColor', 'BGColor', '-',
+                'UIColor', 'Maximize', 'ShowBlocks', '-',
                 'Table', 'Flash', 'Image', '-', 'PasteFromWord', 'RemoveFormat', 'Blockquote', 'typograf'
             ],
         ],
         language: 'ru',
         /*removePlugins:'scayt,menubutton,contextmenu',*/
         filebrowserUploadUrl: '/admin/',
-        extraPlugins: 'iframedialog,typograf,onchange'
+        extraPlugins: 'iframedialog,typograf,onchange',
+        forcePasteAsPlainText: true,
+        allowedContent: true
     });
 }
 
