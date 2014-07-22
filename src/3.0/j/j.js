@@ -23,6 +23,7 @@ var init_ckeditor = function () {
             extraCss: 'body{font-size:1.2em;}',
             height: '400px',
             allowedContentRules:true,
+            allowedContent: true
         }
     );
 
@@ -69,6 +70,7 @@ var init_ckeditor = function () {
         filebrowserUploadUrl: '/admin/',
         extraPlugins: 'iframedialog,typograf,onchange',
         allowedContentRules:true,
+        allowedContent: true
     });
 }
 
