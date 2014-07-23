@@ -43,27 +43,8 @@
             </tr>
             <tr class="acms_lb-content-form_openid" style="display:none;">
               <td class="acms_lb-content-formCell acms_lb-content-leftCol"></td>
-              <td class="acms_lb-content-formCell acms_lb-content-rightCol"><input type="button" value="Войти" class="acms_form-inputButton" OnClick="
-				document.location.href='\
-					https://www.google.com/accounts/o8/ud\
-						?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0\
-						&amp;openid.mode=checkid_setup\
-						&amp;openid.return_to=http://{$domain.current_host}/?login\
-						&amp;openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select\
-						&amp;openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select\
-						&amp;openid.realm=http://{$domain.current_host}/\
-						&amp;openid.ui.ns=http://specs.openid.net/extensions/ui/1.0\
-						&amp;openid.ui.icon=true\
-						&amp;hd=sitko.ru\
-						&amp;openid.ns.ax=http://openid.net/srv/ax/1.0\
-						&amp;openid.ax.mode=fetch_request\
-						&amp;openid.ax.required=firstname,lastname,email,language\
-						&amp;openid.ax.type.firstname=http://axschema.org/namePerson/first\
-						&amp;openid.ax.type.lastname=http://axschema.org/namePerson/last\
-						&amp;openid.ax.type.email=http://axschema.org/contact/email\
-						&amp;openid.ax.type.language=http://axschema.org/pref/language\
-						';
-			  " /></td>
+                <td class="acms_lb-content-formCell acms_lb-content-rightCol"><input type="button" value="Войти" class="acms_form-inputButton" OnClick="
+				document.location.href='\/?login_oauth=google.com'; " /></td>
             </tr>
           </tbody>
         </table>
