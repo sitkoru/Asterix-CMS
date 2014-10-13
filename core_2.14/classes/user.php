@@ -164,6 +164,8 @@ class user
 	//Авторизация пользователя по локальной базе пользователей
 	private static function authUser_localhost(){
 		//Авторизация по логину/паролю
+        var_dump($_POST);
+
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
 			
 			$user = model::$types['password'] -> tryAuth( 'login',  $_POST );
