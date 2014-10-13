@@ -175,7 +175,8 @@ class user
 
 			//Залогинелся
 			if ( $user ) {
-			
+                var_dump('345',$user);
+                exit();
 				self::setCookie('auth', $user['session_id']);
 				self::all_ok($user);
 				$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
