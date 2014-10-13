@@ -848,7 +848,7 @@ class user
 							);
 							$_POST['login'] = self::$info['login'];
 							$_POST['password'] = self::$info['password'];
-
+                            var_dump($_POST);
 							//Авторизуем
 							$user = self::$info;
 							self::authUser_localhost();
