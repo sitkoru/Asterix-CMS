@@ -299,9 +299,9 @@ class user
 			$url2="https://api.vk.com/method/getProfiles?uids=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
 			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
-            var_dump($token);
-			var_dump($datas);
-            exit();
+            var_dump($token);echo "<br>";
+			var_dump($datas);echo "<br>";
+
 			if( !IsSet( $datas['response'] ) )
 				return false;
 
@@ -315,7 +315,8 @@ class user
 				'img' => $datas['photo_big'],
 				'session_id' => session_id(),
 			);
-				
+            var_dump(	self::$info);echo "<br>";
+            exit();
 			$_POST['login'] = self::$info['login'];
 			$_POST['password'] = self::$info['password'];
 				
