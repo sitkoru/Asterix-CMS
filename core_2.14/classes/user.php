@@ -163,7 +163,6 @@ class user
 
 	//Авторизация пользователя по локальной базе пользователей
 	private static function authUser_localhost(){
-		var_dump($_POST);echo "1";
 		//Авторизация по логину/паролю
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
 			
@@ -874,7 +873,7 @@ class user
 								}
 				
 								model::addRecord('users', 'rec', self::$info);
-								self::authUser_localhost();
+								//self::authUser_localhost();
 							}
 							
 							header('Location: '.$_SESSION['oauth_referer']);
