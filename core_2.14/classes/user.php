@@ -164,7 +164,6 @@ class user
 	//Авторизация пользователя по локальной базе пользователей
 	private static function authUser_localhost(){
 		var_dump($_POST);
-        exit();
 		//Авторизация по логину/паролю
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
 			
@@ -849,11 +848,11 @@ class user
 							);
 							$_POST['login'] = self::$info['login'];
 							$_POST['password'] = self::$info['password'];
-							
+
 							//Авторизуем
 							$user = self::$info;
 							self::authUser_localhost();
-							
+						    exit();
 							//Регистрируем
 							if( !self::$info['id'] ){
 								self::$info = $user;
