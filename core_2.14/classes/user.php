@@ -166,17 +166,12 @@ class user
 		//Авторизация по логину/паролю
 
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
-            var_dump('123',$_POST);
-
 			$user = model::$types['password'] -> tryAuth( 'login',  $_POST );
-            var_dump('123',$user);
 			UnSet($_POST['login']);
 			UnSet($_POST['password']);
 
 			//Залогинелся
 			if ( $user ) {
-                var_dump('345',$user);
-                exit();
 				self::setCookie('auth', $user['session_id']);
 				self::all_ok($user);
 				$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
@@ -358,7 +353,6 @@ class user
 				$_POST['login'] = self::$info['login'];
 				$_POST['password'] = self::$info['password'];
 
-                var_dump('555',$_POST );
 
 				model::addRecord('users', 'rec', self::$info);
 				self::authUser_localhost();
