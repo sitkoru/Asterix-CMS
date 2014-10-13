@@ -320,7 +320,7 @@ class user
 			self::authUser_localhost();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
 			//Регистрируем
-			if( !self::$info['id'] && isset($datas['uid'])){
+			if( !self::$info['id'] && isset($datas['uid']) && $datas['uid']){
 				self::$info = array(
 					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['uid'] ),
 					'shw' => true,
