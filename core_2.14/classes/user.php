@@ -304,7 +304,8 @@ class user
 				return false;
 
 			$datas=(array)$datas['response'][0];
-
+            var_dump($datas);
+            die();
 			self::$info = array(
 				'login' => 'vk'.$datas['uid'],
 				'password' => $datas['uid'].'thisismyverybigwordformd5',
