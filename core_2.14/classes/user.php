@@ -318,6 +318,7 @@ class user
 				
 			//Авторизуем
 			self::authUser_localhost();
+            exit();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
 	
 			//Регистрируем
