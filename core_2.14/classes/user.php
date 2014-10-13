@@ -313,6 +313,7 @@ class user
 				'img' => $datas['photo_big'],
 				'session_id' => session_id(),
 			);
+            var_dump(self::$info);
 			$_POST['login'] = self::$info['login'];
 			$_POST['password'] = self::$info['password'];
 			//Авторизуем
