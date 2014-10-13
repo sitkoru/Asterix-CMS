@@ -167,9 +167,10 @@ class user
 
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
             var_dump('123',$_POST);
-            exit();
+
 			$user = model::$types['password'] -> tryAuth( 'login',  $_POST );
-			
+            var_dump('123',$user);
+            exit();
 			UnSet($_POST['login']);
 			UnSet($_POST['password']);
 
