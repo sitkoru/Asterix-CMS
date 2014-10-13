@@ -322,7 +322,7 @@ class user
 			//Регистрируем
 			if( !self::$info['id'] ){
                 var_dump(self::$info);
-                exit();
+                die();
 				self::$info = array(
 					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['uid'] ),
 					'shw' => true,
