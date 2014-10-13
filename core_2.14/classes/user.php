@@ -315,15 +315,15 @@ class user
 			);
 			$_POST['login'] = self::$info['login'];
 			$_POST['password'] = self::$info['password'];
-				var_dump(self::$info['login']);
 			//Авторизуем
-            exit();
+
 			self::authUser_localhost();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
 	
 			//Регистрируем
 			if( !self::$info['id'] ){
-
+                var_dump(self::$info);
+                exit();
 				self::$info = array(
 					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['uid'] ),
 					'shw' => true,
