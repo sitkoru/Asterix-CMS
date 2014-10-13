@@ -164,7 +164,7 @@ class user
 	//Авторизация пользователя по локальной базе пользователей
 	private static function authUser_localhost(){
 		//Авторизация по логину/паролю
-
+        var_dump($_POST);
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
 			
 			$user = model::$types['password'] -> tryAuth( 'login',  $_POST );
@@ -304,8 +304,6 @@ class user
 				return false;
 
 			$datas=(array)$datas['response'][0];
-            var_dump($datas);
-            die();
 			self::$info = array(
 				'login' => 'vk'.$datas['uid'],
 				'password' => $datas['uid'].'thisismyverybigwordformd5',
