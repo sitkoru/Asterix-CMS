@@ -296,7 +296,7 @@ class user
 			$f = @file_get_contents( $token_url );
 			$token = (array)json_decode( $f );
 			//Запрос данных
-			$url2="https://api.vk.com/method/getProfiles?uids=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
+			$url2="https://api.vk.com/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
 			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
             var_dump($token);
