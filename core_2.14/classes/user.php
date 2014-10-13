@@ -319,10 +319,10 @@ class user
 
 			self::authUser_localhost();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
-	        var_dump(self::$info);
-            exit();
 			//Регистрируем
 			if( !self::$info['id'] ){
+                var_dump(self::$info);
+                exit();
 				self::$info = array(
 					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['uid'] ),
 					'shw' => true,
