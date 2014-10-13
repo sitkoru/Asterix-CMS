@@ -322,7 +322,6 @@ class user
 	
 			//Регистрируем
 			if( !self::$info['id'] ){
-                var_dump(self::$info);
 				self::$info = array(
 					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['uid'] ),
 					'shw' => true,
@@ -848,11 +847,10 @@ class user
 							);
 							$_POST['login'] = self::$info['login'];
 							$_POST['password'] = self::$info['password'];
-                            var_dump($_POST);
 							//Авторизуем
 							$user = self::$info;
 							self::authUser_localhost();
-						    exit();
+						    die();
 							//Регистрируем
 							if( !self::$info['id'] ){
 								self::$info = $user;
