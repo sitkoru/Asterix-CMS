@@ -871,8 +871,7 @@ class user
 									if( $old )
 										self::$info['is_link_to'] = $old['id'];										
 								}
-                                $_POST['login'] = self::$info['login'];
-                                $_POST['password'] = self::$info['password'];
+
 								model::addRecord('users', 'rec', self::$info);
 								self::authUser_localhost();
 							}
