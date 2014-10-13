@@ -375,7 +375,7 @@ class user
 		
 		}elseif( in_array($provider, array('facebook.com', 'facebook')) ){
 			if( IsSet( $_GET['error'] ) )
-				break;
+				return;
 
 			//дефолтные настройки из конфига
 			$app_id = model::$settings['oauth_facebook_id'];
@@ -667,29 +667,138 @@ class user
 
 
 		} elseif( $provider == 'google.com' ) {
-			$url = 'https://www.google.com/accounts/o8/ud
-				?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0
-				&openid.mode=checkid_setup
-				&openid.return_to=http://' . model::$ask->host . '/?login
-				&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select
-				&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select
-				&openid.realm=http://' . model::$ask->host . '/
-				&openid.ui.ns=http://specs.openid.net/extensions/ui/1.0
-				&openid.ui.icon=true
-				&openid.ns.ax=http://openid.net/srv/ax/1.0
-				&openid.ax.mode=fetch_request
-				&openid.ax.required=firstname,lastname,email,language
-				&openid.ax.type.firstname=http://axschema.org/namePerson/first
-				&openid.ax.type.lastname=http://axschema.org/namePerson/last
-				&openid.ax.type.email=http://axschema.org/contact/email
-				&openid.ax.type.language=http://axschema.org/pref/language
-				';
-			$url = str_replace( "\n", '', $url );
-			$url = str_replace( "	", '', $url );
-			$url = str_replace( " ", '', $url );
 
-			header('Location: '.$url);
-			exit();
+            if(model::$ask->host == 'elobogrev.ru' || model::$ask->host == 'uimpex.ru'){
+
+                $client_id = '421241735500-mvpgl1rgttjsn2ig9ohcu2sn8332udo6.apps.googleusercontent.com';
+                $client_secret = '38zcTt8D4lBLgS8OBiBjJ1MP';
+
+                if(!isset($_GET['code'])){
+
+                    $authorize_endpoint = 'https://accounts.google.com/o/oauth2/auth';
+                    $url = $authorize_endpoint;
+                    $url .= '?response_type=code';
+                    $url .= '&client_id='.$client_id;
+                    $url .= '&scope=email%20profile';
+                    $url .= '&redirect_uri=http://' . model::$ask->host . '/?login_oauth=google.com';
+                    $url .= '&approval_prompt=force';
+
+                    header('Location: '.$url);
+
+                }else{
+                    $code = $_GET['code'];
+                    $access_endpoint = 'https://accounts.google.com/o/oauth2/token';
+
+
+                    $request = implode(
+                        '&',
+                        [
+                            'code=' . $code,
+                            'client_id=' . $client_id,
+                            'client_secret=' . $client_secret,
+                            'redirect_uri=http://' . model::$ask->host . '/?login_oauth=google.com',
+                            'grant_type=authorization_code',
+                        ]
+                    );
+                    $opts = [
+                        'http' => [
+                            'method'  => "POST",
+                            'content' => $request,
+                            'header'  => "Content-Type: application/x-www-form-urlencoded; charset=utf-8\r\nContent-Length: "
+                                . strlen($request)
+                        ]
+                    ];
+                    try {
+                        $cntnt = file_get_contents($access_endpoint, 0, stream_context_create($opts));
+                    } catch (ErrorException $ex) {
+                        throw new HttpException(500, "Error!");
+                    }
+                    $response = json_decode($cntnt, true);
+
+                    //$data_url = 'https://www.googleapis.com/plus/v1/people/104687879974677335810';
+                    $data_url = 'https://www.googleapis.com/oauth2/v2/userinfo';
+                    $user_data_url = $data_url.'?access_token='.$response['access_token'];
+                    $user_data = file_get_contents($user_data_url);
+
+                    if($user_data){
+                        $data = json_decode($user_data, true);
+                        self::$info = array(
+                            'login' => 'googlecom_'.$data['id'],
+                            'password' => $data['id'].'thisismyverybigwordformd5',
+                            'admin' => false,
+                            'title' => $data['name'],
+                            'img' => $data['picture'],
+                            'session_id' => session_id(),
+                        );
+
+                        $_POST['login'] = self::$info['login'];
+                        $_POST['password'] = self::$info['password'];
+
+                        //Авторизуем
+                        self::authUser_localhost();
+                        $login = model::$types['sid']->correctValue( self::$info['login'] );
+
+                        //Регистрируем
+                        if( !self::$info['id'] ){
+
+                            $admin = isset(model::$config['openid']) && isset(model::$config['openid'][ $data['hd'] ]) && (model::$config['openid'][ $data['hd'] ] == 'admin');
+
+                            self::$info = array(
+                                'sid' => model::$types['sid']->correctValue( 'googlecom_'.$data['id'] ),
+                                'shw' => true,
+                                'active' => true,
+                                'admin' => $admin,
+                                'login' => 'googlecom_'.$data['id'],
+                                'password' => $data['id'].'thisismyverybigwordformd5',
+                                'title' => $data['name'],
+                                'img' => array( 'tmp_name' => $data['picture'] ),
+                                'session_id' => session_id(),
+                                'email' => $data['email'],
+                            );
+
+
+                            $_POST['login'] = self::$info['login'];
+                            $_POST['password'] = self::$info['password'];
+
+                            model::addRecord('users', 'rec', self::$info);
+                            self::authUser_localhost();
+
+                        }
+                    }
+
+                    header('Location: /');
+                    exit();
+
+                }
+
+            }else{
+
+                $url = 'https://www.google.com/accounts/o8/ud
+					?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0
+					&openid.mode=checkid_setup
+					&openid.return_to=http://' . model::$ask->host . '/?login
+					&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select
+					&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select
+					&openid.realm=http://' . model::$ask->host . '/
+					&openid.ui.ns=http://specs.openid.net/extensions/ui/1.0
+					&openid.ui.icon=true
+					&openid.ns.ax=http://openid.net/srv/ax/1.0
+					&openid.ax.mode=fetch_request
+					&openid.ax.required=firstname,lastname,email,language
+					&openid.ax.type.firstname=http://axschema.org/namePerson/first
+					&openid.ax.type.lastname=http://axschema.org/namePerson/last
+					&openid.ax.type.email=http://axschema.org/contact/email
+					&openid.ax.type.language=http://axschema.org/pref/language
+					';
+                $url = str_replace( "\n", '', $url );
+                $url = str_replace( "	", '', $url );
+                $url = str_replace( " ", '', $url );
+
+                header('Location: '.$url);
+
+            }
+
+            exit();
 		}
 	}
 	
