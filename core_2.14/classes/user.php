@@ -290,6 +290,7 @@ class user
 				$dialog_url = 'https://oauth.vk.com/authorize?client_id='.$app_id.'&scope=notify,friends,photos,status,groups,offline&display=page&response_type=code&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
 				//$dialog_url = 'http://api.vk.com/oauth/authorize?client_id='.$app_id.'&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
+                exit();
 			}
 
 			//Получаем Token
