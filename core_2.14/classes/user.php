@@ -314,6 +314,7 @@ class user
 				'session_id' => session_id(),
 			);
             var_dump(self::$info);
+            exit();
 			$_POST['login'] = self::$info['login'];
 			$_POST['password'] = self::$info['password'];
 			//Авторизуем
@@ -324,7 +325,6 @@ class user
 			//Регистрируем
 			if( !self::$info['id'] ){
                 var_dump(self::$info);
-                exit();
 				self::$info = array(
 					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['uid'] ),
 					'shw' => true,
