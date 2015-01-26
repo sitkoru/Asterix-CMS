@@ -162,10 +162,8 @@ class user
 
 	//Авторизация пользователя по локальной базе пользователей
 	private static function authUser_localhost(){
-
 		//Авторизация по логину/паролю
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
-
 			$user = model::$types['password'] -> tryAuth( 'login',  $_POST );
 			
 			UnSet($_POST['login']);
@@ -215,7 +213,6 @@ class user
 		} elseif (strlen(@$_COOKIE['auth'])) {
 			$user = model::$types['password'] -> tryAuth( 'session',  $_COOKIE['auth'] );
 		}
-		
 		
 		// Удачно
 		if( $user ){
@@ -296,6 +293,7 @@ class user
 				$dialog_url = 'https://oauth.vk.com/authorize?client_id='.$app_id.'&scope=notify,friends,photos,status,groups,offline&display=page&response_type=code&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
 				//$dialog_url = 'http://api.vk.com/oauth/authorize?client_id='.$app_id.'&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
+				exit();
 			}
 
 			//Получаем Token
@@ -324,14 +322,12 @@ class user
 				
 			$_POST['login'] = self::$info['login'];
 			$_POST['password'] = self::$info['password'];
-				
 			//Авторизуем
 			self::authUser_localhost();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
 	
 			//Регистрируем
-			if( !self::$info['id'] ){
-
+			if( !self::$info['id']){
 				self::$info = array(
 					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['uid'] ),
 					'shw' => true,
