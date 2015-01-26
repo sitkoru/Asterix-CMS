@@ -26,7 +26,6 @@ class user
 	public $auth_types = array('user' => 'Регистрация на сайте', 'yandex' => 'Яндекс', 'google' => 'Google', 'livejournal' => 'LiveJournal', 'openid' => 'OpenId');
 
 	public function __construct(){
-		
 		//Logout
 		if (IsSet($_GET['logout'])) {
 			self::logout();
@@ -163,15 +162,18 @@ class user
 
 	//Авторизация пользователя по локальной базе пользователей
 	private static function authUser_localhost(){
-		//Авторизация по логину/паролю
 
+		//Авторизация по логину/паролю
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
+
 			$user = model::$types['password'] -> tryAuth( 'login',  $_POST );
+			
 			UnSet($_POST['login']);
 			UnSet($_POST['password']);
 
 			//Залогинелся
 			if ( $user ) {
+
 				self::setCookie('auth', $user['session_id']);
 				self::all_ok($user);
 				$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
@@ -245,6 +247,15 @@ class user
 		}
 	}
 
+	public static function setCookiePublic($name, $value){
+		if( !IsSet( $_POST['no_cookie'] ) ){
+			$time   = time() + 60 * 60 * 24 * 365;
+			$path   = '/';
+			$domain = '.' . $_SERVER['HTTP_HOST'];
+			setcookie($name, $value, $time, $path, $domain);
+		}
+	}
+
 	//Установка Cookie
 	public static function deleteCookie($name){
 		$time   = time() - 3600;
@@ -285,7 +296,6 @@ class user
 				$dialog_url = 'https://oauth.vk.com/authorize?client_id='.$app_id.'&scope=notify,friends,photos,status,groups,offline&display=page&response_type=code&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
 				//$dialog_url = 'http://api.vk.com/oauth/authorize?client_id='.$app_id.'&redirect_uri=http://'.model::$ask->host.'/?login_oauth=vk';
 				echo("<script> top.location.href='" . $dialog_url . "'</script>");
-                exit();
 			}
 
 			//Получаем Token
@@ -294,14 +304,15 @@ class user
 			$f = @file_get_contents( $token_url );
 			$token = (array)json_decode( $f );
 			//Запрос данных
-			$url2="https://api.vk.com/method/getProfiles?uids=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
+			$url2="https://api.vk.com/method/getProfiles?uid=".$token['user_id']."&access_token=".$token['access_token']."&fields=uid,first_name,last_name,bdate,photo_big,has_mobile";
 			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
-
+			
 			if( !IsSet( $datas['response'] ) )
 				return false;
 
 			$datas=(array)$datas['response'][0];
+
 			self::$info = array(
 				'login' => 'vk'.$datas['uid'],
 				'password' => $datas['uid'].'thisismyverybigwordformd5',
@@ -310,13 +321,17 @@ class user
 				'img' => $datas['photo_big'],
 				'session_id' => session_id(),
 			);
+				
 			$_POST['login'] = self::$info['login'];
 			$_POST['password'] = self::$info['password'];
+				
 			//Авторизуем
 			self::authUser_localhost();
 			$login = model::$types['sid']->correctValue( self::$info['login'] );
+	
 			//Регистрируем
-			if( !self::$info['id']){
+			if( !self::$info['id'] ){
+
 				self::$info = array(
 					'sid' => model::$types['sid']->correctValue( 'vk'.$datas['uid'] ),
 					'shw' => true,
@@ -352,8 +367,7 @@ class user
 						
 				$_POST['login'] = self::$info['login'];
 				$_POST['password'] = self::$info['password'];
-
-
+				
 				model::addRecord('users', 'rec', self::$info);
 				self::authUser_localhost();
 
@@ -843,9 +857,11 @@ class user
 							);
 							$_POST['login'] = self::$info['login'];
 							$_POST['password'] = self::$info['password'];
+							
 							//Авторизуем
 							$user = self::$info;
 							self::authUser_localhost();
+							
 							//Регистрируем
 							if( !self::$info['id'] ){
 								self::$info = $user;
@@ -868,7 +884,7 @@ class user
 									if( $old )
 										self::$info['is_link_to'] = $old['id'];										
 								}
-
+				
 								model::addRecord('users', 'rec', self::$info);
 								self::authUser_localhost();
 							}
