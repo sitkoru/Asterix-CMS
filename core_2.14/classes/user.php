@@ -26,7 +26,7 @@ class user
 	public $auth_types = array('user' => 'Регистрация на сайте', 'yandex' => 'Яндекс', 'google' => 'Google', 'livejournal' => 'LiveJournal', 'openid' => 'OpenId');
 
 	public function __construct(){
-		
+		die();
 		//Logout
 		if (IsSet($_GET['logout'])) {
 			self::logout();
@@ -189,7 +189,7 @@ class user
 				user::deleteCookie('auth');
 				$result = array(
 					'result' => 'message',
-					'message' => 'Не получилось, попробуйте ещё',
+					'message' => 'Не получилось, попробуйте ещё!',
 					'close' => false,
 				);
 			}
