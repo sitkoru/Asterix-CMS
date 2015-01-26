@@ -165,7 +165,7 @@ class user
 
 		//Авторизация по логину/паролю
 		if (IsSet($_POST['login']) && IsSet($_POST['password']) && (!IsSet($_POST['title'])) ) {
-			
+
 			$user = model::$types['password'] -> tryAuth( 'login',  $_POST );
 			
 			UnSet($_POST['login']);
@@ -173,7 +173,7 @@ class user
 
 			//Залогинелся
 			if ( $user ) {
-			
+
 				self::setCookie('auth', $user['session_id']);
 				self::all_ok($user);
 				$_SESSION['just_logged']=date('H:i:s',strtotime('+10 seconds'));
