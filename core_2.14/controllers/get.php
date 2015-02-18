@@ -247,7 +247,7 @@ class controller_get extends default_controller
 			header( "HTTP/1.0 404 Not Found" );
 			$current_template_file = '404.tpl';
 		} elseif( model::$ask->mode[0] == 'print' ) {
-			header( "HTTP/1.0 404 Not Found" );
+			header( "HTTP/1.0 200 Ok" );
 			$current_template_file = model::$modules[model::$ask->module]->info['prototype'] . '_' . model::$ask->output_type . '_print.tpl';
 		} else {
 			header( "HTTP/1.0 200 Ok" );
