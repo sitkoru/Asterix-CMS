@@ -309,7 +309,7 @@ class user
 			$datas=(array)$datas;
 			
 			if( !IsSet( $datas['response'][0]['uid'] ) )
-				var_dump($datas);
+				echo "Ошибка авторизации";
 				return false;
 
 			$datas=(array)$datas['response'][0];
