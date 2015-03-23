@@ -308,7 +308,7 @@ class user
 			$datas = json_decode(@file_get_contents($url2));
 			$datas=(array)$datas;
 			
-			if( !IsSet( $datas['response'] ) )
+			if( !IsSet( $datas['response'][0]['uid'] ) )
 				return false;
 
 			$datas=(array)$datas['response'][0];
