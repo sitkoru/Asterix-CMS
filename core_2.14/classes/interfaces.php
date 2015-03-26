@@ -172,8 +172,10 @@ class interfaces
 					$filename = model::$config['settings']['no_data_url'] . '/captcha_' . date( "YmdHis" ) . rand( 0, 1000 ) . '.png';
 					imagepng( $image, model::$config['path']['www'] . $filename );
 					$result['captcha'] = $filename;
-				} else
-					$result['captcha'] = 'data:image/png;base64,' . base64_encode( file_get_contents( $path ) );
+				} else {
+					$result['captcha'] = 'data:image/png;base64,' . base64_encode(file_get_contents($path));
+				}
+				unlink($path);
 			}
 
 		}

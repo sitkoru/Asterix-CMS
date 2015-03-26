@@ -87,6 +87,7 @@ class field_type_feedback extends field_type_default
 
 			//Записываем
 			$value['captcha'] = 'data:image/png;base64,' . base64_encode( file_get_contents( $path ) );
+			unlink($path);
 		}
 
 		//Расставляем доп.поля
