@@ -64,7 +64,7 @@
     position: fixed;
     top: 0;
     left: 0;
-    background: url('http://src.opendev.ru/a/i/lb-background.png') repeat 0 0;
+    background: url('//src.opendev.ru/a/i/lb-background.png') repeat 0 0;
     display: none;
     z-index: 9999;
 }
