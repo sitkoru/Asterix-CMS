@@ -723,8 +723,8 @@ class user
 
 			if (model::$ask->host == 'elobogrev.ru' || model::$ask->host == 'uimpex.ru' || model::$ask->host == '2015.uwdc.ru' || model::$ask->host =='chelsite.opendev.ru/') {
 
-				$client_id = '44005646661-d74j7j229f1jsepgtc4jrtev9iddfls3.apps.googleusercontent.com';
-				$client_secret = 'ESJWLvsw2aC474xZ2LBTakiK';
+				$client_id = '421241735500-mvpgl1rgttjsn2ig9ohcu2sn8332udo6.apps.googleusercontent.com';
+				$client_secret = '38zcTt8D4lBLgS8OBiBjJ1MP';
 
 				if (!isset($_GET['code'])) {
 
