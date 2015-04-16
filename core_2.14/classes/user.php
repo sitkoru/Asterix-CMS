@@ -721,7 +721,7 @@ class user
 
 		} elseif ($provider == 'google.com') {
 
-			if (model::$ask->host == 'elobogrev.ru' || model::$ask->host == 'uimpex.ru' || model::$ask->host == '2015.uwdc.ru') {
+			if (model::$ask->host == 'elobogrev.ru' || model::$ask->host == 'uimpex.ru' || model::$ask->host == '2015.uwdc.ru' || model::$ask->host =='chelsite.opendev.ru/') {
 
 				$client_id = '44005646661-d74j7j229f1jsepgtc4jrtev9iddfls3.apps.googleusercontent.com';
 				$client_secret = 'ESJWLvsw2aC474xZ2LBTakiK';
