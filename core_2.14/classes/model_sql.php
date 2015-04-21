@@ -74,6 +74,11 @@ class ModelSql
 		//Статистика
 		log::sql( $sql, $time, $result_count, $query_type, $database );
 
+		if(model::$ask->host == 'chelzan.ru' || model::$ask->host == 'chelzan214.opendev.ru'){
+			if(method_exists('start_module', 'logSql')){
+				start_module::logSql($sql);
+			}
+		}
 		//Запоминаем последний запрос
 		model::$last_sql = $sql;
 

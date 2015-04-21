@@ -19,7 +19,7 @@ class ModelFinder
 						$url_string = '';
 
 					$where = '(`url`="' . mysql_real_escape_string( $url_string ) . '"';
-					if( $prefered_module == 'start' )
+					if( $prefered_module == 'start' && $url_string != '')
 						$where .= ' or `url_alias`="' . mysql_real_escape_string( $url_string ) . '"';
 					$where .= ')';
 
