@@ -123,6 +123,7 @@ class mysql
                 pr('Обнаружена ошибка в запросе<br />' . $sql . '<br />' . mysql_errno() . ": " . mysql_error());
             }
         }
+        return false;
     }
 
 }
