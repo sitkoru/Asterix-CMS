@@ -123,9 +123,6 @@ class mysql
                 pr('Обнаружена ошибка в запросе<br />' . $sql . '<br />' . mysql_errno() . ": " . mysql_error());
             }
         }
-        echo "Непредвиденная ошибка. Перезагрузите страницу\n";
-        echo 'Обнаружена ошибка в запросе<br />' . $sql . '<br />' . mysql_errno() . ": " . mysql_error();
-        exit();
     }
 
 }
