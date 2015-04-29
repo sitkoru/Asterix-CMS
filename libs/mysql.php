@@ -72,6 +72,7 @@ class mysql
             mysql_free_result($result);
         } else {
             $this->error($sql);
+            return false;
         }
 
         return $items;
@@ -87,6 +88,7 @@ class mysql
             mysql_free_result($result);
         } else {
             $this->error($sql);
+            return false;
         }
 
         return $row;
@@ -99,6 +101,7 @@ class mysql
         $result = mysql_query($sql, $this->connection);
         if (!$result) {
             $this->error($sql);
+            return false;
         }
 
         return mysql_insert_id();
@@ -111,6 +114,7 @@ class mysql
         $result = mysql_query($sql, $this->connection);
         if (!$result) {
             $this->error($sql);
+            return false;
         }
 
         return $result;
@@ -123,7 +127,6 @@ class mysql
                 pr('Обнаружена ошибка в запросе<br />' . $sql . '<br />' . mysql_errno() . ": " . mysql_error());
             }
         }
-        return false;
     }
 
 }
