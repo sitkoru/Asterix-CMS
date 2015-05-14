@@ -720,7 +720,7 @@ class user
 
 
 		} elseif ($provider == 'google.com') {
-			if (model::$ask->host == 'elobogrev.ru' || model::$ask->host == 'uimpex.ru' || model::$ask->host == '2015.uwdc.ru' || model::$ask->host =='chelsite.opendev.ru' || model::$ask->host =='xn--14-6kcay4afr8c9b.xn--p1ai') {
+			if (model::$ask->host == 'elobogrev.ru' || model::$ask->host == 'uimpex.ru' || model::$ask->host == '2015.uwdc.ru' || model::$ask->host =='chelsite.opendev.ru' || model::$ask->host =='xn--14-6kcay4afr8c9b.xn--p1ai' || 1==1) {
 				$client_id = '421241735500-mvpgl1rgttjsn2ig9ohcu2sn8332udo6.apps.googleusercontent.com';
 				$client_secret = '38zcTt8D4lBLgS8OBiBjJ1MP';
 
