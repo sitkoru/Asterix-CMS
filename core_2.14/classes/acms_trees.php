@@ -50,6 +50,7 @@ class acms_trees
 
 		//Учитываем переданные в функцию условия
 		if( is_array( $conditions['and'] ) ) {
+           acms_trees::checkConditions($conditions,$this->structure[$structure_sid]['fields']);
 			if( $where )
 				$where['and'] = array_merge( $where['and'], $conditions['and'] );
 			else
@@ -263,6 +264,7 @@ class acms_trees
 
 				//Учитываем переданные в функцию условия
 				if( is_array( $conditions['and'] ) ) {
+                    acms_trees::checkConditions($conditions,$this->structure[$structure_sid]['fields']);
 					$where['and'] = array_merge( $where['and'], $conditions['and'] );
 				}
 
@@ -277,8 +279,10 @@ class acms_trees
 
 			//Учитываем переданные в функцию условия
 			if( is_array( $conditions['and'] ) && is_array( $where ) ) {
+                acms_trees::checkConditions($conditions,$this->structure[$structure_sid]['fields']);
 				$where['and'] = array_merge( $where['and'], $conditions['and'] );
 			} elseif( is_array( $conditions['and'] ) ) {
+                acms_trees::checkConditions($conditions,$this->structure[$structure_sid]['fields']);
 				$where = $conditions;
 			}
 
@@ -326,6 +330,7 @@ class acms_trees
 
 								//Учитываем переданные в функцию условия
 								if( is_array( $conditions['and'] ) ) {
+                                   acms_trees::checkConditions($conditions,$this->structure[$structure_sid]['fields']);
 									$where['and'] = array_merge( $where['and'], $conditions['and'] );
 								}
 
@@ -381,11 +386,22 @@ class acms_trees
 			}
 			$res[] = $recs[$f['id']];
 		}
-
 		return $res;
 	}
 
-
+	public static function checkConditions(&$conditions,$fields)
+	{
+		//sql errors fix
+        if (!empty($fields) && isset($_GET['123'])) {
+            $fields_names = array_keys($fields);
+            $fields_for_check = ['show_in_menu'];
+            foreach ($conditions['and'] as $key => $condition) {
+                if (in_array($condition, $fields_for_check) && !in_array($condition, $fields_names) ) {
+                    unset($conditions['and'][$key]);
+                }
+            }
+        }
+	}
 }
 
 ?>
