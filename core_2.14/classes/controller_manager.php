@@ -376,7 +376,7 @@ class controller_manager
 
         $recs = array();
         foreach (model::$modules as $module_sid => $module) {
-            if (IsSet($module->structure)) {
+            if (!empty($module->structure)) {
                 if (!$module->structure['rec']['hide_in_tree'] and !$module->structure['rec']['hide_in_sitemap']) {
 
                     $fields = '`url`,`date_public`';
