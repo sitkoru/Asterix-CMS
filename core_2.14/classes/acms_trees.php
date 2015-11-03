@@ -11,9 +11,11 @@ class acms_trees
         $conditions = array() //уcловия выборки веток
     )
     {
-
-        return acms_trees::getStructureShirtTree($root_record_id, $structure_sid, $levels_to_show, $conditions);
+        $data = acms_trees::getStructureShirtTree($root_record_id, $structure_sid, $levels_to_show, $conditions);
+        return $data;
     }
+
+    public static $forbidden_fields = array('text', 'img');
 
     //Показать краткое дерево сруктуры
     public function getStructureShirtTree($root_record_id, $structure_sid, $levels_to_show, $conditions)
@@ -28,14 +30,12 @@ class acms_trees
                 $recs = acms_trees::getStructureShirtTree_typeSimple($root_record_id, $structure_sid, $levels_to_show, false, $conditions);
             }
         }
-
         return $recs;
     }
 
     //Поиск краткого дерева в древовидной структуре
     public function getStructureShirtTree_typeTree($root_record_id, $structure_sid, $levels_to_show, $conditions)
     {
-
         //Если не установлен обработчик таблицы деревьев - устанавливаем
         if (!IsSet($this->structure[$structure_sid]['db_manager'])) {
             require_once(model::$config['path']['core'] . '/classes/nestedsets.php');
@@ -56,7 +56,6 @@ class acms_trees
             else
                 $where['and'] = $conditions['and'];
         }
-
         //Учитываем уровень
         if ($levels_to_show > 0) {
             //Если указан корень откуда брать дерево - будем брать количество уровней относительно указанного
@@ -84,7 +83,6 @@ class acms_trees
 
             //Забираем записи полного дерева
             $recs = $this->structure[$structure_sid]['db_manager']->getSub($root_record_id, $what, $where);
-
             //Сколько прошло
             $t = explode(' ', microtime());
             $sql_stop = $t[1] + $t[0];
@@ -121,6 +119,7 @@ class acms_trees
         }
 
         if (!count($recs)) {
+
             if ((model::$ask->structure_sid != 'rec')) {
                 // Сначала смотрим зависимые структуры
                 // потом к ним будем вызывать рекурсии
@@ -152,7 +151,6 @@ class acms_trees
         //Ищем ссылки на модули и считаем их деревья
         if ($recs)
             foreach ($recs as $i => $rec) {
-
                 //Вложенные модули
                 if ($levels_to_show > 1)
                     if (strlen($rec['is_link_to_module'])) {
@@ -171,7 +169,6 @@ class acms_trees
 
                                     //Ищем записи вложеного модуля
                                     $tmp = model::$modules[$rec['is_link_to_module']]->getModuleShirtTree(false, $dep_structure_sid, $levels_to_show - 1, $conditions);
-
                                     //Нашли вложенные модули
                                     if (count($tmp)) {
 
@@ -183,6 +180,7 @@ class acms_trees
                                             $recs[$i]['sub'] = $tmp;
                                         }
                                     }
+                                    unset($tmp);
                                 }
                             }
                     }
@@ -214,6 +212,7 @@ class acms_trees
                             $recs[$i]['sub'] = $subs;
                         }
                     }
+                    unset($subs);
                 }
 
             }
@@ -229,6 +228,10 @@ class acms_trees
                 $rec['module'] = $this->info['sid'];
                 $rec['structure_sid'] = $structure_sid;
             }
+        }
+        if (isset($_GET['123']) && isset($recs[0]['sub'][15]['sub'])) {
+            pr_r($recs);
+            die();
         }
 
         return $recs;
@@ -254,7 +257,6 @@ class acms_trees
             //Найдена структура-потомок
             if ($search_children) {
                 $parent = $this->getRecordById($structure_sid, $root_record_id);
-
                 //В разных типах используются разные поля для связки
                 //Берём нужное поле связки
                 $link_field = model::$types[$this->structure[$search_children]['dep_path']['link_type']]->link_field;
@@ -267,16 +269,15 @@ class acms_trees
                     acms_trees::checkConditions($conditions, $this->structure[$structure_sid]['fields']);
                     $where['and'] = array_merge($where['and'], $conditions['and']);
                 }
-
                 //Ищем потомков
                 if ($search_children) {
                     $recs = acms_trees::getStructureShirtTree_typeSimple(false, $search_children, $levels_to_show, $where);
                 }
+                unset($search_children);
             }
 
             //Смотрим всю структуру
         } else {
-
             //Учитываем переданные в функцию условия
             if (is_array($conditions['and']) && is_array($where)) {
                 acms_trees::checkConditions($conditions, $this->structure[$structure_sid]['fields']);
@@ -288,7 +289,7 @@ class acms_trees
 
             // Сначала смотрим зависимые структуры
             // потом к ним будем вызывать рекурсии
-            $search_children = false;
+            unset($search_children);
             if ($structure_sid != 'rec')
                 if ($this->structure)
                     foreach ($this->structure as $s_sid => $s)
@@ -300,11 +301,16 @@ class acms_trees
             //если есть поле POS - сортируем по нему,
             //иначе сортируем по публичной дате, в обратном порядке
             $order = IsSet($this->structure[$structure_sid]['fields']['pos']) ? 'order by `pos`' : 'order by `date_public` desc';
-
             //Получаем записи
             if ($levels_to_show > 0) {
+                /*if (isset($_GET['123'])) {
+                    var_dump( $select = self::getSelectedFields($this->getCurrentTable($structure_sid)));
+                    die();
+                }*/
+                //$select = self::getSelectedFields($this->getCurrentTable($structure_sid));
                 $recs = model::makeSql(
                     array(
+                        //'fields' => $select,
                         'tables' => array($this->getCurrentTable($structure_sid)),
                         'where' => $where,
                         'order' => $order
@@ -333,17 +339,17 @@ class acms_trees
                                     acms_trees::checkConditions($conditions, $this->structure[$structure_sid]['fields']);
                                     $where['and'] = array_merge($where['and'], $conditions['and']);
                                 }
-
+                                unset($conditions);
                                 //Ищем потомков
                                 if ($search_children) {
                                     $children = acms_trees::getStructureShirtTree_typeSimple($root_record_id, $search_children, $levels_to_show - 1, $where);
                                     if ($children) $recs[$i]['sub'] = $children;
                                 }
+                                unset($search_children);
                             }
         }
         //Вставляем окончание .html
         $recs = $this->insertRecordUrlType($recs);
-
         //Помним какая запись из какого модуля
         if ($recs)
             foreach ($recs as $i => $rec) {
@@ -406,6 +412,18 @@ class acms_trees
                 }
             }
         }
+    }
+
+    public static function getSelectedFields($table)
+    {
+        $table_fields = model::execSql("SHOW COLUMNS FROM " . $table, 'getall');
+        $select = [];
+        foreach ($table_fields as $table_field) {
+            if (!in_array($table_field['Field'], self::$forbidden_fields)) {
+                $select[] = $table_field['Field'];
+            }
+        }
+        return $select;
     }
 }
 

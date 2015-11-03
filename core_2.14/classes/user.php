@@ -120,7 +120,9 @@ class user
 		$user = default_module::insertRecordUrlType($user);
 		user::$info = $user;
 		user::$info['public_auth'] = md5($user['session_id']);
-		user::updateMyLoginDate(user::$info['id']);
+		if (isset(user::$info['date_logged'])) {
+			user::updateMyLoginDate(user::$info['id']);
+		}
 		//user::$info = default_module::insertRecordUrlType(user::$info);
 
 		if (IsSet($_GET['login']) || IsSet($_GET['openid']) || IsSet($_GET['openid.ns']))

@@ -66,12 +66,12 @@ class ModelFinder
 	}
 
 	//Забрать запись по ID
-	public function getRecordById( $structure_sid, $id )
+	public function getRecordById( $structure_sid, $id,$fields=false )
 	{
 		//Получаем записи
 		$rec = model::makeSql(
 			array(
-				'fields' => false,
+				'fields' => $fields,
 				'tables' => array( $this->getCurrentTable( $structure_sid ) ),
 				'where'  => array( 'and' => array( '`id`="' . mysql_real_escape_string( $id ) . '"' ) ),
 				'order'  => $order
