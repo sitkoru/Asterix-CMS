@@ -229,11 +229,6 @@ class acms_trees
                 $rec['structure_sid'] = $structure_sid;
             }
         }
-        if (isset($_GET['123']) && isset($recs[0]['sub'][15]['sub'])) {
-            pr_r($recs);
-            die();
-        }
-
         return $recs;
     }
 
@@ -418,6 +413,10 @@ class acms_trees
     {
         $table_fields = model::execSql("SHOW COLUMNS FROM " . $table, 'getall');
         $select = [];
+        if (isset($_GET['123']) && isset($recs[0]['sub'][15]['sub'])) {
+            pr_r($table_fields);
+            die();
+        }
         foreach ($table_fields as $table_field) {
             if (!in_array($table_field['Field'], self::$forbidden_fields)) {
                 $select[] = $table_field['Field'];

@@ -82,7 +82,7 @@ class structures
 	public function getMainFields( $structure_sid = 'rec' )
 	{
 		$fields = array( 'id', 'sid', 'title', 'url' );
-		$main   = array( 'id', 'sid', 'date_public', 'title', 'url', 'shw', 'dep_path_darent', 'dep_path_dir', 'left_key', 'right_key', 'is_link_to_module', 'seo_title', 'seo_keywords', 'seo_description', 'seo_changefreq', 'seo_priority' );
+		$main   = array( 'id', 'sid', 'date_public', 'title', 'url', 'shw', 'dep_path_darent', 'dep_path_dir', 'left_key', 'right_key', 'is_link_to_module', 'seo_title', 'seo_keywords', 'seo_description', 'seo_changefreq', 'seo_priority','pos' );
 		if( is_array( $this->structure[$structure_sid]['fields'] ) )
 			foreach( $this->structure[$structure_sid]['fields'] as $sid => $f )
 				if( (in_array( $sid, $main ) || @$f['main']) and (!IsSet($fields[$sid])) )

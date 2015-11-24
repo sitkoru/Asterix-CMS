@@ -32,7 +32,7 @@ class templater{
 		
 		//Обработчик специальных символов
 		@$this->tmpl->register_modifier('mb_lower', 'mb_strtolower');
-		
+
 		//Пишем свои функции и модификаторы
 		@$this->tmpl->register_function('preload', array(
 			$this,
