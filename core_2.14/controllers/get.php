@@ -165,7 +165,7 @@ class controller_get extends default_controller
         $this->addJS('http://src.opendev.ru/3.0/j/j.js');
 
         //Библиотеки для Администратора
-        $this->addCSS('http://src.opendev.ru/3.0/c/panel.css');
+        //$this->addCSS('http://src.opendev.ru/3.0/c/panel.css');
 
         // jQuery-UI
         if (in_array('jquery-ui', model::$settings['js_libraries'])) {
@@ -197,8 +197,8 @@ class controller_get extends default_controller
 
         // Lightbox
         if (in_array('lightbox', model::$settings['js_libraries'])) {
-            $this->addJS('http://src.opendev.ru/3.0/lightbox/lightbox.js');
-            $this->addCSS('http://src.opendev.ru/3.0/lightbox/lightbox.css');
+            //$this->addJS('http://src.opendev.ru/3.0/lightbox/lightbox.js');
+            //$this->addCSS('http://src.opendev.ru/3.0/lightbox/lightbox.css');
         }
 
         // Стандартные стили
