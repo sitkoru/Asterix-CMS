@@ -165,7 +165,7 @@ class controller_get extends default_controller
         $this->addJS('http://src.opendev.ru/3.0/j/j.js');
 
         //Библиотеки для Администратора
-        //$this->addCSS('http://src.opendev.ru/3.0/c/panel.css');
+        $this->addCSS('http://src.opendev.ru/3.0/c/panel.css');
 
         // jQuery-UI
         if (in_array('jquery-ui', model::$settings['js_libraries'])) {
