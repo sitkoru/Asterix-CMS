@@ -160,19 +160,19 @@ class controller_get extends default_controller
 
         //JavaScript
 //		$this->addJS( 'http://src.opendev.ru/3.0/jquery-ui-1.8.23.custom/ui/jquery-ui.js' );
-        $this->addJS('http://src.opendev.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js');
-        $this->addJS('http://src.opendev.ru/3.0/j/panel.js');
-        $this->addJS('http://src.opendev.ru/3.0/j/j.js');
+        $this->addJS('http://src.sitko.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js');
+        $this->addJS('http://src.sitko.ru/3.0/j/panel.js');
+        $this->addJS('http://src.sitko.ru/3.0/j/j.js');
 
         //Библиотеки для Администратора
-        $this->addCSS('http://src.opendev.ru/3.0/c/panel.css');
+        $this->addCSS('http://src.sitko.ru/3.0/c/panel.css');
 
         // jQuery-UI
         if (in_array('jquery-ui', model::$settings['js_libraries'])) {
 //			$this->addJS('http://src.sitko.ru/3.0/jquery-ui-1.8.23.custom/js/jquery-ui-1.8.23.custom.min.js');
 //			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.8.23.custom/css/ui-lightness/jquery-ui-1.8.23.custom.css' );
-            $this->addCSS('http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css');
-            $this->addCSS('http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css');
+            $this->addCSS('http://src.sitko.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css');
+            $this->addCSS('http://src.sitko.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css');
 
         }
 
