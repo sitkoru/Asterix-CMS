@@ -489,7 +489,6 @@ class controller_admin extends default_controller
         include_once(model::$config['path']['libraries'] . '/acmsDirs.php');
         acmsDirs::makeFolder(model::$config['path']['files'] . '/' . $dir);
         $result = acmsFiles::upload($file['tmp_name'], $path);
-
         if ($result) {
             $public_filename = model::$config['path']['public_files'] . '/' . $dir . '/' . $filename;
             print('
