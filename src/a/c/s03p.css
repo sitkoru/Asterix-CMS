@@ -221,7 +221,7 @@
 /* ���� �������� */
 .acms_field_image a.img{display: block;height: 100px;width: 100px;float: left;margin: 10px;}
 .acms_field_image input[type=text]{width:400px;font-size:14px;}
-.acms_field_image .img{background-image:url(http://src.opendev.ru/i/no-avatar.jpg);}
+.acms_field_image .img{background-image:url(http://src.sitko.ru/i/no-avatar.jpg);}
 
 /* ���� ����� �������� ����� */
 .acms_field_feedback input, .acms_field_feedback select{width:200px;font-size:14px !important;}
@@ -274,7 +274,7 @@
 .acms_field_gallery .images li.new input, .acms_field_gallery .images li.new label{display:inline-block;} 
 
 .acms_field_params li{
-	background:url(http://src.opendev.ru/a/i/sort.png) left center no-repeat;
+	background:url(http://src.sitko.ru/a/i/sort.png) left center no-repeat;
 	list-style:none;
 	padding:0 30px;
 }

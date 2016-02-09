@@ -36,9 +36,9 @@ class controller_dev extends default_controller
 		$this->addJS( '//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js' );
 		$this->addCSS( '//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css' );
 
-		$this->addJS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js' );
-		$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css' );
-		$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css' );
+		$this->addJS( 'http://src.sitko.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js' );
+		$this->addCSS( 'http://src.sitko.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css' );
+		$this->addCSS( 'http://src.sitko.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css' );
 
 		// Название закладки
 		model::$settings[ 'domain_title' ] = 'Разработка :: ' . model::$settings[ 'domain_title' ];
