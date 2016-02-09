@@ -24,11 +24,11 @@ class default_controller
 
 	//Библиотеки, которые можно подключить по псевдонимам
 	public static $known_js = array(
-		'lightbox' => 'http://src.opendev.ru/3.0/j/lightbox.js',
-		'carousel' => 'http://src.opendev.ru/3.0/bootstrap/bootstrap-carousel.js',
+		'lightbox' => 'http://src.sitko.ru/3.0/j/lightbox.js',
+		'carousel' => 'http://src.sitko.ru/3.0/bootstrap/bootstrap-carousel.js',
 	);
 	public static $known_css = array(
-		'lightbox'  => 'http://src.opendev.ru/a/c/lightbox.css',
+		'lightbox'  => 'http://src.sitko.ru/a/c/lightbox.css',
 		'bootstrap' => 'http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css',
 	);
 

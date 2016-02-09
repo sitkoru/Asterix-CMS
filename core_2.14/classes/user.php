@@ -670,7 +670,7 @@ class user
 
 		} elseif( $provider == 'google.com' ) {
 
-            if(model::$ask->host == 'elobogrev.ru' || model::$ask->host == 'uimpex.ru' || model::$ask->host == 'yamobi.ru'){
+            if(model::$ask->host == 'elobogrev.ru' || model::$ask->host == 'uimpex.ru' || model::$ask->host == 'yamobi.ru' || 1==1){
 
                 $client_id = '421241735500-mvpgl1rgttjsn2ig9ohcu2sn8332udo6.apps.googleusercontent.com';
                 $client_secret = '38zcTt8D4lBLgS8OBiBjJ1MP';

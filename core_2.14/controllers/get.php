@@ -162,24 +162,24 @@ class controller_get extends default_controller
 		}
 
 		//JavaScript
-		$this->addJS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js' );
-		$this->addJS( 'http://src.opendev.ru/v4/j/acms_panel.js' );
+		$this->addJS( 'http://src.sitko.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js' );
+		$this->addJS( 'http://src.sitko.ru/v4/j/acms_panel.js' );
 
 		//Библиотеки для Администратора
-//		$this->addCSS( 'http://src.opendev.ru/3.0/c/panel.css' );
+//		$this->addCSS( 'http://src.sitko.ru/3.0/c/panel.css' );
 
 		// jQuery-UI
 		if( in_array( 'jquery-ui', model::$settings[ 'js_libraries' ] ) ) {
-			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css' );
-			$this->addCSS( 'http://src.opendev.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css' );
+			$this->addCSS( 'http://src.sitko.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css' );
+			$this->addCSS( 'http://src.sitko.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css' );
 
 		}
 
 		// Bootstrap
 		if( in_array( 'bootstrap', model::$settings[ 'js_libraries' ] ) ) {
-			$this->addJS( 'http://src.opendev.ru/3.0/bootstrap/2.3.2/js/bootstrap.min.js' );
-			$this->addCSS( 'http://src.opendev.ru/3.0/bootstrap/2.3.2/css/bootstrap.min.css' );
-			$this->addCSS( 'http://src.opendev.ru/3.0/bootstrap/2.3.2/css/bootstrap-responsive.min.css' );
+			$this->addJS( 'http://src.sitko.ru/3.0/bootstrap/2.3.2/js/bootstrap.min.js' );
+			$this->addCSS( 'http://src.sitko.ru/3.0/bootstrap/2.3.2/css/bootstrap.min.css' );
+			$this->addCSS( 'http://src.sitko.ru/3.0/bootstrap/2.3.2/css/bootstrap-responsive.min.css' );
 		}
 
 		// Bootstrap 3
@@ -190,19 +190,19 @@ class controller_get extends default_controller
 
 		// Combosex
 		if( in_array( 'combosex', model::$settings[ 'js_libraries' ] ) ) {
-			$this->addJS( 'http://src.opendev.ru/3.0/combosex/jquery.combosex.min.js' );
-			$this->addCSS( 'http://src.opendev.ru/3.0/combosex/jquery.combosex.css' );
+			$this->addJS( 'http://src.sitko.ru/3.0/combosex/jquery.combosex.min.js' );
+			$this->addCSS( 'http://src.sitko.ru/3.0/combosex/jquery.combosex.css' );
 		}
 
 		// Lightbox
 		if( in_array( 'lightbox', model::$settings[ 'js_libraries' ] ) ) {
-			$this->addJS( 'http://src.opendev.ru/3.0/lightbox/lightbox.js' );
-			$this->addCSS( 'http://src.opendev.ru/3.0/lightbox/lightbox.css' );
+			$this->addJS( 'http://src.sitko.ru/3.0/lightbox/lightbox.js' );
+			$this->addCSS( 'http://src.sitko.ru/3.0/lightbox/lightbox.css' );
 		}
 
 		// Less
 		if( in_array( 'less', model::$settings[ 'js_libraries' ] ) ) {
-			$this->addJS( 'http://src.opendev.ru/3.0/less/less-1.5.0.min.js' );
+			$this->addJS( 'http://src.sitko.ru/3.0/less/less-1.5.0.min.js' );
 		}
 
 		// Стандартные стили

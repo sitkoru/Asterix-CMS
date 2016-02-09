@@ -1,15 +1,15 @@
 #stop6ie{position:absolute;left:0;top:-1000px;width:780px;height:200px;z-index:1000}
 #stop6ie-con,#stop6ie-layout{position:absolute;top:0;left:0;width:780px;height:200px}
 #stop6ie-con{font:normal 12px arial;z-index:2000;padding:15px 30px;width:740px;height:160px;background:none}
-#stop6ie-layout{filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://src.opendev.ru/i/stop6ie-bg.png', sizingMethod='image')}
+#stop6ie-layout{filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='http://src.sitko.ru/i/stop6ie-bg.png', sizingMethod='image')}
 #stop6ie p,#stop6ie h2,#stop6ie ul{margin:0;padding-bottom:10px;line-height:1.4em}
 #stop6ie h2{font:bold 14px arial}
 
 #stop6ie .browsers a{float:left;padding:18px 55px;height:14px}
-#stop6ie a.chrome{background:#fff url(http://src.opendev.ru/i/chrome.png) left top no-repeat}
-#stop6ie a.firefox{background:#fff url(http://src.opendev.ru/i/firefox.png) left top no-repeat}
-#stop6ie a.opera{background:#fff url(http://src.opendev.ru/i/opera.png) left top no-repeat}
-#stop6ie a.safari{background:#fff url(http://src.opendev.ru/i/safari.png) left top no-repeat}
+#stop6ie a.chrome{background:#fff url(http://src.sitko.ru/i/chrome.png) left top no-repeat}
+#stop6ie a.firefox{background:#fff url(http://src.sitko.ru/i/firefox.png) left top no-repeat}
+#stop6ie a.opera{background:#fff url(http://src.sitko.ru/i/opera.png) left top no-repeat}
+#stop6ie a.safari{background:#fff url(http://src.sitko.ru/i/safari.png) left top no-repeat}
 
-#stop6ie a.close{display:block;position:absolute;right:38px;top:16px;width:16px;height:16px;background:#fff url(http://src.opendev.ru/a/i/close.png) left top no-repeat}
+#stop6ie a.close{display:block;position:absolute;right:38px;top:16px;width:16px;height:16px;background:#fff url(http://src.sitko.ru/a/i/close.png) left top no-repeat}
 #stop6ie a.close:hover{background-position:right top}
