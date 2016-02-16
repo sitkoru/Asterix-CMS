@@ -197,8 +197,8 @@ class controller_get extends default_controller
 
         // Lightbox
         if (in_array('lightbox', model::$settings['js_libraries'])) {
-            //$this->addJS('http://src.opendev.ru/3.0/lightbox/lightbox.js');
-            //$this->addCSS('http://src.opendev.ru/3.0/lightbox/lightbox.css');
+            $this->addJS('http://src.opendev.ru/3.0/lightbox/lightbox.js');
+            $this->addCSS('http://src.opendev.ru/3.0/lightbox/lightbox.css');
         }
 
         // Стандартные стили
