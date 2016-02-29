@@ -19,8 +19,8 @@
 
 class acms_selftest{
 
-	var $acms_path_server = 'http://src.opendev.ru';
-	var $acms_path_last = 'http://src.opendev.ru/ver/last.txt';
+	var $acms_path_server = 'http://src.sitko.ru';
+	var $acms_path_last = 'http://src.sitko.ru/ver/last.txt';
 
 /*
 	Тесты бывают трёх видов:

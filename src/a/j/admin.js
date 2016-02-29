@@ -4,13 +4,13 @@ var reqTimeout;
 
 if ( w_editor == 'ck' ) {
 
-	document.write('<script src="http://src.opendev.ru/a/ckeditor/ckeditor.js" type="text/javascript"></script>');
-	document.write('<script src="http://src.opendev.ru/a/ckeditor/adapters/jquery.js" type="text/javascript"></script>');
+	document.write('<script src="http://src.sitko.ru/a/ckeditor/ckeditor.js" type="text/javascript"></script>');
+	document.write('<script src="http://src.sitko.ru/a/ckeditor/adapters/jquery.js" type="text/javascript"></script>');
 }
 
 else {
 
-	document.write('<script src="http://src.opendev.ru/a/j/jquery.FCKeditor.pack.js" type="text/javascript"></script>');
+	document.write('<script src="http://src.sitko.ru/a/j/jquery.FCKeditor.pack.js" type="text/javascript"></script>');
 	document.write('<script src="/t/adm/fckeditor/fckeditor.js" type="text/javascript"></script>');
 }
 
