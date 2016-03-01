@@ -54,10 +54,10 @@
           <a href="http://admin.sitko.ru/">Помощь по системе управления</a>
         </li>
         <li class="acms_listLinks-item">
-          <a href="http://sitko.ru" class="acms_listLinks-linkSitko"><img src="http://src.sitko.ru/a/i/sitko.png" alt="Sitko.ru" class="acms_listLinks-imgSitko" />Официальный сайт разработчика</a>
+          <a href="http://sitko.ru" class="acms_listLinks-linkSitko"><img src="https://src.sitko.ru/a/i/sitko.png" alt="Sitko.ru" class="acms_listLinks-imgSitko" />Официальный сайт разработчика</a>
         </li>
         <li class="acms_listLinks-item acms_listLinks-item_last">
-          <a href="http://asterix.opendev.ru" class="acms_listLinks-linkAsterix"><img src="http://src.sitko.ru/a/i/asterix.png" alt="Asterix CMS" class="acms_listLinks-imgAsterix" />Сайт системы управления</a>, <a href="http://asterix.opendev.ru/новости.html">Версия {$config.version}</a>
+          <a href="http://asterix.opendev.ru" class="acms_listLinks-linkAsterix"><img src="https://src.sitko.ru/a/i/asterix.png" alt="Asterix CMS" class="acms_listLinks-imgAsterix" />Сайт системы управления</a>, <a href="http://asterix.opendev.ru/новости.html">Версия {$config.version}</a>
 <!--
           <a href="http://asterix.opendev.ru/help/update.html" class="acms_listLinks-linkVersion" title="Проверьте обновление вашей Asterix CMS">
             <span class="acms_listLinks-imgVersion"></span>
