@@ -192,18 +192,20 @@ class field_type_password extends field_type_default
 
 			$this->correctFieldType( 'users', 'rec', 'password' );
 
-			$recs = model::execSql( 'select * from `' . $this->users_table . '` where `login`="' . mysql_real_escape_string( $value['login'] ) . '" and `active`=1', 'getall' );
+			if ($value['login']) {
+				$recs = model::execSql('select * from `' . $this->users_table . '` where `login`="' . mysql_real_escape_string($value['login']) . '" and `active`=1', 'getall');
 
-			foreach( $recs as $rec ) {
-				$hash = $this->encrypt( $value['password'], $rec['salt'] );
+				foreach ($recs as $rec) {
+					$hash = $this->encrypt($value['password'], $rec['salt']);
 
-				if( $rec['password'] == $hash ) {
-					$user = $rec;
+					if ($rec['password'] == $hash) {
+						$user = $rec;
 
-					// Если авторизация прошла по старой системе без соли - генерируем соль и обновляем пароль
-					if( $user && !$rec['salt'] )
-						$this->updateAccountWithSalt( $user, $value );
+						// Если авторизация прошла по старой системе без соли - генерируем соль и обновляем пароль
+						if ($user && !$rec['salt'])
+							$this->updateAccountWithSalt($user, $value);
 
+					}
 				}
 			}
 

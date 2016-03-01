@@ -102,7 +102,6 @@ class user
 				)
 			), 'getrow');
 		}
-		
 		//Проверка на пустой URL, такое могло случаться на движке моложе 2.14
 		if( !$user['url'] ){
 			$user = model::$types['sid']->toValue('sid', $user);
