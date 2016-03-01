@@ -64,7 +64,7 @@
     position: fixed;
     top: 0;
     left: 0;
-/*    background: url('http://src.sitko.ru/a/i/lb-background.png') repeat 0 0;*/
+/*    background: url('https://src.sitko.ru/a/i/lb-background.png') repeat 0 0;*/
     display: none;
     z-index: 9999;
 }
@@ -260,7 +260,7 @@
     width: 15px;
     height: 15px;
     cursor: pointer;
-    background-image: url('http://src.sitko.ru/a/i/update.png');
+    background-image: url('https://src.sitko.ru/a/i/update.png');
     background-repeat: no-repeat;
 }
 a.acms_listLinks-linkVersion:link .acms_listLinks-imgVersion,
@@ -280,7 +280,7 @@ a.acms_listLinks-linkVersion:hover .acms_listLinks-imgVersion {
     display: block;
     width: 38px;
     height: 38px;
-    background-image: url('http://src.sitko.ru/a/i/lb-close.png');
+    background-image: url('https://src.sitko.ru/a/i/lb-close.png');
     background-repeat: no-repeat;
     background-position: 0 0;
 }

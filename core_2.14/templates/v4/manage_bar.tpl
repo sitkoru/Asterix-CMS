@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="http://src.sitko.ru/v4/c/c_reset.css?v=3" />
+<link rel="stylesheet" type="text/css" href="https://src.sitko.ru/v4/c/c_reset.css?v=3" />
 
 <div class="acms acms-content__background-cover">
     <div class="acms-content">
@@ -13,7 +13,7 @@
 
         <ul class="acms-mainmenu hidden-print">
 
-            <li style="background-color: transparent;"><img src="http://src.sitko.ru/i/logo_adm.png" style="margin: -6px 0;height: 27px;" alt="Asterix CMS" /></li>
+            <li style="background-color: transparent;"><img src="https://src.sitko.ru/i/logo_adm.png" style="margin: -6px 0;height: 27px;" alt="Asterix CMS" /></li>
             <li>
                 <a href="#" data-target="acms">Дерево сайта</a>
                 <ul class="a_sub">

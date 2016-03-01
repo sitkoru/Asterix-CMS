@@ -7,13 +7,13 @@ if ( w_editor == null )
 
 if ( w_editor == 'ck' ) {
 
-	document.write('<script src="http://src.sitko.ru/a/ckeditor/ckeditor.js" type="text/javascript"></script>');
-	document.write('<script src="http://src.sitko.ru/a/ckeditor/adapters/jquery.js" type="text/javascript"></script>');
+	document.write('<script src="https://src.sitko.ru/a/ckeditor/ckeditor.js" type="text/javascript"></script>');
+	document.write('<script src="https://src.sitko.ru/a/ckeditor/adapters/jquery.js" type="text/javascript"></script>');
 }
 
 else {
 
-	document.write('<script src="http://src.sitko.ru/a/j/jquery.FCKeditor.pack.js" type="text/javascript"></script>');
+	document.write('<script src="https://src.sitko.ru/a/j/jquery.FCKeditor.pack.js" type="text/javascript"></script>');
 	document.write('<script src="/t/adm/fckeditor/fckeditor.js" type="text/javascript"></script>');
 }
 
@@ -46,7 +46,7 @@ function getsubtree(url,id){
 
 	var l=$j('#'+id).html().length;
 	if( l == 0 ){
-		$j('#'+id).html('<img src="http://src.sitko.ru/a/i/lightbox-loading.gif" alt="" />');
+		$j('#'+id).html('<img src="https://src.sitko.ru/a/i/lightbox-loading.gif" alt="" />');
 		$j.get(url, {'method_marker': 'admin', 'action': 'tree'}, function(data){
 			$j('#'+id).html(data);
 		});
@@ -62,7 +62,7 @@ function ask(url,method){
 
 	$j('#acms_content').fadeIn();
 	$j('#bar').fadeIn();
-	$j('#bar_content').html('<img src="http://src.sitko.ru/a/i/lightbox-loading.gif" alt="загрузка..." id="bar_load" />');
+	$j('#bar_content').html('<img src="https://src.sitko.ru/a/i/lightbox-loading.gif" alt="загрузка..." id="bar_load" />');
 
 	$j.ajax({
 		type: method,
@@ -104,7 +104,7 @@ function call2(method,action,url,result_id){
 
 	//AJAX-preloader
 	$j('#bar').fadeIn();
-	$j('#'+result_id).html('<img src="http://src.sitko.ru/a/i/lightbox-loading.gif" alt="загрузка..." id="bar_load" />');
+	$j('#'+result_id).html('<img src="https://src.sitko.ru/a/i/lightbox-loading.gif" alt="загрузка..." id="bar_load" />');
 
 	//Запрос
 	$j.ajax({
@@ -199,7 +199,7 @@ function hookAdminActions(){
 	$j('.acms_field_params .add').click(function(){
 		var sid = $j(this).attr('sid');
 		var c = $j('#field_' + sid + '_params').children('li').length;
-		var html = '<li id=\'field_' + sid + '_' + c + '\'><input type=\'text\' name=\'' + sid + '[' + c + '][title]\' value=\'Новая характеристика\' style=\'width:45%;\' /><input type=hidden name=\'' + sid + '[' + c + '][delete]\' id=\'field_' + sid + '_' + c + '_delete\' value=\'0\' /><input type=\'hidden\' name=\'' + sid + '[' + c + '][header]\' id=\'field_' + sid + '_' + c + '_header\' value=\'0\' /><input type=\'text\' name=\'' + sid + '[' + c + '][value]\' value=\'Значение\' style=\'width:35%; margin: 4px;\' /><img src=\'http://src.sitko.ru/a/i/delete.png\' alt=\'\' title=\'Удалить\' class=\'delete\' /><img src=\'http://src.sitko.ru/a/i/header.png\' alt=\'\' title=\'Сделать заголовком\' class=\'header\' style=\'margin-left:4px\' /></li>';
+		var html = '<li id=\'field_' + sid + '_' + c + '\'><input type=\'text\' name=\'' + sid + '[' + c + '][title]\' value=\'Новая характеристика\' style=\'width:45%;\' /><input type=hidden name=\'' + sid + '[' + c + '][delete]\' id=\'field_' + sid + '_' + c + '_delete\' value=\'0\' /><input type=\'hidden\' name=\'' + sid + '[' + c + '][header]\' id=\'field_' + sid + '_' + c + '_header\' value=\'0\' /><input type=\'text\' name=\'' + sid + '[' + c + '][value]\' value=\'Значение\' style=\'width:35%; margin: 4px;\' /><img src=\'https://src.sitko.ru/a/i/delete.png\' alt=\'\' title=\'Удалить\' class=\'delete\' /><img src=\'https://src.sitko.ru/a/i/header.png\' alt=\'\' title=\'Сделать заголовком\' class=\'header\' style=\'margin-left:4px\' /></li>';
 		$j(html).appendTo('#field_' + sid + '_params');
 		hookAdminActions();
 		return false;	
@@ -313,11 +313,11 @@ function hookAdminActions(){
 	});
 	
 	$j('.lightbox').lightBox({
-			imageLoading:'http://src.sitko.ru/a/i/lightbox-loading.gif',
-			imageBtnPrev:'http://src.sitko.ru/a/i/lightbox-btn-prev.gif',
-			imageBtnNext:'http://src.sitko.ru/a/i/lightbox-btn-next.gif',
-			imageBtnClose:'http://src.sitko.ru/a/i/lightbox-btn-close.gif',
-			imageBlank:'http://src.sitko.ru/a/i/lightbox-blank.gif',
+			imageLoading:'https://src.sitko.ru/a/i/lightbox-loading.gif',
+			imageBtnPrev:'https://src.sitko.ru/a/i/lightbox-btn-prev.gif',
+			imageBtnNext:'https://src.sitko.ru/a/i/lightbox-btn-next.gif',
+			imageBtnClose:'https://src.sitko.ru/a/i/lightbox-btn-close.gif',
+			imageBlank:'https://src.sitko.ru/a/i/lightbox-blank.gif',
 			txtImage:'Изображение',txtOf:'из'
 		});
 

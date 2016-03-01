@@ -16,8 +16,8 @@ class acms_updater
 
 		// Получаем версии пакетов
 		self::$current_version = file( model::$config['path']['core'] . '/version.txt' );
-		self::$max_version     = file( 'http://src.sitko.ru/version.txt' );
-		self::$max_version_dev = file( 'http://src.sitko.ru/version_dev.txt' );
+		self::$max_version     = file( 'https://src.sitko.ru/version.txt' );
+		self::$max_version_dev = file( 'https://src.sitko.ru/version_dev.txt' );
 
 		// Требуется обновление
 //		if( floatval( $current_version[0] ) < floatval( $max_version[0] ) ){

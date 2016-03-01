@@ -1,6 +1,6 @@
 	<ul id="acms_bar" class="hidden-print">
 
-		<li class="a_logo"><img src="http://src.sitko.ru/i/logo_adm.png" style="height:29px;" alt="Asterix CMS" /></li>
+		<li class="a_logo"><img src="https://src.sitko.ru/i/logo_adm.png" style="height:29px;" alt="Asterix CMS" /></li>
 		<li class="a_wide">
 			<a href="/admin.html" target="acms">Дерево сайта</a>
 			<ul class="a_sub">

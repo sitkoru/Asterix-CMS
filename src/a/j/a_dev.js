@@ -7,13 +7,13 @@ if ( w_editor == null )
 
 if ( w_editor == 'ck' ) {
 
-	document.write('<script src="http://src.sitko.ru/a/ckeditor/ckeditor.js" type="text/javascript"></script>');
-	document.write('<script src="http://src.sitko.ru/a/ckeditor/adapters/jquery.js" type="text/javascript"></script>');
+	document.write('<script src="https://src.sitko.ru/a/ckeditor/ckeditor.js" type="text/javascript"></script>');
+	document.write('<script src="https://src.sitko.ru/a/ckeditor/adapters/jquery.js" type="text/javascript"></script>');
 }
 
 else {
 
-	document.write('<script src="http://src.sitko.ru/a/j/jquery.FCKeditor.pack.js" type="text/javascript"></script>');
+	document.write('<script src="https://src.sitko.ru/a/j/jquery.FCKeditor.pack.js" type="text/javascript"></script>');
 	document.write('<script src="/t/adm/fckeditor/fckeditor.js" type="text/javascript"></script>');
 }
 
@@ -46,7 +46,7 @@ function getsubtree(url,id){
 	
 	var l=$j('#'+id).html().length;
 	if( l == 0 ){	
-		$j('#'+id).html('<img src="http://src.sitko.ru/a/i/lightbox-loading.gif" alt="" />');
+		$j('#'+id).html('<img src="https://src.sitko.ru/a/i/lightbox-loading.gif" alt="" />');
 		$j.get(url, {'method_marker': 'admin', 'action': 'tree'}, function(data){
 			$j('#'+id).html(data);
 		});
@@ -58,7 +58,7 @@ function admin_ask(action,url,id){
 	
 	var l=$j('#'+id).html().length;
 	if( l == 0 ){	
-		$j('#'+id).html('<img src="http://src.sitko.ru/a/i/lightbox-loading.gif" alt="" />');
+		$j('#'+id).html('<img src="https://src.sitko.ru/a/i/lightbox-loading.gif" alt="" />');
 		$j.get(url, {'method_marker': 'admin', 'action': action}, function(data){
 			$j('#'+id).html(data);
 		});
@@ -79,7 +79,7 @@ function call_admin_interface(method, action, url, result_id){
 
 	//Показываем AJAX-загрузчик
 	$j('#bar').fadeIn();
-	$j('#'+result_id).html('<img src="http://src.sitko.ru/a/i/lightbox-loading.gif" alt="загрузка..." id="bar_load" />');
+	$j('#'+result_id).html('<img src="https://src.sitko.ru/a/i/lightbox-loading.gif" alt="загрузка..." id="bar_load" />');
 
 	//Запрос
 	$j.ajax({
@@ -190,11 +190,11 @@ function hookAdminActions(){
 	});
 
 	$j('.lightbox').lightBox({
-			imageLoading:'http://src.sitko.ru/a/i/lightbox-loading.gif',
-			imageBtnPrev:'http://src.sitko.ru/a/i/lightbox-btn-prev.gif',
-			imageBtnNext:'http://src.sitko.ru/a/i/lightbox-btn-next.gif',
-			imageBtnClose:'http://src.sitko.ru/a/i/lightbox-btn-close.gif',
-			imageBlank:'http://src.sitko.ru/a/i/lightbox-blank.gif',
+			imageLoading:'https://src.sitko.ru/a/i/lightbox-loading.gif',
+			imageBtnPrev:'https://src.sitko.ru/a/i/lightbox-btn-prev.gif',
+			imageBtnNext:'https://src.sitko.ru/a/i/lightbox-btn-next.gif',
+			imageBtnClose:'https://src.sitko.ru/a/i/lightbox-btn-close.gif',
+			imageBlank:'https://src.sitko.ru/a/i/lightbox-blank.gif',
 			txtImage:'Изображение',txtOf:'из'
 		});
 
@@ -253,7 +253,7 @@ function hookAdminActions(){
 function ask(url,method){
 
 	$j('#bar').fadeIn();
-	$j('#bar_content').html('<img src="http://src.sitko.ru/a/i/lightbox-loading.gif" alt="загрузка..." id="bar_load" />');
+	$j('#bar_content').html('<img src="https://src.sitko.ru/a/i/lightbox-loading.gif" alt="загрузка..." id="bar_load" />');
 
 	$j.ajax({
 		type: method,
@@ -349,11 +349,11 @@ function ask(url,method){
 			});
 
 			$j('.lightbox').lightBox({
-					imageLoading:'http://src.sitko.ru/a/i/lightbox-loading.gif',
-					imageBtnPrev:'http://src.sitko.ru/a/i/lightbox-btn-prev.gif',
-					imageBtnNext:'http://src.sitko.ru/a/i/lightbox-btn-next.gif',
-					imageBtnClose:'http://src.sitko.ru/a/i/lightbox-btn-close.gif',
-					imageBlank:'http://src.sitko.ru/a/i/lightbox-blank.gif',
+					imageLoading:'https://src.sitko.ru/a/i/lightbox-loading.gif',
+					imageBtnPrev:'https://src.sitko.ru/a/i/lightbox-btn-prev.gif',
+					imageBtnNext:'https://src.sitko.ru/a/i/lightbox-btn-next.gif',
+					imageBtnClose:'https://src.sitko.ru/a/i/lightbox-btn-close.gif',
+					imageBlank:'https://src.sitko.ru/a/i/lightbox-blank.gif',
 					txtImage:'Изображение',txtOf:'из'
 				});
 

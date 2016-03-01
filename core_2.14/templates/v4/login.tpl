@@ -79,7 +79,7 @@
 
         <div style="margin: 10px 0; font-size: 12px;">
             <div style="display: inline-block; width: 150px; text-align: right; padding: 5px 0; vertical-align: sub;">
-                <a href="http://asterix.opendev.ru"><img src="http://src.sitko.ru/a/i/asterix.png" alt="" style="vertical-align: baseline;"></a>
+                <a href="http://asterix.opendev.ru"><img src="https://src.sitko.ru/a/i/asterix.png" alt="" style="vertical-align: baseline;"></a>
             </div>
             <div style="display: inline-block; width: 250px;">
                 <a href="http://mishinoleg.ru" style="color: #428bca;">Официальный сайт разработчика</a>

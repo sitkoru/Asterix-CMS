@@ -1,5 +1,5 @@
-document.write('<script src="http://src.sitko.ru/3.0/ckeditor/ckeditor.js" type="text/javascript"></script>');
-document.write('<script src="http://src.sitko.ru/3.0/ckeditor/adapters/jquery.js" type="text/javascript"></script>');
+document.write('<script src="https://src.sitko.ru/3.0/ckeditor/ckeditor.js" type="text/javascript"></script>');
+document.write('<script src="https://src.sitko.ru/3.0/ckeditor/adapters/jquery.js" type="text/javascript"></script>');
 
 var init_ckeditor = function () {
 

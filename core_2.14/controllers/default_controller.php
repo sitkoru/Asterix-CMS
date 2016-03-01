@@ -24,12 +24,12 @@ class default_controller
 
 	//Библиотеки, которые можно подключить по псевдонимам
 	public static $known_js = array(
-		'lightbox' => 'http://src.sitko.ru/3.0/j/lightbox.js',
-		'carousel' => 'http://src.sitko.ru/3.0/bootstrap/bootstrap-carousel.js',
+		'lightbox' => 'https://src.sitko.ru/3.0/j/lightbox.js',
+		'carousel' => 'https://src.sitko.ru/3.0/bootstrap/bootstrap-carousel.js',
 	);
 	public static $known_css = array(
-		'lightbox'  => 'http://src.sitko.ru/a/c/lightbox.css',
-		'bootstrap' => 'http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css',
+		'lightbox'  => 'https://src.sitko.ru/a/c/lightbox.css',
+		'bootstrap' => 'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/1.4.0/css/bootstrap.min.css',
 	);
 
 	function __construct( $model, $vars, $cache )

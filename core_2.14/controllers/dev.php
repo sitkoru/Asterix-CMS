@@ -31,14 +31,14 @@ class controller_dev extends default_controller
 		// Шаблонизатор
 		$tmpl = $this->initTemplater();
 
-		$this->addJS( 'http://code.jquery.com/jquery-2.0.3.min.js' );
+		$this->addJS( 'https://code.jquery.com/jquery-2.0.3.min.js' );
 
 		$this->addJS( '//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js' );
 		$this->addCSS( '//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css' );
 
-		$this->addJS( 'http://src.sitko.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js' );
-		$this->addCSS( 'http://src.sitko.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css' );
-		$this->addCSS( 'http://src.sitko.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css' );
+		$this->addJS( 'https://src.sitko.ru/3.0/jquery-ui-1.10.3/ui/jquery-ui.js' );
+		$this->addCSS( 'https://src.sitko.ru/3.0/jquery-ui-1.10.3/themes/base/jquery-ui.css' );
+		$this->addCSS( 'https://src.sitko.ru/3.0/jquery-ui-1.10.3/themes/base/jquery.ui.all.css' );
 
 		// Название закладки
 		model::$settings[ 'domain_title' ] = 'Разработка :: ' . model::$settings[ 'domain_title' ];

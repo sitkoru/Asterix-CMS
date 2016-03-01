@@ -23,7 +23,7 @@ if ( ! empty( $_POST['text'] ) ) {
 	<form action="" method="post" id="typograf-dialog-form">
 		<fieldset>
 			<textarea id="typograf-dialog-area" cols="" rows="" name="text"><?php if ( ! empty( $result ) ) echo htmlspecialchars( $result ); ?></textarea>
-			<?php if ( empty( $result ) ) echo '<p><img src="http://src.sitko.ru/3.0/i/ajax-loader.gif"></p>'; ?>
+			<?php if ( empty( $result ) ) echo '<p><img src="https://src.sitko.ru/3.0/i/ajax-loader.gif"></p>'; ?>
 		</fieldset>
 	</form>
 </body>
