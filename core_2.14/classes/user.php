@@ -468,184 +468,209 @@ class user
 		
 		
 		}elseif( in_array($provider, array('twitter.com','twitter') ) ){
-			
-			echo("Авторизация через twitter временно не доступна. Пожалуйста, используйте аккаунты других соц. сетей для входа на сайт.");
-			exit();
-			
-			//Дефолтные настройки
-			$TWITTER_CONSUMER_KEY=model::$settings['oauth_twitter_id'];
-			$TWITTER_CONSUMER_SECRET=model::$settings['oauth_twitter_s_key'];
-			$TWITTER_URL_CALLBACK='http://'.model::$ask->host.'/?login_oauth=twitter';
-				
-			$URL_REQUEST_TOKEN='https://api.twitter.com/oauth/request_token';
-			$URL_AUTHORIZE='https://api.twitter.com/oauth/authorize';
-			$URL_ACCESS_TOKEN='https://api.twitter.com/oauth/access_token';
-			$URL_ACCOUNT_DATA='http://twitter.com/users/show';
-					
-			if( !IsSet( $_GET['oauth_verifier'] ) ){
-				
+
+			$TWITTER_CONSUMER_KEY = model::$settings['oauth_twitter_id'];
+			$TWITTER_CONSUMER_SECRET = model::$settings['oauth_twitter_s_key'];
+			$TWITTER_URL_CALLBACK = 'http://' . model::$ask->host . '/?login_oauth=twitter';
+
+			$URL_REQUEST_TOKEN = 'https://api.twitter.com/oauth/request_token';
+			$URL_AUTHORIZE = 'https://api.twitter.com/oauth/authorize';
+			$URL_ACCESS_TOKEN = 'https://api.twitter.com/oauth/access_token';
+			$URL_ACCOUNT_DATA = 'https://api.twitter.com/1.1/users/show.json';
+
+			if (!IsSet($_GET['oauth_verifier'])) {
+
 				// рандомная строка (для безопасности)
 				$oauth_nonce = md5(uniqid(rand(), true));
-				
+
 				// время когда будет выполняться запрос (в секундых)
 				$oauth_timestamp = time();
-				
+
 				$oauth_base_text = "GET&";
-				$oauth_base_text .= urlencode($URL_REQUEST_TOKEN)."&";
-				$oauth_base_text .= urlencode("oauth_callback=".urlencode($TWITTER_URL_CALLBACK)."&");
-				$oauth_base_text .= urlencode("oauth_consumer_key=".$TWITTER_CONSUMER_KEY."&");
-				$oauth_base_text .= urlencode("oauth_nonce=".$oauth_nonce."&");
+				$oauth_base_text .= urlencode($URL_REQUEST_TOKEN) . "&";
+				$oauth_base_text .= urlencode("oauth_callback=" . urlencode($TWITTER_URL_CALLBACK) . "&");
+				$oauth_base_text .= urlencode("oauth_consumer_key=" . $TWITTER_CONSUMER_KEY . "&");
+				$oauth_base_text .= urlencode("oauth_nonce=" . $oauth_nonce . "&");
 				$oauth_base_text .= urlencode("oauth_signature_method=HMAC-SHA1&");
-				$oauth_base_text .= urlencode("oauth_timestamp=".$oauth_timestamp."&");
+				$oauth_base_text .= urlencode("oauth_timestamp=" . $oauth_timestamp . "&");
 				$oauth_base_text .= urlencode("oauth_version=1.0");
-	
+
 				//Ключ
-				$key = $TWITTER_CONSUMER_SECRET."&";
+				$key = $TWITTER_CONSUMER_SECRET . "&";
 				$oauth_signature = base64_encode(hash_hmac("sha1", $oauth_base_text, $key, true));
-					
+
 				//составляем гет запрос
 				$url = $URL_REQUEST_TOKEN;
-				$url .= '?oauth_callback='.urlencode($TWITTER_URL_CALLBACK);
-				$url .= '&oauth_consumer_key='.$TWITTER_CONSUMER_KEY;
-				$url .= '&oauth_nonce='.$oauth_nonce;
-				$url .= '&oauth_signature='.urlencode($oauth_signature);
+				$url .= '?oauth_callback=' . urlencode($TWITTER_URL_CALLBACK);
+				$url .= '&oauth_consumer_key=' . $TWITTER_CONSUMER_KEY;
+				$url .= '&oauth_nonce=' . $oauth_nonce;
+				$url .= '&oauth_signature=' . urlencode($oauth_signature);
 				$url .= '&oauth_signature_method=HMAC-SHA1';
-				$url .= '&oauth_timestamp='.$oauth_timestamp;
+				$url .= '&oauth_timestamp=' . $oauth_timestamp;
 				$url .= '&oauth_version=1.0';
 
 				//отправляем запрос.
 				$response = @file_get_contents($url);
 				parse_str($response, $result);
-
 				$oauth_token = $result['oauth_token'];
 				$oauth_token_secret = $result['oauth_token_secret'];
-				
+
 				self::setCookie('oauth_token_secret', $oauth_token_secret);
-				
+
 				$url = $URL_AUTHORIZE;
-				$url .= '?oauth_token='.$oauth_token;
+				$url .= '?oauth_token=' . $oauth_token;
 				header("HTTP/1.1 301 Moved Permanently");
-				header("Location: ".$url);
+				header("Location: " . $url);
 				exit();
-			
-			}else{
-				
+
+			} else {
+
 				$oauth_nonce = md5(uniqid(rand(), true));
 				// время когда будет выполняться запрос (в секундых)
 				$oauth_timestamp = time();
-				
+
 				// oauth_token
 				$oauth_token = $_GET['oauth_token'];
-				
+
 				// oauth_verifier
 				$oauth_verifier = $_GET['oauth_verifier'];
-				
+
 				// oauth_token_secret получаем из сессии, которую зарегистрировали
 				// во время запроса request_token
 				$oauth_token_secret = $_COOKIE['oauth_token_secret'];
-				
+
 				$oauth_base_text = "GET&";
-				$oauth_base_text .= urlencode($URL_ACCESS_TOKEN)."&";
-				$oauth_base_text .= urlencode("oauth_consumer_key=".$TWITTER_CONSUMER_KEY."&");
-				$oauth_base_text .= urlencode("oauth_nonce=".$oauth_nonce."&");
+				$oauth_base_text .= urlencode($URL_ACCESS_TOKEN) . "&";
+				$oauth_base_text .= urlencode("oauth_consumer_key=" . $TWITTER_CONSUMER_KEY . "&");
+				$oauth_base_text .= urlencode("oauth_nonce=" . $oauth_nonce . "&");
 				$oauth_base_text .= urlencode("oauth_signature_method=HMAC-SHA1&");
-				$oauth_base_text .= urlencode("oauth_token=".$oauth_token."&");
-				$oauth_base_text .= urlencode("oauth_timestamp=".$oauth_timestamp."&");
-				$oauth_base_text .= urlencode("oauth_verifier=".$oauth_verifier."&");
+				$oauth_base_text .= urlencode("oauth_token=" . $oauth_token . "&");
+				$oauth_base_text .= urlencode("oauth_timestamp=" . $oauth_timestamp . "&");
+				$oauth_base_text .= urlencode("oauth_verifier=" . $oauth_verifier . "&");
 				$oauth_base_text .= urlencode("oauth_version=1.0");
-				
-				$oauth_base_text;
-				$key = $TWITTER_CONSUMER_SECRET."&".$oauth_token_secret;
+
+				$key = $TWITTER_CONSUMER_SECRET . "&" . $oauth_token_secret;
 				$oauth_signature = base64_encode(hash_hmac("sha1", $oauth_base_text, $key, true));
-				
+
 				$url = $URL_ACCESS_TOKEN;
-				$url .= '?oauth_nonce='.$oauth_nonce;
+				$url .= '?oauth_nonce=' . $oauth_nonce;
 				$url .= '&oauth_signature_method=HMAC-SHA1';
-				$url .= '&oauth_timestamp='.$oauth_timestamp;
-				$url .= '&oauth_consumer_key='.$TWITTER_CONSUMER_KEY;
-				$url .= '&oauth_token='.$oauth_token;
-				$url .= '&oauth_verifier='.$oauth_verifier;
-				$url .= '&oauth_signature='.urlencode($oauth_signature);
+				$url .= '&oauth_timestamp=' . $oauth_timestamp;
+				$url .= '&oauth_consumer_key=' . $TWITTER_CONSUMER_KEY;
+				$url .= '&oauth_token=' . $oauth_token;
+				$url .= '&oauth_verifier=' . $oauth_verifier;
+				$url .= '&oauth_signature=' . urlencode($oauth_signature);
 				$url .= '&oauth_version=1.0';
 
 				$response = @file_get_contents($url);
-				
+
 				parse_str($response, $result);
-				
-				$user_id = $result['user_id'];
 
-				$url = 'https://api.twitter.com/1/users/show.json?user_id='.$result['user_id'].'&screen_name='.$result['screen_name'].'&include_entities=true';
+				// GET USER DATA
+				$oauth_nonce = md5(uniqid(rand(), true));
+
+// время когда будет выполняться запрос (в секундых)
+				$oauth_timestamp = time();
+
+				$oauth_token = $result['oauth_token'];
+				$oauth_token_secret = $result['oauth_token_secret'];
+				$screen_name = $result['screen_name'];
+
+				$oauth_base_text = "GET&";
+				$oauth_base_text .= urlencode($URL_ACCOUNT_DATA) . '&';
+				$oauth_base_text .= urlencode('oauth_consumer_key=' . $TWITTER_CONSUMER_KEY . '&');
+				$oauth_base_text .= urlencode('oauth_nonce=' . $oauth_nonce . '&');
+				$oauth_base_text .= urlencode('oauth_signature_method=HMAC-SHA1&');
+				$oauth_base_text .= urlencode('oauth_timestamp=' . $oauth_timestamp . "&");
+				$oauth_base_text .= urlencode('oauth_token=' . $oauth_token . "&");
+				$oauth_base_text .= urlencode('oauth_version=1.0&');
+				$oauth_base_text .= urlencode('screen_name=' . $screen_name);
+				$key = $TWITTER_CONSUMER_SECRET . '&' . $oauth_token_secret;
+				$signature = base64_encode(hash_hmac("sha1", $oauth_base_text, $key, true));
+// Формируем GET-запрос
+				$url = $URL_ACCOUNT_DATA;
+				$url .= '?oauth_consumer_key=' . $TWITTER_CONSUMER_KEY;
+				$url .= '&oauth_nonce=' . $oauth_nonce;
+				$url .= '&oauth_signature=' . urlencode($signature);
+				$url .= '&oauth_signature_method=HMAC-SHA1';
+				$url .= '&oauth_timestamp=' . $oauth_timestamp;
+				$url .= '&oauth_token=' . urlencode($oauth_token);
+				$url .= '&oauth_version=1.0';
+				$url .= '&screen_name=' . $screen_name;
 				$response = @file_get_contents($url);
-
 				$datas = json_decode($response);
-				$datas=(array)$datas;
-
+				$datas = (array)$datas;
+				$image_url = str_replace('_normal', '', $datas['profile_image_url']);
+				$tmp_img = str_replace('https://', 'http://', $image_url);
+				$image_url = str_replace(['https://', 'http://'], '//', $image_url);
 				self::$info = array(
-					'login' => 'twitter'.$datas['id'],
-					'password' => $datas['id'].'thisismyverybigwordformd5',
+					'login' => 'twitter' . $datas['id'],
+					'password' => $datas['id'] . 'thisismyverybigwordformd5',
 					'admin' => false,
 					'title' => $datas['name'],
-					'avatar'=> $datas['profile_image_url'],
-					'photo' => $datas['profile_image_url'],
+					//'avatar' => $datas['profile_image_url'],
+					//'photo' => $datas['profile_image_url'],
 					'session_id' => session_id(),
 				);
-					
+
 				$_POST['login'] = self::$info['login'];
 				$_POST['password'] = self::$info['password'];
-									
+
 				//Авторизуем
 				self::authUser_localhost();
-									
+
 				//Регистрируем
-				if( !self::$info['id'] ){
+				if (!self::$info['id']) {
 
 					self::$info = array(
-						'sid' => model::$types['sid']->correctValue( 'twitter'.$datas['id'] ),
+						'sid' => model::$types['sid']->correctValue('twitter' . $datas['id']),
 						'shw' => true,
 						'active' => true,
-						'admin' => intval( @model::$config['openid'][ $_GET['login_oauth'] ] == 'admin' ),
 						'session_id' => session_id(),
-						'login' => 'twitter'.$datas['id'],
-						'password' => $datas['id'].'thisismyverybigwordformd5',
+						'login' => 'twitter' . $datas['id'],
+						'password' => $datas['id'] . 'thisismyverybigwordformd5',
 						'admin' => false,
 						'title' => $datas['name'],
-						'img' => array( 'tmp_name' => $datas['profile_image_url'] ),
-						'session_id' => session_id(),
+						'img' => $image_url,
+						'avatar' => array('tmp_name' => $tmp_img),
 					);
-					
+
 					// Страница
-					if( IsSet( model::$modules['users']->structure['rec']['fields']['web'] ) )
+					if (IsSet(model::$modules['users']->structure['rec']['fields']['web']))
 						self::$info['web'] = $datas['url'];
-					
+
 					// Блок
-					if( IsSet( model::$modules['users']->structure['rec']['fields']['blog'] ) )
-						self::$info['blog'] = 'https://twitter.com/'.$datas['screen_name'];
+					if (IsSet(model::$modules['users']->structure['rec']['fields']['blog']))
+						self::$info['blog'] = 'https://twitter.com/' . $datas['screen_name'];
 
 					// Есть поле для хранения OpenID-данных - записываем
-					if( IsSet( model::$modules['users']->structure['rec']['fields']['openid_data'] ) )
-						self::$info['openid_data'] = json_encode( $datas );
+					if (IsSet(model::$modules['users']->structure['rec']['fields']['openid_data']))
+						self::$info['openid_data'] = json_encode($datas);
 
 					//Первый пользователь в системе всегда становится админом
-					if( self::ifFirstThenAdmin() )
+					if (self::ifFirstThenAdmin())
 						self::$info['admin'] = true;
-						
+
 					$_POST['login'] = self::$info['login'];
 					$_POST['password'] = self::$info['password'];
-				
-					model::$modules['users']->addRecord( self::$info );
-					self::authUser_localhost();
 
+					model::$modules['users']->addRecord(self::$info);
+					self::authUser_localhost(true);
+					header('Location: /');
+					UnSet($_SESSION['oauth_referer']);
 					exit();
-					
+
 				}
 			}
-			
-			header('Location: '.$_SESSION['oauth_referer']);
-			UnSet( $_SESSION['oauth_referer'] );
+
+			header('Location: ' . $_SESSION['oauth_referer']);
+			UnSet($_SESSION['oauth_referer']);
 			exit();
 
 
 		}elseif( $provider == 'yandex.ru' ){
+			echo("Авторизация через yandex временно не доступна. Пожалуйста, используйте аккаунты других соц. сетей для входа на сайт.");
+                        exit();
 
 			$url = 'http://openid.yandex.ru/trusted_request/
 				?openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0
