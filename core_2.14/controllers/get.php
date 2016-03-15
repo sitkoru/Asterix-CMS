@@ -154,7 +154,7 @@ class controller_get extends default_controller
 		if( in_array( 'jquery1', model::$settings[ 'js_libraries' ] ) )
 			$this->addJS( 'https://code.jquery.com/jquery-1.10.2.min.js' );
 		else
-			$this->addJS( 'https://code.jquery.com/jquery-2.0.3.min.js' );
+			$this->addJS( 'https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js' );
 
 		// jQuery Migrate
 		if( in_array( 'jquery-migrate', model::$settings[ 'js_libraries' ] ) ) {

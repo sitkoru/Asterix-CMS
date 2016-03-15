@@ -31,7 +31,7 @@ class controller_dev extends default_controller
 		// Шаблонизатор
 		$tmpl = $this->initTemplater();
 
-		$this->addJS( 'https://code.jquery.com/jquery-2.0.3.min.js' );
+		$this->addJS( 'https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js' );
 
 		$this->addJS( '//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js' );
 		$this->addCSS( '//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css' );
