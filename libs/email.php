@@ -20,7 +20,7 @@
 class email{
 	
 	//Настройки по умолчанию
-	var $from='cms@opendev.ru';
+	var $from='cms@sitko.ru';
 	private $encoding='koi8-r';
 	
 	//Поддерживаемые кодировки
