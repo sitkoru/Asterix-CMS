@@ -404,7 +404,6 @@ class interfaces
     //Добавление записи в структуру модуля
     public function editRecord($values, $structure_sid = 'rec', $conditions = false)
     {
-
         model::check_demo();
 
         $what = array();
@@ -483,7 +482,6 @@ class interfaces
             $what['url'] = '`url`="' . mysql_real_escape_string($url) . '"';
             $what[$parent_field_sid] = '`' . $parent_field_sid . '`="' . mysql_real_escape_string($values[$parent_field_sid]) . '"';
         }
-
         //Условия обновления
         $where['id'] = '`id`=' . intval($values['id']) . '';
 

@@ -7,7 +7,7 @@
 	<script type="text/javascript" src="https://src.sitko.ru/3.0/bootstrap/bootstrap-tab.js"></script>
 {/if}
 	<script type="text/javascript" src="https://src.sitko.ru/3.0/j/panel.js" async></script>
-	<script type="text/javascript" src="https://src.sitko.ru/3.0/j/j.js" async></script>
+	<script type="text/javascript" src="https://src.sitko.ru/3.0/j/j.js"></script>
 	<script type="text/javascript" src="https://src.sitko.ru/3.0/j/lightbox.js" async></script>
 	<script type="text/javascript" src="{$paths.public_javascript}/j.js"></script>
 
