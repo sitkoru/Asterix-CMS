@@ -89,7 +89,8 @@ function fn() {
                     function (data) {
                     }
                 );
-            } else if (!$(ul.item).hasClass('dont_check')) {
+            } else if (ul==undefined || !$(ul.item).hasClass('dont_check')) {
+            //} else if (!$(ul.item).hasClass('dont_check')) {
                 alert('Нельзя переместить запись на первое место, лучше сдвиньте другие записи ниже.');
                 $(this).sortable('cancel');
             }

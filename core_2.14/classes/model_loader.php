@@ -25,7 +25,11 @@ class ModelLoader
 
 		//Совместимость с версиями до 2.14
 		$config['path']['libraries']       = $config['path']['core'] . '/../libs';
-		$config['path']['admin_templates'] = $config['path']['core'] . '/templates';
+		if (!empty($config['path']['admin_templates_rewrite'])){
+			$config['path']['admin_templates'] = $config['path']['admin_templates_rewrite'];
+		}else {
+			$config['path']['admin_templates'] = $config['path']['core'] . '/templates';
+		}
 
 		if( !IsSet($config['path']['templates']) )
 			$config['path']['templates'] = $config['path']['www'] . '/../templates';
