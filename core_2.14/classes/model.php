@@ -359,7 +359,7 @@ class model
     }
 
     //Поиск записи в модели
-    public static function getRecordByAsk($url, $prefered_module = 'start')
+    public static function getRecordByAsk($url, $prefered_module = 'start', $try=0)
     {
         // Сначала ищем в корневом модуле
         $record = false;
@@ -415,22 +415,18 @@ class model
             }
             // Не нашли, ищем глубже
         } else {
-            if (count($url) > 1) {
-                for ($i = 0; $i < count($url); $i++) {
+
+                for ($i = $try; $i < count($url); $i++) {
                     if (!$record) {
                         if (IsSet(model::$modules[$url[$i]])) {
                             if ($url[$i] != $prefered_module) {
                                 $nextModel = $url[$i];
-                                unset($url[$i]);
-                                $record = self::getRecordByAsk($url, $nextModel);
+                                $record = self::getRecordByAsk($url, $nextModel, $try+1);
                             }
                         }
                     }
                 }
-            }else{
-                model::$ask->output_type = '404';
-                return null;
-            }
+
         }
 
         // Готово
