@@ -379,6 +379,17 @@ class ModelLoader
 	//Проверяем наличие необходимых настроек
 	private static function checkNeededSettings( $settings = array() )
 	{
+		if (user::is_admin()){
+			$settingsIdsToDeleteArray = model::execSql( "SELECT id FROM `settings` AS s WHERE (SELECT DISTINCT count(*) FROM `settings` AS s2 WHERE s.`var`=s2.`var`)>1 ORDER BY id ASC LIMIT 1,9999999", 'getall' );
+			if ($settingsIdsToDeleteArray) {
+				$settingsIdsToDelete=[];
+				foreach ($settingsIdsToDeleteArray as $item){
+					$settingsIdsToDelete[]=$item['id'];
+				}
+				$settingsIdsToDelete = implode(',',array_values($settingsIdsToDelete));
+				model::execSql("DELETE FROM `settings` WHERE id IN ($settingsIdsToDelete)", 'delete');
+			}
+		}
 		if( IsSet($settings['test_mode']) )
 			if( !$settings['test_mode'] )
 				return $settings;
