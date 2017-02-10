@@ -43,7 +43,7 @@ class email{
         //$message=$this->prepareMessage($message,$subject,$type,$files);
         //Отправка
         foreach($address as $addr){
-            send($addr, 'cms@sitko.ru', $subject, $message, 'smtp.0xdev.ru', 587, 'hooks@0xdev.ru', 'JjB5NJoYGcx6tyr');
+            send($addr, 'cms@sitko.ru', $subject, $message, 'smtp.0xdev.ru', 587, 'cms@0xdev.ru', 'tKsC5MRpNV');
         }
 
         //Готово
