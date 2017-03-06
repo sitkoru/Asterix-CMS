@@ -362,7 +362,7 @@ class user
 						
 				$_POST['login'] = self::$info['login'];
 				$_POST['password'] = self::$info['password'];
-				
+                $_SESSION['newUserOuath']=true;
 				model::addRecord('users', 'rec', self::$info);
 				self::authUser_localhost();
 
@@ -453,7 +453,7 @@ class user
 						
 					$_POST['login'] = self::$info['login'];
 					$_POST['password'] = self::$info['password'];
-					
+                    $_SESSION['newUserOuath']=true;
 					model::addRecord('users', 'rec', self::$info);
 					self::authUser_localhost();
 				}
@@ -657,6 +657,7 @@ class user
 					model::$modules['users']->addRecord(self::$info);
 					self::authUser_localhost(true);
 					header('Location: /');
+                    $_SESSION['newUserOuath']=true;
 					UnSet($_SESSION['oauth_referer']);
 					exit();
 
@@ -786,6 +787,7 @@ class user
                             $_POST['login'] = self::$info['login'];
                             $_POST['password'] = self::$info['password'];
 
+                            $_SESSION['newUserOuath']=true;
                             model::addRecord('users', 'rec', self::$info);
                             self::authUser_localhost();
 
