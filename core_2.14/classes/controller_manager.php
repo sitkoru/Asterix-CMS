@@ -15,6 +15,7 @@
 /*	Создан: 10 февраля 2009	года							*/
 /*	Модифицирован: 25 сентября 2009 года					*/
 /*															*/
+
 /************************************************************/
 
 class controller_manager
@@ -26,21 +27,21 @@ class controller_manager
 
     //Все стандартные контроллеры
     public $controllers = array(
-        'get' => array(
-            'methods' => array('GET'),
-            'title' => 'Получение содержания страницы',
+        'get'   => array(
+            'methods'    => array('GET'),
+            'title'      => 'Получение содержания страницы',
             'protection' => false,
-            'model' => true,
-            'path' => 'get.php',
-            'format' => array('html')
+            'model'      => true,
+            'path'       => 'get.php',
+            'format'     => array('html')
         ),
         'admin' => array(
-            'methods' => array('GET', 'POST'),
-            'title' => 'Система управления',
+            'methods'    => array('GET', 'POST'),
+            'title'      => 'Система управления',
             'protection' => false,
-            'model' => true,
-            'path' => 'admin.php',
-            'format' => array('html')
+            'model'      => true,
+            'path'       => 'admin.php',
+            'format'     => array('html')
         ),
     );
 
@@ -290,7 +291,7 @@ class controller_manager
 
         // favicon.ico
         if ($path == '/favicon.ico') {
-            $rec = model::execSql('select `value` from `settings` where `var`="favicon"', 'getrow');
+            $rec = model::execSql('SELECT `value` FROM `settings` WHERE `var`="favicon"', 'getrow');
             $rec = unserialize(htmlspecialchars_decode($rec['value']));
             if (is_readable(model::$config['path']['www'] . $rec['path'])) {
                 header("HTTP/1.0 200 Ok");
@@ -316,11 +317,14 @@ class controller_manager
 
             // robots.txt
         } elseif ($path == '/robots.txt') {
-            $rec = model::execSql('select `value` from `settings` where `var`="robots"', 'getrow');
+            $rec = model::execSql('SELECT `value` FROM `settings` WHERE `var`="robots"', 'getrow');
             if ($rec) {
                 header("HTTP/1.0 200 Ok");
                 header('Content-Type: text/plain; charset=utf-8');
                 print($rec['value']);
+            } elseif (file_exists(model::$config['path']['www'] . '/custom-robots.php')) {
+                include_once model::$config['path']['www'] . '/custom-robots.php';
+                exit();
             } else {
                 header("HTTP/1.0 404 Not Found");
             }
@@ -328,7 +332,7 @@ class controller_manager
         } elseif ($path == '/opensearch_desc.xml') {
             if (IsSet(model::$modules['search'])) {
                 $rec = model::execSql(
-                    'select `url` from `start_rec` where `is_link_to_module`="search" limit 1',
+                    'SELECT `url` FROM `start_rec` WHERE `is_link_to_module`="search" LIMIT 1',
                     'getrow'
                 );
                 if (IsSet($rec['url'])) {
