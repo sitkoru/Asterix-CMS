@@ -85,7 +85,6 @@ class controller_get extends default_controller
 					$rec[ 'url' ] .= '?from=' . urlencode( $rec );
 				$recs[ $i ] = $rec;
 			}
-
 			// Записи текущего раздела
 		} elseif( model::$ask->output_type == 'list' ) {
 			$table = model::$modules[ model::$ask->module ]->getCurrentTable();
@@ -103,7 +102,6 @@ class controller_get extends default_controller
 					$rec[ 'url' ] .= '?from=' . urlencode( $rec );
 				$recs[ $i ] = $rec;
 			}
-
 			// Текущая запись
 		} elseif( model::$ask->output_type == 'content' ) {
 			header( "HTTP/1.0 404 Not Found" );
