@@ -11,88 +11,88 @@ class interfaces
 
         //Интерфейсы для администраторов
         $module->interfaces['addRecord'] = array(
-            'title' => 'Добавить ' . mb_strtolower($module->title_to, 'utf-8'), //Название интерфейса
+            'title'         => 'Добавить ' . mb_strtolower($module->title_to, 'utf-8'), //Название интерфейса
             'structure_sid' => false, //Используемая структура текущего модуля
-            'fields' => false, //Поля для интерфейса
-            'system' => true,
-            'ajax' => false, //Отправка при помощи AJAX
-            'protection' => false, //Защита формы
-            'auth' => 'admin', //Необходимый уровень доступа к интерфейсу
-            'use_record' => false, //Использовать ли уже имеющуюся запись
-            'getfields' => 'getFields',
-            'control' => 'addRecord', //Функция, отвечающая за обработку интерфейса после отправки
+            'fields'        => false, //Поля для интерфейса
+            'system'        => true,
+            'ajax'          => false, //Отправка при помощи AJAX
+            'protection'    => false, //Защита формы
+            'auth'          => 'admin', //Необходимый уровень доступа к интерфейсу
+            'use_record'    => false, //Использовать ли уже имеющуюся запись
+            'getfields'     => 'getFields',
+            'control'       => 'addRecord', //Функция, отвечающая за обработку интерфейса после отправки
         );
         $module->interfaces['editRecord'] = array(
-            'title' => 'Изменить ' . mb_strtolower($module->title_to, 'utf-8'),
+            'title'         => 'Изменить ' . mb_strtolower($module->title_to, 'utf-8'),
             'structure_sid' => false,
-            'fields' => false,
-            'system' => true,
-            'ajax' => false,
-            'protection' => false,
-            'auth' => 'admin',
-            'use_record' => true,
-            'getfields' => 'getFields',
-            'control' => 'editRecord',
+            'fields'        => false,
+            'system'        => true,
+            'ajax'          => false,
+            'protection'    => false,
+            'auth'          => 'admin',
+            'use_record'    => true,
+            'getfields'     => 'getFields',
+            'control'       => 'editRecord',
         );
         $module->interfaces['deleteRecord'] = array(
-            'title' => 'Удалить ' . mb_strtolower($module->title_to, 'utf-8'),
+            'title'         => 'Удалить ' . mb_strtolower($module->title_to, 'utf-8'),
             'structure_sid' => false,
-            'fields' => false,
-            'system' => true,
-            'ajax' => false,
-            'protection' => false,
-            'auth' => 'admin',
-            'use_record' => true,
-            'getfields' => 'getFields',
-            'control' => 'deleteRecord',
+            'fields'        => false,
+            'system'        => true,
+            'ajax'          => false,
+            'protection'    => false,
+            'auth'          => 'admin',
+            'use_record'    => true,
+            'getfields'     => 'getFields',
+            'control'       => 'deleteRecord',
         );
         $module->interfaces['moveUp'] = array(
-            'title' => 'Переместить выше по дереву ' . mb_strtolower($module->title_to, 'utf-8'),
+            'title'         => 'Переместить выше по дереву ' . mb_strtolower($module->title_to, 'utf-8'),
             'structure_sid' => false,
-            'fields' => false,
-            'system' => true,
-            'ajax' => false,
-            'protection' => false,
-            'auth' => 'admin',
-            'use_record' => true,
-            'getfields' => 'getFields',
-            'control' => 'moveUp',
+            'fields'        => false,
+            'system'        => true,
+            'ajax'          => false,
+            'protection'    => false,
+            'auth'          => 'admin',
+            'use_record'    => true,
+            'getfields'     => 'getFields',
+            'control'       => 'moveUp',
         );
         $module->interfaces['moveDown'] = array(
-            'title' => 'Переместить ниже по дереву ' . mb_strtolower($module->title_to, 'utf-8'),
+            'title'         => 'Переместить ниже по дереву ' . mb_strtolower($module->title_to, 'utf-8'),
             'structure_sid' => false,
-            'fields' => false,
-            'system' => true,
-            'ajax' => false,
-            'protection' => false,
-            'auth' => 'admin',
-            'use_record' => true,
-            'getfields' => 'getFields',
-            'control' => 'moveDown',
+            'fields'        => false,
+            'system'        => true,
+            'ajax'          => false,
+            'protection'    => false,
+            'auth'          => 'admin',
+            'use_record'    => true,
+            'getfields'     => 'getFields',
+            'control'       => 'moveDown',
         );
         $module->interfaces['moveTo'] = array(
-            'title' => 'Переместить по дереву ' . mb_strtolower($module->title_to, 'utf-8'),
+            'title'         => 'Переместить по дереву ' . mb_strtolower($module->title_to, 'utf-8'),
             'structure_sid' => false,
-            'fields' => false,
-            'system' => true,
-            'ajax' => false,
-            'protection' => false,
-            'auth' => 'admin',
-            'use_record' => true,
-            'getfields' => 'getFields',
-            'control' => 'moveTo',
+            'fields'        => false,
+            'system'        => true,
+            'ajax'          => false,
+            'protection'    => false,
+            'auth'          => 'admin',
+            'use_record'    => true,
+            'getfields'     => 'getFields',
+            'control'       => 'moveTo',
         );
         $module->interfaces['toggleRecord'] = array(
-            'title' => 'Показать/скрыть ' . mb_strtolower($module->title_to, 'utf-8'),
+            'title'         => 'Показать/скрыть ' . mb_strtolower($module->title_to, 'utf-8'),
             'structure_sid' => false,
-            'fields' => false,
-            'system' => true,
-            'ajax' => false,
-            'protection' => false,
-            'auth' => 'admin',
-            'use_record' => true,
-            'getfields' => 'getFields',
-            'control' => 'toggleRecord',
+            'fields'        => false,
+            'system'        => true,
+            'ajax'          => false,
+            'protection'    => false,
+            'auth'          => 'admin',
+            'use_record'    => true,
+            'getfields'     => 'getFields',
+            'control'       => 'toggleRecord',
         );
 
         return $module->interfaces;
@@ -139,15 +139,15 @@ class interfaces
 
             //Готово
             $result = array(
-                'sid' => $prepare, //Идентификатор интерфейса
-                'interface' => $prepare, //Идентификатор интерфейса
-                'url' => $url,
-                'title' => $this->interfaces[$prepare]['title'], //Название интерфейса
-                'comment' => @$this->interfaces[$prepare]['comment'], //Название интерфейса
-                'fields' => $fields, //Поля и значения
-                'auth' => $this->interfaces[$prepare]['auth'],
-                'action' => (IsSet($this->interfaces[$prepare]['action']) ? $this->interfaces[$prepare]['action'] : '/' . $this->info['sid'] . '.' . $prepare) . '.html',
-                'ajax' => $this->interfaces[$prepare]['ajax'],
+                'sid'        => $prepare, //Идентификатор интерфейса
+                'interface'  => $prepare, //Идентификатор интерфейса
+                'url'        => $url,
+                'title'      => $this->interfaces[$prepare]['title'], //Название интерфейса
+                'comment'    => @$this->interfaces[$prepare]['comment'], //Название интерфейса
+                'fields'     => $fields, //Поля и значения
+                'auth'       => $this->interfaces[$prepare]['auth'],
+                'action'     => (IsSet($this->interfaces[$prepare]['action']) ? $this->interfaces[$prepare]['action'] : '/' . $this->info['sid'] . '.' . $prepare) . '.html',
+                'ajax'       => $this->interfaces[$prepare]['ajax'],
                 'protection' => $this->interfaces[$prepare]['protection'],
             );
             $result = array_merge($this->interfaces[$prepare], $result);
@@ -205,11 +205,12 @@ class interfaces
                 log::stop('401 Unauthorized', 'У текущего пользователя отсутствует доступ к указанному интерфейсу.');
 
         }
-
         //Captcha checkout
-        if ($this->interfaces[$interface]['protection'] == 'captcha')
-            if (@$_SESSION['form_captcha_code'] != $params['captcha'])
+        if ($this->interfaces[$interface]['protection'] == 'captcha') {
+            if (@$_SESSION['form_captcha_code'] != $params['captcha']) {
                 log::stop('401 Unauthorized', 'Captcha не введена, либо введена неверно');
+            }
+        }
 
         //Фильтрация переданных значений - убираем лишние
         $fields = interfaces::getFields($params, $interface, $public);
@@ -344,9 +345,9 @@ class interfaces
             */
 
             // Ищем запись
-            $rec = model::execSql('select `id` from `' . $this->getCurrentTable($structure_sid) . '` where `id`=' . intval($values['id']) . '', 'getrow');
+            $rec = model::execSql('SELECT `id` FROM `' . $this->getCurrentTable($structure_sid) . '` WHERE `id`=' . intval($values['id']) . '', 'getrow');
             if (!$rec)
-                model::execSql('insert into `' . $this->getCurrentTable($structure_sid) . '` set `id`=' . intval($values['id']) . ', `author`=' . intval(user::$info['id']) . ', `date_added`=NOW()', 'insert');
+                model::execSql('INSERT INTO `' . $this->getCurrentTable($structure_sid) . '` SET `id`=' . intval($values['id']) . ', `author`=' . intval(user::$info['id']) . ', `date_added`=NOW()', 'insert');
 
             // Создание новой записи
         } else {
@@ -358,7 +359,7 @@ class interfaces
             if ($this->structure[$structure_sid]['type'] == 'tree') {
 
                 //Родитель
-                $parent = model::execSql('select `id`, `url` from `' . $this->getCurrentTable($structure_sid) . '` where `' . model::$types['tree']->link_field . '`="' . mysql_real_escape_string($values['dep_path_parent']) . '" and ' . model::pointDomain() . '', 'getrow');
+                $parent = model::execSql('SELECT `id`, `url` FROM `' . $this->getCurrentTable($structure_sid) . '` WHERE `' . model::$types['tree']->link_field . '`="' . mysql_real_escape_string($values['dep_path_parent']) . '" AND ' . model::pointDomain() . '', 'getrow');
 
                 // Если не установлен обработчик Nested Sets - подгружаем его
                 if (!IsSet($this->structure[$structure_sid]['db_manager'])) {
@@ -368,8 +369,8 @@ class interfaces
 
                 // Будем добавлять запись только с ID
                 $what = array(
-                    'id' => '`id`=' . intval($values['id']),
-                    'author' => '`author`=' . intval(user::$info['id']),
+                    'id'         => '`id`=' . intval($values['id']),
+                    'author'     => '`author`=' . intval(user::$info['id']),
                     'date_added' => '`date_added`=NOW()',
                 );
 
@@ -379,7 +380,7 @@ class interfaces
 
                 // Не древовидные структуры
             } else
-                model::execSql('insert into `' . $this->getCurrentTable($structure_sid) . '` set `id`=' . intval($values['id']) . ', `author`=' . intval(user::$info['id']) . ', `date_added`=NOW()', 'insert');
+                model::execSql('INSERT INTO `' . $this->getCurrentTable($structure_sid) . '` SET `id`=' . intval($values['id']) . ', `author`=' . intval(user::$info['id']) . ', `date_added`=NOW()', 'insert');
         }
 
         // Заполняем пустые поля значениями по умолчанию
@@ -469,7 +470,7 @@ class interfaces
                 array(
                     'fields' => array('id', 'url'),
                     'tables' => array($this->getCurrentTable($parent_field_structure)),
-                    'where' => array(
+                    'where'  => array(
                         'and' => array(
                             '`' . model::$types[$parent_field_type]->link_field . '`="' . mysql_real_escape_string($values[$parent_field_sid]) . '"'
                         )
@@ -502,7 +503,7 @@ class interfaces
             array(
                 'fields' => $what,
                 'tables' => array($this->getCurrentTable($structure_sid)),
-                'where' => array(
+                'where'  => array(
                     'and' => $where
                 )
             ),
@@ -549,7 +550,7 @@ class interfaces
         //Возвращаем URL, на который будет переброшен пользователь
         return array(
             'action' => 'redirect',
-            'url' => $url,
+            'url'    => $url,
         );
 
     }
@@ -585,7 +586,7 @@ class interfaces
             $res = model::makeSql(
                 array(
                     'tables' => array($this->getCurrentTable($structure_sid)),
-                    'where' => array('and' => array('`id`="' . mysql_real_escape_string($record['id']) . '"'))
+                    'where'  => array('and' => array('`id`="' . mysql_real_escape_string($record['id']) . '"'))
                 ),
                 'delete'
             );
@@ -593,7 +594,7 @@ class interfaces
 
         return array(
             'action' => 'redirect',
-            'url' => $this->info['url'] . '.html',
+            'url'    => $this->info['url'] . '.html',
         );
     }
 
@@ -625,11 +626,11 @@ class interfaces
                 array(
                     'fields' => array('id'),
                     'tables' => array($this->getCurrentTable($structure_sid)),
-                    'where' => array('and' => array(
+                    'where'  => array('and' => array(
                         '`right_key`<"' . mysql_real_escape_string($record['left_key']) . '"',
                         '`tree_level`="' . $record['tree_level'] . '"',
                     )),
-                    'order' => 'order by `left_key` desc'
+                    'order'  => 'order by `left_key` desc'
                 ),
                 'getrow'
             );
@@ -664,8 +665,8 @@ class interfaces
                 array(
                     'fields' => array('id', 'pos'),
                     'tables' => array($this->getCurrentTable($structure_sid)),
-                    'where' => $where,
-                    'order' => 'order by `pos` desc'
+                    'where'  => $where,
+                    'order'  => 'order by `pos` desc'
                 ),
                 'getrow'
             );
@@ -675,7 +676,7 @@ class interfaces
                 array(
                     'fields' => array('`pos`=' . $other['pos'] . ''),
                     'tables' => array($this->getCurrentTable($structure_sid)),
-                    'where' => array('and' => array('`id`=' . $record['id'] . ''))
+                    'where'  => array('and' => array('`id`=' . $record['id'] . ''))
                 ),
                 'update'
             );
@@ -685,7 +686,7 @@ class interfaces
                 array(
                     'fields' => array('`pos`=' . $record['pos'] . ''),
                     'tables' => array($this->getCurrentTable($structure_sid)),
-                    'where' => array('and' => array('`id`=' . $other['id'] . ''))
+                    'where'  => array('and' => array('`id`=' . $other['id'] . ''))
                 ),
                 'update'
             );
@@ -709,11 +710,11 @@ class interfaces
                 array(
                     'fields' => array('id'),
                     'tables' => array($this->getCurrentTable($structure_sid)),
-                    'where' => array('and' => array(
+                    'where'  => array('and' => array(
                         '`left_key`>"' . mysql_real_escape_string($record['right_key']) . '"',
                         '`tree_level`="' . $record['tree_level'] . '"',
                     )),
-                    'order' => 'order by `left_key`',
+                    'order'  => 'order by `left_key`',
                 ),
                 'getrow'
             );
@@ -746,8 +747,8 @@ class interfaces
                 array(
                     'fields' => array('id', 'pos'),
                     'tables' => array($this->getCurrentTable($structure_sid)),
-                    'where' => $where,
-                    'order' => 'order by `pos`'
+                    'where'  => $where,
+                    'order'  => 'order by `pos`'
                 ),
                 'getrow'
             );
@@ -757,7 +758,7 @@ class interfaces
                 array(
                     'fields' => array('`pos`=' . $other['pos'] . ''),
                     'tables' => array($this->getCurrentTable($structure_sid)),
-                    'where' => array('and' => array('`id`=' . $record['id'] . ''))
+                    'where'  => array('and' => array('`id`=' . $record['id'] . ''))
                 ),
                 'update'
             );
@@ -767,7 +768,7 @@ class interfaces
                 array(
                     'fields' => array('`pos`=' . $record['pos'] . ''),
                     'tables' => array($this->getCurrentTable($structure_sid)),
-                    'where' => array('and' => array('`id`=' . $other['id'] . ''))
+                    'where'  => array('and' => array('`id`=' . $other['id'] . ''))
                 ),
                 'update'
             );
@@ -804,16 +805,16 @@ class interfaces
         } else {
 
             // Выравниваем порядковые номера в структуре
-            $recs = model::execSql('select `id`, `pos` from `' . $this->getCurrentTable($structure_sid) . '` order by `pos`, `date_public`', 'getall');
+            $recs = model::execSql('SELECT `id`, `pos` FROM `' . $this->getCurrentTable($structure_sid) . '` ORDER BY `pos`, `date_public`', 'getall');
             foreach ($recs as $i => $rec) {
                 model::execSql('update `' . $this->getCurrentTable($structure_sid) . '` set `pos`=' . intval($i + 1) . ' where `id`=' . $rec['id'] . ' limit 1', 'update');
             }
 
             // Переносимая запись, которую тащили мышкой
-            $first = model::execSql('select `id`, `pos`, `title` from `' . $this->getCurrentTable($structure_sid) . '` where `id`=' . intval($record_id) . ' limit 1', 'getrow');
+            $first = model::execSql('SELECT `id`, `pos`, `title` FROM `' . $this->getCurrentTable($structure_sid) . '` WHERE `id`=' . intval($record_id) . ' LIMIT 1', 'getrow');
 
             // Вторая запись, за которой ставим первую
-            $second = model::execSql('select `id`, `pos`, `title` from `' . $this->getCurrentTable($structure_sid) . '` where `id`=' . intval($after_id) . ' limit 1', 'getrow');
+            $second = model::execSql('SELECT `id`, `pos`, `title` FROM `' . $this->getCurrentTable($structure_sid) . '` WHERE `id`=' . intval($after_id) . ' LIMIT 1', 'getrow');
 
             $pos_min = intval(min($first['pos'], $second['pos']));
             $pos_max = intval(max($first['pos'], $second['pos']));
@@ -876,18 +877,20 @@ class interfaces
             model::execSql('update `' . $this->getCurrentTable($structure_sid) . '` set `url`=CONCAT("' . mysql_real_escape_string($new_url) . '/", `sid`), `dep_path_parent`="' . mysql_real_escape_string($new_data['sid']) . '" where `left_key`>' . intval($new_data['left_key']) . ' and `right_key`<' . intval($new_data['right_key']) . ' and `tree_level`=' . intval($new_data['tree_level'] + 1) . ' and ' . model::pointDomain() . '', 'update');
 
             //Теперь запускаем по ним рекурсию
-            $recs = model::execSql('select * from `' . $this->getCurrentTable($structure_sid) . '` where `left_key`>' . intval($new_data['left_key']) . ' and `right_key`<' . intval($new_data['right_key']) . ' and `tree_level`=' . intval($new_data['tree_level'] + 1) . ' and ' . model::pointDomain() . '', 'getall');
-            foreach ($recs as $rec) {
+            $recs = model::execSql('SELECT * FROM `' . $this->getCurrentTable($structure_sid) . '` WHERE `left_key`>' . intval($new_data['left_key']) . ' AND `right_key`<' . intval($new_data['right_key']) . ' AND `tree_level`=' . intval($new_data['tree_level'] + 1) . ' AND ' . model::pointDomain() . '', 'getall');
+            if ($recs) {
+                foreach ($recs as $rec) {
 
-                //Рекурсия - спуск
-                interfaces::updateChildren(
-                    $structure_sid,
-                    $rec,
-                    $rec,
-                    $new_url . '/' . $rec['sid'],
-                    $condition,
-                    $domain
-                );
+                    //Рекурсия - спуск
+                    interfaces::updateChildren(
+                        $structure_sid,
+                        $rec,
+                        $rec,
+                        $new_url . '/' . $rec['sid'],
+                        $condition,
+                        $domain
+                    );
+                }
             }
 
         }
@@ -906,18 +909,20 @@ class interfaces
                     model::execSql('update `' . $this->getCurrentTable($dep_structure) . '` set `url`=CONCAT("' . mysql_real_escape_string($new_url) . '/", `sid`), `dep_path_' . $structure_sid . '`="' . mysql_real_escape_string($new_data[$dep_path_field]) . '" where `dep_path_' . $structure_sid . '`="' . mysql_real_escape_string($old_data[$dep_path_field]) . '" and ' . model::pointDomain() . '', 'update');
 
                     //Теперь запускаем по ним рекурсию
-                    $recs = model::execSql('select * from `' . $this->getCurrentTable($dep_structure) . '` where `dep_path_' . $structure_sid . '`="' . mysql_real_escape_string($new_data[$dep_path_field]) . '" and ' . model::pointDomain() . '', 'getall');
-                    foreach ($recs as $rec) {
+                    $recs = model::execSql('SELECT * FROM `' . $this->getCurrentTable($dep_structure) . '` WHERE `dep_path_' . $structure_sid . '`="' . mysql_real_escape_string($new_data[$dep_path_field]) . '" AND ' . model::pointDomain() . '', 'getall');
+                    if ($recs) {
+                        foreach ($recs as $rec) {
 
-                        //Рекурсия - спуск
-                        interfaces::updateChildren(
-                            $dep_structure,
-                            $rec,
-                            $rec,
-                            $new_url . '/' . $rec['sid'],
-                            $condition,
-                            $domain
-                        );
+                            //Рекурсия - спуск
+                            interfaces::updateChildren(
+                                $dep_structure,
+                                $rec,
+                                $rec,
+                                $new_url . '/' . $rec['sid'],
+                                $condition,
+                                $domain
+                            );
+                        }
                     }
                 }
         }
@@ -927,40 +932,40 @@ class interfaces
     {
 
         $groups = array(
-            'user' => array(
+            'user'    => array(
                 'title' => 'Пользователь',
-                'sid' => 'user',
+                'sid'   => 'user',
             ),
-            'reader' => array(
+            'reader'  => array(
                 'title' => 'Участник сети',
-                'sid' => 'owner',
+                'sid'   => 'owner',
             ),
-            'owner' => array(
+            'owner'   => array(
                 'title' => 'Основатель сети',
-                'sid' => 'owner',
+                'sid'   => 'owner',
             ),
             'manager' => array(
                 'title' => 'Руководитель компании',
-                'sid' => 'manager',
+                'sid'   => 'manager',
             ),
-            'mayor' => array(
+            'mayor'   => array(
                 'title' => 'Мэр города',
-                'sid' => 'mayor',
+                'sid'   => 'mayor',
             ),
-            'moder' => array(
+            'moder'   => array(
                 'title' => 'Модератор',
-                'sid' => 'moder',
+                'sid'   => 'moder',
             ),
         );
 
         foreach (model::$modules as $module_sid => $module)
             if ($module->structure)
                 $fields[] = array(
-                    'title' => $module->info['title'],
-                    'module_sid' => $module_sid,
+                    'title'         => $module->info['title'],
+                    'module_sid'    => $module_sid,
                     'structure_sid' => $interface['structure_sid'],
-                    'group' => 'main',
-                    'groups' => $groups,
+                    'group'         => 'main',
+                    'groups'        => $groups,
                 );
 
         return $fields;
