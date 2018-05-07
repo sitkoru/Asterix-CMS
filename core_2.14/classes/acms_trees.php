@@ -50,10 +50,13 @@ trait acms_trees
 
 		//Учитываем переданные в функцию условия
 		if( is_array( $conditions['and'] ) ) {
-			if( $where )
-				$where['and'] = array_merge( $where['and'], $conditions['and'] );
-			else
+			if( $where ) {
+				acms_trees::checkConditions($conditions, $this->structure[$structure_sid]['fields']);
+				$where['and'] = array_merge($where['and'], $conditions['and']);
+			}else{
+				acms_trees::checkConditions($conditions, $this->structure[$structure_sid]['fields']);
 				$where['and'] = $conditions['and'];
+			}
 		}
 
 		//Учитываем уровень
@@ -268,6 +271,7 @@ trait acms_trees
 
 				//Учитываем переданные в функцию условия
 				if( is_array( $conditions['and'] ) ) {
+					acms_trees::checkConditions($conditions,$this->structure[$structure_sid]['fields']);
 					$where['and'] = array_merge( $where['and'], $conditions['and'] );
 				}
 
@@ -282,8 +286,10 @@ trait acms_trees
 
 			//Учитываем переданные в функцию условия
 			if( is_array( $conditions['and'] ) && is_array( $where ) ) {
+				acms_trees::checkConditions($conditions,$this->structure[$structure_sid]['fields']);
 				$where['and'] = array_merge( $where['and'], $conditions['and'] );
 			} elseif( is_array( $conditions['and'] ) ) {
+				acms_trees::checkConditions($conditions,$this->structure[$structure_sid]['fields']);
 				$where = $conditions;
 			}
 
@@ -388,6 +394,25 @@ trait acms_trees
 		}
 
 		return $res;
+	}
+
+	public static function checkConditions(&$conditions, $fields)
+	{
+		//sql errors fix
+		if (!empty($fields)) {
+			$fields_names = array_keys($fields);
+			$fields_for_check = ['show_in_menu'];
+			foreach ($conditions['and'] as $key => $condition) {
+				if (in_array($condition, $fields_for_check) && !in_array($condition, $fields_names)) {
+					unset($conditions['and'][$key]);
+				}
+				foreach ($fields_for_check as $check_field) {
+					if (strripos($condition, $check_field) !== false && !in_array($check_field, $fields_names)) {
+						unset($conditions['and'][$key]);
+					}
+				}
+			}
+		}
 	}
 
 

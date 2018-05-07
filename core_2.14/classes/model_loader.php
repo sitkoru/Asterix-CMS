@@ -222,6 +222,7 @@ class ModelLoader
 //			self::initModule( $module );
 
 			$module_path = model::$config[ 'path' ][ 'modules' ] . '/' . $module[ 'prototype' ] . '.php';
+			//echo $module_path;
 			if( file_exists( $module_path ) ) {
 
 				/*
