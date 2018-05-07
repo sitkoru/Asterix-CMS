@@ -541,7 +541,8 @@ trait interfaces
             );
             $newDoc = new \Elastica\Document($values['id'], $doc);
 
-            $resp = $elType->updateDocument($newDoc);
+            $elType->addDocument($newDoc);
+            $elType->getIndex()->refresh();
         }
         model::makeSql(
             array(
