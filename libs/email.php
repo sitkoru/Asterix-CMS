@@ -15,35 +15,42 @@
 /*	Создан: 10 февраля 2009	года							*/
 /*	Модифицирован: 17 Февраля 2010 года						*/
 /*															*/
+
 /************************************************************/
 
-class email{
+class email
+{
 
     //Настройки по умолчанию
-    var $from='cms@opendev.ru';
-    private $encoding='koi8-r';
+    var $from = 'cms@opendev.ru';
+    private $encoding = 'koi8-r';
 
     //Поддерживаемые кодировки
-    private $supported_encodings=array('koi8-r','utf8');
+    private $supported_encodings = array('koi8-r', 'utf8');
 
     //Отправка сообщения
     public function send(
         $to,
         $subject,
         $message,
-        $type='plain',
-        $files=array()
-    ){
+        $type = 'plain',
+        $files = array()
+    )
+    {
 
         require_once('/var/www/tools/libs/phpmailer/smtp.php');
+        if (!is_file(__DIR__ . '/config.php')){
+            throw new Exception('Libs config file not found');
+        }
+        $config = require(__DIR__ . '/config.php');
         //Подготавливаем данные
-        $address=$this->prepareAddress($to);
-        $subject=$this->prepareSubject($subject,$type);
-        $headers=$this->prepareHeaders($type,$files);
+        $address = $this->prepareAddress($to);
+        $subject = $this->prepareSubject($subject, $type);
+        $headers = $this->prepareHeaders($type, $files);
         //$message=$this->prepareMessage($message,$subject,$type,$files);
         //Отправка
-        foreach($address as $addr){
-            send($addr, 'cms@sitko.ru', $subject, $message, 'localhost', 25, 'login', 'password');
+        foreach ($address as $addr) {
+            send($addr, 'cms@sitko.ru', $subject, $message, $config['email']['server'], $config['email']['port'], $config['email']['login'], $config['email']['password']);
         }
 
         //Готово
@@ -51,66 +58,69 @@ class email{
     }
 
 
-    public function __construct($model){
+    public function __construct($model)
+    {
         $this->model = $model;
     }
 
     //Подготовить тему
-    private function prepareSubject($subject,$type){
+    private function prepareSubject($subject, $type)
+    {
 
         //Plain
-        if($type=='plain'){
-            return '=?koi8-r?B?'.base64_encode( iconv( 'UTF-8', 'KOI8-R//IGNORE', stripslashes( $subject ) ) ).'?=';
+        if ($type == 'plain') {
+            return '=?koi8-r?B?' . base64_encode(iconv('UTF-8', 'KOI8-R//IGNORE', stripslashes($subject))) . '?=';
 
             //HTML
-        }elseif($type=='html'){
-            return '=?koi8-r?B?'.base64_encode( iconv( 'UTF-8', 'KOI8-R//IGNORE', stripslashes( $subject ) ) ).'?=';
+        } elseif ($type == 'html') {
+            return '=?koi8-r?B?' . base64_encode(iconv('UTF-8', 'KOI8-R//IGNORE', stripslashes($subject))) . '?=';
 //			return iconv('utf-8', 'koi8-r//IGNORE', $subject);
         }
 
     }
 
     //Подготовить сообщение
-    private function prepareMessage($message,$subject,$type,$files){
+    private function prepareMessage($message, $subject, $type, $files)
+    {
 
         //Plain
-        if($type=='plain'){
+        if ($type == 'plain') {
             //$message=iconv('utf-8', 'koi8-r//IGNORE', $message);
-            $message = str_replace( "?", "[question_mark]", $message );
+            $message = str_replace("?", "[question_mark]", $message);
             $message = mb_convert_encoding($message, 'KOI8-R', 'UTF8');
-            $message = str_replace( "?", "", $message );
-            $message = str_replace( "[question_mark]", "?", $message );
+            $message = str_replace("?", "", $message);
+            $message = str_replace("[question_mark]", "?", $message);
             //HTML
-        }elseif($type=='html'){
+        } elseif ($type == 'html') {
 
             //Прикрепляем файлы
-            if(is_array($files))
-                foreach($files as $file)$attachment .= $this->addAttachment($file);
+            if (is_array($files))
+                foreach ($files as $file) $attachment .= $this->addAttachment($file);
 
             //$message=iconv('utf-8', 'koi8-r//IGNORE', $message);
-            $message = str_replace( "?", "[question_mark]", $message );
+            $message = str_replace("?", "[question_mark]", $message);
             $message = mb_convert_encoding($message, 'KOI8-R', 'UTF8');
-            $message = str_replace( "?", "", $message );
-            $message = str_replace( "[question_mark]", "?", $message );
+            $message = str_replace("?", "", $message);
+            $message = str_replace("[question_mark]", "?", $message);
 
 
-            $message='--'.md5(1).'
-Content-Type: multipart/alternative; boundary="'.md5(2).'"
+            $message = '--' . md5(1) . '
+Content-Type: multipart/alternative; boundary="' . md5(2) . '"
 
---'.md5(2).'
+--' . md5(2) . '
 Content-Type: text/plain; charset="koi8-r"
 Content-Transfer-Encoding: base64
 
-'.base64_encode(strip_tags($message)).'
---'.md5(2).'
+' . base64_encode(strip_tags($message)) . '
+--' . md5(2) . '
 Content-Type: text/html; charset="koi8-r"
 Content-Transfer-Encoding: base64
 
-'.base64_encode('<html><head><title>'.$subject.'</title></head><body><p>'.$message.'</p></body></html>').'
---'.md5(2).'--
+' . base64_encode('<html><head><title>' . $subject . '</title></head><body><p>' . $message . '</p></body></html>') . '
+--' . md5(2) . '--
 
-'.$attachment.'
---'.md5(1).'--
+' . $attachment . '
+--' . md5(1) . '--
 ';
         }
 
@@ -119,34 +129,36 @@ Content-Transfer-Encoding: base64
     }
 
     //Подготовить адреса для рассылки
-    private function prepareAddress($to){
+    private function prepareAddress($to)
+    {
 
         //Кому рассылать
-        $address=array();
+        $address = array();
 
         //Несколько ардресатов
-        if(substr_count($to,' '))
-            $address=explode(' ',$to);
+        if (substr_count($to, ' '))
+            $address = explode(' ', $to);
         //Один адрес
         else
-            $address[]=$to;
+            $address[] = $to;
 
         //Готово
         return $address;
     }
 
     //Подготовить сообщение
-    private function prepareHeaders($type,$files){
+    private function prepareHeaders($type, $files)
+    {
 
         //Plain
-        if($type=='plain'){
-            $headers = 'from:'.$this->from;
+        if ($type == 'plain') {
+            $headers = 'from:' . $this->from;
 
             //HTML
-        }elseif($type=='html'){
-            $headers  = 'MIME-Version: 1.0' . "\r\n";
-            $headers .= 'from: '.$_SERVER['HTTP_HOST'].' <'.$this->from . ">\r\n";
-            $headers .= 'Content-Type: multipart/mixed; boundary="'.md5(1).'"' . "\r\n";
+        } elseif ($type == 'html') {
+            $headers = 'MIME-Version: 1.0' . "\r\n";
+            $headers .= 'from: ' . $_SERVER['HTTP_HOST'] . ' <' . $this->from . ">\r\n";
+            $headers .= 'Content-Type: multipart/mixed; boundary="' . md5(1) . '"' . "\r\n";
         }
 
         //Готово
@@ -154,37 +166,38 @@ Content-Transfer-Encoding: base64
     }
 
     //Прикрепить файл к сообщению
-    function addAttachment($file){
+    function addAttachment($file)
+    {
         //Имя файла
-        if($file['name'])
+        if ($file['name'])
             $fname = $file['name'];
         else
             $fname = substr(strrchr($file['file'], "/"), 1);
-        $type=$file['type'];
+        $type = $file['type'];
         //Содержимое
-        $content_type='Content-Type: '.$type;
+        $content_type = 'Content-Type: ' . $type;
         $data = file_get_contents($file['file']);
-        $content = '--'.md5('1').'
---'.md5(1).'
-'.$content_type.'; charset="windows-1251"; name="'.$fname.'"
+        $content = '--' . md5('1') . '
+--' . md5(1) . '
+' . $content_type . '; charset="windows-1251"; name="' . $fname . '"
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="'.$fname.'"
+Content-Disposition: attachment; filename="' . $fname . '"
 
-'.chunk_split( base64_encode($data), 68, "\n").'
+' . chunk_split(base64_encode($data), 68, "\n") . '
 ';
         return $content;
     }
 
 
-
     //Смена кодировки по умолчанию
-    public function setEncoding($encoding='koi8-r'){
+    public function setEncoding($encoding = 'koi8-r')
+    {
         //Приводим к единому формату
-        $encoding=strtolower($encoding);
+        $encoding = strtolower($encoding);
         //Проверяем поддержку данной кодировки
-        if(in_array($encoding,$this->supported_encodings))
+        if (in_array($encoding, $this->supported_encodings))
             //Устанавливаем
-            $this->encoding=$encoding;
+            $this->encoding = $encoding;
     }
 
 }
