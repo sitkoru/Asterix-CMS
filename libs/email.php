@@ -33,18 +33,21 @@ class email
         $files = array()
     )
     {
-
         require_once('/var/www/tools/libs/phpmailer/smtp.php');
+        if (!is_file(__DIR__ . '/config.php')){
+            throw new Exception('Libs config file not found');
+        }
+        $config = require(__DIR__ . '/config.php');
 
         $address = $this->prepareAddress($to);
         $subject = $this->prepareSubject($subject, $type);
         $headers = $this->prepareHeaders($type, $files);
 
         foreach ($address as $addr) {
-            send($addr, $this->from, $subject, $message, 'smtp.postal.0xdev.ru', 25, 'test', 'msBTD8i8h6hljEnK4TCFjoab');
+            send($addr, 'cms@sitko.ru', $subject, $message, $config['email']['server'], $config['email']['port'], $config['email']['login'], $config['email']['password']);
         }
 
-        //Ð“Ð¾Ñ‚Ð¾Ð²Ð¾
+        //Готово
         return true;
     }
 
