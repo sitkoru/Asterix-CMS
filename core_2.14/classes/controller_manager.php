@@ -38,7 +38,6 @@ class controller_manager
         self::$config = $config;
         $this->log = $log;
         $this->cache = $cache;
-
         //Подгружаем все переданные параметры
         $this->loadData();
 
@@ -56,7 +55,6 @@ class controller_manager
 
         //Записываем контроллер
         model::$ask->controller = $this->activeController;
-
         //Инициализация контроллера
         $result = $this->execController($this->activeController);
 
@@ -83,7 +81,6 @@ class controller_manager
     //Определение контроллера
     private function defineController()
     {
-
         //Админка определяется раньше, до разбора URL
         if (IsSet(model::$ask->controller))
             return model::$ask->controller;
