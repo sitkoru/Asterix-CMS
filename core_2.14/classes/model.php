@@ -30,8 +30,7 @@ class model{
 	public static $active_database = 'system';
     public static $cache;
 	
-	function __construct($config, $log, $cache = false){
-
+	function __construct($config, $log, $cache = false, $test = false){
 		require_once($config['path']['core'] . '/classes/model_loader.php');
 		require_once($config['path']['core'] . '/classes/model_sql.php');
 		require_once($config['path']['core'] . '/classes/model_finder.php');
@@ -50,9 +49,8 @@ class model{
 
 		// Локальная авторизация, возможна до инициализации модулей
 		user::authUser_fast();
-
 		self::$modules =     	ModelLoader::loadModules();
-		self::$extensions = 	ModelLoader::loadExtensions();
+		self::$extensions = 	ModelLoader::loadExtensions($this);
 		self::$settings = 		ModelLoader::loadSettings();
 		self::$ask = 			ModelLoader::loadAsk();
 		self::$ask->rec = 		ModelFinder::getRecordByAsk( self::$ask->url );

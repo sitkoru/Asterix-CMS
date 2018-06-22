@@ -222,7 +222,6 @@ class ModelLoader
 				$mods[$i]['sid'] = 'start';
 
 		foreach( $mods as $module ) {
-
 			$module_path = model::$config['path']['modules'] . '/' . $module['prototype'] . '.php';
 			if( file_exists( $module_path ) ) {
 
@@ -251,8 +250,11 @@ class ModelLoader
 	}
 
 	//Подгрузка расширений к модулю
-	public static function loadExtensions()
+	public static function loadExtensions($model = null)
 	{
+		if (!$model){
+            $model = $this;
+		}
 
 		$extensions = array();
 		//Подгрузка библиотеки расширений к модулям, инициализация
@@ -262,7 +264,7 @@ class ModelLoader
 				require_once(model::$config['path']['core'] . '/extensions/' . $filename);
 				//Создаём
 				$name                       = 'extention_' . $extention_sid;
-				$extensions[$extention_sid] = new $name($this);
+				$extensions[$extention_sid] = new $name($model);
 				$extensions[$extention_sid]->execute();
 			}
 
